@@ -1,3 +1,24 @@
+# === MODULE_BUILD ===
+# id: edcm_layers
+#   module_name: layers
+#   module_kind: engine
+#   summary: EDCM four-layer stack: Protocol interfaces, default implementations, and the build_default_layers bootstrap (optionally bridging ucns/edcmbone)
+#   owner: Erin Spencer
+#   public_surface: MeasurementLayer, SemanticsLayer, CompositionLayer, DeliveryLayer, DefaultMeasurementLayer, DefaultSemanticsLayer, DefaultCompositionLayer, DefaultDeliveryLayer, EDCMLayers, build_default_layers
+#   internal_surface: _maybe_from_ucns, _maybe_from_edcmbone
+#   auth_boundary: none
+#   storage_boundary: none
+#   network_boundary: none
+#   user_data_boundary: none
+#   admin_only: false
+#   tests: hmmm
+#   rollout: default_enabled
+#   rollback: remove module and its references
+#   requires: none
+#   since: 2026-06-02
+#   unresolved: none
+# === END MODULE_BUILD ===
+
 from __future__ import annotations
 
 from dataclasses import dataclass
