@@ -17,6 +17,28 @@ No UCNS-A theorem/proof status is transferred to EDCM, edcmbone, or UCNS-G by
 this module.
 """
 
+# === MODULE_BUILD ===
+# id: edcm_ucns_objects
+#   module_name: ucns_objects
+#   module_kind: engine
+#   summary: dependency-free mirror of edcmbone's UCNS metric construction layer (v0.2 signed-axis orthogonality)
+#   owner: Erin Spencer
+#   public_surface: AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, field_motion_fixture, canonical_axes
+#   internal_surface: _clamp_unit, _sign
+#   auth_boundary: none
+#   storage_boundary: none
+#   network_boundary: none
+#   user_data_boundary: none
+#   admin_only: false
+#   tests: tests.test_ucns_objects
+#   rollout: default_enabled
+#   rollback: remove module and its references
+#   requires: none
+#   since: 2026-06-02
+#   unresolved: mirror of edcmbone backend/src/edcmbone/metrics/orthogonality.py; keep in sync
+# === END MODULE_BUILD ===
+
+
 from __future__ import annotations
 
 import hashlib
