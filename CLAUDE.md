@@ -22,7 +22,7 @@ is fully settled.
 | Runtime deps    | None — standard library only                                       |
 | Test framework  | `pytest`                                                           |
 | Package version | Not declared (no `pyproject.toml`/`setup.py`)                      |
-| License         | MIT (root `LICENSE` file)                                          |
+| License         | MPL-2.0 (root `LICENSE`; relicensed from MIT — weak copyleft)      |
 
 There is **no** `pyproject.toml`, `setup.py`, `requirements.txt`, `Makefile`, CI workflow
 (`.github/workflows`), `docs/` directory, or lint config in this repository. Do not invent
