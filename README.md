@@ -29,6 +29,28 @@ print(result)
 
 This allows the repository to run today even before upstream package wiring is fully settled.
 
+
+## Energy falsifiability bridge
+
+`edcm.falsifiability_bridge` consolidates the useful preservation idea from
+**edcmbone** into the new energy-audit layer without making edcmbone a hard
+runtime dependency. It compares whether falsifiability-bearing claims from an
+input survive in an output and reports edcmbone-style F-loss labels such as
+F1 deletion and F6 decorative preservation.
+
+```python
+from edcm import audit_falsifiability_preservation
+
+result = audit_falsifiability_preservation(
+    "The theory predicts a CMB power-spectrum excess at multipole l ≈ 10^4.",
+    "The theory is elegant and coherent.",
+)
+print(result["possible_falsifiability_loss"])  # True
+```
+
+The bridge remains an audit of claim structure only: it does not validate
+external physics, import UCNS-A proof status, or decide empirical truth.
+
 ## UCNS metric construction objects
 
 `edcm/ucns_objects.py` is a self-contained, dependency-free mirror of edcmbone's
