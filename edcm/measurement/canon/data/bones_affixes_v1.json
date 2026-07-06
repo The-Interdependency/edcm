@@ -1,0 +1,143 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "description": "EDCM Operator bone inventory: English bound bones (affixes) mapped to PKQTS families.",
+    "attribution": "Claude generated; context, prompt Erin Spencer.",
+    "bone_membership_test": "Same as bones_words_v1: does this affix create, redirect, or resolve a constraint relationship?",
+    "polarity_balance_principle": "Applied. If -less (P, absence) is a bone, -ful (affirmative presence) must also be a bone.",
+    "collision_priority": "P > K > Q > T > S",
+    "canon_reference": "Derivational suffixes included under S per Option B, EXCEPT where family assignment follows from the affix's constraint function (e.g., un- is P, not S).",
+    "extraction_rule": "Longest-match-first. Emit all matched prefixes and suffixes as separate bone tokens. Collision priority resolves ambiguity.",
+    "notes": [
+      "Inflectional affixes (8 in English) are a closed set.",
+      "Derivational affixes are a larger but finite set. Included per Option B.",
+      "Affixes attach to flesh (open-class roots). The root is discarded; the affix is counted.",
+      "Some affixes change word class (nominalization, verbalization). The structural change itself is the constraint event.",
+      "Allomorphs listed together (e.g., in-/im-/il-/ir- under one entry with variants)."
+    ],
+    "hmmm": [
+      "-er as comparative (K) vs -er as agent (S) — same surface form, different families. Context-dependent. Primary: S (more frequent). Dual captures both.",
+      "-en as past participle (T) vs -en as verbalization (T) vs -en as material adjective (wooden: S) — mostly T.",
+      "zero-derivation (noun→verb with no affix) is invisible to bone counting. By design: no affix, no bone.",
+      "Latin/Greek combining forms (bio-, geo-, -graph, -logy) — currently excluded. They're bound but carry lexical (flesh) content.",
+      "whether -ing in gerund/nominal use should be S instead of T — currently T for all uses"
+    ]
+  },
+
+  "inflectional": {
+    "description": "Closed set of 8 English inflectional morphemes. These modify grammatical properties without changing word class.",
+    "affixes": [
+      {"affix":"-s","type":"suffix","primary":"S","families":["S"],"notes":"plural marker (cats). Structural: marks number."},
+      {"affix":"-es","type":"suffix","primary":"S","families":["S"],"notes":"plural allomorph (boxes)."},
+      {"affix":"-'s","type":"suffix","primary":"S","families":["S"],"notes":"possessive. Structural: marks possession."},
+      {"affix":"-s","type":"suffix","primary":"T","families":["T"],"notes":"3sg present tense (runs). Temporal: marks agreement/tense. DISAMBIGUATION: if attached to verb stem → T. If attached to noun stem → S (plural). Morph.py must handle."},
+      {"affix":"-ed","type":"suffix","primary":"T","families":["T"],"notes":"past tense / past participle. Temporal."},
+      {"affix":"-ing","type":"suffix","primary":"T","families":["T"],"notes":"progressive aspect / gerund. Temporal/aspectual."},
+      {"affix":"-er","type":"suffix","primary":"S","families":["S","K"],"notes":"comparative (faster). S primary. K dual (creates relational comparison). Also agent nominalizer (teacher) = S."},
+      {"affix":"-est","type":"suffix","primary":"S","families":["S"],"notes":"superlative (fastest). Structural: marks extremity of scale."},
+      {"affix":"-en","type":"suffix","primary":"T","families":["T"],"notes":"past participle (broken, taken). Temporal."}
+    ]
+  },
+
+  "derivational_prefixes": {
+    "description": "Derivational prefixes that create constraint relationships. Mapped by constraint function, not by convention.",
+    "affixes": [
+      {"affix":"un-","type":"prefix","primary":"P","families":["P"],"notes":"negation/reversal (unhappy, undo). Core negative prefix."},
+      {"affix":"in-","type":"prefix","primary":"P","families":["P"],"notes":"negation (invisible, incomplete). Allomorphs: im-, il-, ir-.","variants":["im-","il-","ir-"]},
+      {"affix":"dis-","type":"prefix","primary":"P","families":["P"],"notes":"negation/reversal (disagree, disconnect)."},
+      {"affix":"non-","type":"prefix","primary":"P","families":["P"],"notes":"negation (nonsense, nonexistent). Weaker than un-."},
+      {"affix":"de-","type":"prefix","primary":"P","families":["P"],"notes":"reversal/removal (deconstruct, dethrone)."},
+      {"affix":"anti-","type":"prefix","primary":"P","families":["P"],"notes":"opposition (antiwar, antisocial)."},
+      {"affix":"counter-","type":"prefix","primary":"P","families":["P","K"],"notes":"opposition/response (counterargument, counterbalance). P primary; K dual (relational response)."},
+      {"affix":"mis-","type":"prefix","primary":"P","families":["P"],"notes":"wrong/bad (misunderstand, misplace). Negative evaluation."},
+      {"affix":"a-","type":"prefix","primary":"P","families":["P"],"notes":"without/not (amoral, atypical). When negating."},
+
+      {"affix":"re-","type":"prefix","primary":"T","families":["T"],"notes":"repetition/restoration (rebuild, reconsider). Temporal: again."},
+      {"affix":"pre-","type":"prefix","primary":"T","families":["T"],"notes":"before (prewar, preexisting). Temporal precedence."},
+      {"affix":"post-","type":"prefix","primary":"T","families":["T"],"notes":"after (postwar, postmodern). Temporal succession."},
+      {"affix":"fore-","type":"prefix","primary":"T","families":["T","S"],"notes":"before/front (foresee, foreground). Temporal or spatial."},
+      {"affix":"ex-","type":"prefix","primary":"T","families":["T"],"notes":"former (ex-president). Temporal: past role."},
+      {"affix":"neo-","type":"prefix","primary":"T","families":["T"],"notes":"new (neoclassical). Temporal: renewed."},
+
+      {"affix":"inter-","type":"prefix","primary":"K","families":["K"],"notes":"between/among (international, interact). Relational linkage."},
+      {"affix":"co-","type":"prefix","primary":"K","families":["K"],"notes":"together/jointly (cooperate, coexist). Relational."},
+      {"affix":"con-","type":"prefix","primary":"K","families":["K"],"notes":"together (connect, combine). Allomorphs: com-, col-, cor-.","variants":["com-","col-","cor-"]},
+      {"affix":"pro-","type":"prefix","primary":"K","families":["K","P"],"notes":"in favor of (pro-democracy). Relational + affirmative polarity."},
+      {"affix":"syn-","type":"prefix","primary":"K","families":["K"],"notes":"together (synchronize, synthesis). Allomorph: sym-.","variants":["sym-"]},
+
+      {"affix":"over-","type":"prefix","primary":"S","families":["S"],"notes":"above/excess (overhead, overwork). Spatial or scalar."},
+      {"affix":"under-","type":"prefix","primary":"S","families":["S"],"notes":"below/insufficient (underground, underestimate). Spatial or scalar."},
+      {"affix":"out-","type":"prefix","primary":"S","families":["S"],"notes":"outside/surpassing (outperform, outdoors). Spatial."},
+      {"affix":"sub-","type":"prefix","primary":"S","families":["S"],"notes":"under/below (submarine, subgroup). Spatial/hierarchical."},
+      {"affix":"super-","type":"prefix","primary":"S","families":["S"],"notes":"above/beyond (supernatural, superstructure). Spatial/hierarchical."},
+      {"affix":"trans-","type":"prefix","primary":"S","families":["S"],"notes":"across (transport, transform). Spatial traversal."},
+      {"affix":"extra-","type":"prefix","primary":"S","families":["S"],"notes":"outside/beyond (extraordinary, extracurricular). Spatial."},
+      {"affix":"intra-","type":"prefix","primary":"S","families":["S"],"notes":"within (intravenous, intramural). Spatial containment."},
+      {"affix":"circum-","type":"prefix","primary":"S","families":["S"],"notes":"around (circumnavigate). Spatial."},
+      {"affix":"meta-","type":"prefix","primary":"S","families":["S"],"notes":"about/beyond/self-referential (metadata, metacognition). Structural recursion."},
+      {"affix":"semi-","type":"prefix","primary":"S","families":["S"],"notes":"half/partial (semicircle). Structural."},
+      {"affix":"multi-","type":"prefix","primary":"S","families":["S"],"notes":"many (multilingual). Structural quantity."},
+      {"affix":"mono-","type":"prefix","primary":"S","families":["S"],"notes":"one (monolingual). Structural quantity."},
+      {"affix":"bi-","type":"prefix","primary":"S","families":["S"],"notes":"two (bilingual). Structural quantity."},
+      {"affix":"tri-","type":"prefix","primary":"S","families":["S"],"notes":"three (triangle). Structural quantity."},
+      {"affix":"poly-","type":"prefix","primary":"S","families":["S"],"notes":"many (polyglot). Structural quantity."},
+      {"affix":"self-","type":"prefix","primary":"S","families":["S"],"notes":"self-referential (self-aware). Structural reflexive."},
+      {"affix":"auto-","type":"prefix","primary":"S","families":["S"],"notes":"self (automatic, autonomy). Structural reflexive."},
+
+      {"affix":"en-","type":"prefix","primary":"T","families":["T"],"notes":"causative / make into (enable, enrich). Allomorph: em-.","variants":["em-"]}
+    ]
+  },
+
+  "derivational_suffixes": {
+    "description": "Derivational suffixes. Default family S per Option B, except where constraint function dictates otherwise.",
+    "affixes": [
+      {"affix":"-ness","type":"suffix","primary":"S","families":["S"],"notes":"nominalization (happiness, darkness). Creates abstract noun."},
+      {"affix":"-ment","type":"suffix","primary":"S","families":["S"],"notes":"nominalization (movement, agreement). Process/result noun."},
+      {"affix":"-tion","type":"suffix","primary":"S","families":["S"],"notes":"nominalization (creation, education). Allomorphs: -sion, -ation, -ition.","variants":["-sion","-ation","-ition"]},
+      {"affix":"-ity","type":"suffix","primary":"S","families":["S"],"notes":"nominalization (reality, capacity). State/quality noun."},
+      {"affix":"-ance","type":"suffix","primary":"S","families":["S"],"notes":"nominalization (resistance, performance). Allomorph: -ence.","variants":["-ence"]},
+      {"affix":"-dom","type":"suffix","primary":"S","families":["S"],"notes":"nominalization (freedom, kingdom). Domain/state noun."},
+      {"affix":"-ship","type":"suffix","primary":"S","families":["S"],"notes":"nominalization (friendship, leadership). Relation/role noun."},
+      {"affix":"-hood","type":"suffix","primary":"S","families":["S"],"notes":"nominalization (childhood, brotherhood). State/collective noun."},
+      {"affix":"-ism","type":"suffix","primary":"S","families":["S"],"notes":"nominalization (realism, capitalism). System/belief noun."},
+      {"affix":"-ist","type":"suffix","primary":"S","families":["S"],"notes":"agent (scientist, pianist). Person noun."},
+      {"affix":"-er","type":"suffix","primary":"S","families":["S"],"notes":"agent (teacher, writer). Also comparative (inflectional, see above)."},
+      {"affix":"-or","type":"suffix","primary":"S","families":["S"],"notes":"agent (actor, inventor). Latin-origin variant of -er."},
+      {"affix":"-ee","type":"suffix","primary":"S","families":["S"],"notes":"patient/recipient (employee, trainee). Passive agent."},
+      {"affix":"-al","type":"suffix","primary":"S","families":["S"],"notes":"adjectivalization (natural, personal). Relational adjective."},
+      {"affix":"-ial","type":"suffix","primary":"S","families":["S"],"notes":"adjectivalization (special, commercial). Variant of -al."},
+      {"affix":"-ous","type":"suffix","primary":"S","families":["S"],"notes":"adjectivalization (dangerous, famous). Allomorph: -ious, -eous.","variants":["-ious","-eous"]},
+      {"affix":"-ive","type":"suffix","primary":"S","families":["S"],"notes":"adjectivalization (creative, active). Tendency/quality."},
+      {"affix":"-ic","type":"suffix","primary":"S","families":["S"],"notes":"adjectivalization (historic, organic). Relating-to."},
+      {"affix":"-ical","type":"suffix","primary":"S","families":["S"],"notes":"adjectivalization (historical, political). Extended -ic."},
+      {"affix":"-ize","type":"suffix","primary":"S","families":["S"],"notes":"verbalization (organize, realize). Make into."},
+      {"affix":"-ify","type":"suffix","primary":"S","families":["S"],"notes":"verbalization (simplify, classify). Make into."},
+      {"affix":"-ate","type":"suffix","primary":"S","families":["S"],"notes":"verbalization (activate, regulate). Cause to be."},
+      {"affix":"-en","type":"suffix","primary":"S","families":["S","T"],"notes":"verbalization/adjectivalization (darken, wooden). Creates change of state (T dual)."},
+      {"affix":"-ly","type":"suffix","primary":"S","families":["S"],"notes":"adverbialization (quickly, honestly). Manner marker."},
+      {"affix":"-ward","type":"suffix","primary":"S","families":["S"],"notes":"directional (forward, backward). Allomorph: -wards.","variants":["-wards"]},
+      {"affix":"-wise","type":"suffix","primary":"S","families":["S"],"notes":"manner/direction (clockwise, otherwise). Structural."},
+
+      {"affix":"-ful","type":"suffix","primary":"S","families":["S","P"],"notes":"full of / having (hopeful, careful). Affirms presence of quality. P dual: affirmative pole of -less."},
+      {"affix":"-less","type":"suffix","primary":"P","families":["P","S"],"notes":"without / lacking (hopeless, careless). Negates presence. P primary: creates absence constraint."},
+
+      {"affix":"-able","type":"suffix","primary":"T","families":["T","S"],"notes":"capable of / potential (readable, washable). Modal: possibility. Allomorph: -ible.","variants":["-ible"]},
+
+      {"affix":"-like","type":"suffix","primary":"K","families":["K"],"notes":"resembling (childlike, lifelike). Comparison/similarity."},
+      {"affix":"-esque","type":"suffix","primary":"K","families":["K"],"notes":"in the style of (picturesque, Kafkaesque). Comparison."}
+    ]
+  },
+
+  "contractions": {
+    "description": "Bound contraction morphemes (clitics). Split from the host word in morph.py before bone matching; the free-word host is matched separately and the contraction morpheme is counted as its own bone. Listed here (not in bones_words_v1) because they are bound, not free, bones.",
+    "affixes": [
+      {"affix":"n't","type":"contraction","primary":"P","families":["P"],"notes":"contracted negation (don't -> do + n't). Negative polarity pole."},
+      {"affix":"'ll","type":"contraction","primary":"T","families":["T"],"notes":"contracted will/shall (I'll -> I + 'll). Temporal/modal."},
+      {"affix":"'d","type":"contraction","primary":"T","families":["T"],"notes":"contracted would/had (I'd -> I + 'd). Temporal/modal."},
+      {"affix":"'ve","type":"contraction","primary":"T","families":["T"],"notes":"contracted have (I've -> I + 've). Temporal/modal."},
+      {"affix":"'re","type":"contraction","primary":"T","families":["T"],"notes":"contracted are (we're -> we + 're). Temporal/modal."},
+      {"affix":"'m","type":"contraction","primary":"T","families":["T"],"notes":"contracted am (I'm -> I + 'm). Temporal/modal."},
+      {"affix":"'s","type":"contraction","primary":"T","families":["T","S"],"notes":"contracted is/has (he's -> he + 's) (T) or possessive (S)."}
+    ]
+  }
+}

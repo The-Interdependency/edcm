@@ -25,8 +25,8 @@ is fully settled.
 | License         | MPL-2.0 (root `LICENSE`; relicensed from MIT — weak copyleft)      |
 
 There is **no** `pyproject.toml`, `setup.py`, `requirements.txt`, `Makefile`, CI workflow
-(`.github/workflows`), `docs/` directory, or lint config in this repository. Do not invent
-or reference any. The repo is used as a source tree imported directly (see `tests/conftest.py`).
+(`.github/workflows`), or lint config in this repository. Do not invent or reference any.
+The repo is used as a source tree imported directly (see `tests/conftest.py`).
 
 ---
 
@@ -35,13 +35,30 @@ or reference any. The repo is used as a source tree imported directly (see `test
 ```
 edcm/
 ├── README.md                  # Project intent, usage examples
+├── docs/                      # Handoffs + consolidation records
+│   ├── codex_edcmucns_v031_handoff.md
+│   └── consolidation-edcmbone.md   # edcmbone → edcm consolidation record (source SHA, deltas, hmmm)
 ├── edcm/                      # The package
 │   ├── __init__.py            # Public API surface (re-exports from submodules)
-│   ├── layers.py              # Four-layer EDCM bootstrap
-│   └── ucns_objects.py        # UCNS metric construction objects (v0.2 spec mirror)
+│   ├── layers.py              # Four-layer EDCM bootstrap (+ ConsolidatedMeasurementLayer)
+│   ├── ucns_objects.py        # UCNS metric construction objects (v0.2 spec mirror)
+│   ├── energy_claims.py       # Energy-audit claim extraction/auditing
+│   ├── falsifiability_bridge.py    # edcmbone-style F-loss preservation audit
+│   ├── ucns_dependency.py     # Optional ucns availability helpers
+│   └── measurement/           # Consolidated edcmbone mirror (stdlib-only)
+│       ├── canon/             # CanonLoader + frozen data/*_v1.json (do not edit data)
+│       ├── parser/            # turns_rounds transcript parser
+│       ├── metrics/           # stats, risk, compute, matrix, projection
+│       │                      #   (orthogonality re-exported from edcm.ucns_objects — no fork)
+│       ├── ucns/              # closed-token UCNS encoder (ucns_v04, closed_tokens)
+│       └── compress.py        # lossless codec + compression stats (F)
 └── tests/
     ├── conftest.py            # Inserts repo root onto sys.path so `import edcm` works
-    └── test_ucns_objects.py   # Tests for ucns_objects (9 tests)
+    ├── test_ucns_objects.py   # ucns_objects tests
+    ├── test_energy_claims.py / test_falsifiability_bridge.py / test_ucns_dependency.py
+    ├── test_measurement.py    # pipeline end-to-end, layers wiring, no-fork guarantee
+    ├── test_measurement_canon.py          # polarity balance + affix regressions (ported)
+    └── test_measurement_closed_tokens.py  # closed-token encoder suite (ported)
 ```
 
 Everything the package exposes is re-exported from `edcm/__init__.py`; prefer importing
@@ -68,7 +85,7 @@ annotations; match that style.
 
 ## Architecture & key concepts
 
-The package has two independent pieces.
+The package has three main pieces (plus the smaller energy-audit modules).
 
 ### 1. Four-layer bootstrap (`edcm/layers.py`)
 
@@ -121,6 +138,28 @@ Reference data: `FIELD_MOTION_FIXTURE_MATRIX` and `field_motion_fixture(name)` p
 spec §13 sign-only F/E/O_scope fixtures; `canonical_axes()` returns the spec §9 primitive
 axes plus §10 projections (projections have `primitive=False`).
 
+### 3. Consolidated measurement package (`edcm/measurement/`)
+
+A dependency-free mirror of the canonical edcmbone structural-measurement
+package (`The-Interdependency/edcmbone: backend_old/src/edcmbone/`; source
+commit pinned in `edcm/measurement/__init__.py`). Ships canon data +
+`CanonLoader`, the turns/rounds parser, the metric stack (stats/risk/compute/
+matrix/projection), the closed-token UCNS encoder, and the lossless codec with
+`structural_density` (F). Pipeline: `parse_transcript → compute_transcript →
+project_transcript` (+ `compress` for F stats).
+
+- `layers.ConsolidatedMeasurementLayer` runs this pipeline when a payload has
+  a `transcript` string; `build_default_layers()` uses it whenever an
+  installed upstream `edcmbone` doesn't provide a `MeasurementLayer`.
+- `measurement/metrics/orthogonality` is **not** a second copy — the
+  orthogonality surface is re-exported from `edcm.ucns_objects`
+  (`tests/test_measurement.py::test_orthogonality_surface_is_not_forked`).
+- Mirror doctrine: edcmbone stays canonical L0; re-mirror upstream changes
+  manually and bump the source commit. See `docs/consolidation-edcmbone.md`
+  for full provenance, mirror deltas, and open `hmmm` items.
+- Canon JSON under `edcm/measurement/canon/data/` is frozen (`_v1`) — do not
+  edit by hand.
+
 ---
 
 ## Conventions & gotchas
@@ -146,7 +185,13 @@ axes plus §10 projections (projections have `primitive=False`).
 `edcmbone` is one of the two upstream repos being consolidated here and the source of the
 measurement layer and the UCNS construction objects. In this repo:
 
-- `layers.py` optionally imports `edcmbone.MeasurementLayer` at runtime, falling back to a
-  local default when unavailable.
+- `edcm/measurement/` is the consolidated, dependency-free mirror of edcmbone's canonical
+  package (see `docs/consolidation-edcmbone.md` for provenance and mirror deltas).
+- `layers.py` optionally imports `edcmbone.MeasurementLayer` at runtime (upstream override
+  wins — edcmbone stays canonical L0), then falls back to `ConsolidatedMeasurementLayer`
+  backed by `edcm.measurement`, then to the inert default.
 - `ucns_objects.py` is a hand-maintained, dependency-free mirror of edcmbone's
   orthogonality module — not an import. Changes upstream may need to be re-mirrored here.
+  `edcm.measurement.metrics` re-exports it rather than carrying a second copy.
+- Not consolidated (still upstream-only): root `engine.py`, `core/` (Bridge, refactor-side
+  parsing/operator), `canon_eng/`, UCNS-G, and the new `edcmbone_backend` 0.2.0 package.

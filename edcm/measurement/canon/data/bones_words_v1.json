@@ -1,0 +1,2406 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "description": "EDCM Operator bone inventory: English free bones mapped to PKQTS families.",
+    "attribution": "Claude generated; context, prompt Erin Spencer.",
+    "bone_membership_test": "Does this word create, redirect, or resolve a constraint relationship? If yes: bone. Does it only modulate magnitude of content? If yes: flesh (excluded).",
+    "exclusion_principle": "Degree adverbs (very, quite, rather-as-intensifier, extremely, totally, completely-as-intensifier, utterly, absolutely-as-intensifier, really-as-intensifier) are flesh. They modulate intensity without creating pressure gradients.",
+    "polarity_balance_principle": "If the negative pole of a category is a bone, the affirmative pole must also be a bone. Otherwise the instrument has built-in observer bias.",
+    "collision_priority": "P > K > Q > T > S",
+    "read_mode_v1": "Count by primary field only.",
+    "read_mode_v1.1": "Count by families array. Consumer decides weighting.",
+    "hmmm": [
+      "existential vs spatial there",
+      "relative vs interrogative who/which",
+      "conditional if: K or T",
+      "interjections beyond yes/no",
+      "so/too as degree adverb vs structural connector — context-dependent, bone only in connector use",
+      "multi-word units need tokenizer support"
+    ],
+    "multiword_join_rule": {
+      "status": "always-on",
+      "convention": "smash (no underscores, no spaces). 'of course' → 'ofcourse'",
+      "placement": "applied in normalize.py BEFORE tokenization and bone matching",
+      "ordering": "longest-match-first to prevent partial joins",
+      "audit": "original text preserved in raw_text per losslessness invariant. Join logged as event.",
+      "reversible": true
+    }
+  },
+  "words": [
+    {
+      "word": "not",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "core negator"
+    },
+    {
+      "word": "no",
+      "primary": "P",
+      "families": [
+        "P",
+        "S"
+      ],
+      "notes": "negative polarity or determiner"
+    },
+    {
+      "word": "yes",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "affirmative polarity. Closes Q-gap or asserts."
+    },
+    {
+      "word": "indeed",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "affirmative assertion. Reinforces contested constraint."
+    },
+    {
+      "word": "certainly",
+      "primary": "P",
+      "families": [
+        "P",
+        "T"
+      ],
+      "notes": "affirmative certainty. Closes modal gap."
+    },
+    {
+      "word": "definitely",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "affirmative assertion."
+    },
+    {
+      "word": "surely",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "affirmative with implicit challenge."
+    },
+    {
+      "word": "okay",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "affirmative acknowledgment."
+    },
+    {
+      "word": "never",
+      "primary": "P",
+      "families": [
+        "P",
+        "T"
+      ],
+      "notes": "universal temporal negation"
+    },
+    {
+      "word": "neither",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "negative pairing"
+    },
+    {
+      "word": "nor",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "negative conjunction"
+    },
+    {
+      "word": "but",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "adversative"
+    },
+    {
+      "word": "however",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "adversative connector"
+    },
+    {
+      "word": "yet",
+      "primary": "P",
+      "families": [
+        "P",
+        "T"
+      ],
+      "notes": "adversative + temporal"
+    },
+    {
+      "word": "although",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "concessive"
+    },
+    {
+      "word": "though",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "concessive"
+    },
+    {
+      "word": "unless",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "negative conditional"
+    },
+    {
+      "word": "except",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "exclusion"
+    },
+    {
+      "word": "despite",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "concessive"
+    },
+    {
+      "word": "nevertheless",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "adversative connector"
+    },
+    {
+      "word": "nonetheless",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "adversative connector"
+    },
+    {
+      "word": "whereas",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "contrastive"
+    },
+    {
+      "word": "instead",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "substitutive opposition"
+    },
+    {
+      "word": "rather",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "preference/contrast. NOT degree use."
+    },
+    {
+      "word": "otherwise",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "alternative/contrastive"
+    },
+    {
+      "word": "without",
+      "primary": "P",
+      "families": [
+        "P",
+        "S"
+      ],
+      "notes": "negation + spatial"
+    },
+    {
+      "word": "hardly",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "near-negation"
+    },
+    {
+      "word": "scarcely",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "near-negation"
+    },
+    {
+      "word": "barely",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "near-negation"
+    },
+    {
+      "word": "fully",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "affirmative completion. Affirmative pole of near-negation (hardly/scarcely/barely). Polarity bone, not a degree intensifier."
+    },
+    {
+      "word": "completely",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "affirmative completion. Affirmative pole of near-negation (hardly/scarcely/barely). Polarity bone in completion sense, not the degree-intensifier sense excluded as flesh."
+    },
+    {
+      "word": "nothing",
+      "primary": "P",
+      "families": [
+        "P",
+        "S"
+      ],
+      "notes": "negative pronoun"
+    },
+    {
+      "word": "nobody",
+      "primary": "P",
+      "families": [
+        "P",
+        "S"
+      ],
+      "notes": "negative pronoun"
+    },
+    {
+      "word": "nowhere",
+      "primary": "P",
+      "families": [
+        "P",
+        "S"
+      ],
+      "notes": "negative spatial"
+    },
+    {
+      "word": "none",
+      "primary": "P",
+      "families": [
+        "P",
+        "S"
+      ],
+      "notes": "negative pronoun"
+    },
+    {
+      "word": "and",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "additive"
+    },
+    {
+      "word": "or",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "alternative"
+    },
+    {
+      "word": "both",
+      "primary": "K",
+      "families": [
+        "K",
+        "S"
+      ],
+      "notes": "paired coordinator"
+    },
+    {
+      "word": "either",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "paired alternative"
+    },
+    {
+      "word": "because",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "causal"
+    },
+    {
+      "word": "since",
+      "primary": "K",
+      "families": [
+        "K",
+        "T"
+      ],
+      "notes": "causal or temporal"
+    },
+    {
+      "word": "so",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "consequential. NOT degree use."
+    },
+    {
+      "word": "therefore",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "logical consequence"
+    },
+    {
+      "word": "thus",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "logical consequence"
+    },
+    {
+      "word": "hence",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "logical consequence"
+    },
+    {
+      "word": "consequently",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "logical consequence"
+    },
+    {
+      "word": "accordingly",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "logical consequence"
+    },
+    {
+      "word": "furthermore",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "additive connector"
+    },
+    {
+      "word": "moreover",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "additive connector"
+    },
+    {
+      "word": "besides",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "additive"
+    },
+    {
+      "word": "also",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "additive"
+    },
+    {
+      "word": "too",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "additive. NOT degree use."
+    },
+    {
+      "word": "additionally",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "additive connector"
+    },
+    {
+      "word": "of",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "relational"
+    },
+    {
+      "word": "with",
+      "primary": "K",
+      "families": [
+        "K",
+        "S"
+      ],
+      "notes": "accompaniment/instrument"
+    },
+    {
+      "word": "for",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "benefactive/purpose/causal"
+    },
+    {
+      "word": "by",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "agent/means"
+    },
+    {
+      "word": "about",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "topic/approximation"
+    },
+    {
+      "word": "from",
+      "primary": "K",
+      "families": [
+        "K",
+        "S"
+      ],
+      "notes": "source/origin"
+    },
+    {
+      "word": "as",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "comparison/role"
+    },
+    {
+      "word": "like",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "comparison/similarity"
+    },
+    {
+      "word": "than",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "comparative"
+    },
+    {
+      "word": "among",
+      "primary": "K",
+      "families": [
+        "K",
+        "S"
+      ],
+      "notes": "relational/spatial"
+    },
+    {
+      "word": "versus",
+      "primary": "P",
+      "families": [
+        "K",
+        "P"
+      ],
+      "notes": "comparison/opposition"
+    },
+    {
+      "word": "per",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "rate/ratio"
+    },
+    {
+      "word": "via",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "means/route"
+    },
+    {
+      "word": "that",
+      "primary": "K",
+      "families": [
+        "K",
+        "S"
+      ],
+      "notes": "complementizer=K; demonstrative/relative=S"
+    },
+    {
+      "word": "if",
+      "primary": "K",
+      "families": [
+        "K",
+        "T"
+      ],
+      "notes": "conditional"
+    },
+    {
+      "word": "whether",
+      "primary": "K",
+      "families": [
+        "K",
+        "Q"
+      ],
+      "notes": "alternative condition / indirect question"
+    },
+    {
+      "word": "while",
+      "primary": "K",
+      "families": [
+        "K",
+        "T"
+      ],
+      "notes": "concurrent/contrastive"
+    },
+    {
+      "word": "provided",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "conditional"
+    },
+    {
+      "word": "given",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "conditional/causal"
+    },
+    {
+      "word": "regarding",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "topical"
+    },
+    {
+      "word": "concerning",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "topical"
+    },
+    {
+      "word": "including",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "inclusive relation"
+    },
+    {
+      "word": "excluding",
+      "primary": "P",
+      "families": [
+        "K",
+        "P"
+      ],
+      "notes": "exclusive relation"
+    },
+    {
+      "word": "who",
+      "primary": "Q",
+      "families": [
+        "Q",
+        "S"
+      ],
+      "notes": "interrogative=Q; relative=S"
+    },
+    {
+      "word": "whom",
+      "primary": "Q",
+      "families": [
+        "Q",
+        "S"
+      ],
+      "notes": "object interrogative/relative"
+    },
+    {
+      "word": "whose",
+      "primary": "Q",
+      "families": [
+        "Q",
+        "S"
+      ],
+      "notes": "possessive interrogative/relative"
+    },
+    {
+      "word": "what",
+      "primary": "Q",
+      "families": [
+        "Q",
+        "S"
+      ],
+      "notes": "entity interrogative"
+    },
+    {
+      "word": "which",
+      "primary": "Q",
+      "families": [
+        "Q",
+        "S"
+      ],
+      "notes": "selection interrogative/relative"
+    },
+    {
+      "word": "where",
+      "primary": "Q",
+      "families": [
+        "Q",
+        "S"
+      ],
+      "notes": "spatial interrogative/relative"
+    },
+    {
+      "word": "when",
+      "primary": "Q",
+      "families": [
+        "Q",
+        "T"
+      ],
+      "notes": "temporal interrogative/relative"
+    },
+    {
+      "word": "why",
+      "primary": "Q",
+      "families": [
+        "Q"
+      ],
+      "notes": "causal interrogative"
+    },
+    {
+      "word": "how",
+      "primary": "Q",
+      "families": [
+        "Q"
+      ],
+      "notes": "manner interrogative"
+    },
+    {
+      "word": "wherever",
+      "primary": "Q",
+      "families": [
+        "Q",
+        "S"
+      ],
+      "notes": "generalized spatial"
+    },
+    {
+      "word": "whatever",
+      "primary": "Q",
+      "families": [
+        "Q",
+        "S"
+      ],
+      "notes": "generalized entity"
+    },
+    {
+      "word": "whoever",
+      "primary": "Q",
+      "families": [
+        "Q",
+        "S"
+      ],
+      "notes": "generalized person"
+    },
+    {
+      "word": "?",
+      "primary": "Q",
+      "families": [
+        "Q"
+      ],
+      "notes": "frozen: exactly 1 Q per occurrence"
+    },
+    {
+      "word": "can",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "ability/permission"
+    },
+    {
+      "word": "could",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "past ability/possibility"
+    },
+    {
+      "word": "will",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "future/volition"
+    },
+    {
+      "word": "would",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "conditional/past habit"
+    },
+    {
+      "word": "shall",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "future/obligation"
+    },
+    {
+      "word": "should",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "obligation/expectation"
+    },
+    {
+      "word": "may",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "permission/possibility"
+    },
+    {
+      "word": "might",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "possibility (weaker)"
+    },
+    {
+      "word": "must",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "necessity/certainty"
+    },
+    {
+      "word": "have",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "perfect aspect"
+    },
+    {
+      "word": "has",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "perfect aspect 3sg"
+    },
+    {
+      "word": "had",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "past perfect"
+    },
+    {
+      "word": "be",
+      "primary": "T",
+      "families": [
+        "T",
+        "S"
+      ],
+      "notes": "progressive/passive/copula"
+    },
+    {
+      "word": "am",
+      "primary": "T",
+      "families": [
+        "T",
+        "S"
+      ],
+      "notes": "1sg present"
+    },
+    {
+      "word": "is",
+      "primary": "T",
+      "families": [
+        "T",
+        "S"
+      ],
+      "notes": "3sg present"
+    },
+    {
+      "word": "are",
+      "primary": "T",
+      "families": [
+        "T",
+        "S"
+      ],
+      "notes": "pl present"
+    },
+    {
+      "word": "was",
+      "primary": "T",
+      "families": [
+        "T",
+        "S"
+      ],
+      "notes": "sg past"
+    },
+    {
+      "word": "were",
+      "primary": "T",
+      "families": [
+        "T",
+        "S"
+      ],
+      "notes": "pl past/subjunctive"
+    },
+    {
+      "word": "been",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "perfect progressive"
+    },
+    {
+      "word": "being",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "progressive"
+    },
+    {
+      "word": "do",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "dummy auxiliary"
+    },
+    {
+      "word": "does",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "3sg dummy auxiliary"
+    },
+    {
+      "word": "did",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "past dummy auxiliary"
+    },
+    {
+      "word": "after",
+      "primary": "T",
+      "families": [
+        "T",
+        "S"
+      ],
+      "notes": "temporal sequence"
+    },
+    {
+      "word": "before",
+      "primary": "T",
+      "families": [
+        "T",
+        "S"
+      ],
+      "notes": "temporal precedence"
+    },
+    {
+      "word": "during",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "temporal span"
+    },
+    {
+      "word": "until",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "temporal endpoint"
+    },
+    {
+      "word": "till",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "variant of until"
+    },
+    {
+      "word": "already",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "completion aspect"
+    },
+    {
+      "word": "still",
+      "primary": "P",
+      "families": [
+        "T",
+        "P"
+      ],
+      "notes": "continuative or contrastive"
+    },
+    {
+      "word": "now",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "present temporal"
+    },
+    {
+      "word": "then",
+      "primary": "K",
+      "families": [
+        "T",
+        "K"
+      ],
+      "notes": "sequential or consequential"
+    },
+    {
+      "word": "soon",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "near-future"
+    },
+    {
+      "word": "always",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "universal temporal. Affirmative pole of never."
+    },
+    {
+      "word": "often",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "frequentative"
+    },
+    {
+      "word": "sometimes",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "occasional"
+    },
+    {
+      "word": "rarely",
+      "primary": "P",
+      "families": [
+        "T",
+        "P"
+      ],
+      "notes": "infrequent. Near-negation pole."
+    },
+    {
+      "word": "seldom",
+      "primary": "P",
+      "families": [
+        "T",
+        "P"
+      ],
+      "notes": "infrequent. Near-negation pole."
+    },
+    {
+      "word": "frequently",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "frequentative. Affirmative pole."
+    },
+    {
+      "word": "ever",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "existential temporal"
+    },
+    {
+      "word": "forever",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "universal duration. Affirmative pole of never."
+    },
+    {
+      "word": "once",
+      "primary": "K",
+      "families": [
+        "T",
+        "K"
+      ],
+      "notes": "single occurrence / as soon as"
+    },
+    {
+      "word": "whenever",
+      "primary": "Q",
+      "families": [
+        "T",
+        "Q"
+      ],
+      "notes": "temporal generalization"
+    },
+    {
+      "word": "recently",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "near-past"
+    },
+    {
+      "word": "meanwhile",
+      "primary": "K",
+      "families": [
+        "T",
+        "K"
+      ],
+      "notes": "concurrent + connective"
+    },
+    {
+      "word": "subsequently",
+      "primary": "K",
+      "families": [
+        "T",
+        "K"
+      ],
+      "notes": "sequential + connective"
+    },
+    {
+      "word": "immediately",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "temporal urgency"
+    },
+    {
+      "word": "eventually",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "future temporal"
+    },
+    {
+      "word": "ago",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "past reference"
+    },
+    {
+      "word": "perhaps",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "epistemic possibility"
+    },
+    {
+      "word": "maybe",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "epistemic possibility"
+    },
+    {
+      "word": "possibly",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "epistemic possibility"
+    },
+    {
+      "word": "probably",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "epistemic probability"
+    },
+    {
+      "word": "necessarily",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "epistemic necessity"
+    },
+    {
+      "word": "apparently",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "evidential modality"
+    },
+    {
+      "word": "supposedly",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "evidential modality"
+    },
+    {
+      "word": "allegedly",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "evidential modality"
+    },
+    {
+      "word": "the",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "definite article"
+    },
+    {
+      "word": "a",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "indefinite article"
+    },
+    {
+      "word": "an",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "indefinite article (pre-vowel)"
+    },
+    {
+      "word": "this",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "proximal demonstrative"
+    },
+    {
+      "word": "these",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "proximal plural"
+    },
+    {
+      "word": "those",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "distal plural"
+    },
+    {
+      "word": "I",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "1sg subject"
+    },
+    {
+      "word": "me",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "1sg object"
+    },
+    {
+      "word": "my",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "1sg possessive"
+    },
+    {
+      "word": "mine",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "1sg indep possessive"
+    },
+    {
+      "word": "myself",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "1sg reflexive"
+    },
+    {
+      "word": "you",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "2nd person"
+    },
+    {
+      "word": "your",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "2nd possessive"
+    },
+    {
+      "word": "yours",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "2nd indep possessive"
+    },
+    {
+      "word": "yourself",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "2sg reflexive"
+    },
+    {
+      "word": "yourselves",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "2pl reflexive"
+    },
+    {
+      "word": "he",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3sg masc subject"
+    },
+    {
+      "word": "him",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3sg masc object"
+    },
+    {
+      "word": "his",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3sg masc possessive"
+    },
+    {
+      "word": "himself",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3sg masc reflexive"
+    },
+    {
+      "word": "she",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3sg fem subject"
+    },
+    {
+      "word": "her",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3sg fem object/possessive"
+    },
+    {
+      "word": "hers",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3sg fem indep possessive"
+    },
+    {
+      "word": "herself",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3sg fem reflexive"
+    },
+    {
+      "word": "it",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3sg neuter"
+    },
+    {
+      "word": "its",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3sg neuter possessive"
+    },
+    {
+      "word": "itself",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3sg neuter reflexive"
+    },
+    {
+      "word": "we",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "1pl subject"
+    },
+    {
+      "word": "us",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "1pl object"
+    },
+    {
+      "word": "our",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "1pl possessive"
+    },
+    {
+      "word": "ours",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "1pl indep possessive"
+    },
+    {
+      "word": "ourselves",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "1pl reflexive"
+    },
+    {
+      "word": "they",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3pl subject"
+    },
+    {
+      "word": "them",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3pl object"
+    },
+    {
+      "word": "their",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3pl possessive"
+    },
+    {
+      "word": "theirs",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3pl indep possessive"
+    },
+    {
+      "word": "themselves",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "3pl reflexive"
+    },
+    {
+      "word": "one",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "generic pronoun/numeral"
+    },
+    {
+      "word": "oneself",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "generic reflexive"
+    },
+    {
+      "word": "some",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "indefinite quantifier"
+    },
+    {
+      "word": "any",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "non-assertive indefinite"
+    },
+    {
+      "word": "every",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "universal quantifier"
+    },
+    {
+      "word": "each",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "distributive"
+    },
+    {
+      "word": "all",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "universal quantifier"
+    },
+    {
+      "word": "many",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "large quantity"
+    },
+    {
+      "word": "much",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "large quantity (mass)"
+    },
+    {
+      "word": "few",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "small quantity"
+    },
+    {
+      "word": "little",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "small quantity (mass). Adj use is flesh."
+    },
+    {
+      "word": "several",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "moderate quantity"
+    },
+    {
+      "word": "enough",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "sufficiency quantifier"
+    },
+    {
+      "word": "another",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "additional/alternative"
+    },
+    {
+      "word": "other",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "alternative reference"
+    },
+    {
+      "word": "such",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "reference intensifier"
+    },
+    {
+      "word": "same",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "identity reference"
+    },
+    {
+      "word": "everything",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "universal pronoun"
+    },
+    {
+      "word": "everyone",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "universal pronoun"
+    },
+    {
+      "word": "everybody",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "universal pronoun"
+    },
+    {
+      "word": "everywhere",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "universal spatial"
+    },
+    {
+      "word": "something",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "indefinite existential"
+    },
+    {
+      "word": "someone",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "indefinite existential"
+    },
+    {
+      "word": "somebody",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "indefinite existential"
+    },
+    {
+      "word": "somewhere",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "indefinite spatial"
+    },
+    {
+      "word": "anything",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "non-assertive indefinite"
+    },
+    {
+      "word": "anyone",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "non-assertive indefinite"
+    },
+    {
+      "word": "anybody",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "non-assertive indefinite"
+    },
+    {
+      "word": "anywhere",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "non-assertive spatial"
+    },
+    {
+      "word": "in",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial containment"
+    },
+    {
+      "word": "on",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial contact"
+    },
+    {
+      "word": "at",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial point"
+    },
+    {
+      "word": "to",
+      "primary": "K",
+      "families": [
+        "S",
+        "K"
+      ],
+      "notes": "direction (S) or purpose/infinitive (K)"
+    },
+    {
+      "word": "into",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "directional ingressive"
+    },
+    {
+      "word": "onto",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "directional surface"
+    },
+    {
+      "word": "upon",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "formal on"
+    },
+    {
+      "word": "above",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial superior"
+    },
+    {
+      "word": "below",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial inferior"
+    },
+    {
+      "word": "under",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial inferior"
+    },
+    {
+      "word": "over",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial superior/across"
+    },
+    {
+      "word": "beneath",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial inferior (formal)"
+    },
+    {
+      "word": "behind",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial posterior"
+    },
+    {
+      "word": "beside",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial adjacent"
+    },
+    {
+      "word": "between",
+      "primary": "K",
+      "families": [
+        "S",
+        "K"
+      ],
+      "notes": "spatial/relational intermediate"
+    },
+    {
+      "word": "beyond",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial past-boundary"
+    },
+    {
+      "word": "inside",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial interior"
+    },
+    {
+      "word": "outside",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial exterior"
+    },
+    {
+      "word": "through",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial traversal"
+    },
+    {
+      "word": "across",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial traversal (surface)"
+    },
+    {
+      "word": "along",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial parallel"
+    },
+    {
+      "word": "around",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial surrounding"
+    },
+    {
+      "word": "near",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial proximity"
+    },
+    {
+      "word": "toward",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial approach"
+    },
+    {
+      "word": "towards",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "variant of toward"
+    },
+    {
+      "word": "within",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial/abstract containment"
+    },
+    {
+      "word": "here",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "proximal spatial"
+    },
+    {
+      "word": "there",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "distal spatial or existential"
+    },
+    {
+      "word": "up",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial/aspectual particle"
+    },
+    {
+      "word": "down",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial/aspectual"
+    },
+    {
+      "word": "out",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial egressive"
+    },
+    {
+      "word": "off",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial separation"
+    },
+    {
+      "word": "away",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial departure"
+    },
+    {
+      "word": "back",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial return"
+    },
+    {
+      "word": "together",
+      "primary": "K",
+      "families": [
+        "S",
+        "K"
+      ],
+      "notes": "spatial/relational aggregation"
+    },
+    {
+      "word": "apart",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial separation"
+    }
+  ],
+  "multiword_joins": [
+    {
+      "joined": "ofcourse",
+      "original": "of course",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "affirmative assertion"
+    },
+    {
+      "joined": "noone",
+      "original": "no one",
+      "primary": "P",
+      "families": [
+        "P",
+        "S"
+      ],
+      "notes": "negative pronoun"
+    },
+    {
+      "joined": "atall",
+      "original": "at all",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "emphasis in negative contexts (not at all)"
+    },
+    {
+      "joined": "noteven",
+      "original": "not even",
+      "primary": "P",
+      "families": [
+        "P"
+      ],
+      "notes": "intensified negation. Both components are already P bones; join preserves that and prevents even from being lost as flesh."
+    },
+    {
+      "joined": "inorderto",
+      "original": "in order to",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "purpose linkage"
+    },
+    {
+      "joined": "sothat",
+      "original": "so that",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "purpose/result linkage"
+    },
+    {
+      "joined": "accordingto",
+      "original": "according to",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "attributive linkage"
+    },
+    {
+      "joined": "dueto",
+      "original": "due to",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "causal"
+    },
+    {
+      "joined": "inspiteof",
+      "original": "in spite of",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "concessive. P primary."
+    },
+    {
+      "joined": "becauseof",
+      "original": "because of",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "causal preposition"
+    },
+    {
+      "joined": "aswell",
+      "original": "as well",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "additive"
+    },
+    {
+      "joined": "aswellas",
+      "original": "as well as",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "additive coordinator"
+    },
+    {
+      "joined": "aslongas",
+      "original": "as long as",
+      "primary": "K",
+      "families": [
+        "K",
+        "T"
+      ],
+      "notes": "conditional / temporal duration"
+    },
+    {
+      "joined": "assoonas",
+      "original": "as soon as",
+      "primary": "K",
+      "families": [
+        "T",
+        "K"
+      ],
+      "notes": "temporal trigger"
+    },
+    {
+      "joined": "suchthat",
+      "original": "such that",
+      "primary": "K",
+      "families": [
+        "K"
+      ],
+      "notes": "result clause linkage"
+    },
+    {
+      "joined": "insteadof",
+      "original": "instead of",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "substitutive opposition"
+    },
+    {
+      "joined": "ratherthan",
+      "original": "rather than",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "preference/contrast"
+    },
+    {
+      "joined": "otherthan",
+      "original": "other than",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "exclusion"
+    },
+    {
+      "joined": "evenif",
+      "original": "even if",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "concessive conditional. P primary: asserts despite."
+    },
+    {
+      "joined": "eventhough",
+      "original": "even though",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "concessive. P primary."
+    },
+    {
+      "joined": "ontopof",
+      "original": "on top of",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial superior"
+    },
+    {
+      "joined": "infrontof",
+      "original": "in front of",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial anterior"
+    },
+    {
+      "joined": "nextto",
+      "original": "next to",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial adjacent"
+    },
+    {
+      "joined": "outof",
+      "original": "out of",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial egressive"
+    },
+    {
+      "joined": "apartfrom",
+      "original": "apart from",
+      "primary": "P",
+      "families": [
+        "P",
+        "K"
+      ],
+      "notes": "exclusion/exception"
+    },
+    {
+      "joined": "awayfrom",
+      "original": "away from",
+      "primary": "S",
+      "families": [
+        "S"
+      ],
+      "notes": "spatial departure"
+    },
+    {
+      "joined": "sofar",
+      "original": "so far",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "temporal extent to present"
+    },
+    {
+      "joined": "asyet",
+      "original": "as yet",
+      "primary": "P",
+      "families": [
+        "T",
+        "P"
+      ],
+      "notes": "temporal with negative expectation"
+    },
+    {
+      "joined": "bynow",
+      "original": "by now",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "temporal expectation"
+    },
+    {
+      "joined": "uptill",
+      "original": "up till",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "temporal endpoint variant"
+    },
+    {
+      "joined": "upuntil",
+      "original": "up until",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "temporal endpoint variant"
+    },
+    {
+      "joined": "eversince",
+      "original": "ever since",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "temporal continuity from past point"
+    },
+    {
+      "joined": "fromnowon",
+      "original": "from now on",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "temporal forward commitment"
+    },
+    {
+      "joined": "rightnow",
+      "original": "right now",
+      "primary": "T",
+      "families": [
+        "T"
+      ],
+      "notes": "temporal immediate present"
+    },
+    {
+      "joined": "notyet",
+      "original": "not yet",
+      "primary": "P",
+      "families": [
+        "P",
+        "T"
+      ],
+      "notes": "temporal negation with expectation. P primary."
+    }
+  ]
+}
