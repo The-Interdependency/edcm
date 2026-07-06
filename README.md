@@ -29,6 +29,38 @@ print(result)
 
 This allows the repository to run today even before upstream package wiring is fully settled.
 
+## Consolidated measurement package (`edcm.measurement`)
+
+The canonical edcmbone structural-measurement package is now consolidated here
+as a dependency-free mirror (`edcm/measurement/`): canon data + `CanonLoader`,
+the turns/rounds transcript parser, the metric stack (stats, risk, compute,
+matrix, projection), the closed-token UCNS encoder, and the lossless codec
+with `structural_density` (F) stats. Source of truth for L0 remains
+`The-Interdependency/edcmbone`; provenance (path + commit SHA) is recorded in
+`edcm/measurement/__init__.py` and `docs/consolidation-edcmbone.md`.
+
+The measurement layer of the bootstrap now runs this pipeline for real:
+
+```python
+from edcm import build_default_layers
+
+result = build_default_layers().run({"transcript": "A: We must decide now.\nB: No. Why rush?"})
+result["rounds"]              # per-round metric vectors (C, R, F, E, D, N, I, O, L, P, kappa)
+result["agent_metrics"]       # per-round CM/DA/DRIFT/DVG/INT/TBF projections
+result["structural_density"]  # F readout from the lossless codec
+```
+
+Direct use of the consolidated surface:
+
+```python
+from edcm import CanonLoader, parse_transcript, compute_transcript, project_transcript
+
+canon = CanonLoader()
+parsed = parse_transcript(transcript, canon=canon)
+metrics = compute_transcript(parsed, canon=canon)
+agents = project_transcript(parsed, metrics)
+```
+
 
 ## Energy falsifiability bridge
 

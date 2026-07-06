@@ -1,0 +1,429 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "description": "EDCM Behavioral layer marker inventories for the 9-metric vector (C,R,D,N,L,O,F,E,I). Each metric section declares what markers enable, what requires structural detection, and what requires embeddings.",
+    "attribution": "Claude generated; context, prompt Erin Spencer.",
+    "notes": [
+      "Behavioral-EDCM is round-native, computed on CLOSED rounds.",
+      "Markers are lexical/structural cues that identify constraint-bearing spans.",
+      "Some metrics are fully computable from markers + structure. Some require embeddings. This is stated explicitly per metric.",
+      "Markers are case-insensitive. Multi-word markers use the same smash-join convention as bones_words_v1.",
+      "Marker lists are v1 starting points. They will grow from transcript testing.",
+      "The behavioral layer is acknowledged to have semantic dependencies that the operator layer avoids. This is intentional tensioning, not a defect."
+    ],
+    "hmmm": [
+      "F (Fixation) and I (Integration Failure) require embeddings — no marker-only path exists for v1",
+      "D (Deflection) is a ratio that needs both constraint-relevant and constraint-irrelevant span detection — marker lists help but don't fully solve",
+      "whether safety/crisis markers (self-harm, violence) belong here or in a separate safety layer",
+      "actor attribution matters: 'I refuse' from speaker A vs speaker B has different diagnostic meaning. Markers fire per-turn; behavioral metrics aggregate per-round."
+    ]
+  },
+
+  "C": {
+    "metric": "Constraint Strain",
+    "formula": "weighted contradiction density",
+    "computable_from_markers": "partial",
+    "requires_embeddings": true,
+    "explanation": "Full contradiction detection requires comparing semantic content across turns to find reversals. Markers identify explicit contradiction signals but miss implicit ones.",
+    "markers": {
+      "explicit_contradiction": [
+        "but you said",
+        "that contradicts",
+        "you just said",
+        "earlier you said",
+        "that's inconsistent",
+        "that's not what you said",
+        "you changed your",
+        "which is it",
+        "make up your mind",
+        "you can't have it both ways",
+        "that doesn't match",
+        "wait you said",
+        "hold on you said",
+        "so which one",
+        "that's the opposite"
+      ],
+      "self_correction": [
+        "actually",
+        "wait no",
+        "let me correct",
+        "I misspoke",
+        "what I meant was",
+        "to clarify",
+        "I take that back",
+        "scratch that",
+        "let me rephrase",
+        "no wait"
+      ],
+      "structural_signals": [
+        "Negation of previously affirmed content (requires tracking across turns)",
+        "Same speaker asserting X then not-X within window",
+        "Rising P-family bone density in operator layer may correlate (bridge signal)"
+      ]
+    }
+  },
+
+  "R": {
+    "metric": "Refusal Density",
+    "formula": "count(refusal markers) / constraint statements",
+    "computable_from_markers": "yes",
+    "requires_embeddings": false,
+    "explanation": "Both numerator (refusals) and denominator (constraint statements) are detectable from markers. This is the most marker-tractable metric.",
+    "markers": {
+      "refusal": [
+        "I can't",
+        "I won't",
+        "I refuse",
+        "I'm not going to",
+        "I'm unable",
+        "that's not possible",
+        "absolutely not",
+        "out of the question",
+        "I don't think so",
+        "I decline",
+        "I'm not willing",
+        "I will not",
+        "no way",
+        "not happening",
+        "forget it",
+        "I'm done",
+        "I'm not doing",
+        "count me out",
+        "that's a no",
+        "hard no",
+        "nope"
+      ],
+      "soft_refusal": [
+        "I'd rather not",
+        "I don't think I can",
+        "I'm not sure I should",
+        "I'm not comfortable",
+        "I'd prefer not to",
+        "can we not",
+        "I hesitate to",
+        "I'm reluctant",
+        "that's difficult for me",
+        "I need to think about"
+      ],
+      "constraint_statement": [
+        "you must",
+        "you need to",
+        "you have to",
+        "you should",
+        "I need you to",
+        "I want you to",
+        "I expect",
+        "I require",
+        "I demand",
+        "I insist",
+        "it's essential that",
+        "it's important that",
+        "you're required",
+        "the rule is",
+        "the policy is",
+        "the deadline is",
+        "by tomorrow",
+        "before you leave",
+        "do this",
+        "stop that",
+        "don't do",
+        "make sure"
+      ],
+      "request": [
+        "can you",
+        "could you",
+        "would you",
+        "will you",
+        "please",
+        "I'd like you to",
+        "would you mind",
+        "I'm asking you to",
+        "do you think you could",
+        "help me with"
+      ]
+    }
+  },
+
+  "D": {
+    "metric": "Deflection",
+    "formula": "1 - (tokens_about_constraints / total_tokens)",
+    "computable_from_markers": "partial",
+    "requires_embeddings": true,
+    "explanation": "Identifying what tokens are 'about constraints' requires understanding what the active constraints are. Markers identify deflection moves but the ratio requires constraint-topic tracking.",
+    "markers": {
+      "topic_shift": [
+        "anyway",
+        "moving on",
+        "let's talk about",
+        "speaking of",
+        "that reminds me",
+        "on another note",
+        "by the way",
+        "changing the subject",
+        "forget about that",
+        "let's not go there",
+        "that's not the point",
+        "what about",
+        "back to",
+        "regardless"
+      ],
+      "evasion": [
+        "I don't want to talk about",
+        "that's not relevant",
+        "that's beside the point",
+        "let's focus on",
+        "that's a different issue",
+        "we'll deal with that later",
+        "that's not important",
+        "I don't see how that matters",
+        "you're changing the subject",
+        "you're deflecting"
+      ],
+      "vague_response": [
+        "it depends",
+        "it's complicated",
+        "I don't know",
+        "maybe",
+        "we'll see",
+        "I'll think about it",
+        "it is what it is",
+        "things happen",
+        "whatever"
+      ]
+    }
+  },
+
+  "N": {
+    "metric": "Noise",
+    "formula": "1 - (resolution_tokens / constraint_tokens)",
+    "computable_from_markers": "partial",
+    "requires_embeddings": false,
+    "explanation": "Resolution markers are detectable. Constraint tokens require span identification. The ratio is computable if constraint spans are identified first.",
+    "markers": {
+      "resolution": [
+        "agreed",
+        "understood",
+        "fair enough",
+        "that works",
+        "okay",
+        "done",
+        "settled",
+        "let's go with that",
+        "I accept",
+        "that makes sense",
+        "we're on the same page",
+        "I can do that",
+        "no problem",
+        "sounds good",
+        "I'm on board",
+        "that's reasonable",
+        "I see your point",
+        "you're right",
+        "my mistake",
+        "I was wrong",
+        "I agree"
+      ],
+      "noise_indicators": [
+        "Repetition of previously stated content without new information",
+        "Performative elaboration that adds length without resolving constraints",
+        "Hedging spirals that circle without landing",
+        "These require structural detection (comparing new tokens vs repeated tokens within window)"
+      ]
+    }
+  },
+
+  "L": {
+    "metric": "Load",
+    "formula": "total constraint tokens per window",
+    "computable_from_markers": "yes",
+    "requires_embeddings": false,
+    "explanation": "Count of tokens within constraint-bearing spans. Constraint spans identified by constraint_statement and request markers from R, plus these additional load indicators.",
+    "markers": {
+      "load_amplifiers": [
+        "and also",
+        "on top of that",
+        "in addition",
+        "furthermore",
+        "not only that",
+        "plus",
+        "another thing",
+        "while we're at it",
+        "one more thing",
+        "and another",
+        "don't forget",
+        "keep in mind",
+        "remember that",
+        "I also need"
+      ],
+      "notes": "L is primarily a volume metric. High L means many constraint tokens in the window, regardless of whether they're resolved. It interacts with N: high L + low N = system generating volume without resolution."
+    }
+  },
+
+  "O": {
+    "metric": "Overextension",
+    "formula": "expansion beyond original scope per window",
+    "computable_from_markers": "partial",
+    "requires_embeddings": true,
+    "explanation": "Detecting scope expansion requires knowing what the original scope was. Markers identify scope-expanding moves but the baseline scope must be tracked structurally or semantically.",
+    "markers": {
+      "scope_expansion": [
+        "while we're at it",
+        "we should also",
+        "that raises the question",
+        "this also applies to",
+        "more broadly",
+        "and by extension",
+        "which means we also need",
+        "come to think of it",
+        "actually we should",
+        "let's also consider",
+        "the bigger picture",
+        "taking a step back",
+        "this connects to",
+        "if we're doing that we might as well"
+      ],
+      "scope_containment": [
+        "let's stay focused",
+        "that's out of scope",
+        "one thing at a time",
+        "let's park that",
+        "separate issue",
+        "later",
+        "not now",
+        "we can't solve everything",
+        "that's a different conversation"
+      ]
+    }
+  },
+
+  "F": {
+    "metric": "Fixation",
+    "formula": "cosine_sim(embed(constraint_t), embed(constraint_{t-1}))",
+    "computable_from_markers": "no",
+    "requires_embeddings": true,
+    "explanation": "Fixation measures semantic similarity between consecutive constraint expressions. This is intrinsically an embedding operation. No marker-only path exists. Under degraded conditions (no embedding model available), F must be disabled per canon: disable rather than invert.",
+    "markers": {
+      "structural_proxy": [
+        "Repeated identical or near-identical phrases across turns (string-level detection)",
+        "Token overlap ratio between constraint spans in consecutive rounds",
+        "These are coarse proxies, not replacements for embedding similarity"
+      ],
+      "fixation_signals": [
+        "as I said",
+        "like I said",
+        "I already said",
+        "I keep saying",
+        "how many times",
+        "I've told you",
+        "again",
+        "I repeat",
+        "once more",
+        "for the last time",
+        "let me say this again"
+      ]
+    }
+  },
+
+  "E": {
+    "metric": "Escalation",
+    "formula": "max(0, d/dt(commitment_intensity))",
+    "computable_from_markers": "yes",
+    "requires_embeddings": false,
+    "explanation": "Escalation is the positive derivative of commitment intensity. Detectable by tracking commitment markers across time and measuring whether they intensify.",
+    "markers": {
+      "commitment_low": [
+        "I think",
+        "maybe we should",
+        "it might be good to",
+        "I suggest",
+        "perhaps",
+        "we could",
+        "consider"
+      ],
+      "commitment_medium": [
+        "I believe",
+        "we should",
+        "I want",
+        "I expect",
+        "we need to",
+        "it's important",
+        "I'd like"
+      ],
+      "commitment_high": [
+        "I insist",
+        "I demand",
+        "you must",
+        "I will not accept",
+        "this is non-negotiable",
+        "I'm telling you",
+        "I guarantee",
+        "I promise",
+        "I swear",
+        "absolutely",
+        "without question",
+        "no matter what",
+        "under no circumstances",
+        "there's no alternative"
+      ],
+      "escalation_signals": [
+        "Transition from low → medium → high commitment markers across turns",
+        "Increasing use of modal verbs (must, will) vs hedges (might, could)",
+        "Rising P-bone density in operator layer may correlate (bridge signal)",
+        "Increasing sentence-final ! punctuation (P-bone from punct rules)"
+      ],
+      "deescalation_signals": [
+        "let's take a step back",
+        "I hear you",
+        "let's calm down",
+        "I understand your concern",
+        "let's find a middle ground",
+        "I'm willing to compromise",
+        "that's fair",
+        "you make a good point"
+      ]
+    }
+  },
+
+  "I": {
+    "metric": "Integration Failure",
+    "formula": "1 - sim(correction_response, expected_response)",
+    "computable_from_markers": "partial",
+    "requires_embeddings": true,
+    "explanation": "Full integration failure detection requires comparing what was corrected against what changed in the response. Markers identify correction events and acknowledgment, but measuring whether the correction was actually integrated requires semantic comparison.",
+    "markers": {
+      "correction_offered": [
+        "actually it's",
+        "no that's wrong",
+        "the correct answer is",
+        "let me correct you",
+        "that's not right",
+        "that's incorrect",
+        "you're mistaken",
+        "the issue is",
+        "what I'm saying is",
+        "you misunderstood",
+        "that's not what I meant",
+        "to be clear",
+        "to clarify"
+      ],
+      "acknowledgment_surface": [
+        "I see",
+        "okay",
+        "right",
+        "got it",
+        "understood",
+        "I understand",
+        "I hear you",
+        "point taken",
+        "fair point",
+        "noted"
+      ],
+      "integration_failure_signals": [
+        "Acknowledgment followed by repetition of corrected behavior",
+        "Surface paraphrase of correction without structural change in subsequent output",
+        "Reversion to pre-correction behavior after one turn",
+        "These require multi-turn tracking, not single-marker detection"
+      ]
+    }
+  }
+}

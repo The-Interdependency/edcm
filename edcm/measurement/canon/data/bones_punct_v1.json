@@ -1,0 +1,141 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "description": "EDCM Operator bone inventory: punctuation and connector rules.",
+    "attribution": "Claude generated; context, prompt Erin Spencer.",
+    "bone_membership_test": "Same as words/affixes: does this punctuation mark create, redirect, or resolve a constraint relationship? Boundary markers that merely segment do not emit tokens.",
+    "notes": [
+      "Most rules here are already frozen in canon (edcmbone_v1 §2.5-§2.8).",
+      "This file consolidates and extends with the same principles.",
+      "Punctuation that only segments text (periods, commas) is boundary-only: 0 tokens.",
+      "Punctuation that creates constraint topology (?, !, ;, :, ...) emits tokens."
+    ],
+    "hmmm": [
+      "Exclamation mark as P — it asserts, but is it structural enough? Included with flag.",
+      "Ellipsis as Q — it creates a gap, but the gap may be rhetorical not interrogative. Included.",
+      "Colon and semicolon as K — they link clauses, but differently than conjunctions. Included.",
+      "Parentheses — structural aside. Currently boundary-only. May deserve S token.",
+      "Quotation marks — attribution marker. Currently boundary-only. May deserve S token for 'He Said/She Said' parsing."
+    ]
+  },
+
+  "punctuation": [
+    {
+      "mark": "?",
+      "primary": "Q",
+      "families": ["Q"],
+      "tokens_emitted": 1,
+      "rule": "Exactly 1 Q token per occurrence.",
+      "status": "frozen",
+      "notes": "Interrogative marker. Opens a constraint gap."
+    },
+    {
+      "mark": "!",
+      "primary": "P",
+      "families": ["P"],
+      "tokens_emitted": 1,
+      "rule": "Exactly 1 P token per occurrence.",
+      "status": "v1-new",
+      "notes": "Assertion/exclamation marker. Asserts or intensifies a constraint position. Creates polarity pressure. NOT a degree modifier — it changes the constraint topology of the sentence from statement to assertion."
+    },
+    {
+      "mark": "...",
+      "primary": "Q",
+      "families": ["Q"],
+      "tokens_emitted": 1,
+      "rule": "Exactly 1 Q token per ellipsis (regardless of dot count).",
+      "status": "v1-new",
+      "notes": "Trailing gap / unfinished constraint. Creates an open space. Normalize 2+ dots to single ellipsis unit."
+    },
+    {
+      "mark": ";",
+      "primary": "K",
+      "families": ["K"],
+      "tokens_emitted": 1,
+      "rule": "Exactly 1 K token per semicolon.",
+      "status": "v1-new",
+      "notes": "Clause linkage without conjunction. Creates a relational connection between independent clauses."
+    },
+    {
+      "mark": ":",
+      "primary": "K",
+      "families": ["K"],
+      "tokens_emitted": 1,
+      "rule": "Exactly 1 K token per colon.",
+      "status": "v1-new",
+      "notes": "Introduces elaboration, list, or explanation. Links a setup to its payload."
+    },
+    {
+      "mark": "—",
+      "primary": null,
+      "families": [],
+      "tokens_emitted": 0,
+      "rule": "Boundary marker only. Emits 0 operator tokens. Preserved losslessly.",
+      "status": "frozen",
+      "notes": "Em dash. Interruption, aside, or break. Segments but does not create constraint pressure."
+    },
+    {
+      "mark": "–",
+      "primary": "K",
+      "families": ["K"],
+      "tokens_emitted": 1,
+      "rule": "Exactly 1 K token per en dash.",
+      "status": "frozen",
+      "notes": "En dash. Range or connection (1990–2000, London–Paris). Relational linkage."
+    },
+    {
+      "mark": "-",
+      "primary": "K",
+      "families": ["K"],
+      "tokens_emitted": 1,
+      "rule": "Exactly 1 K token per HYPHENATED COMPOUND WORD (not per hyphen). state-of-the-art → 1 K. Internal free bones processed normally.",
+      "status": "frozen",
+      "notes": "Hyphen in compound words. Creates compound linkage."
+    },
+    {
+      "mark": "/",
+      "primary": null,
+      "families": [],
+      "tokens_emitted": 0,
+      "rule": "Ignored for operator counting in v1. Preserved losslessly.",
+      "status": "frozen-deferred",
+      "notes": "Slash. May later map to K (alternative/relation). Deferred decision."
+    },
+    {
+      "mark": ".",
+      "primary": null,
+      "families": [],
+      "tokens_emitted": 0,
+      "rule": "Boundary marker only. Emits 0 operator tokens.",
+      "status": "v1-new",
+      "notes": "Period. Sentence boundary. Segments but does not create constraint pressure."
+    },
+    {
+      "mark": ",",
+      "primary": null,
+      "families": [],
+      "tokens_emitted": 0,
+      "rule": "Boundary marker only. Emits 0 operator tokens.",
+      "status": "v1-new",
+      "notes": "Comma. Clause/phrase separator. Segments but does not create constraint pressure."
+    },
+    {
+      "mark": "()",
+      "primary": null,
+      "families": [],
+      "tokens_emitted": 0,
+      "rule": "Boundary markers only. Emit 0 operator tokens. Preserved losslessly.",
+      "status": "v1-new",
+      "notes": "Parentheses. Structural aside. Does not create constraint pressure in v1."
+    },
+    {
+      "mark": "\"\"",
+      "primary": null,
+      "families": [],
+      "tokens_emitted": 0,
+      "rule": "Boundary markers only. Emit 0 operator tokens.",
+      "status": "v1-new",
+      "notes": "Quotation marks. Attribution boundary. Relevant to He Said/She Said parsing but not to operator counting."
+    }
+  ]
+}
