@@ -62,6 +62,37 @@ agents = project_transcript(parsed, metrics)
 ```
 
 
+## edcmucns (v0.3.1 architecture)
+
+`edcm/edcmucns/` implements the **edcmucns design canon v0.3.1** — the
+Energy–Dissonance Circuit Model on UCNS mathematics, with provenance as the
+recurring theme (`docs/codex_edcmucns_v031_handoff.md`). Status: ratified as
+architecture; frontier as empirical measurement. The identity layer ships:
+policy-manifest hashing, provenance witnesses, the non-origin residue rule,
+origin/bone mass and carrier helpers, a closed readout-scope registry, the
+two equivalence tiers, the witness/geometry validator, SeqAppend
+composition, and manifest-rotation epoch chains.
+
+```python
+from edcm.edcmucns import (
+    BoneEvent, PolicyManifest, encode_turn,
+    ucns_carrier_equivalent, edcm_measurement_equivalent,
+)
+
+manifest = PolicyManifest()          # P:3 K:5 Q:7 T:13 S:29, non_origin_residue_v031
+turn = encode_turn("t1", "A", [BoneEvent("P", "not")], manifest)
+edcm_measurement_equivalent(turn.window, turn.window, "operator_scope")  # True
+```
+
+- UCNS equivalence proves same geometry; EDCM equivalence additionally
+  requires the in-scope provenance/payload hashes and the policy-manifest
+  hash.
+- No-bone turns are `AbsentOperatorGeometry` — NA for operator readouts,
+  never 0.
+- Frontier gates (contact convergence, DA_geom correlation, cadence
+  admission from text) are explicit `NotImplementedError` surfaces with
+  named falsifiers — no empirical claim is made.
+
 ## Energy falsifiability bridge
 
 `edcm.falsifiability_bridge` consolidates the useful preservation idea from
