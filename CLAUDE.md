@@ -182,7 +182,10 @@ carriers, `lambda_field`), `encoder` (`encode_turn`; no-bone turns →
 `AbsentOperatorGeometry`), `scopes` (closed `REGISTRY` of five readout
 scopes), `equivalence` (`ucns_carrier_equivalent` vs scoped
 `edcm_measurement_equivalent`), `validation` (`witness_geometry_consistent`,
-`gauge_audit` → `BridgeDiagnostic`s), `composer` (`seq_append` ⊞ for windows;
+`gauge_audit` → `BridgeDiagnostic`s), `field_reader` (reads
+`edcm.ucns_objects` `ConstraintField`/`FieldMotion` into the `field_chain`
+that `field_scope` reads; NA-safe state/motion readouts), `composer`
+(`seq_append` ⊞ for windows;
 `interaction_product` ⊠ reserved; kappa placeholders), `epochs` (`EpochChain`
 manifest rotation).
 

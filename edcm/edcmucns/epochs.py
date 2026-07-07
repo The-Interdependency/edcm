@@ -47,7 +47,13 @@ V031_ADOPTION_NOTE = (
 
 
 def window_identity_hash(window: Window) -> str:
-    """Stable identity hash of a window (geometry + testimony + manifest)."""
+    """Stable identity hash of a window.
+
+    Covers geometry + testimony + payloads + field-chain state + manifest, so
+    two windows that ``field_scope`` treats as non-equivalent (differing only
+    in ``field_chain``) also receive distinct epoch identities — field-readout
+    changes cannot hide inside an epoch hash chain.
+    """
 
     geometry = ";".join(
         f"{a.role}:{a.family}:{a.lattice_n}:{a.ordinal}:{a.theta}:{a.face}"
@@ -57,6 +63,7 @@ def window_identity_hash(window: Window) -> str:
         geometry,
         bundle_hash(window.witnesses),
         ",".join(sorted(p.content_hash for p in window.payloads)),
+        ",".join(window.field_chain),
         window.manifest_hash,
     ))
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()

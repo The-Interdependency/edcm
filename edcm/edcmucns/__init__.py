@@ -80,6 +80,13 @@ from .equivalence import (
     edcm_measurement_equivalent,
     ucns_carrier_equivalent,
 )
+from .field_reader import (
+    FieldReading,
+    attach_field_chain,
+    field_chain_hashes,
+    field_readouts,
+    read_field_chain,
+)
 from .geometry import (
     L_geo,
     L_op,
@@ -142,6 +149,9 @@ __all__ = [
     "contact_convergence",
     # validation
     "witness_geometry_consistent", "validate_window", "gauge_audit",
+    # field reader
+    "FieldReading", "read_field_chain", "field_chain_hashes",
+    "attach_field_chain", "field_readouts",
     # composer
     "seq_append", "InteractionSignature", "interaction_product",
     "flat_reduction", "kappa_balance", "kappa_audit", "EpochBreakError",
