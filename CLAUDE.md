@@ -45,6 +45,10 @@ edcm/
 │   ├── energy_claims.py       # Energy-audit claim extraction/auditing
 │   ├── falsifiability_bridge.py    # edcmbone-style F-loss preservation audit
 │   ├── ucns_dependency.py     # Optional ucns availability helpers
+│   ├── edcmucns/              # edcmucns v0.3.1 architecture (identity layer; frontier gated)
+│   │   ├── manifest.py types.py provenance.py geometry.py encoder.py
+│   │   ├── scopes.py equivalence.py validation.py composer.py epochs.py
+│   │   └── __init__.py        # public surface + canon doctrine docstring
 │   └── measurement/           # Consolidated edcmbone mirror (stdlib-only)
 │       ├── canon/             # CanonLoader + frozen data/*_v1.json (do not edit data)
 │       ├── parser/            # turns_rounds transcript parser
@@ -85,7 +89,8 @@ annotations; match that style.
 
 ## Architecture & key concepts
 
-The package has three main pieces (plus the smaller energy-audit modules).
+The package has three main pieces (plus the `edcmucns/` architecture package
+and the smaller energy-audit modules).
 
 ### 1. Four-layer bootstrap (`edcm/layers.py`)
 
@@ -159,6 +164,41 @@ project_transcript` (+ `compress` for F stats).
   for full provenance, mirror deltas, and open `hmmm` items.
 - Canon JSON under `edcm/measurement/canon/data/` is frozen (`_v1`) — do not
   edit by hand.
+
+### 4. edcmucns v0.3.1 architecture (`edcm/edcmucns/`)
+
+Implements the **edcmucns design canon v0.3.1** (`docs/codex_edcmucns_v031_handoff.md`):
+EDCM on UCNS mathematics, provenance as the recurring theme. **Architecture
+only** — ratified/frozen as architecture, frontier as empirical measurement.
+Primary doctrine: *UCNS exists to construct EDCM metrics.* Firewall: no EDCM
+measurement claim inherits proof status from its UCNS-A substrate.
+
+Modules: `manifest` (hashable `PolicyManifest`; hash change = epoch break),
+`provenance` (`ProvenanceWitness`; only readout-bearing fields hashed),
+`types` (`Anchor` origin/bone/cadence, `Payload`, `Window`, `OperatorTurn` =
+`Present | AbsentOperatorGeometry`), `geometry` (non-origin residue rule,
+`L_geo`/`L_op` mass, `n_host_total`/`n_family`/`n_cadence`/`n_payload`
+carriers, `lambda_field`), `encoder` (`encode_turn`; no-bone turns →
+`AbsentOperatorGeometry`), `scopes` (closed `REGISTRY` of five readout
+scopes), `equivalence` (`ucns_carrier_equivalent` vs scoped
+`edcm_measurement_equivalent`), `validation` (`witness_geometry_consistent`,
+`gauge_audit` → `BridgeDiagnostic`s), `composer` (`seq_append` ⊞ for windows;
+`interaction_product` ⊠ reserved; kappa placeholders), `epochs` (`EpochChain`
+manifest rotation).
+
+Guardrails (enforced by tests, from the handoff):
+- **Non-origin residue rule**: `r_f(m) = 1 + ((m−1) mod (p−1))`,
+  `θ = r_f/p`. θ=0 is reserved for explicit datum (origin) roles; a bone
+  never lands on the origin. Do **not** reintroduce the old `m mod p` rule.
+- **NA, never 0**: empty fields and no-bone turns emit NA; absent field load
+  is `None`, not `0`.
+- **Never average windows**; compose with `seq_append` (lengths add, F
+  concatenates, carrier = lcm). `A⊞B ≠ B⊞A` — order is testimony.
+- **Manifest identity is always in scope** for `edcm_measurement_equivalent`;
+  same geometry does **not** imply same reading.
+- **Frontier gates** (`contact_convergence`, `da_geom_correlation`,
+  `admit_cadence_from_text`) are `NotImplementedError` surfaces with named
+  falsifiers — do not make them return values or claim they work.
 
 ---
 

@@ -6,6 +6,7 @@ UCNS metric construction objects (v0.2 orthogonality spec) and the
 consolidated edcmbone structural-measurement mirror (`edcm.measurement`).
 """
 
+from . import edcmucns
 from . import measurement
 from .layers import ConsolidatedMeasurementLayer, EDCMLayers, build_default_layers
 from .measurement import (
@@ -63,6 +64,7 @@ __all__ = [
     "build_default_layers",
     "ConsolidatedMeasurementLayer",
     "measurement",
+    "edcmucns",
     "CanonLoader",
     "parse_transcript",
     "ParsedTranscript",
