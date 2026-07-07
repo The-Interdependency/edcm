@@ -49,15 +49,29 @@ def test_chain_interleaves_field_and_motion_hashes():
     a, b, c = _field(1), _field(2), _field(3)
     reading = read_field_chain([a, b, c])
     assert len(reading.motions) == 2
-    # [field_a, motion_a->b, field_b, motion_b->c, field_c]
-    assert reading.chain == (
-        a.field_hash,
-        reading.motions[0].parent_hash,
-        b.field_hash,
-        reading.motions[1].parent_hash,
-        c.field_hash,
-    )
+    # [field_a, motion_a->b, field_b, motion_b->c, field_c]; each motion entry
+    # embeds the readable transition and stays distinct per field pair.
+    assert reading.chain[0] == a.field_hash
+    assert reading.chain[2] == b.field_hash
+    assert reading.chain[4] == c.field_hash
+    assert reading.chain[1].startswith(f"{a.field_hash}->{b.field_hash}#")
+    assert reading.chain[3].startswith(f"{b.field_hash}->{c.field_hash}#")
     assert reading.motions[0].parent_hash == f"{a.field_hash}->{b.field_hash}"
+
+
+def test_field_chain_distinguishes_motion_reads():
+    # Identical fields, opposite recurrence reads -> different F readouts, so
+    # the chain (and thus field_scope / epoch identity) must differ.
+    a, b = _field(1), _field(2)
+    up = read_field_chain([a, b], motion_reads=({"recurrence_reads": (1.0,)},))
+    down = read_field_chain([a, b], motion_reads=({"recurrence_reads": (-1.0,)},))
+    none = read_field_chain([a, b])
+    assert up.chain != down.chain
+    assert up.chain != none.chain
+    # Same reads reproduce the same chain (deterministic).
+    assert up.chain == read_field_chain(
+        [a, b], motion_reads=({"recurrence_reads": (1.0,)},)
+    ).chain
 
 
 def test_field_chain_hashes_convenience_matches_reader():

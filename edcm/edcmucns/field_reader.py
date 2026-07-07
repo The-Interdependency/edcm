@@ -38,10 +38,32 @@ collapses to 0 (empty fields and absent motion stay NA).
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+import hashlib
+from dataclasses import dataclass
 
 from ..ucns_objects import ConstraintField, FieldMotion, MetricReadout
 from .types import Window
+
+
+def _motion_chain_entry(motion: FieldMotion) -> str:
+    """Chain entry for a transition.
+
+    Keeps the readable ``prev->curr`` transition but appends a digest of the
+    full motion — presence plus the recurrence / intensity / scope reads — so
+    two transitions between the same fields with different F/E/O_scope reads
+    produce distinct chain entries. Without this, ``field_scope`` equivalence
+    and the epoch identity hash (which compare only ``Window.field_chain``)
+    would treat motions with different readouts as identical.
+    """
+
+    reads_blob = repr((
+        motion.present,
+        motion.recurrence_reads,
+        motion.intensity_reads,
+        motion.scope_reads,
+    ))
+    digest = hashlib.sha256(reads_blob.encode("utf-8")).hexdigest()[:16]
+    return f"{motion.parent_hash}#{digest}"
 
 
 @dataclass(frozen=True, slots=True)
@@ -99,7 +121,7 @@ def read_field_chain(
                 scope_reads=reads.get("scope_reads", ()),
             )
             motions.append(motion)
-            chain.append(motion.parent_hash)
+            chain.append(_motion_chain_entry(motion))
         chain.append(cf.field_hash)
 
     return FieldReading(fields=fields, motions=tuple(motions), chain=tuple(chain))
