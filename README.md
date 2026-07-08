@@ -92,6 +92,11 @@ edcm_measurement_equivalent(turn.window, turn.window, "operator_scope")  # True
 - Frontier gates (contact convergence, DA_geom correlation, cadence
   admission from text) are explicit `NotImplementedError` surfaces with
   named falsifiers — no empirical claim is made.
+- The **field reader** (`read_field_chain` / `attach_field_chain`) wires the
+  `ConstraintField`/`FieldMotion` objects into the window `field_chain` that
+  `field_scope` reads, exposing NA-safe F/E/O_scope motion and
+  R/D/I/L_resistance state readouts — geometry/state only, no operating-state
+  claim.
 
 ## Energy falsifiability bridge
 
