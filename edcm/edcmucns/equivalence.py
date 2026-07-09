@@ -55,11 +55,14 @@ def ucns_carrier_equivalent(a: Window, b: Window) -> bool:
 
     if n_host_total(a) != n_host_total(b):
         return False
-    theta_a = sorted(anchor.theta for anchor in a.anchors)
-    theta_b = sorted(anchor.theta for anchor in b.anchors)
-    if theta_a != theta_b:
-        return False
-    return sorted(a.faces) == sorted(b.faces)
+    # Compare (theta, face) as a single per-anchor pairing, not two
+    # independent sorted bags: two windows with the same angles and the same
+    # face multiset but the negative face attached to a different angle are
+    # NOT the same geometry (gauge_audit reports that case as measurement
+    # divergence, and ProvenanceWitness carries no face to catch it downstream).
+    pairs_a = sorted((anchor.theta, anchor.face) for anchor in a.anchors)
+    pairs_b = sorted((anchor.theta, anchor.face) for anchor in b.anchors)
+    return pairs_a == pairs_b
 
 
 def _operator_bundle_hash(window: Window) -> str:

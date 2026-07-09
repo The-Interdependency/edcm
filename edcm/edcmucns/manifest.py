@@ -68,9 +68,15 @@ class PolicyManifest:
                 "v0.3.1 manifests must pin residue_rule_version="
                 f"{RESIDUE_RULE_VERSION!r}; got {self.residue_rule_version!r}"
             )
-        for family, prime in self.family_prime_gauge:
-            if prime < 2:
-                raise ValueError(f"family {family!r} gauge must be >= 2, got {prime}")
+        # v0.3.1 pins the family gauge to P:3 K:5 Q:7 T:13 S:29. A composite or
+        # missing entry would break the single-family carrier guarantee and the
+        # prime-factor active-family interpretation while still passing as a
+        # valid v0.3.1 manifest, so require an exact match.
+        if self.gauge != DEFAULT_FAMILY_PRIME_GAUGE:
+            raise ValueError(
+                "v0.3.1 manifests must pin the canonical family prime gauge "
+                f"{DEFAULT_FAMILY_PRIME_GAUGE}; got {self.gauge}"
+            )
 
     @property
     def gauge(self) -> dict[str, int]:
