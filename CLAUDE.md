@@ -205,6 +205,43 @@ Guardrails (enforced by tests, from the handoff):
 
 ---
 
+## msdmd compliance
+
+Every executable source file in this repo falls into exactly **one of three
+states** with respect to the msdmd `MODULE_BUILD` metadata-block convention
+(`skill-lib: msdmd/`, `meta-module-build/`). "edcm is msdmd compliant" means
+each file matches the rule for its state — not that every file carries a block.
+
+1. **edcm-native modules — carry a `MODULE_BUILD` block.** All of `edcm/*.py`
+   (`__init__`, `layers`, `ucns_objects`, `ucns_dependency`, `energy_claims`,
+   `falsifiability_bridge`) and every module under `edcm/edcmucns/` (including
+   its package `__init__`) declare a `# === MODULE_BUILD ===` block with a
+   stable `id:`, `public_surface`, `tests`, `requires`, and `unresolved`
+   (`hmmm` where genuinely open). New native module work **starts** with this
+   block (skill-lib editing doctrine rule 5).
+
+2. **Vendored `edcm/measurement/` mirror — matches upstream block state,
+   verbatim.** This tree is a mirror of `The-Interdependency/edcmbone`
+   (`backend_old/src/edcmbone/`; see `docs/consolidation-edcmbone.md`). Its
+   substantive modules (`canon/loader`, `parser/turns_rounds`, `metrics/*`,
+   `ucns/*`, `compress`) carry the `MODULE_BUILD` blocks they already had
+   upstream; the package-marker `__init__.py` files carry **no** block because
+   they had none upstream. Do **not** add edcm-local blocks to mirror files —
+   that would diverge the mirror and be clobbered on the next re-mirror.
+   Compliance here means *faithful to upstream's block state*, so re-mirroring
+   stays a clean copy.
+
+3. **Tests — carry no `MODULE_BUILD` block, by convention.** msdmd doctrine is
+   explicit that contracts belong in source modules, not test files
+   (skill-lib editing doctrine rule 6; `test-build` puts `CONTRACTS` in
+   source, not tests). Every file under `tests/` is intentionally block-free;
+   this is compliant, not a gap.
+
+There is **no CI/manifest gate** enforcing this (see the layout note: no
+`.github/workflows`), so compliance is editorial. When adding a native module,
+stamp state-1; when re-mirroring measurement, preserve state-2; never stamp
+tests.
+
 ## Conventions & gotchas
 
 - **`NA != 0`.** Never collapse a disabled (`enabled=False`) `AxisState` into a `0` state.

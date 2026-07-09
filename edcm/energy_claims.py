@@ -5,6 +5,27 @@ validate physics, import Lean proof status, or transfer UCNS-A theorem status
 into EDCM outputs.
 """
 
+# === MODULE_BUILD ===
+# id: edcm_energy_claims
+#   module_name: energy_claims
+#   module_kind: engine
+#   summary: stdlib-only energy-theory falsifiability audit — extract claim candidates and flag falsifiability-readiness; no physics validation or proof-status transfer
+#   owner: Erin Spencer
+#   public_surface: EnergyClaim, AuditFlag, EnergyAuditReport, extract_energy_claim_candidates, audit_energy_claim, audit_energy_text, CAPABILITY_STATEMENT
+#   internal_surface: _contains_any, _split_spans, _candidate, _first_unit, _claimed_quantity, _extract_after_markers, _flag, _summarize
+#   auth_boundary: none
+#   storage_boundary: none
+#   network_boundary: none
+#   user_data_boundary: audits arbitrary claim text supplied by the caller
+#   admin_only: false
+#   tests: tests.test_energy_claims
+#   rollout: default_enabled
+#   rollback: remove module and its references
+#   requires: edcm_ucns_dependency
+#   since: 2026-06-02
+#   unresolved: none
+# === END MODULE_BUILD ===
+
 from __future__ import annotations
 
 import re

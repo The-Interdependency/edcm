@@ -9,6 +9,27 @@ No UCNS-A theorem/proof status, UCNS-G metric-geometry status, edcmbone metric,
 or empirical physics validation is transferred by this module.
 """
 
+# === MODULE_BUILD ===
+# id: edcm_falsifiability_bridge
+#   module_name: falsifiability_bridge
+#   module_kind: engine
+#   summary: audits whether falsifiability-bearing claims survive input->output using the stdlib energy audit; optional edcmbone structural-density as auxiliary metadata only
+#   owner: Erin Spencer
+#   public_surface: audit_falsifiability_preservation, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE
+#   internal_surface: _has_falsifiability_bearing_claim, _texts, _edcmbone_structural_density
+#   auth_boundary: none
+#   storage_boundary: none
+#   network_boundary: none
+#   user_data_boundary: audits arbitrary input/output text supplied by the caller
+#   admin_only: false
+#   tests: tests.test_falsifiability_bridge
+#   rollout: default_enabled
+#   rollback: remove module and its references
+#   requires: edcm_energy_claims
+#   since: 2026-06-02
+#   unresolved: optional edcmbone import is best-effort; structural_density is auxiliary metadata, not a proof-status signal
+# === END MODULE_BUILD ===
+
 from __future__ import annotations
 
 from importlib import import_module, util

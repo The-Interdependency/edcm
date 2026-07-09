@@ -5,6 +5,27 @@ vocabulary when it is installed.  This module intentionally does not recreate
 UCNS semantics locally.
 """
 
+# === MODULE_BUILD ===
+# id: edcm_ucns_dependency
+#   module_name: ucns_dependency
+#   module_kind: adapter
+#   summary: optional-import helper for the sibling ucns package; reports availability without recreating UCNS semantics locally
+#   owner: Erin Spencer
+#   public_surface: require_ucns, ucns_available, ucns_dependency_report, INSTALL_HINT
+#   internal_surface: none
+#   auth_boundary: none
+#   storage_boundary: none
+#   network_boundary: none
+#   user_data_boundary: none
+#   admin_only: false
+#   tests: tests.test_ucns_dependency
+#   rollout: default_enabled
+#   rollback: remove module and its references
+#   requires: none
+#   since: 2026-06-02
+#   unresolved: none
+# === END MODULE_BUILD ===
+
 from __future__ import annotations
 
 import importlib
