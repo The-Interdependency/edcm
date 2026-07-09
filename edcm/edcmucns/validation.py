@@ -86,6 +86,14 @@ def witness_geometry_consistent(
 
     gauge = policy_manifest.gauge
     for anchor, witness in zip(bones, witnesses):
+        if witness.role != "bone":
+            diags.append(BridgeDiagnostic(
+                kind="witness_role_mismatch",
+                detail="a witness paired with a bone anchor must carry role='bone'; "
+                       "role is readout-bearing testimony",
+                expected="bone",
+                observed=repr(witness.role),
+            ))
         family = witness.family
         if family is None or family not in gauge:
             diags.append(BridgeDiagnostic(
@@ -163,6 +171,17 @@ def validate_window(window: Window, policy_manifest: PolicyManifest) -> list[Bri
         policy_manifest,
         payload_ids=tuple(p.payload_id for p in window.payloads),
     )
+    # The window was sealed under a manifest; validating it against a different
+    # manifest (a rotation that keeps the family gauge but changes another
+    # policy version) must not silently report a clean reading.
+    if window.manifest_hash != policy_manifest.manifest_hash():
+        diags.append(BridgeDiagnostic(
+            kind="manifest_epoch_mismatch",
+            detail="window manifest hash differs from the manifest it is "
+                   "validated against; this is a manifest-rotation boundary",
+            expected=window.manifest_hash,
+            observed=policy_manifest.manifest_hash(),
+        ))
     if L_op(window) != len(bone_anchors(window)):
         diags.append(BridgeDiagnostic(
             kind="operator_mass_contamination",

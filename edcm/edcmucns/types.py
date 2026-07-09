@@ -69,6 +69,15 @@ class Anchor:
         if self.role == "origin":
             if self.theta != 0 or self.face != 0:
                 raise ValueError("origin anchors must have theta=0 and face=0")
+            # Origin is a unit datum anchor: it carries no family/carrier
+            # evidence, so it cannot smuggle a prime into n_host_total.
+            if self.lattice_n != 1:
+                raise ValueError("origin anchors must be unit anchors (lattice_n=1)")
+            if self.family is not None or self.ordinal is not None \
+                    or self.residue is not None:
+                raise ValueError(
+                    "origin anchors carry no family/ordinal/residue metadata"
+                )
             return
         # theta=0 is reserved for explicit datum roles (v0.3.1).
         if self.theta == 0:
@@ -107,7 +116,13 @@ class Payload:
 
     @property
     def content_hash(self) -> str:
-        blob = f"{self.payload_id}|{self.carrier_n}|{self.status}|{self.content}"
+        # tension is the readout the kappa ledger reads; include it so two
+        # otherwise-identical payloads with different tension are not collapsed
+        # to one identity by payload_scope equivalence / epoch window identity.
+        blob = (
+            f"{self.payload_id}|{self.carrier_n}|{self.status}"
+            f"|{self.tension}|{self.content}"
+        )
         return hashlib.sha256(blob.encode("utf-8")).hexdigest()
 
 
