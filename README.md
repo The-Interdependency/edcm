@@ -37,15 +37,12 @@ Base installation does not imply that UCNS or METAPAT ran. Frozen measurement ca
 - the machine-readable measurement source-of-truth and compatibility policy;
 - the no-fork identity between `edcm.measurement.metrics` and canonical EDCM orthogonality classes.
 
-The gate runs from both the editable source install and a clean installed wheel. Adversarial tests mutate bytes, add or remove canon files, reverse measurement authority, and verify the gate fails closed. See [`docs/integrity-gates.md`](docs/integrity-gates.md).
-
-Programmatic use:
+The gate runs from both the editable source install and a clean installed wheel. See [`docs/integrity-gates.md`](docs/integrity-gates.md).
 
 ```python
 import edcm
 
-report = edcm.run_integrity_gate()
-assert report.passed
+assert edcm.run_integrity_gate().passed
 ```
 
 A legitimate canon change requires a new versioned file and migration record. Do not update pinned identities merely to silence CI.
@@ -54,7 +51,7 @@ A legitimate canon change requires a new versioned file and migration record. Do
 
 `build_default_layers()` assembles:
 
-1. **Semantics:** independent METAPAT semantic-authority and UCNS geometry sublayers;
+1. **Semantics:** independent METAPAT semantic-authority and UCNS geometry/status-evidence sublayers;
 2. **Measurement:** canonical `edcm.measurement`;
 3. **Composition:** canonical shared-stack composition;
 4. **Delivery:** deterministic `edcm.shared-stack-result` contract.
@@ -80,7 +77,7 @@ print(result["edcm_result"]["result_identity"])
 
 ### Base transcript mode
 
-Without optional siblings, measurement still runs while semantic authority and geometry remain typed absence:
+Without optional siblings, measurement still runs while semantic authority, geometry, and factorization evidence remain typed absence:
 
 ```python
 result = build_default_layers().run({"transcript": "A: We must decide."})
@@ -89,6 +86,7 @@ assert result["metapat_integration"]["metapat_package_available"] is False
 assert result["ucns_integration"]["ucns_package_available"] is False
 assert result["edcm_result"]["metapat_semantic_constraints"]["state"] == "NA"
 assert result["edcm_result"]["ucns_geometry_identity"]["state"] == "NA"
+assert result["edcm_result"]["ucns_factorization_evidence"]["state"] == "NA"
 ```
 
 `NA != 0`: absence is never reported as an enabled neutral measurement.
@@ -128,31 +126,73 @@ assert result["metapat_integration"]["metapat_theorem_status_attached"] is False
 
 The consumer preserves schema identity, module identity, canon identity, exact source references and statements, constraints, permitted interpretations, unresolved `hmmm`, and provenance digest. Semantic labels are authority constraints and provenance—not calculated EDCM values.
 
-## Actual UCNS geometry
+## Canonical UCNS geometry and status evidence
 
-EDCM does not expect UCNS to expose an EDCM-specific `SemanticsLayer`. The adapter consumes actual UCNS public surfaces:
+EDCM consumes the actual public producer surfaces from `The-Interdependency/ucns`:
 
-- `ucns.UCNSObject`;
-- `ucns.object_record`;
-- `ucns.stable_hash`;
-- `ucns.CANONICAL_SERIALIZATION_VERSION`;
-- typed domain prerequisite metadata.
+```text
+ucns.UCNSObject
+ucns.UCNSBridgeRecord
+ucns.UCNSFactorizationEvidence
+ucns.bridge_record
+canonical producer from_json / from_dict constructors
+```
+
+Supply exactly one geometry form:
+
+```text
+ucns_object
+ucns_bridge_record
+ucns_bridge_record_json
+ucns_bridge_record_dict
+```
+
+A live object is converted through `ucns.bridge_record()` so live and serialized paths share one canonical identity record.
 
 ```python
-from fractions import Fraction
-
 import edcm
 import ucns
 
-obj = ucns.UCNSObject(1, 1, [(Fraction(0), None)], [0])
+obj = ucns.S2
 result = edcm.build_default_layers().run({"ucns_object": obj})
 
 assert result["ucns_geometry"]["stable_hash"] == ucns.stable_hash(obj)
 assert result["ucns_integration"]["ucns_object_attached"] is True
-assert result["ucns_integration"]["ucns_theorem_status_attached"] is False
+assert result["ucns_integration"]["ucns_bridge_record_attached"] is True
+assert result["ucns_integration"]["ucns_theorem_status_attached"] is True
+assert result["ucns_integration"]["ucns_negative_certification_attached"] is False
 ```
 
-Package import alone does not imply object, scope, negative-certification, or theorem evidence attachment.
+Package import alone does not imply object, bridge, scope, factorization, negative-certification, or theorem evidence attachment.
+
+### Authoritative factorization evidence
+
+After geometry, optionally supply exactly one:
+
+```text
+ucns_factorization_evidence
+ucns_factorization_evidence_json
+ucns_factorization_evidence_dict
+```
+
+```python
+bridge = ucns.bridge_record(ucns.S2)
+evidence = ucns.factorization_evidence(ucns.S2)
+
+result = edcm.build_default_layers().run({
+    "transcript": "A: Preserve authoritative evidence.",
+    "ucns_bridge_record_json": bridge.to_json(),
+    "ucns_factorization_evidence_json": evidence.to_json(),
+})
+
+assert result["ucns_factorization_evidence"]["evidence_digest"] == evidence.evidence_digest
+assert result["ucns_integration"]["ucns_factorization_evidence_attached"] is True
+assert result["ucns_integration"]["ucns_negative_certification_attached"] is True
+```
+
+The factorization record must bind to the same stable object hash as the geometry. An attached but uncertified record remains evidence while the certification flag stays false.
+
+See [`docs/ucns-adapter.md`](docs/ucns-adapter.md).
 
 ## Full UCNS / METAPAT / EDCM path
 
@@ -176,24 +216,24 @@ result = edcm.build_default_layers().run({
 contract = result["edcm_result"]
 assert contract["metapat_semantic_constraints"]["canon_digest"] == envelope.canon_digest
 assert contract["ucns_geometry_identity"]["stable_hash"] == ucns.stable_hash(adaptation.ucns_object)
+assert contract["ucns_factorization_evidence"]["state"] == "NA"
 assert contract["status_evidence"]["proof_status_transfers_to_measurement_validity"] is False
 ```
 
 ## Final result contract
 
-`edcm_result` separates seven reviewable compartments:
+Result schema `edcm.shared-stack-result/1.1.0` separates eight reviewable compartments:
 
 1. `source_evidence` — source reference, content digest, and size;
 2. `metapat_semantic_constraints` — canon identity, exact statements, constraints, and unresolved fields;
-3. `ucns_geometry_identity` — stable hash, schema, structural facts, and attached domain prerequisite evidence;
-4. `edcm_policy_manifest` — manifest fields and hash;
-5. `implementation_provenance` — selected semantic, geometry, measurement, composition, and delivery implementations;
-6. `readouts` — measured values or typed `NA`;
-7. `status_evidence` — independent theorem/negative-certification attachment flags and proof-transfer firewall.
+3. `ucns_geometry_identity` — canonical bridge identity, stable hash, schema, structural facts, and typed status evidence;
+4. `ucns_factorization_evidence` — authoritative search, coverage, pruning, factor, scope, certification, and uncertified-reason evidence or typed `NA`;
+5. `edcm_policy_manifest` — manifest fields and hash;
+6. `implementation_provenance` — selected semantic, geometry, measurement, composition, and delivery implementations;
+7. `readouts` — measured values or typed `NA`;
+8. `status_evidence` — independent attachment flags and proof-transfer firewall.
 
-`epoch_identity` binds METAPAT canon/provenance, UCNS geometry, EDCM manifest, and implementation selection. `result_identity` additionally binds source evidence and readouts. Canon or manifest rotation creates a new epoch rather than silently rewriting historical identity.
-
-A non-default policy manifest is supplied when constructing the pipeline:
+`epoch_identity` binds METAPAT canon/provenance, UCNS bridge geometry, EDCM manifest, and implementation selection. `result_identity` additionally binds source evidence, readouts, UCNS factorization evidence, and attachment states. Factorization evidence changes result identity, not measurement epoch identity.
 
 ```python
 from edcm import build_default_layers
@@ -202,6 +242,20 @@ from edcm.edcmucns import PolicyManifest
 manifest = PolicyManifest(polarity_dictionary_version="v032")
 result = build_default_layers(manifest).run({"transcript": "A: example"})
 ```
+
+See [`docs/shared-stack-result.md`](docs/shared-stack-result.md).
+
+## Proof and measurement firewall
+
+UCNS geometry and factorization evidence preserve:
+
+```text
+theorem_status_transfer = false
+measurement_validity_claim = false
+proof_status_transfers_to_measurement_validity = false
+```
+
+UCNS status evidence does not validate EDCM readouts, METAPAT ontology, external truth, diagnosis, intent, or consciousness.
 
 ## Canonical measurement package
 
@@ -226,4 +280,4 @@ The ordered repair contract lives in `codex-handoff/2026-07-12-stack-repair/`. C
 
 ## hmmm
 
-Official serialized UCNS bridge-record ingestion, validated negative-certification and theorem-status evidence envelopes, and repo-local skill-lib drift/msdmd gates remain unfinished. EDCM currently has no `.agents/skills/` installation, so no local skill drift result is claimed.
+Version 1 UCNS evidence digests establish canonical content identity, not cryptographic producer signatures. Signed producer or transport authentication and repo-local skill-lib drift/msdmd gates remain unfinished. EDCM currently has no `.agents/skills/` installation, so no local skill drift result is claimed.
