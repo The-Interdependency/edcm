@@ -8,6 +8,33 @@ This repository is the consolidation of:
 It is intended to bring the structural measurement work from **edcmbone**
 together with the application work from **EDCM** in one place.
 
+## Install, test, and build
+
+EDCM is an installable Python package. Python 3.11 or newer is required.
+The base package has no third-party runtime dependencies; development and
+release tools are available through the `dev` extra.
+
+```bash
+python -m pip install -e .[dev]
+python -m pytest -q
+python -m build
+python -m twine check dist/*
+```
+
+A built wheel can be checked independently in a clean environment:
+
+```bash
+python -m venv .wheel-venv
+.wheel-venv/bin/python -m pip install dist/*.whl
+.wheel-venv/bin/python -c "import edcm; print(edcm.__version__)"
+```
+
+`edcm.__version__` is the authoritative package version used to generate the
+built distribution metadata. Frozen measurement canon JSON and the `py.typed`
+marker are included in the wheel. UCNS and METAPAT integration remain optional
+and must be reported explicitly when unavailable; installing the base package
+does not imply that either integration ran.
+
 ## Four-layer bootstrap
 
 A minimal executable four-layer bootstrap now exists in `edcm/layers.py`.
