@@ -33,8 +33,8 @@ def _fake_metapat(
         unresolved_constraints: tuple[str, ...] = ("hmmm: mapping remains unresolved.",)
         canon_version: str = "metapat-canon-v1"
         canon_digest: str = "a" * 64
-        schema_id: str = schema_id
-        schema_version: str = schema_version
+        schema_id: str = "metapat.module-envelope"
+        schema_version: str = "1.0.0"
         provenance_digest: str = "b" * 64
 
         def to_dict(self):
