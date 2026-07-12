@@ -10,22 +10,24 @@ consolidated edcmbone structural-measurement mirror (`edcm.measurement`).
 # id: edcm_package
 #   module_name: edcm
 #   module_kind: engine
-#   summary: EDCM package root — assembles the four-layer bootstrap and re-exports the public API (energy audit, UCNS construction objects, edcmucns v0.3.1, consolidated measurement surface)
+#   summary: EDCM package root — declares package identity, assembles the four-layer bootstrap, and re-exports the public API (energy audit, UCNS construction objects, edcmucns v0.3.1, consolidated measurement surface)
 #   owner: Erin Spencer
-#   public_surface: build_default_layers, EDCMLayers, ConsolidatedMeasurementLayer, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, measurement, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts
+#   public_surface: __version__, build_default_layers, EDCMLayers, ConsolidatedMeasurementLayer, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, measurement, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts
 #   internal_surface: none
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
 #   user_data_boundary: none
 #   admin_only: false
-#   tests: tests.test_measurement, tests.test_ucns_objects, tests.test_energy_claims
+#   tests: tests.test_measurement, tests.test_ucns_objects, tests.test_energy_claims, tests.test_packaging
 #   rollout: default_enabled
 #   rollback: remove module and its references
 #   requires: edcm_layers, edcm_energy_claims, edcm_falsifiability_bridge, edcm_ucns_objects, edcmucns_package
 #   since: 2026-06-02
 #   unresolved: none
 # === END MODULE_BUILD ===
+
+__version__ = "0.1.0"
 
 from . import edcmucns
 from . import measurement
@@ -72,6 +74,7 @@ from .ucns_objects import (
 )
 
 __all__ = [
+    "__version__",
     "audit_energy_text",
     "audit_energy_claim",
     "extract_energy_claim_candidates",
