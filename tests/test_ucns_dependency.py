@@ -3,21 +3,40 @@ import shutil
 from edcm.energy_claims import audit_energy_text
 
 
-def test_ucns_dependency_available_when_installed():
+EXPLICIT_UCNS_FIELDS = {
+    "ucns_package_available",
+    "ucns_adapter_active",
+    "ucns_object_attached",
+    "ucns_scope_metadata_attached",
+    "ucns_negative_certification_attached",
+    "ucns_theorem_status_attached",
+}
+
+
+def test_ucns_dependency_report_separates_package_from_evidence():
     import edcm.ucns_dependency as dep
 
     report = dep.ucns_dependency_report()
-    if report["available"]:
+    assert EXPLICIT_UCNS_FIELDS.issubset(report)
+    assert report["ucns_object_attached"] is False
+    assert report["ucns_scope_metadata_attached"] is False
+    assert report["ucns_negative_certification_attached"] is False
+    assert report["ucns_theorem_status_attached"] is False
+
+    if report["ucns_package_available"]:
         assert report["available"] is True
+        assert report["dependency"] in {"available", "failed"}
     else:
+        assert report["dependency"] == "missing"
         assert "python -m pip install -e ../ucns" in report["install_hint"]
 
 
-def test_energy_report_contains_ucns_scope_note():
+def test_energy_report_does_not_convert_import_into_scope_attachment():
     report = audit_energy_text("D_f has a hard ceiling at 2.4999.")
-    assert hasattr(report, "ucns_dependency")
-    assert hasattr(report, "ucns_scope_note")
-    assert report.ucns_scope_note
+    assert EXPLICIT_UCNS_FIELDS.issubset(report.ucns_dependency)
+    assert report.ucns_dependency["ucns_object_attached"] is False
+    assert report.ucns_dependency["ucns_scope_metadata_attached"] is False
+    assert "attached no UCNS" in report.ucns_scope_note or "no UCNS object" in report.ucns_scope_note
 
 
 def test_no_ucns_proof_transfer_language():
