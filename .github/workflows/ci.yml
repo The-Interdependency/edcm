@@ -49,18 +49,18 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Install EDCM and pinned UCNS
+      - name: Install EDCM with pinned UCNS extra
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e .[dev]
-          python -m pip install "ucns @ git+https://github.com/The-Interdependency/ucns.git@3c6c37f41fadba699331e8b1632a52aee9364503"
+          python -m pip install -e ".[dev,ucns]"
 
       - name: Run UCNS adapter contracts
         run: |
           python -m pytest -q \
             tests/test_ucns_adapter.py \
             tests/test_ucns_dependency.py \
-            tests/test_measurement.py
+            tests/test_measurement.py \
+            tests/test_shared_stack_contract.py
 
       - name: Prove actual object identity survives the EDCM path
         run: |
@@ -75,7 +75,109 @@ jobs:
           assert result["ucns_geometry"]["stable_hash"] == ucns.stable_hash(obj)
           assert result["ucns_integration"]["ucns_object_attached"] is True
           assert result["ucns_integration"]["ucns_theorem_status_attached"] is False
-          assert result["layer_provenance"]["measurement"]["canonical"] is True
+          assert result["metapat_integration"]["metapat_package_available"] is False
+          assert result["edcm_result"]["ucns_geometry_identity"]["stable_hash"] == ucns.stable_hash(obj)
+          assert result["edcm_result"]["status_evidence"]["proof_status_transfers_to_measurement_validity"] is False
+          PY
+
+  metapat-integration:
+    name: Canonical METAPAT envelope / pinned producer
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out EDCM
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install EDCM with pinned METAPAT extra
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev,metapat]"
+
+      - name: Run METAPAT consumer contracts
+        run: |
+          python -m pytest -q \
+            tests/test_metapat_adapter.py \
+            tests/test_measurement.py \
+            tests/test_shared_stack_contract.py
+
+      - name: Prove semantic authority survives without geometry imitation
+        run: |
+          python - <<'PY'
+          import edcm
+          import metapat
+
+          envelope = metapat.root_spine_module_envelope()
+          result = edcm.build_default_layers().run({
+              "transcript": "A: Preserve exact semantic authority.",
+              "metapat_envelope": envelope,
+          })
+          assert result["metapat_semantics"]["canon_digest"] == envelope.canon_digest
+          assert result["metapat_semantics"]["provenance_digest"] == envelope.provenance_digest
+          assert result["metapat_integration"]["metapat_envelope_attached"] is True
+          assert result["ucns_integration"]["ucns_package_available"] is False
+          assert result["edcm_result"]["metapat_semantic_constraints"]["source_statements"] == envelope.source_statements
+          assert result["edcm_result"]["ucns_geometry_identity"]["state"] == "NA"
+          assert result["edcm_result"]["status_evidence"]["semantic_labels_are_measurement_values"] is False
+          PY
+
+  full-shared-stack:
+    name: Full UCNS / METAPAT / EDCM contract
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out EDCM
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install EDCM with pinned full-stack extra
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev,full-stack]"
+
+      - name: Run full shared-stack fixtures
+        run: |
+          python -m pytest -q \
+            tests/test_metapat_adapter.py \
+            tests/test_ucns_adapter.py \
+            tests/test_ucns_dependency.py \
+            tests/test_measurement.py \
+            tests/test_shared_stack_contract.py
+
+      - name: Prove all identities remain separate
+        run: |
+          python - <<'PY'
+          import edcm
+          import metapat
+          import ucns
+          from edcm.edcmucns import PolicyManifest
+
+          envelope = metapat.root_spine_module_envelope()
+          adaptation = metapat.adapt_envelope_to_ucns(envelope)
+          result = edcm.build_default_layers().run({
+              "transcript": "A: Preserve the complete shared-stack boundary.",
+              "source_ref": "ci://full-shared-stack",
+              "metapat_envelope": envelope,
+              "ucns_object": adaptation.ucns_object,
+          })
+          contract = result["edcm_result"]
+          assert contract["metapat_semantic_constraints"]["canon_digest"] == envelope.canon_digest
+          assert contract["metapat_semantic_constraints"]["provenance_digest"] == envelope.provenance_digest
+          assert contract["ucns_geometry_identity"]["stable_hash"] == ucns.stable_hash(adaptation.ucns_object)
+          assert contract["edcm_policy_manifest"]["manifest_hash"] == PolicyManifest().manifest_hash()
+          assert contract["readouts"]["state"] == "measured"
+          assert contract["status_evidence"]["proof_status_transfers_to_measurement_validity"] is False
+          assert contract["status_evidence"]["semantic_labels_are_measurement_values"] is False
           PY
 
   build-and-wheel-smoke:
@@ -121,9 +223,13 @@ jobs:
           assert version("edcm") == edcm.__version__
           assert callable(edcm.build_default_layers)
           assert callable(edcm.select_ucns_adapter)
+          assert callable(edcm.select_metapat_adapter)
+          assert callable(edcm.build_result_contract)
           assert files("edcm.measurement.canon").joinpath("data", "markers_v1.json").is_file()
           result = edcm.build_default_layers().run({"input": "wheel smoke"})
           assert result["ucns_integration"]["ucns_package_available"] is False
+          assert result["metapat_integration"]["metapat_package_available"] is False
           assert result["layer_provenance"]["measurement"]["canonical"] is True
+          assert result["edcm_result"]["readouts"]["state"] == "NA"
           print(f"edcm {edcm.__version__} wheel smoke passed")
           PY
