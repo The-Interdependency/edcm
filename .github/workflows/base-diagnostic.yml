@@ -1,0 +1,33 @@
+name: base diagnostic
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  base-diagnostic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install base package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .[dev]
+      - name: Capture base pytest output
+        run: |
+          set +e
+          python -m pytest -q --tb=short > base-test.log 2>&1
+          echo "$?" > base-status.txt
+          exit 0
+      - name: Upload diagnostic output
+        uses: actions/upload-artifact@v4
+        with:
+          name: base-diagnostic
+          path: |
+            base-test.log
+            base-status.txt
