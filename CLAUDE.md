@@ -39,7 +39,7 @@ python -m build
 python -m twine check dist/*
 ```
 
-CI separately verifies base, integrity, UCNS-only, METAPAT-only, full shared-stack, and clean-wheel modes. The integrity gate must also pass from the installed wheel.
+CI separately verifies base, integrity, UCNS evidence, METAPAT-only, full shared-stack, and clean-wheel modes. The integrity gate must also pass from the installed wheel.
 
 ## Integrity and source of truth
 
@@ -82,27 +82,67 @@ Preserve exact source statements, references, constraints, permitted interpretat
 
 Direct absence of `metapat` is typed unavailability. Transitive import errors, missing producer surfaces, unsupported schemas, invalid provenance, unknown fields, and wrong envelope types remain visible failures.
 
-## UCNS geometry
+## Canonical UCNS geometry and status evidence
 
-Do not look for or recreate `ucns.SemanticsLayer`. Consume actual:
+EDCM owns the consumer adapter. UCNS owns the algebra, bridge-record schema, factorization policy, and certification evidence.
+
+Consume only the actual producer surfaces:
 
 ```text
 ucns.UCNSObject
-ucns.object_record
-ucns.stable_hash
-ucns.CANONICAL_SERIALIZATION_VERSION
-typed domain prerequisite metadata
+ucns.UCNSBridgeRecord
+ucns.UCNSFactorizationEvidence
+ucns.bridge_record
+ucns.BRIDGE_RECORD_SCHEMA_ID / VERSION
+ucns.FACTORIZATION_EVIDENCE_SCHEMA_ID / VERSION
+producer from_json / from_dict constructors
 ```
 
-Direct absence of `ucns` is typed geometry absence. Transitive import errors, missing public surfaces, unsupported schemas, malformed geometry, and non-`UCNSObject` values remain visible failures.
+Accepted geometry keys are mutually exclusive:
 
-Package availability alone never implies object, scope, negative-certification, or theorem evidence attachment.
+```text
+ucns_object
+ucns_bridge_record
+ucns_bridge_record_json
+ucns_bridge_record_dict
+```
+
+A live object must be converted through `ucns.bridge_record()` so live and serialized geometry use one canonical identity path.
+
+After geometry, accepted factorization-evidence keys are mutually exclusive:
+
+```text
+ucns_factorization_evidence
+ucns_factorization_evidence_json
+ucns_factorization_evidence_dict
+```
+
+The factorization record must bind to the same stable object hash as the geometry bridge record. A mismatch fails closed.
+
+Independent status fields are:
+
+```text
+ucns_package_available
+ucns_adapter_active
+ucns_object_attached
+ucns_bridge_record_attached
+ucns_scope_metadata_attached
+ucns_factorization_evidence_attached
+ucns_negative_certification_attached
+ucns_theorem_status_attached
+```
+
+Package availability alone attaches nothing. A validated bridge record attaches typed UCNS domain/theorem-status evidence. Negative certification attaches only when a matching authoritative factorization record passes the UCNS producer policy and states `negative_result_certified = true`.
+
+An attached uncertified result remains evidence while the negative-certification flag stays false. Unit-domain evidence never becomes a primality certification.
+
+Direct absence of `ucns` is typed geometry absence. Transitive import failures, missing producer surfaces, unsupported schemas, malformed or coerced records, wrong object types, unknown fields, invalid digests, and geometry/evidence hash mismatch remain visible failures.
 
 ## Layer and result behavior
 
 `build_default_layers(policy_manifest=None)` assembles:
 
-1. composite semantics: independent METAPAT authority and UCNS geometry sublayers;
+1. composite semantics: independent METAPAT authority and UCNS geometry/status-evidence sublayers;
 2. canonical `edcm.measurement`;
 3. canonical shared-stack composition;
 4. canonical final result-contract delivery.
@@ -118,12 +158,13 @@ composition
 delivery
 ```
 
-Every supported pipeline result includes `edcm_result` with:
+Every supported pipeline result includes `edcm_result` schema `edcm.shared-stack-result/1.1.0` with:
 
 ```text
 source_evidence
 metapat_semantic_constraints
 ucns_geometry_identity
+ucns_factorization_evidence
 edcm_policy_manifest
 implementation_provenance
 readouts
@@ -131,23 +172,34 @@ status_evidence
 unresolved_constraints
 ```
 
-`epoch_identity` binds METAPAT canon/provenance, UCNS geometry, EDCM manifest, and implementation selection. `result_identity` additionally binds source evidence and readouts. Canon or manifest rotation must change epoch identity rather than mutating historical identity.
+`epoch_identity` binds METAPAT canon/provenance, UCNS bridge geometry, EDCM manifest, and implementation selection. `result_identity` additionally binds source evidence, readouts, UCNS factorization evidence, and attachment states.
+
+Factorization evidence changes result identity, not measurement epoch identity, because it is attached status evidence rather than readout-governing geometry or policy. Canon or manifest rotation must change epoch identity rather than mutating historical identity.
 
 ## Object and proof boundaries
 
 `ConstraintField`, `FieldMotion`, metric axes, readouts, windows, and operator turns are EDCM objects constructed using UCNS geometry. They are not substitutes for `ucns.UCNSObject`.
 
-Keep source evidence, METAPAT semantic authority, UCNS geometry identity, EDCM policy identity, and EDCM readouts separate.
+Keep source evidence, METAPAT semantic authority, UCNS geometry identity, UCNS status/certification evidence, EDCM policy identity, and EDCM readouts separate.
 
-UCNS equality does not imply EDCM measurement equivalence. UCNS or METAPAT theorem/domain status is attached evidence only and never promotes EDCM empirical validity.
+UCNS equality does not imply EDCM measurement equivalence. UCNS or METAPAT theorem/domain/certification status is attached evidence only and never promotes EDCM empirical validity.
+
+Every UCNS evidence view preserves:
+
+```text
+theorem_status_transfer = false
+measurement_validity_claim = false
+proof_status_transfers_to_measurement_validity = false
+```
 
 ## Non-negotiable guardrails
 
 - `NA != 0`.
-- No-bone, empty-field, absent-adapter, and missing-context cases remain typed absence or `NA`.
+- No-bone, empty-field, absent-adapter, missing-context, and absent-evidence cases remain typed absence or `NA`.
 - Ordered windows compose with `SeqAppend`; never average testimony-bearing order.
 - METAPAT semantic labels never become measured values merely by being named.
 - Deterministic transcript metrics do not establish diagnosis, intent, consciousness, external truth, or root ontology.
+- UCNS evidence digests establish content identity, not signed producer authentication.
 
 These frontier gates remain non-operational until their named falsifiers and tests exist:
 
@@ -160,7 +212,19 @@ Do not replace `NotImplementedError` with constants, heuristics, language-model 
 
 ## Testing expectations
 
-Base tests pass without UCNS or METAPAT installed. Integration tests use actual pinned sibling packages. The full-stack fixture proves identity separation, deterministic measurement, `NA != 0`, fail-closed producer validation, canon/manifest epoch rotation, and no proof-status transfer.
+Base tests pass without UCNS or METAPAT installed. Integration tests use actual pinned sibling packages.
+
+The UCNS evidence suite must prove:
+
+- live and serialized bridge records resolve the same stable identity;
+- canonical producer constructors reject tampered, unknown, missing, coerced, or unsupported records;
+- certified `S2` preserves exact search, catalogue coverage, pruning, scope, and evidence digest;
+- incomplete-catalogue and unit-domain results remain uncertified;
+- factorization evidence cannot attach without matching geometry;
+- package availability alone attaches no evidence;
+- certification never transfers to EDCM measurement validity.
+
+The full-stack fixture proves identity separation, deterministic measurement, `NA != 0`, fail-closed producer validation, canon/manifest epoch rotation, and no proof-status transfer.
 
 The integrity suite must include adversarial byte mutation, added/missing canon files, authority reversal, and no-fork identity checks.
 
@@ -179,9 +243,8 @@ Optional skips are explicit. Fake sibling implementations may test adversarial c
 
 Still unresolved:
 
-- official serialized UCNS bridge-record ingestion beyond live `UCNSObject` / `object_record`;
-- validated negative-certification and theorem-status evidence envelopes;
+- cryptographically signed UCNS producer or transport authentication;
 - repo-local skill-lib installation and drift/msdmd CI gates;
 - remaining historical L0/L1/L2/L3 split, P assignment, matrix wiring, bidirectional alerts, and Bridge-home decisions.
 
-These unresolveds do not reopen measurement authority, semantic-authority ownership, integrity guarantees, or the proof-transfer firewall.
+These unresolveds do not reopen measurement authority, semantic-authority ownership, canonical evidence schemas, certification policy, integrity guarantees, or the proof-transfer firewall.
