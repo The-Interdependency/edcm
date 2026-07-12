@@ -14,18 +14,19 @@ This ledger tracks evidence against `REQUIRED_CHANGES.md` and `COMPLETED_LOOKS_L
 - [x] UCNS package availability, adapter activation, object attachment, scope metadata, negative certification, and theorem status are reported independently — active repair branch.
 - [x] Transcript-only semantics is explicit and provenance-bearing rather than silently called `default` — active repair branch.
 - [x] Installed `edcmbone` no longer silently overrides maintained `edcm.measurement` — active repair branch.
+- [x] EDCM is declared the maintained measurement authority in code, README, agent instructions, and the consolidation record — active repair branch.
+- [x] Consolidation source commit and compatibility policy are machine-readable through `edcm.measurement.MEASUREMENT_AUTHORITY` — active repair branch.
 - [x] Actual UCNS integration CI is pinned to a specific UCNS commit and separated from base-package CI — active repair branch.
 
 ## Not yet complete
 
-- [ ] Reconcile every measurement source-of-truth statement and consolidation record with EDCM as maintained authority.
-- [ ] Add machine-readable consolidation provenance, compatibility policy, and source-of-truth drift/integrity checks.
+- [ ] Add source-of-truth drift and frozen-canon integrity checks.
 - [ ] Add the versioned immutable METAPAT semantic-envelope adapter.
 - [ ] Add METAPAT-only and full UCNS/METAPAT/EDCM shared-stack CI jobs.
 - [ ] Create the final result envelope separating source evidence, METAPAT constraints, UCNS geometry, EDCM policy identity, implementation/fallback provenance, readouts, `NA`, and unresolved fields.
 - [ ] Add official serialized UCNS bridge-record ingestion beyond live `UCNSObject` / `object_record` attachment.
 - [ ] Attach negative-certification and theorem-status evidence only through validated evidence-bearing envelopes.
-- [ ] Reconcile all README, CLAUDE, consolidation, MODULE_BUILD, DOCS, CAPABILITIES, BOUNDARIES, CONTRACTS, DEPENDENCIES, OWNERS, and skill-lib declarations.
+- [ ] Reconcile remaining MODULE_BUILD, DOCS, CAPABILITIES, BOUNDARIES, CONTRACTS, DEPENDENCIES, OWNERS, and skill-lib declarations.
 - [ ] Add repo-local skill-lib drift and msdmd gates.
 
 ## Preserved frontier
