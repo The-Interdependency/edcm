@@ -1,84 +1,109 @@
 # Consolidation record — edcmbone → edcm
 
-Date: 2026-07-06
-Executes: `The-Interdependency/edcmbone:LAYER_MIGRATION_PLAN.md` (the
-"future `edcm` package" contract) in mirror form.
+Date consolidated: 2026-07-06  
+Authority transition recorded: 2026-07-12
 
-## Source of truth
+## Current source of truth
+
+```text
+repo:   The-Interdependency/edcm
+path:   edcm/measurement/
+policy: canonical-maintained-edcm-v1
+```
+
+`edcm/measurement/` is the maintained structural-measurement implementation and frozen canon-data authority. Runtime package availability does not change this selection. An installed `edcmbone` package cannot silently override it.
+
+Machine-readable authority is exported as:
+
+```python
+from edcm.measurement import MEASUREMENT_AUTHORITY
+```
+
+## Consolidation provenance
+
+The implementation was originally mirrored from:
 
 ```text
 repo:   The-Interdependency/edcmbone
-path:   backend_old/src/edcmbone/          (the canonical, tested package)
+path:   backend_old/src/edcmbone/
 commit: 05eee6d15c7ad0a7dcf62220a3a0a8618f481a81
+role:   provenance and compatibility source
 ```
+
+This record preserves where the code came from; it does not make that historical source a competing live authority.
 
 ## What was consolidated
 
-The canonical edcmbone structural-measurement package was mirrored into
-`edcm/measurement/`:
-
-| edcmbone (upstream) | edcm (here) |
+| historical edcmbone source | maintained EDCM surface |
 |---|---|
-| `backend_old/src/edcmbone/canon/` (+ `data/*_v1.json`) | `edcm/measurement/canon/` |
+| `backend_old/src/edcmbone/canon/` and `data/*_v1.json` | `edcm/measurement/canon/` |
 | `backend_old/src/edcmbone/parser/turns_rounds.py` | `edcm/measurement/parser/turns_rounds.py` |
-| `backend_old/src/edcmbone/metrics/` (stats, risk, compute, matrix, projection) | `edcm/measurement/metrics/` |
-| `backend_old/src/edcmbone/metrics/orthogonality.py` | **not duplicated** — re-exported from the pre-existing mirror `edcm/ucns_objects.py` (module bodies verified identical at the source commit) |
-| `backend_old/src/edcmbone/ucns/` (ucns_v04, closed_tokens) | `edcm/measurement/ucns/` |
+| `backend_old/src/edcmbone/metrics/` | `edcm/measurement/metrics/` |
+| `backend_old/src/edcmbone/metrics/orthogonality.py` | not duplicated; re-exported from `edcm.ucns_objects` |
+| `backend_old/src/edcmbone/ucns/` | `edcm/measurement/ucns/` |
 | `backend_old/src/edcmbone/compress.py` | `edcm/measurement/compress.py` |
 
-Ported tests: `tests/test_measurement_closed_tokens.py` (from
-`tests/test_closed_tokens.py`, retargeted at the packaged encoder),
-`tests/test_measurement_canon.py` (polarity balance + backend-parser affix
-regressions), and new `tests/test_measurement.py` (pipeline end-to-end,
-compress roundtrip, layers wiring, no-fork guarantee).
+Ported tests cover closed-token encoding, canon polarity/affix regressions, deterministic transcript measurement, compression roundtrip, layer wiring, and the no-fork orthogonality guarantee.
 
-## Mirror deltas (mechanical only)
+## Original mechanical deltas
 
-- Absolute `edcmbone.*` imports rewritten to package-relative imports.
-- `# ratios:` bookend stamps removed (edcmbone-local CI tooling; not run here).
-- `metrics/__init__.py` imports the orthogonality surface from
-  `edcm.ucns_objects` instead of a local `orthogonality.py`.
-- MODULE_BUILD block ids (`edcmbone_*`) kept as-is for provenance and cheap
-  re-mirror diffs.
+- Absolute `edcmbone.*` imports became package-relative imports.
+- edcmbone-local ratio bookend stamps were not carried into EDCM.
+- `metrics/orthogonality.py` was not duplicated; the surface is re-exported from `edcm.ucns_objects`.
+- Historical `MODULE_BUILD` ids inside consolidated files remain provenance markers until the metadata reconciliation pass explicitly migrates them.
 
-No metric formulas, sign maps, canon JSON data, thresholds, or parser
-behavior were changed.
+No metric formulas, sign maps, frozen canon JSON, thresholds, or parser behavior were changed during the original consolidation.
 
-## Wiring
+## Current wiring
 
-- `edcm.layers.ConsolidatedMeasurementLayer` runs the consolidated pipeline
-  (parse → compute → project → compression stats) when a payload carries a
-  `transcript` string.
-- `build_default_layers()` resolution order for the measurement layer:
-  installed upstream `edcmbone` exposing `MeasurementLayer` (upstream stays
-  canonical L0) → `ConsolidatedMeasurementLayer` → `DefaultMeasurementLayer`.
-- Key entry points re-exported from the package root: `CanonLoader`,
-  `parse_transcript`, `compute_transcript`, `project_transcript`,
-  `RoundMetrics`, `AgentMetrics`, `fire_alerts`, plus the `edcm.measurement`
-  subpackage itself.
+- `edcm.layers.ConsolidatedMeasurementLayer` always selects the maintained `edcm.measurement` implementation.
+- `build_default_layers()` does not import or prefer `edcmbone.MeasurementLayer`.
+- `MEASUREMENT_AUTHORITY["runtime_override_by_edcmbone"]` is `False`.
+- Public entry points are re-exported from `edcm`.
+- Base-package operation remains stdlib-only.
 
-## Doctrine kept intact
+## Compatibility policy
 
-- **Mirror, not move.** edcmbone remains the canonical L0 source; this repo
-  stays runnable without edcmbone installed (same doctrine as
-  `edcm/ucns_objects.py`). Nothing was deleted upstream.
-- **No theorem/proof transfer.** No UCNS-A theorem/proof status transfers to
-  EDCM, edcmbone, or UCNS-G via this mirror (edcmbone
-  `docs/ucns-boundary.md`).
-- **Dependency-free.** The mirrored package is stdlib-only; imports of
-  external `ucns`/`edcmbone` stay optional.
+```text
+id: edcmbone-provenance-only-v1
+```
 
-## hmmm — open items carried from LAYER_MIGRATION_PLAN.md
+`edcmbone` may be used to:
 
-- The L0/L1/L2/L3 layer split is **not** executed here: the mirror carries
-  all layers together because the metric-to-layer table (which letters are
-  L1 Arc Style vs L2 composites) is still unpinned — the plan's Phase 2 gate.
-- `A_MATRIX` wiring (Findings 07/08), `P`-metric layer assignment
-  (Finding 06), bidirectional alerts (Finding 30), and the Bridge home
-  decision remain open upstream; this mirror does not resolve them.
-- edcmbone root `engine.py` (the v1.0.0 orchestrator) and `core/` (refactor
-  side: Bridge, core parsing/operator) were not consolidated; whether `edcm`
-  unifies `compute.py`/`engine.py` under one entry point is unresolved.
-- Re-mirroring: upstream changes to `backend_old/src/edcmbone/` need to be
-  re-applied here manually, citing the new source commit in
-  `edcm/measurement/__init__.py`.
+- inspect historical provenance;
+- compare or migrate external callers;
+- recover material not yet consolidated;
+- support an explicit, versioned compatibility adapter in the future.
+
+It may not silently replace EDCM measurement because it happens to be importable.
+
+## Frozen canon policy
+
+Files under `edcm/measurement/canon/data/*_v1.json` are frozen. Changes require:
+
+1. a new versioned data surface;
+2. a migration record;
+3. deterministic integrity fixtures;
+4. explicit epoch/provenance consequences.
+
+## Proof and empirical firewall
+
+UCNS theorem/domain evidence is separate from EDCM measurement validity. Neither this consolidation nor an attached UCNS object promotes deterministic transcript metrics into diagnosis, intent, consciousness, external truth, or a concrete negative-factorization certificate.
+
+## Usage
+
+```python
+from edcm import CanonLoader, compute_transcript, parse_transcript
+from edcm.measurement import MEASUREMENT_AUTHORITY
+
+assert MEASUREMENT_AUTHORITY["canonical"] is True
+assert MEASUREMENT_AUTHORITY["runtime_override_by_edcmbone"] is False
+
+canon = CanonLoader()
+parsed = parse_transcript("A: We need to decide.", canon=canon)
+metrics = compute_transcript(parsed, canon=canon)
+```
+
+## hmmm
+
+The historical L0/L1/L2/L3 split, `A_MATRIX` wiring, P-metric layer assignment, bidirectional alerts, Bridge home, and any explicit compatibility adapter remain unresolved. They no longer create source-of-truth ambiguity: unfinished migration questions live under EDCM authority unless a later versioned governance decision says otherwise.
