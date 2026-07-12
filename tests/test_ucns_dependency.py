@@ -7,7 +7,9 @@ EXPLICIT_UCNS_FIELDS = {
     "ucns_package_available",
     "ucns_adapter_active",
     "ucns_object_attached",
+    "ucns_bridge_record_attached",
     "ucns_scope_metadata_attached",
+    "ucns_factorization_evidence_attached",
     "ucns_negative_certification_attached",
     "ucns_theorem_status_attached",
 }
@@ -19,7 +21,9 @@ def test_ucns_dependency_report_separates_package_from_evidence():
     report = dep.ucns_dependency_report()
     assert EXPLICIT_UCNS_FIELDS.issubset(report)
     assert report["ucns_object_attached"] is False
+    assert report["ucns_bridge_record_attached"] is False
     assert report["ucns_scope_metadata_attached"] is False
+    assert report["ucns_factorization_evidence_attached"] is False
     assert report["ucns_negative_certification_attached"] is False
     assert report["ucns_theorem_status_attached"] is False
 
@@ -28,14 +32,16 @@ def test_ucns_dependency_report_separates_package_from_evidence():
         assert report["dependency"] in {"available", "failed"}
     else:
         assert report["dependency"] == "missing"
-        assert "python -m pip install -e ../ucns" in report["install_hint"]
+        assert "The-Interdependency/ucns.git@27c004b" in report["install_hint"]
 
 
 def test_energy_report_does_not_convert_import_into_scope_attachment():
     report = audit_energy_text("D_f has a hard ceiling at 2.4999.")
     assert EXPLICIT_UCNS_FIELDS.issubset(report.ucns_dependency)
     assert report.ucns_dependency["ucns_object_attached"] is False
+    assert report.ucns_dependency["ucns_bridge_record_attached"] is False
     assert report.ucns_dependency["ucns_scope_metadata_attached"] is False
+    assert report.ucns_dependency["ucns_factorization_evidence_attached"] is False
     assert "attached no UCNS" in report.ucns_scope_note or "no UCNS object" in report.ucns_scope_note
 
 
