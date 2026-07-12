@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edcm"
+dynamic = ["version"]
+description = "Provenance-bearing Energy–Dissonance Circuit Model measurement package"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MPL-2.0"
+license-files = ["LICENSE"]
+authors = [
+  { name = "Erin Spencer" },
+]
+keywords = [
+  "measurement",
+  "provenance",
+  "transcript-analysis",
+  "ucns",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/The-Interdependency/edcm"
+Repository = "https://github.com/The-Interdependency/edcm"
+Issues = "https://github.com/The-Interdependency/edcm/issues"
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.2",
+  "pytest>=8.0",
+  "twine>=5.0",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["edcm*"]
+
+[tool.setuptools.package-data]
+edcm = [
+  "py.typed",
+  "measurement/canon/data/*.json",
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "edcm.__version__" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

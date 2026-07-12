@@ -12,21 +12,22 @@ This file gives AI assistants context needed to work effectively in this reposit
 - [`erinepshovel-code/EDCM`](https://github.com/erinepshovel-code/EDCM) — the application work.
 
 The goal is to bring the structural measurement work from **edcmbone** together with the
-application work from **EDCM** in a single repository. The repo is intentionally
-dependency-free so it runs today, before upstream package wiring (`ucns`, `edcmbone`)
-is fully settled.
+application work from **EDCM** in a single repository. The base package remains
+standard-library-only so it runs without optional upstream integrations (`ucns`, `edcmbone`,
+or METAPAT) being installed.
 
 | Property        | Value                                                              |
 | --------------- | ------------------------------------------------------------------ |
-| Language        | Python (developed and tested on 3.11)                              |
+| Language        | Python 3.11+ (CI: 3.11, 3.12, 3.13)                              |
 | Runtime deps    | None — standard library only                                       |
 | Test framework  | `pytest`                                                           |
-| Package version | Not declared (no `pyproject.toml`/`setup.py`)                      |
+| Package version | `0.1.0`, authored at `edcm.__version__` and read by `pyproject.toml` |
 | License         | MPL-2.0 (root `LICENSE`; relicensed from MIT — weak copyleft)      |
 
-There is **no** `pyproject.toml`, `setup.py`, `requirements.txt`, `Makefile`, CI workflow
-(`.github/workflows`), or lint config in this repository. Do not invent or reference any.
-The repo is used as a source tree imported directly (see `tests/conftest.py`).
+`pyproject.toml` is the authoritative build/package configuration. The base CI workflow is
+`.github/workflows/ci.yml`; it installs `.[dev]`, runs the test suite across the supported
+Python matrix, builds source and wheel artifacts, runs `twine check`, installs the wheel in
+a clean environment, and smoke-tests the installed public API and frozen package data.
 
 ---
 
@@ -34,12 +35,15 @@ The repo is used as a source tree imported directly (see `tests/conftest.py`).
 
 ```
 edcm/
-├── README.md                  # Project intent, usage examples
+├── pyproject.toml              # Authoritative package/build metadata
+├── .github/workflows/ci.yml    # Base tests + build/twine/clean-wheel gate
+├── README.md                   # Project intent, installation, usage examples
 ├── docs/                      # Handoffs + consolidation records
 │   ├── codex_edcmucns_v031_handoff.md
 │   └── consolidation-edcmbone.md   # edcmbone → edcm consolidation record (source SHA, deltas, hmmm)
 ├── edcm/                      # The package
-│   ├── __init__.py            # Public API surface (re-exports from submodules)
+│   ├── __init__.py            # Public API + authoritative __version__
+│   ├── py.typed               # PEP 561 typed-package marker
 │   ├── layers.py              # Four-layer EDCM bootstrap (+ ConsolidatedMeasurementLayer)
 │   ├── ucns_objects.py        # UCNS metric construction objects (v0.2 spec mirror)
 │   ├── energy_claims.py       # Energy-audit claim extraction/auditing
@@ -57,7 +61,8 @@ edcm/
 │       ├── ucns/              # closed-token UCNS encoder (ucns_v04, closed_tokens)
 │       └── compress.py        # lossless codec + compression stats (F)
 └── tests/
-    ├── conftest.py            # Inserts repo root onto sys.path so `import edcm` works
+    ├── conftest.py            # Source-checkout import compatibility
+    ├── test_packaging.py      # version metadata + packaged frozen-data checks
     ├── test_ucns_objects.py   # ucns_objects tests
     ├── test_energy_claims.py / test_falsifiability_bridge.py / test_ucns_dependency.py
     ├── test_measurement.py    # pipeline end-to-end, layers wiring, no-fork guarantee
@@ -72,14 +77,21 @@ from `edcm` directly (e.g. `from edcm import ConstraintField`).
 
 ## Build / test / lint / run
 
-There is no build system. The package runs in place. `tests/conftest.py` prepends the
-repository root to `sys.path`, so tests resolve `import edcm` without installation.
+Install the base package and development/release tools before validating changes:
 
 | Task           | Command                                  | Notes                                  |
 | -------------- | ---------------------------------------- | -------------------------------------- |
-| Run tests      | `python3 -m pytest -q`                   | From repo root. All 9 tests pass.      |
-| Run one test   | `python3 -m pytest tests/test_ucns_objects.py::test_field_motion_fixture_matrix` | |
-| Try the bootstrap | `python3 -c "from edcm import build_default_layers; print(build_default_layers().run({'input': 'example'}))"` | |
+| Install dev    | `python -m pip install -e .[dev]`        | Editable package + pytest/build/twine. |
+| Run tests      | `python -m pytest -q`                    | From repo root.                         |
+| Run one test   | `python -m pytest tests/test_ucns_objects.py::test_field_motion_fixture_matrix` | |
+| Build artifacts | `python -m build`                       | Creates sdist and wheel under `dist/`. |
+| Check metadata | `python -m twine check dist/*`           | Required before release.               |
+| Try bootstrap  | `python -c "from edcm import build_default_layers; print(build_default_layers().run({'input': 'example'}))"` | |
+
+For a clean-wheel check, create a fresh virtual environment, install `dist/*.whl`, then
+import `edcm`, compare `importlib.metadata.version("edcm")` to `edcm.__version__`, and
+confirm `edcm.measurement.canon/data/markers_v1.json` is available through
+`importlib.resources`. The CI workflow contains the canonical copy-pasteable sequence.
 
 There is no configured linter or formatter. The existing code uses `from __future__ import
 annotations`, `@dataclass` (with `slots=True`/`frozen=True`), and PEP 604 / typing-style
@@ -107,8 +119,9 @@ A minimal, executable pipeline of four layers. Each layer is a `Protocol`, paire
 `EDCMLayers.run(payload)` threads the payload through `normalize → measure → compose →
 deliver`. `build_default_layers()` tries to import a `SemanticsLayer` from `ucns` and a
 `MeasurementLayer` from `edcmbone`; if those packages are absent (the import is wrapped in
-`try/except`), it silently falls back to the local default layers. This is what lets the
-repo run before upstream wiring exists.
+`try/except`), it silently falls back to the local default layers. This behavior is a known
+repair target in `codex-handoff/2026-07-12-stack-repair/`: do not treat it as the completed
+UCNS adapter or as evidence that an integration ran.
 
 ### 2. UCNS metric construction objects (`edcm/ucns_objects.py`)
 
@@ -237,10 +250,10 @@ each file matches the rule for its state — not that every file carries a block
    source, not tests). Every file under `tests/` is intentionally block-free;
    this is compliant, not a gap.
 
-There is **no CI/manifest gate** enforcing this (see the layout note: no
-`.github/workflows`), so compliance is editorial. When adding a native module,
-stamp state-1; when re-mirroring measurement, preserve state-2; never stamp
-tests.
+Base package CI now exists, but there is **not yet an msdmd/skill-lib drift gate**.
+Compliance remains editorial until the dedicated checker required by the repair handoff is
+added. When adding a native module, stamp state-1; when re-mirroring measurement, preserve
+state-2; never stamp tests.
 
 ## Conventions & gotchas
 
@@ -252,11 +265,12 @@ tests.
 - **Spec-anchored.** `ucns_objects.py` mirrors a specific upstream spec version (v0.2).
   When changing readout logic, sign maps, axis ids, or the fixture matrix, keep them
   consistent with that spec and update `tests/test_ucns_objects.py` to match.
-- **Dependency-free.** Do not add third-party runtime dependencies to the package; the
-  whole point is that it runs without `ucns`/`edcmbone` installed. Imports of those
-  packages must stay optional (guarded by `try/except`).
+- **Dependency-free base.** Do not add third-party runtime dependencies to the base package.
+  Imports of `ucns`, `edcmbone`, or METAPAT must remain optional and their absence or
+  adapter failure must be reported explicitly rather than imitated silently.
 - **Public API.** When adding a public symbol, export it from `edcm/__init__.py` `__all__`.
-- **After edits, run `python3 -m pytest -q`** from the repo root and keep all tests green.
+- **After edits, run the release gate:** `python -m pip install -e .[dev]`,
+  `python -m pytest -q`, `python -m build`, and `python -m twine check dist/*`.
 
 ---
 
@@ -269,9 +283,16 @@ measurement layer and the UCNS construction objects. In this repo:
   package (see `docs/consolidation-edcmbone.md` for provenance and mirror deltas).
 - `layers.py` optionally imports `edcmbone.MeasurementLayer` at runtime (upstream override
   wins — edcmbone stays canonical L0), then falls back to `ConsolidatedMeasurementLayer`
-  backed by `edcm.measurement`, then to the inert default.
+  backed by `edcm.measurement`, then to the inert default. This precedence remains an
+  unresolved source-of-truth decision in the stack-repair handoff, not completed doctrine.
 - `ucns_objects.py` is a hand-maintained, dependency-free mirror of edcmbone's
   orthogonality module — not an import. Changes upstream may need to be re-mirrored here.
   `edcm.measurement.metrics` re-exports it rather than carrying a second copy.
 - Not consolidated (still upstream-only): root `engine.py`, `core/` (Bridge, refactor-side
   parsing/operator), `canon_eng/`, UCNS-G, and the new `edcmbone_backend` 0.2.0 package.
+
+## hmmm
+
+Packaging and base CI are now implemented. The live UCNS adapter, METAPAT semantic envelope,
+measurement source-of-truth decision, integration-specific CI jobs, and msdmd/skill-lib drift
+gate remain unresolved and must not be inferred from a successful base-package build.
