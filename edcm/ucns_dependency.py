@@ -1,15 +1,19 @@
-"""Runtime helper for the required sibling UCNS dependency.
+"""UCNS dependency and adapter-state reporting.
 
-EDCM uses the real ``ucns`` package for scope metadata and proof-boundary
-vocabulary when it is installed.  This module intentionally does not recreate
-UCNS semantics locally.
+Usage guidance
+--------------
+Use :func:`ucns_dependency_report` when diagnostics need to distinguish package
+availability from adapter activation and evidence attachment. Use
+:func:`require_ucns` only when a caller explicitly requires the sibling
+package. A successful import alone never means that geometry, scope metadata,
+negative certification, or theorem status was attached to an EDCM result.
 """
 
 # === MODULE_BUILD ===
 # id: edcm_ucns_dependency
 #   module_name: ucns_dependency
 #   module_kind: adapter
-#   summary: optional-import helper for the sibling ucns package; reports availability without recreating UCNS semantics locally
+#   summary: Reports independent UCNS package, adapter, object, scope, certification, and theorem-evidence states without proof-status transfer.
 #   owner: Erin Spencer
 #   public_surface: require_ucns, ucns_available, ucns_dependency_report, INSTALL_HINT
 #   internal_surface: none
@@ -18,10 +22,10 @@ UCNS semantics locally.
 #   network_boundary: none
 #   user_data_boundary: none
 #   admin_only: false
-#   tests: tests.test_ucns_dependency
+#   tests: tests.test_ucns_dependency, tests.test_ucns_adapter
 #   rollout: default_enabled
 #   rollback: remove module and its references
-#   requires: none
+#   requires: edcm_ucns_adapter
 #   since: 2026-06-02
 #   unresolved: none
 # === END MODULE_BUILD ===
@@ -30,45 +34,55 @@ from __future__ import annotations
 
 import importlib
 from types import ModuleType
-from typing import Any, Dict
+from typing import Any
 
-INSTALL_HINT = "Install the sibling ucns package with: python -m pip install -e ../ucns"
+from .ucns_adapter import INSTALL_HINT, inspect_ucns_adapter
 
 
 def require_ucns() -> ModuleType:
-    """Return the imported ``ucns`` module or raise a clear setup error."""
+    """Return ``ucns`` or raise a clear error only for direct package absence."""
 
     try:
         return importlib.import_module("ucns")
-    except ImportError as exc:
-        raise ImportError(INSTALL_HINT) from exc
+    except ModuleNotFoundError as exc:
+        if exc.name != "ucns":
+            raise
+        raise ModuleNotFoundError(INSTALL_HINT, name="ucns") from exc
 
 
 def ucns_available() -> bool:
-    """Return whether the runtime ``ucns`` package can be imported."""
+    """Return package import availability only; no attachment claim is implied."""
 
     try:
         require_ucns()
-    except ImportError:
+    except ModuleNotFoundError as exc:
+        if exc.name != "ucns":
+            raise
         return False
     return True
 
 
-def ucns_dependency_report() -> Dict[str, Any]:
-    """Report UCNS import availability without requiring Lean or Mathlib."""
+def ucns_dependency_report() -> dict[str, Any]:
+    """Return independent package/adapter/evidence state flags.
 
-    try:
-        module = require_ucns()
-    except ImportError:
-        return {
-            "available": False,
-            "dependency": "missing",
-            "install_hint": INSTALL_HINT,
-        }
+    ``available`` and ``dependency`` remain compatibility aliases for package
+    availability. Callers must use the explicit fields for evidence claims.
+    """
 
-    return {
-        "available": True,
-        "dependency": "available",
-        "module": getattr(module, "__name__", "ucns"),
-        "version": getattr(module, "__version__", None),
-    }
+    status = inspect_ucns_adapter()
+    report = status.as_dict()
+    report.update(
+        available=status.ucns_package_available,
+        dependency=(
+            "missing"
+            if not status.ucns_package_available
+            else "available"
+            if status.ucns_adapter_active
+            else "failed"
+        ),
+        install_hint=None if status.ucns_package_available else INSTALL_HINT,
+    )
+    return report
+
+
+__all__ = ["INSTALL_HINT", "require_ucns", "ucns_available", "ucns_dependency_report"]

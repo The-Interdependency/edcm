@@ -1,18 +1,15 @@
 # edcm
 
-This repository is the consolidation of:
+EDCM is the maintained consolidation of:
 
-- [`The-Interdependency/edcmbone`](https://github.com/The-Interdependency/edcmbone)
-- [`erinepshovel-code/EDCM`](https://github.com/erinepshovel-code/EDCM)
+- [`The-Interdependency/edcmbone`](https://github.com/The-Interdependency/edcmbone), the provenance source for structural measurement work;
+- [`erinepshovel-code/EDCM`](https://github.com/erinepshovel-code/EDCM), the earlier application work.
 
-It is intended to bring the structural measurement work from **edcmbone**
-together with the application work from **EDCM** in one place.
+`edcm/measurement/` is now the canonical maintained measurement implementation. The pinned `edcmbone` source commit remains machine-readable provenance; an installed `edcmbone` package does not silently override EDCM.
 
 ## Install, test, and build
 
-EDCM is an installable Python package. Python 3.11 or newer is required.
-The base package has no third-party runtime dependencies; development and
-release tools are available through the `dev` extra.
+EDCM requires Python 3.11 or newer. The base package has no third-party runtime dependencies.
 
 ```bash
 python -m pip install -e .[dev]
@@ -21,7 +18,7 @@ python -m build
 python -m twine check dist/*
 ```
 
-A built wheel can be checked independently in a clean environment:
+Check the built wheel independently:
 
 ```bash
 python -m venv .wheel-venv
@@ -29,144 +26,168 @@ python -m venv .wheel-venv
 .wheel-venv/bin/python -c "import edcm; print(edcm.__version__)"
 ```
 
-`edcm.__version__` is the authoritative package version used to generate the
-built distribution metadata. Frozen measurement canon JSON and the `py.typed`
-marker are included in the wheel. UCNS and METAPAT integration remain optional
-and must be reported explicitly when unavailable; installing the base package
-does not imply that either integration ran.
+`edcm.__version__` supplies the built distribution version. Frozen measurement canon JSON and `py.typed` are included in the wheel. Base installation does not imply that UCNS or METAPAT integration ran.
 
-## Four-layer bootstrap
+## Provenance-bearing four-layer pipeline
 
-A minimal executable four-layer bootstrap now exists in `edcm/layers.py`.
+`build_default_layers()` assembles:
 
-- **Semantics layer**: tries to import from `ucns` and falls back to a local default.
-- **Measurement layer**: tries to import from `edcmbone` and falls back to a local default.
-- **Composition layer**: local orchestration default.
-- **Delivery layer**: local output default.
+- **Semantics/geometry:** the EDCM-owned actual-UCNS adapter when `ucns` is installed; otherwise explicit transcript-only mode.
+- **Measurement:** canonical `edcm.measurement`.
+- **Composition:** an explicit local fallback pending the shared-stack composition policy.
+- **Delivery:** an explicit local fallback pending application-specific delivery selection.
 
-### Usage
+Every result carries `layer_provenance` and `ucns_integration`. No layer is represented only by an unexplained `default` label.
 
 ```python
 from edcm import build_default_layers
 
-layers = build_default_layers()
-result = layers.run({"input": "example"})
-print(result)
+result = build_default_layers().run({"input": "example"})
+print(result["layer_provenance"])
+print(result["ucns_integration"])
 ```
 
-This allows the repository to run today even before upstream package wiring is fully settled.
+### Transcript-only mode
 
-## Consolidated measurement package (`edcm.measurement`)
-
-The canonical edcmbone structural-measurement package is now consolidated here
-as a dependency-free mirror (`edcm/measurement/`): canon data + `CanonLoader`,
-the turns/rounds transcript parser, the metric stack (stats, risk, compute,
-matrix, projection), the closed-token UCNS encoder, and the lossless codec
-with `structural_density` (F) stats. Source of truth for L0 remains
-`The-Interdependency/edcmbone`; provenance (path + commit SHA) is recorded in
-`edcm/measurement/__init__.py` and `docs/consolidation-edcmbone.md`.
-
-The measurement layer of the bootstrap now runs this pipeline for real:
+When UCNS is unavailable:
 
 ```python
-from edcm import build_default_layers
-
-result = build_default_layers().run({"transcript": "A: We must decide now.\nB: No. Why rush?"})
-result["rounds"]              # per-round metric vectors (C, R, F, E, D, N, I, O, L, P, kappa)
-result["agent_metrics"]       # per-round CM/DA/DRIFT/DVG/INT/TBF projections
-result["structural_density"]  # F readout from the lossless codec
+result = build_default_layers().run({"transcript": "A: We must decide."})
+assert result["semantics"] == "edcm.transcript_only"
+assert result["ucns_integration"]["ucns_package_available"] is False
 ```
 
-Direct use of the consolidated surface:
+This mode is supported, but it cannot be mistaken for the full UCNS-backed path.
+
+## Actual UCNS adapter
+
+EDCM does not expect UCNS to expose an EDCM-specific `SemanticsLayer`. The adapter consumes actual UCNS public surfaces:
+
+- `ucns.UCNSObject`;
+- `ucns.object_record`;
+- `ucns.stable_hash`;
+- `ucns.CANONICAL_SERIALIZATION_VERSION`;
+- typed domain prerequisite metadata.
 
 ```python
-from edcm import CanonLoader, parse_transcript, compute_transcript, project_transcript
+from fractions import Fraction
 
+import edcm
+import ucns
+
+obj = ucns.UCNSObject(1, 1, [(Fraction(0), None)], [0])
+result = edcm.build_default_layers().run({"ucns_object": obj})
+
+assert result["ucns_geometry"]["stable_hash"] == ucns.stable_hash(obj)
+assert result["ucns_integration"]["ucns_object_attached"] is True
+assert result["ucns_integration"]["ucns_theorem_status_attached"] is False
+```
+
+The status record distinguishes:
+
+```text
+ucns_package_available
+ucns_adapter_active
+ucns_object_attached
+ucns_scope_metadata_attached
+ucns_negative_certification_attached
+ucns_theorem_status_attached
+```
+
+Package import alone does not imply evidence attachment. Domain prerequisite metadata is attached evidence, not EDCM measurement validity and not certification of a concrete negative factorization result. See `docs/ucns-adapter.md`.
+
+## Canonical measurement package
+
+`edcm.measurement` contains:
+
+- frozen canon data and `CanonLoader`;
+- turns/rounds transcript parsing;
+- deterministic metric computation;
+- matrix and projection surfaces;
+- closed-token encoding;
+- the lossless codec and structural-density readout.
+
+```python
+from edcm import CanonLoader, compute_transcript, parse_transcript, project_transcript
+
+transcript = "A: We must decide now.\nB: No. Why rush?"
 canon = CanonLoader()
 parsed = parse_transcript(transcript, canon=canon)
 metrics = compute_transcript(parsed, canon=canon)
 agents = project_transcript(parsed, metrics)
 ```
 
+The four-layer pipeline runs the same maintained implementation:
 
-## edcmucns (v0.3.1 architecture)
+```python
+result = build_default_layers().run({"transcript": transcript})
+result["rounds"]
+result["agent_metrics"]
+result["structural_density"]
+assert result["layer_provenance"]["measurement"]["canonical"] is True
+```
 
-`edcm/edcmucns/` implements the **edcmucns design canon v0.3.1** — the
-Energy–Dissonance Circuit Model on UCNS mathematics, with provenance as the
-recurring theme (`docs/codex_edcmucns_v031_handoff.md`). Status: ratified as
-architecture; frontier as empirical measurement. The identity layer ships:
-policy-manifest hashing, provenance witnesses, the non-origin residue rule,
-origin/bone mass and carrier helpers, a closed readout-scope registry, the
-two equivalence tiers, the witness/geometry validator, SeqAppend
-composition, and manifest-rotation epoch chains.
+Machine-readable authority and consolidation provenance live in `edcm.measurement.MEASUREMENT_AUTHORITY` and `docs/consolidation-edcmbone.md`.
+
+## edcmucns v0.3.1 architecture
+
+`edcm/edcmucns/` implements the ratified architecture described in `docs/codex_edcmucns_v031_handoff.md`: policy-manifest hashing, provenance witnesses, non-origin residue, carrier helpers, closed readout scopes, geometry/measurement equivalence separation, witness validation, `SeqAppend`, field-chain reading, and manifest-rotation epochs.
 
 ```python
 from edcm.edcmucns import (
-    BoneEvent, PolicyManifest, encode_turn,
-    ucns_carrier_equivalent, edcm_measurement_equivalent,
+    BoneEvent,
+    PolicyManifest,
+    edcm_measurement_equivalent,
+    encode_turn,
 )
 
-manifest = PolicyManifest()          # P:3 K:5 Q:7 T:13 S:29, non_origin_residue_v031
+manifest = PolicyManifest()
 turn = encode_turn("t1", "A", [BoneEvent("P", "not")], manifest)
-edcm_measurement_equivalent(turn.window, turn.window, "operator_scope")  # True
+assert edcm_measurement_equivalent(turn.window, turn.window, "operator_scope")
 ```
 
-- UCNS equivalence proves same geometry; EDCM equivalence additionally
-  requires the in-scope provenance/payload hashes and the policy-manifest
-  hash.
-- No-bone turns are `AbsentOperatorGeometry` — NA for operator readouts,
-  never 0.
-- Frontier gates (contact convergence, DA_geom correlation, cadence
-  admission from text) are explicit `NotImplementedError` surfaces with
-  named falsifiers — no empirical claim is made.
-- The **field reader** (`read_field_chain` / `attach_field_chain`) wires the
-  `ConstraintField`/`FieldMotion` objects into the window `field_chain` that
-  `field_scope` reads, exposing NA-safe F/E/O_scope motion and
-  R/D/I/L_resistance state readouts — geometry/state only, no operating-state
-  claim.
+Guardrails:
 
-## Energy falsifiability bridge
+- no-bone turns are typed absence and produce `NA`, never measured zero;
+- ordered windows use `SeqAppend`, never averaging;
+- UCNS geometry equivalence does not imply EDCM measurement equivalence;
+- contact convergence, DA geometry correlation, and cadence admission from text remain explicit `NotImplementedError` frontier gates.
 
-`edcm.falsifiability_bridge` consolidates the useful preservation idea from
-**edcmbone** into the new energy-audit layer without making edcmbone a hard
-runtime dependency. It compares whether falsifiability-bearing claims from an
-input survive in an output and reports edcmbone-style F-loss labels such as
-F1 deletion and F6 decorative preservation.
+## EDCM construction objects
+
+`ConstraintField`, `FieldMotion`, axes, windows, turns, and readouts are EDCM objects constructed using UCNS geometry. They are not replacement implementations of `ucns.UCNSObject`.
 
 ```python
-from edcm import audit_falsifiability_preservation
+from edcm import ConstraintField
 
-result = audit_falsifiability_preservation(
-    "The theory predicts a CMB power-spectrum excess at multipole l ≈ 10^4.",
-    "The theory is elegant and coherent.",
+field = ConstraintField(
+    grain="round",
+    raised_field_count=3,
+    contact="against",
+    resolution="open",
 )
-print(result["possible_falsifiability_loss"])  # True
+field.contact_state()
+field.behavioral_readouts()
 ```
 
-The bridge remains an audit of claim structure only: it does not validate
-external physics, import UCNS-A proof status, or decide empirical truth.
+`NA != 0`: an absent required context is disabled/typed absence; zero is an enabled neutral measurement.
 
-## UCNS metric construction objects
-
-`edcm/ucns_objects.py` is a self-contained, dependency-free mirror of edcmbone's
-UCNS construction layer for the v0.2 metric-orthogonality spec
-(`The-Interdependency/edcmbone:docs/specs/edcm-ucns-metric-orthogonality-v0.2.md`).
-Primary doctrine: **UCNS exists to construct EDCM metrics.**
-
-- `AxisState` — signed ternary axis state where `NA != 0`.
-- `ConstraintField` — state object; presence / contact / resolution readouts
-  (R, D, I, L_resistance). An empty field yields `NA`, not `0`.
-- `FieldMotion` — tangent object; F / E / O_scope motion readouts that share a
-  parent transition hash but keep distinct axis ids.
-- `canonical_axes()` — the §9 axis + §10 projection registry.
+## Energy falsifiability audit
 
 ```python
-from edcm import ConstraintField, FieldMotion
+from edcm import audit_energy_text
 
-cf = ConstraintField(grain="round", raised_field_count=3, contact="against", resolution="open")
-cf.contact_state()          # AxisState(enabled=True, s=-1, ...)
-cf.behavioral_readouts()    # R/D/I/L_resistance MetricReadouts
+report = audit_energy_text("The theory predicts a CMB excess.")
+print(report.flags)
+print(report.ucns_dependency)
 ```
 
-> No UCNS-A theorem/proof status is transferred to EDCM, edcmbone, or UCNS-G by
-> this code.
+The audit examines claim structure and falsifiability readiness. It does not validate external physics, import UCNS-A proof status, decide empirical truth, or treat package availability as attached UCNS scope evidence.
+
+## Repair status
+
+The ordered repair contract lives in `codex-handoff/2026-07-12-stack-repair/`. Current evidence is tracked in `IMPLEMENTATION_STATUS.md`.
+
+## hmmm
+
+The METAPAT semantic-envelope adapter, full shared-stack result envelope, serialized UCNS bridge-record ingestion, validated negative/theorem evidence envelopes, and repo-local skill-lib drift gates remain unfinished. Their absence must remain visible rather than replaced by fabricated defaults.

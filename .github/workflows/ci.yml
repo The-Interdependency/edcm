@@ -35,6 +35,49 @@ jobs:
       - name: Run base package tests
         run: python -m pytest -q
 
+  ucns-integration:
+    name: Actual UCNS adapter / pinned public surface
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out EDCM
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install EDCM and pinned UCNS
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .[dev]
+          python -m pip install "ucns @ git+https://github.com/The-Interdependency/ucns.git@3c6c37f41fadba699331e8b1632a52aee9364503"
+
+      - name: Run UCNS adapter contracts
+        run: |
+          python -m pytest -q \
+            tests/test_ucns_adapter.py \
+            tests/test_ucns_dependency.py \
+            tests/test_measurement.py
+
+      - name: Prove actual object identity survives the EDCM path
+        run: |
+          python - <<'PY'
+          from fractions import Fraction
+
+          import edcm
+          import ucns
+
+          obj = ucns.UCNSObject(1, 1, [(Fraction(0), None)], [0])
+          result = edcm.build_default_layers().run({"ucns_object": obj})
+          assert result["ucns_geometry"]["stable_hash"] == ucns.stable_hash(obj)
+          assert result["ucns_integration"]["ucns_object_attached"] is True
+          assert result["ucns_integration"]["ucns_theorem_status_attached"] is False
+          assert result["layer_provenance"]["measurement"]["canonical"] is True
+          PY
+
   build-and-wheel-smoke:
     name: Build, metadata, and clean-wheel smoke
     runs-on: ubuntu-latest
@@ -77,6 +120,10 @@ jobs:
 
           assert version("edcm") == edcm.__version__
           assert callable(edcm.build_default_layers)
+          assert callable(edcm.select_ucns_adapter)
           assert files("edcm.measurement.canon").joinpath("data", "markers_v1.json").is_file()
+          result = edcm.build_default_layers().run({"input": "wheel smoke"})
+          assert result["ucns_integration"]["ucns_package_available"] is False
+          assert result["layer_provenance"]["measurement"]["canonical"] is True
           print(f"edcm {edcm.__version__} wheel smoke passed")
           PY

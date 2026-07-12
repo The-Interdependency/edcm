@@ -1,15 +1,16 @@
 """Stdlib-only energy-theory falsifiability audit layer.
 
-This module audits claim structure and falsifiability readiness.  It does not
+This module audits claim structure and falsifiability readiness. It does not
 validate physics, import Lean proof status, or transfer UCNS-A theorem status
-into EDCM outputs.
+into EDCM outputs. UCNS package availability is reported separately from
+object, scope, certification, and theorem-evidence attachment.
 """
 
 # === MODULE_BUILD ===
 # id: edcm_energy_claims
 #   module_name: energy_claims
 #   module_kind: engine
-#   summary: stdlib-only energy-theory falsifiability audit — extract claim candidates and flag falsifiability-readiness; no physics validation or proof-status transfer
+#   summary: stdlib-only energy-theory falsifiability audit with explicit UCNS package/adapter/evidence status and no physics validation or proof-status transfer
 #   owner: Erin Spencer
 #   public_surface: EnergyClaim, AuditFlag, EnergyAuditReport, extract_energy_claim_candidates, audit_energy_claim, audit_energy_text, CAPABILITY_STATEMENT
 #   internal_surface: _contains_any, _split_spans, _candidate, _first_unit, _claimed_quantity, _extract_after_markers, _flag, _summarize
@@ -18,7 +19,7 @@ into EDCM outputs.
 #   network_boundary: none
 #   user_data_boundary: audits arbitrary claim text supplied by the caller
 #   admin_only: false
-#   tests: tests.test_energy_claims
+#   tests: tests.test_energy_claims, tests.test_ucns_dependency
 #   rollout: default_enabled
 #   rollback: remove module and its references
 #   requires: edcm_ucns_dependency
@@ -29,18 +30,21 @@ into EDCM outputs.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional, Tuple
 
-from .ucns_dependency import ucns_available
+from .ucns_dependency import ucns_dependency_report
 
 CAPABILITY_STATEMENT = (
     "This report audits energy-theory claim structure and falsifiability readiness. "
     "It does not validate external physics, import UCNS-A proof status, or decide "
     "empirical truth."
 )
-UCNS_SCOPE_ATTACHED = "UCNS-dependent scope metadata available; no UCNS-A proof status is transferred."
-UCNS_SCOPE_MISSING = "UCNS-dependent scope metadata not attached."
+UCNS_PACKAGE_ONLY = (
+    "UCNS package and adapter are available, but this text audit attached no UCNS "
+    "object, scope metadata, negative certification, or theorem-status evidence."
+)
+UCNS_SCOPE_MISSING = "UCNS package unavailable; no UCNS object or scope evidence attached."
 
 
 @dataclass(frozen=True)
@@ -78,7 +82,7 @@ class EnergyAuditReport:
     flags: Tuple[AuditFlag, ...]
     summary: Dict[str, int]
     capability_statement: str = CAPABILITY_STATEMENT
-    ucns_dependency: str = "missing"
+    ucns_dependency: Dict[str, Any] = field(default_factory=dict)
     ucns_scope_note: str = UCNS_SCOPE_MISSING
 
 
@@ -219,7 +223,7 @@ def _summarize(flags: List[AuditFlag]) -> Dict[str, int]:
 
 
 def audit_energy_text(text: str, source_ref: Optional[str] = None) -> EnergyAuditReport:
-    """Extract and audit energy-theory claim candidates from text."""
+    """Extract and audit energy claims; report UCNS states without attachment inflation."""
 
     claims = extract_energy_claim_candidates(text, source_ref)
     flags: List[AuditFlag] = []
@@ -227,6 +231,13 @@ def audit_energy_text(text: str, source_ref: Optional[str] = None) -> EnergyAudi
         flags.extend(audit_energy_claim(claim))
     summary = _summarize(flags)
     summary["claims"] = len(claims)
-    dep = "available" if ucns_available() else "missing"
-    note = UCNS_SCOPE_ATTACHED if dep == "available" else UCNS_SCOPE_MISSING
-    return EnergyAuditReport(tuple(claims), tuple(flags), summary, CAPABILITY_STATEMENT, dep, note)
+    dependency = ucns_dependency_report()
+    note = UCNS_PACKAGE_ONLY if dependency["ucns_adapter_active"] else UCNS_SCOPE_MISSING
+    return EnergyAuditReport(
+        tuple(claims),
+        tuple(flags),
+        summary,
+        CAPABILITY_STATEMENT,
+        dependency,
+        note,
+    )
