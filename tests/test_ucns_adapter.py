@@ -9,6 +9,7 @@ import pytest
 import edcm.layers as layers_module
 import edcm.ucns_adapter as adapter_module
 from edcm.layers import ConsolidatedMeasurementLayer
+from edcm.metapat_adapter import MetapatAdapterSelection, missing_metapat_status
 from edcm.ucns_adapter import (
     ActualUCNSAdapter,
     UCNSAdapterConstructionError,
@@ -47,6 +48,17 @@ def _fake_ucns(*, schema: str = "ucns-canonical-json-v1") -> tuple[ModuleType, t
     module.object_record = lambda obj: Record()
     module.__version__ = "0.test"
     return module, UCNSObject
+
+
+def _force_missing_metapat(monkeypatch):
+    monkeypatch.setattr(
+        layers_module,
+        "select_metapat_adapter",
+        lambda: MetapatAdapterSelection(
+            adapter=None,
+            status=missing_metapat_status(),
+        ),
+    )
 
 
 def test_direct_ucns_absence_is_typed_unavailable(monkeypatch):
@@ -120,6 +132,7 @@ def test_wrong_object_type_fails_closed():
 
 
 def test_transcript_only_pipeline_is_explicit(monkeypatch):
+    _force_missing_metapat(monkeypatch)
     status = missing_ucns_status()
     monkeypatch.setattr(
         layers_module,
@@ -128,20 +141,28 @@ def test_transcript_only_pipeline_is_explicit(monkeypatch):
     )
     result = layers_module.build_default_layers().run({"input": "example"})
 
-    assert result["semantics"] == "edcm.transcript_only"
+    assert result["semantics"] == {
+        "semantic_authority": "unavailable",
+        "geometry": "edcm.transcript_only",
+    }
     assert result["ucns_integration"]["selection"] == "unavailable"
     assert result["measurement"] == "edcm.measurement"
-    assert result["layer_provenance"]["semantics"]["selection"] == "local_fallback"
+    assert result["layer_provenance"]["geometry"]["selection"] == "local_fallback"
+    assert result["layer_provenance"]["semantic_authority"]["selection"] == "unavailable"
     assert result["layer_provenance"]["measurement"]["canonical"] is True
     assert set(result["layer_provenance"]) == {
+        "semantic_authority",
+        "geometry",
         "semantics",
         "measurement",
         "composition",
         "delivery",
     }
+    assert result["edcm_result"]["ucns_geometry_identity"]["state"] == "NA"
 
 
 def test_installed_edcmbone_cannot_override_canonical_edcm_measurement(monkeypatch):
+    _force_missing_metapat(monkeypatch)
     status = missing_ucns_status()
     monkeypatch.setattr(
         layers_module,
