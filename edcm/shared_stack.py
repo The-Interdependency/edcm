@@ -4,20 +4,22 @@ Usage guidance
 --------------
 The supported layer pipeline calls :func:`build_result_contract` after semantic
 and measurement stages. The resulting ``edcm_result`` record keeps source
-evidence, METAPAT constraints, UCNS geometry identity, EDCM policy identity,
-implementation selection, measured readouts, typed absence, unresolved fields,
-and attached status evidence in separate compartments.
+evidence, METAPAT constraints, UCNS geometry identity, authoritative UCNS
+factorization evidence, EDCM policy identity, implementation selection,
+measured readouts, typed absence, unresolved fields, and attachment states in
+separate compartments.
 
 ``epoch_identity`` changes when the METAPAT canon/provenance identity, UCNS
 geometry identity, EDCM policy manifest, or selected implementation changes.
-``result_identity`` additionally binds the measured source and readouts.
+``result_identity`` additionally binds source evidence, readouts, and attached
+UCNS factorization evidence.
 """
 
 # === MODULE_BUILD ===
 # id: edcm_shared_stack
 #   module_name: shared_stack
 #   module_kind: schema
-#   summary: deterministic final EDCM result contract separating source evidence, METAPAT semantic authority, UCNS geometry, EDCM policy identity, implementation provenance, readouts/NA, unresolved constraints, and attached status evidence.
+#   summary: deterministic final EDCM result contract separating source evidence, METAPAT semantic authority, UCNS geometry, authoritative UCNS factorization evidence, EDCM policy identity, implementation provenance, readouts/NA, unresolved constraints, and attachment states.
 #   owner: Erin Spencer
 #   public_surface: RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, EDCMResultContract, build_result_contract
 #   internal_surface: _canonical_bytes, _digest, _source_evidence, _typed_absence, _readouts, _collect_unresolved
@@ -26,12 +28,12 @@ geometry identity, EDCM policy manifest, or selected implementation changes.
 #   network_boundary: none
 #   user_data_boundary: hashes caller transcript content and preserves caller source reference without external transmission
 #   admin_only: false
-#   tests: tests.test_shared_stack_contract
+#   tests: tests.test_shared_stack_contract, tests.test_ucns_evidence_consumer
 #   rollout: default_enabled
-#   rollback: remove edcm_result assembly and restore local composition fallback
+#   rollback: remove factorization-evidence compartment and restore prior result schema only with a versioned migration
 #   requires: edcmucns_manifest, edcm_metapat_adapter, edcm_ucns_adapter, edcm_measurement
 #   since: 2026-07-12
-#   unresolved: official negative-certification and theorem-status envelopes remain unattached until their validated schemas are supplied
+#   unresolved: UCNS evidence digests provide content identity but not signed producer authentication
 # === END MODULE_BUILD ===
 
 from __future__ import annotations
@@ -44,7 +46,7 @@ from typing import Any, Mapping
 from .edcmucns.manifest import PolicyManifest
 
 RESULT_SCHEMA_ID = "edcm.shared-stack-result"
-RESULT_SCHEMA_VERSION = "1.0.0"
+RESULT_SCHEMA_VERSION = "1.1.0"
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -118,7 +120,9 @@ def _collect_unresolved(payload: Mapping[str, Any]) -> tuple[str, ...]:
     unresolved: list[str] = []
     semantics = payload.get("metapat_semantics")
     if isinstance(semantics, Mapping):
-        unresolved.extend(str(value) for value in semantics.get("unresolved_constraints", ()))
+        unresolved.extend(
+            str(value) for value in semantics.get("unresolved_constraints", ())
+        )
     provenance = payload.get("layer_provenance")
     if isinstance(provenance, Mapping):
         for record in provenance.values():
@@ -138,6 +142,7 @@ class EDCMResultContract:
     source_evidence: dict[str, Any]
     metapat_semantic_constraints: dict[str, Any]
     ucns_geometry_identity: dict[str, Any]
+    ucns_factorization_evidence: dict[str, Any]
     edcm_policy_manifest: dict[str, Any]
     implementation_provenance: dict[str, Any]
     readouts: dict[str, Any]
@@ -176,6 +181,15 @@ def build_result_contract(
     else:
         ucns_record = {"state": "attached", **dict(ucns)}
 
+    factorization = payload.get("ucns_factorization_evidence")
+    if not isinstance(factorization, Mapping):
+        factorization_record = _typed_absence(
+            "ucns_factorization_evidence",
+            "no validated UCNS factorization evidence was attached",
+        )
+    else:
+        factorization_record = {"state": "attached", **dict(factorization)}
+
     manifest_record = {
         "schema": "edcm.policy-manifest.v031",
         "manifest_hash": manifest.manifest_hash(),
@@ -189,6 +203,12 @@ def build_result_contract(
     status_evidence = {
         "metapat": metapat_status,
         "ucns": ucns_status,
+        "ucns_bridge_record_attached": bool(
+            ucns_status.get("ucns_bridge_record_attached", False)
+        ),
+        "ucns_factorization_evidence_attached": bool(
+            ucns_status.get("ucns_factorization_evidence_attached", False)
+        ),
         "ucns_theorem_status_attached": bool(
             ucns_status.get("ucns_theorem_status_attached", False)
         ),
@@ -201,6 +221,9 @@ def build_result_contract(
         "proof_status_transfers_to_measurement_validity": False,
         "semantic_labels_are_measurement_values": False,
         "measurement_validity_basis": "EDCM declared measurement contract only",
+        "evidence_authentication": (
+            "content digests verified; cryptographic producer signature not supplied"
+        ),
     }
     unresolved = _collect_unresolved(payload)
 
@@ -209,6 +232,7 @@ def build_result_contract(
         "metapat_provenance_digest": metapat_record.get("provenance_digest"),
         "ucns_stable_hash": ucns_record.get("stable_hash"),
         "ucns_schema": ucns_record.get("ucns_serialization_version"),
+        "ucns_bridge_evidence_digest": ucns_record.get("bridge_evidence_digest"),
         "edcm_manifest_hash": manifest_record["manifest_hash"],
         "semantic_authority_implementation": implementation.get("semantic_authority"),
         "geometry_implementation": implementation.get("geometry"),
@@ -220,6 +244,8 @@ def build_result_contract(
             "epoch_identity": epoch_identity,
             "source_evidence": source,
             "readouts": readouts,
+            "ucns_factorization_evidence": factorization_record,
+            "status_evidence": status_evidence,
         }
     )
 
@@ -231,6 +257,7 @@ def build_result_contract(
         source_evidence=source,
         metapat_semantic_constraints=metapat_record,
         ucns_geometry_identity=ucns_record,
+        ucns_factorization_evidence=factorization_record,
         edcm_policy_manifest=manifest_record,
         implementation_provenance=implementation,
         readouts=readouts,
