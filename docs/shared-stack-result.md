@@ -4,8 +4,6 @@
 
 `edcm.shared_stack` emits one deterministic review record without collapsing the identities of the systems that contributed to it.
 
-The contract is available at:
-
 ```python
 result = edcm.build_default_layers().run(payload)
 contract = result["edcm_result"]
@@ -15,8 +13,10 @@ Schema:
 
 ```text
 schema_id: edcm.shared-stack-result
-schema_version: 1.0.0
+schema_version: 1.1.0
 ```
+
+Version 1.1.0 adds an explicit canonical UCNS factorization-evidence compartment and binds that evidence into result identity.
 
 ## Compartments
 
@@ -44,9 +44,39 @@ No field is interpreted as an EDCM metric value.
 
 ### `ucns_geometry_identity`
 
-Contains actual UCNS geometry evidence derived through `ucns.object_record`, including stable hash, serialization schema, structural facts, and typed domain prerequisite metadata.
+Contains one validated canonical UCNS bridge record projected into EDCM's read-only evidence view:
 
-It does not certify a concrete negative factorization result and does not promote EDCM measurement validity.
+```text
+bridge schema and producer identity
+bridge evidence digest
+canonical UCNS serialization version
+stable object hash
+canonical JSON
+typed domain statuses and completeness prerequisite
+SEQ-PRIME claim scope
+structural facts and unit/frontier flags
+```
+
+A live `UCNSObject` is converted through `ucns.bridge_record()`. Serialized records are validated through the producer's own constructors.
+
+### `ucns_factorization_evidence`
+
+Contains one optional authoritative `ucns.UCNSFactorizationEvidence` view:
+
+```text
+factorization evidence schema and producer identity
+evidence digest and product hash
+result kind and factor stable hashes
+negative-certification state and claim scope
+certification policy version
+search exhaustion and truncation
+catalogue source, sizes, and fingerprints
+coverage validation and search-report binding
+pruning rule/version and coverage preservation
+explicit uncertified reasons
+```
+
+The producer record must bind to the same object hash as `ucns_geometry_identity`. Absence is typed `NA`. An attached but uncertified record remains evidence while `ucns_negative_certification_attached` stays false.
 
 ### `edcm_policy_manifest`
 
@@ -73,24 +103,37 @@ Contains deterministic transcript readouts when a non-empty transcript was measu
 
 ### `status_evidence`
 
-Keeps attachment states independent and pins the firewalls:
+Keeps attachment states independent:
 
 ```text
+ucns_bridge_record_attached
+ucns_factorization_evidence_attached
+ucns_theorem_status_attached
+ucns_negative_certification_attached
+metapat_theorem_status_attached
 proof_status_transfers_to_measurement_validity = false
 semantic_labels_are_measurement_values = false
 ```
 
+Content digests are verified. Version 1 records do not claim cryptographic producer signatures.
+
 ## Identity rules
 
-`epoch_identity` changes when any readout-governing context changes:
+`epoch_identity` changes when readout-governing context changes:
 
-- METAPAT canon digest;
-- METAPAT provenance digest;
-- UCNS stable hash or serialization schema;
+- METAPAT canon or provenance digest;
+- UCNS stable hash, canonical schema, or bridge evidence digest;
 - EDCM policy-manifest hash;
 - selected semantic, geometry, or measurement implementation.
 
-`result_identity` additionally binds source evidence and measured readouts.
+`result_identity` additionally binds:
+
+- source evidence;
+- measured readouts;
+- attached UCNS factorization evidence;
+- status-evidence attachment states.
+
+Factorization evidence changes result identity but not measurement epoch identity because it is status evidence rather than readout-governing geometry or policy.
 
 Changing a METAPAT canon digest or EDCM manifest creates a new identity epoch. Historical results are not rewritten in place.
 
@@ -99,6 +142,7 @@ Changing a METAPAT canon digest or EDCM manifest creates a new identity epoch. H
 ```python
 import edcm
 import metapat
+import ucns
 
 envelope = metapat.root_spine_module_envelope()
 adaptation = metapat.adapt_envelope_to_ucns(envelope)
@@ -111,22 +155,48 @@ result = edcm.build_default_layers().run({
 })
 
 contract = result["edcm_result"]
+assert contract["ucns_geometry_identity"]["stable_hash"] == ucns.stable_hash(
+    adaptation.ucns_object
+)
+assert contract["ucns_factorization_evidence"]["state"] == "NA"
+```
+
+## Certified-evidence usage
+
+```python
+bridge = ucns.bridge_record(ucns.S2)
+evidence = ucns.factorization_evidence(ucns.S2)
+
+result = edcm.build_default_layers().run({
+    "transcript": "A: Preserve authoritative status evidence.",
+    "ucns_bridge_record_json": bridge.to_json(),
+    "ucns_factorization_evidence_json": evidence.to_json(),
+})
+
+contract = result["edcm_result"]
+assert contract["ucns_factorization_evidence"]["negative_result_certified"] is True
+assert contract["status_evidence"]["ucns_negative_certification_attached"] is True
+assert contract["status_evidence"]["proof_status_transfers_to_measurement_validity"] is False
 ```
 
 ## Failure behavior
 
 The pipeline fails closed for:
 
-- multiple METAPAT envelope forms in one payload;
-- non-METAPAT objects supplied as `metapat_envelope`;
+- multiple METAPAT envelope forms;
 - malformed or unknown serialized METAPAT fields;
 - invalid METAPAT provenance digest;
+- multiple UCNS geometry forms;
+- multiple UCNS factorization-evidence forms;
+- factorization evidence without geometry;
+- factorization product hash different from geometry stable hash;
+- unknown, missing, coerced, tampered, or unsupported UCNS producer fields;
+- non-METAPAT, non-UCNS, or wrong record object types;
 - unsupported METAPAT or UCNS schema versions;
-- non-UCNS objects supplied as `ucns_object`;
 - transitive import failures inside optional sibling packages.
 
 Only direct absence of an optional sibling becomes typed unavailability.
 
 ## hmmm
 
-Official serialized UCNS bridge-record ingestion and validated negative-certification/theorem-status evidence envelopes remain unresolved. Until canonical schemas exist, their attachment flags remain false.
+UCNS evidence digests are content identities, not signed producer attestations. Signed transport or producer authentication remains unresolved without weakening canonical record validation or the proof-transfer firewall.
