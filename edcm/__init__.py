@@ -10,19 +10,19 @@ package silently replaces EDCM measurement or supplies invented semantics.
 # id: edcm_package
 #   module_name: edcm
 #   module_kind: engine
-#   summary: EDCM package root — declares package identity and re-exports provenance-bearing shared-stack layers, canonical METAPAT consumer surfaces, actual-UCNS adapter surfaces, final result contracts, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.
+#   summary: EDCM package root — declares package identity and re-exports provenance-bearing shared-stack layers, canonical METAPAT consumer surfaces, actual-UCNS adapter surfaces, final result contracts, frozen-canon/authority integrity gates, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.
 #   owner: Erin Spencer
-#   public_surface: __version__, build_default_layers, EDCMLayers, LayerProvenance, ConsolidatedMeasurementLayer, CompositeSemanticsLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, ActualMetapatAdapter, MetapatIntegrationStatus, MetapatSemanticEvidence, select_metapat_adapter, inspect_metapat_adapter, ActualUCNSAdapter, UCNSIntegrationStatus, UCNSGeometryEvidence, select_ucns_adapter, inspect_ucns_adapter, EDCMResultContract, build_result_contract, RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, measurement, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts
+#   public_surface: __version__, build_default_layers, EDCMLayers, LayerProvenance, ConsolidatedMeasurementLayer, CompositeSemanticsLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, ActualMetapatAdapter, MetapatIntegrationStatus, MetapatSemanticEvidence, select_metapat_adapter, inspect_metapat_adapter, ActualUCNSAdapter, UCNSIntegrationStatus, UCNSGeometryEvidence, select_ucns_adapter, inspect_ucns_adapter, EDCMResultContract, build_result_contract, RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, IntegrityFinding, IntegrityReport, run_integrity_gate, verify_frozen_canon, verify_measurement_authority, verify_orthogonality_alias, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, measurement, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts
 #   internal_surface: none
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
 #   user_data_boundary: none
 #   admin_only: false
-#   tests: tests.test_measurement, tests.test_ucns_adapter, tests.test_metapat_adapter, tests.test_shared_stack_contract, tests.test_ucns_objects, tests.test_energy_claims, tests.test_packaging
+#   tests: tests.test_measurement, tests.test_ucns_adapter, tests.test_metapat_adapter, tests.test_shared_stack_contract, tests.test_integrity, tests.test_ucns_objects, tests.test_energy_claims, tests.test_packaging
 #   rollout: default_enabled
 #   rollback: remove new exports and restore prior adapter-only package root
-#   requires: edcm_layers, edcm_metapat_adapter, edcm_ucns_adapter, edcm_shared_stack, edcm_energy_claims, edcm_falsifiability_bridge, edcm_ucns_objects, edcmucns_package
+#   requires: edcm_layers, edcm_metapat_adapter, edcm_ucns_adapter, edcm_shared_stack, edcm_integrity, edcm_energy_claims, edcm_falsifiability_bridge, edcm_ucns_objects, edcmucns_package
 #   since: 2026-06-02
 #   unresolved: official negative-certification and theorem-status evidence envelopes remain unattached until validated schemas exist
 # === END MODULE_BUILD ===
@@ -67,6 +67,14 @@ from .shared_stack import (
     RESULT_SCHEMA_ID,
     RESULT_SCHEMA_VERSION,
     build_result_contract,
+)
+from .integrity import (
+    IntegrityFinding,
+    IntegrityReport,
+    run_integrity_gate,
+    verify_frozen_canon,
+    verify_measurement_authority,
+    verify_orthogonality_alias,
 )
 from .measurement import (
     AgentMetrics,
@@ -126,6 +134,12 @@ __all__ = [
     "RESULT_SCHEMA_ID",
     "RESULT_SCHEMA_VERSION",
     "build_result_contract",
+    "IntegrityFinding",
+    "IntegrityReport",
+    "run_integrity_gate",
+    "verify_frozen_canon",
+    "verify_measurement_authority",
+    "verify_orthogonality_alias",
     "LayerProvenance",
     "CompositeSemanticsLayer",
     "MissingMetapatSemanticAuthorityLayer",

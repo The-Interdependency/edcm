@@ -8,11 +8,11 @@ This repository is the maintained Python package for the Energy–Dissonance Cir
 2. `codex-handoff/2026-07-12-stack-repair/COMPLETED_LOOKS_LIKE.md`
 3. `codex-handoff/2026-07-12-stack-repair/IMPLEMENTATION_STATUS.md`
 4. `README.md`
-5. `docs/ucns-adapter.md`
-6. `docs/shared-stack-result.md`
-7. `docs/consolidation-edcmbone.md`
-8. `docs/codex_edcmucns_v031_handoff.md`
-9. repo-local `.agents/skills/`, especially `the-interdependency`, `msdmd`, `meta-module-build`, and applicable metadata skills.
+5. `docs/integrity-gates.md`
+6. `docs/ucns-adapter.md`
+7. `docs/shared-stack-result.md`
+8. `docs/consolidation-edcmbone.md`
+9. `docs/codex_edcmucns_v031_handoff.md`
 
 Unknown or unresolved facts are written `hmmm`, not guessed.
 
@@ -33,25 +33,32 @@ Release gate:
 
 ```bash
 python -m pip install -e .[dev]
+python -m edcm.integrity
 python -m pytest -q
 python -m build
 python -m twine check dist/*
 ```
 
-CI separately verifies base, UCNS-only, METAPAT-only, full shared-stack, and clean-wheel modes.
+CI separately verifies base, integrity, UCNS-only, METAPAT-only, full shared-stack, and clean-wheel modes. The integrity gate must also pass from the installed wheel.
 
-## Source-of-truth decisions
-
-### Measurement
+## Integrity and source of truth
 
 `edcm/measurement/` is the canonical maintained measurement implementation and frozen canon-data authority.
 
-- `The-Interdependency/edcmbone` is historical consolidation provenance and an explicit compatibility source only.
+- `The-Interdependency/edcmbone` is historical consolidation provenance and explicit compatibility input only.
 - An installed `edcmbone` package never silently overrides EDCM.
 - Authority and provenance are machine-readable through `edcm.measurement.MEASUREMENT_AUTHORITY`.
 - Frozen JSON under `edcm/measurement/canon/data/*_v1.json` changes only through a new version and migration record.
 
-### METAPAT semantic authority
+`python -m edcm.integrity` verifies:
+
+1. the exact set and Git blob identities of all frozen `*_v1.json` files;
+2. the complete measurement-authority and compatibility-policy record;
+3. that measurement orthogonality re-exports the canonical EDCM classes rather than a drifting copy.
+
+Never update pinned canon identities merely to make CI pass. A legitimate change creates a new canon version and migration record.
+
+## METAPAT semantic authority
 
 EDCM owns the consumer adapter, not the semantic schema. Consume only the actual producer surfaces:
 
@@ -75,7 +82,7 @@ Preserve exact source statements, references, constraints, permitted interpretat
 
 Direct absence of `metapat` is typed unavailability. Transitive import errors, missing producer surfaces, unsupported schemas, invalid provenance, unknown fields, and wrong envelope types remain visible failures.
 
-### UCNS geometry
+## UCNS geometry
 
 Do not look for or recreate `ucns.SemanticsLayer`. Consume actual:
 
@@ -91,16 +98,16 @@ Direct absence of `ucns` is typed geometry absence. Transitive import errors, mi
 
 Package availability alone never implies object, scope, negative-certification, or theorem evidence attachment.
 
-## Layer behavior
+## Layer and result behavior
 
-`build_default_layers(policy_manifest=None)` assembles four provenance-bearing stages:
+`build_default_layers(policy_manifest=None)` assembles:
 
 1. composite semantics: independent METAPAT authority and UCNS geometry sublayers;
 2. canonical `edcm.measurement`;
 3. canonical shared-stack composition;
 4. canonical final result-contract delivery.
 
-Layer provenance records are separate:
+Layer provenance records remain separate:
 
 ```text
 semantic_authority
@@ -111,11 +118,7 @@ composition
 delivery
 ```
 
-Every record includes implementation id/version, source repository, role, selection state, canonical/fallback status, unresolved constraints, and loading errors where applicable.
-
-## Final result contract
-
-Every supported pipeline result includes `edcm_result` with distinct compartments:
+Every supported pipeline result includes `edcm_result` with:
 
 ```text
 source_evidence
@@ -128,21 +131,13 @@ status_evidence
 unresolved_constraints
 ```
 
-`epoch_identity` binds METAPAT canon/provenance, UCNS geometry, EDCM manifest, and implementation selection. `result_identity` additionally binds source evidence and readouts.
-
-Changing a METAPAT canon digest or EDCM policy manifest must change epoch identity. It must not silently mutate historical identity.
+`epoch_identity` binds METAPAT canon/provenance, UCNS geometry, EDCM manifest, and implementation selection. `result_identity` additionally binds source evidence and readouts. Canon or manifest rotation must change epoch identity rather than mutating historical identity.
 
 ## Object and proof boundaries
 
 `ConstraintField`, `FieldMotion`, metric axes, readouts, windows, and operator turns are EDCM objects constructed using UCNS geometry. They are not substitutes for `ucns.UCNSObject`.
 
-Keep separate:
-
-- source evidence;
-- METAPAT semantic authority;
-- UCNS stable geometry identity;
-- EDCM policy-manifest identity;
-- EDCM measurement identity and readouts.
+Keep source evidence, METAPAT semantic authority, UCNS geometry identity, EDCM policy identity, and EDCM readouts separate.
 
 UCNS equality does not imply EDCM measurement equivalence. UCNS or METAPAT theorem/domain status is attached evidence only and never promotes EDCM empirical validity.
 
@@ -165,20 +160,9 @@ Do not replace `NotImplementedError` with constants, heuristics, language-model 
 
 ## Testing expectations
 
-Base tests pass without UCNS or METAPAT installed. Integration tests use actual pinned sibling packages.
+Base tests pass without UCNS or METAPAT installed. Integration tests use actual pinned sibling packages. The full-stack fixture proves identity separation, deterministic measurement, `NA != 0`, fail-closed producer validation, canon/manifest epoch rotation, and no proof-status transfer.
 
-The full-stack fixture proves:
-
-- a canonical METAPAT envelope is accepted;
-- an actual UCNS object is attached;
-- UCNS stable hash survives;
-- METAPAT canon identity and EDCM manifest identity remain distinct;
-- readouts are produced without proof-status transfer;
-- `NA != 0`;
-- malformed producer data fails closed;
-- canon or manifest rotation changes epoch identity;
-- transcript measurement is deterministic;
-- package availability is not misreported as attached evidence.
+The integrity suite must include adversarial byte mutation, added/missing canon files, authority reversal, and no-fork identity checks.
 
 Optional skips are explicit. Fake sibling implementations may test adversarial construction but never count as integration success.
 
@@ -188,8 +172,8 @@ Optional skips are explicit. Fake sibling implementations may test adversarial c
 - Changed native modules cite real tests and actual dependencies.
 - Tests carry no `MODULE_BUILD` block.
 - Historical measurement modules retain provenance until the explicit metadata-reconciliation pass.
-- Run repo-local skill-lib drift and msdmd checks when available; absence or failure remains explicit.
 - Code and documentation include runnable usage guidance, integration notes, limitations, and `hmmm` boundaries.
+- EDCM currently has no `.agents/skills/` installation. Do not claim repo-local skill-lib drift or msdmd success until the real installation and callable runners exist.
 
 ## hmmm
 
@@ -197,8 +181,7 @@ Still unresolved:
 
 - official serialized UCNS bridge-record ingestion beyond live `UCNSObject` / `object_record`;
 - validated negative-certification and theorem-status evidence envelopes;
-- frozen-canon integrity and source-of-truth drift automation;
-- repo-local skill-lib drift and msdmd CI gates;
+- repo-local skill-lib installation and drift/msdmd CI gates;
 - remaining historical L0/L1/L2/L3 split, P assignment, matrix wiring, bidirectional alerts, and Bridge-home decisions.
 
-These unresolveds do not reopen measurement authority, semantic-authority ownership, or the proof-transfer firewall.
+These unresolveds do not reopen measurement authority, semantic-authority ownership, integrity guarantees, or the proof-transfer firewall.

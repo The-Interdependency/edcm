@@ -7,12 +7,13 @@ EDCM is the maintained consolidation of:
 
 `edcm/measurement/` is the canonical maintained measurement implementation. The pinned `edcmbone` source commit remains machine-readable provenance; an installed `edcmbone` package does not silently override EDCM.
 
-## Install, test, and build
+## Install, verify, test, and build
 
 EDCM requires Python 3.11 or newer. The base package has no third-party runtime dependencies.
 
 ```bash
 python -m pip install -e .[dev]
+python -m edcm.integrity
 python -m pytest -q
 python -m build
 python -m twine check dist/*
@@ -27,6 +28,27 @@ python -m pip install -e ".[dev,full-stack]"
 ```
 
 Base installation does not imply that UCNS or METAPAT ran. Frozen measurement canon JSON and `py.typed` are included in the wheel.
+
+## Integrity gate
+
+`python -m edcm.integrity` fails when any of these drift:
+
+- the complete set or exact bytes of frozen `*_v1.json` canon files;
+- the machine-readable measurement source-of-truth and compatibility policy;
+- the no-fork identity between `edcm.measurement.metrics` and canonical EDCM orthogonality classes.
+
+The gate runs from both the editable source install and a clean installed wheel. Adversarial tests mutate bytes, add or remove canon files, reverse measurement authority, and verify the gate fails closed. See [`docs/integrity-gates.md`](docs/integrity-gates.md).
+
+Programmatic use:
+
+```python
+import edcm
+
+report = edcm.run_integrity_gate()
+assert report.passed
+```
+
+A legitimate canon change requires a new versioned file and migration record. Do not update pinned identities merely to silence CI.
 
 ## Provenance-bearing four-layer pipeline
 
@@ -104,21 +126,7 @@ assert result["metapat_integration"]["metapat_envelope_attached"] is True
 assert result["metapat_integration"]["metapat_theorem_status_attached"] is False
 ```
 
-The consumer preserves:
-
-```text
-schema id/version
-module id/kind
-canon version/digest
-exact source statement references
-exact source statements
-bounded constraints
-permitted interpretations
-unresolved hmmm
-provenance digest
-```
-
-Semantic labels are authority constraints and provenance. They are not calculated EDCM values.
+The consumer preserves schema identity, module identity, canon identity, exact source references and statements, constraints, permitted interpretations, unresolved `hmmm`, and provenance digest. Semantic labels are authority constraints and provenance—not calculated EDCM values.
 
 ## Actual UCNS geometry
 
@@ -199,16 +207,6 @@ result = build_default_layers(manifest).run({"transcript": "A: example"})
 
 `edcm.measurement` contains frozen canon data, transcript parsing, deterministic metric computation, projection surfaces, closed-token encoding, and the lossless structural-density codec.
 
-```python
-from edcm import CanonLoader, compute_transcript, parse_transcript, project_transcript
-
-transcript = "A: We must decide now.\nB: No. Why rush?"
-canon = CanonLoader()
-parsed = parse_transcript(transcript, canon=canon)
-metrics = compute_transcript(parsed, canon=canon)
-agents = project_transcript(parsed, metrics)
-```
-
 Machine-readable authority and consolidation provenance live in `edcm.measurement.MEASUREMENT_AUTHORITY` and `docs/consolidation-edcmbone.md`.
 
 ## edcmucns v0.3.1 architecture
@@ -228,4 +226,4 @@ The ordered repair contract lives in `codex-handoff/2026-07-12-stack-repair/`. C
 
 ## hmmm
 
-Official serialized UCNS bridge-record ingestion, validated negative-certification and theorem-status evidence envelopes, and repo-local skill-lib drift/msdmd gates remain unfinished. Their absence remains visible rather than replaced by fabricated defaults.
+Official serialized UCNS bridge-record ingestion, validated negative-certification and theorem-status evidence envelopes, and repo-local skill-lib drift/msdmd gates remain unfinished. EDCM currently has no `.agents/skills/` installation, so no local skill drift result is claimed.
