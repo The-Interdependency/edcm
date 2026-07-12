@@ -1,29 +1,30 @@
 """Public EDCM package surface.
 
-EDCM owns the maintained measurement implementation and the adapter protocol
-used to consume actual UCNS geometry. Optional UCNS absence remains an explicit
-transcript-only mode; no sibling package silently replaces EDCM measurement.
+EDCM owns the maintained measurement implementation and the consumer adapter
+protocols used for canonical METAPAT semantic authority and actual UCNS
+geometry. Optional package absence remains explicit typed absence; no sibling
+package silently replaces EDCM measurement or supplies invented semantics.
 """
 
 # === MODULE_BUILD ===
 # id: edcm_package
 #   module_name: edcm
 #   module_kind: engine
-#   summary: EDCM package root — declares package identity and re-exports provenance-bearing layers, actual-UCNS adapter surfaces, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.
+#   summary: EDCM package root — declares package identity and re-exports provenance-bearing shared-stack layers, canonical METAPAT consumer surfaces, actual-UCNS adapter surfaces, final result contracts, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.
 #   owner: Erin Spencer
-#   public_surface: __version__, build_default_layers, EDCMLayers, LayerProvenance, ConsolidatedMeasurementLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, ActualUCNSAdapter, UCNSIntegrationStatus, UCNSGeometryEvidence, select_ucns_adapter, inspect_ucns_adapter, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, measurement, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts
+#   public_surface: __version__, build_default_layers, EDCMLayers, LayerProvenance, ConsolidatedMeasurementLayer, CompositeSemanticsLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, ActualMetapatAdapter, MetapatIntegrationStatus, MetapatSemanticEvidence, select_metapat_adapter, inspect_metapat_adapter, ActualUCNSAdapter, UCNSIntegrationStatus, UCNSGeometryEvidence, select_ucns_adapter, inspect_ucns_adapter, EDCMResultContract, build_result_contract, RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, measurement, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts
 #   internal_surface: none
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
 #   user_data_boundary: none
 #   admin_only: false
-#   tests: tests.test_measurement, tests.test_ucns_adapter, tests.test_ucns_objects, tests.test_energy_claims, tests.test_packaging
+#   tests: tests.test_measurement, tests.test_ucns_adapter, tests.test_metapat_adapter, tests.test_shared_stack_contract, tests.test_ucns_objects, tests.test_energy_claims, tests.test_packaging
 #   rollout: default_enabled
-#   rollback: remove module and its references
-#   requires: edcm_layers, edcm_ucns_adapter, edcm_energy_claims, edcm_falsifiability_bridge, edcm_ucns_objects, edcmucns_package
+#   rollback: remove new exports and restore prior adapter-only package root
+#   requires: edcm_layers, edcm_metapat_adapter, edcm_ucns_adapter, edcm_shared_stack, edcm_energy_claims, edcm_falsifiability_bridge, edcm_ucns_objects, edcmucns_package
 #   since: 2026-06-02
-#   unresolved: METAPAT adapter and full shared-stack result envelope
+#   unresolved: official negative-certification and theorem-status evidence envelopes remain unattached until validated schemas exist
 # === END MODULE_BUILD ===
 
 __version__ = "0.1.0"
@@ -31,12 +32,26 @@ __version__ = "0.1.0"
 from . import edcmucns
 from . import measurement
 from .layers import (
+    CompositeSemanticsLayer,
     ConsolidatedMeasurementLayer,
     EDCMLayers,
     LayerProvenance,
+    MetapatSemanticAuthorityLayer,
+    MissingMetapatSemanticAuthorityLayer,
+    SharedStackCompositionLayer,
+    SharedStackDeliveryLayer,
     TranscriptOnlySemanticsLayer,
     UCNSSemanticsLayer,
     build_default_layers,
+)
+from .metapat_adapter import (
+    ActualMetapatAdapter,
+    MetapatAdapterConstructionError,
+    MetapatIntegrationStatus,
+    MetapatSemanticEvidence,
+    UnsupportedMetapatSchemaError,
+    inspect_metapat_adapter,
+    select_metapat_adapter,
 )
 from .ucns_adapter import (
     ActualUCNSAdapter,
@@ -46,6 +61,12 @@ from .ucns_adapter import (
     UnsupportedUCNSSchemaError,
     inspect_ucns_adapter,
     select_ucns_adapter,
+)
+from .shared_stack import (
+    EDCMResultContract,
+    RESULT_SCHEMA_ID,
+    RESULT_SCHEMA_VERSION,
+    build_result_contract,
 )
 from .measurement import (
     AgentMetrics,
@@ -87,6 +108,13 @@ from .ucns_objects import (
 
 __all__ = [
     "__version__",
+    "ActualMetapatAdapter",
+    "MetapatAdapterConstructionError",
+    "MetapatIntegrationStatus",
+    "MetapatSemanticEvidence",
+    "UnsupportedMetapatSchemaError",
+    "inspect_metapat_adapter",
+    "select_metapat_adapter",
     "ActualUCNSAdapter",
     "UCNSAdapterConstructionError",
     "UCNSGeometryEvidence",
@@ -94,9 +122,18 @@ __all__ = [
     "UnsupportedUCNSSchemaError",
     "inspect_ucns_adapter",
     "select_ucns_adapter",
+    "EDCMResultContract",
+    "RESULT_SCHEMA_ID",
+    "RESULT_SCHEMA_VERSION",
+    "build_result_contract",
     "LayerProvenance",
+    "CompositeSemanticsLayer",
+    "MissingMetapatSemanticAuthorityLayer",
+    "MetapatSemanticAuthorityLayer",
     "TranscriptOnlySemanticsLayer",
     "UCNSSemanticsLayer",
+    "SharedStackCompositionLayer",
+    "SharedStackDeliveryLayer",
     "audit_energy_text",
     "audit_energy_claim",
     "extract_energy_claim_candidates",

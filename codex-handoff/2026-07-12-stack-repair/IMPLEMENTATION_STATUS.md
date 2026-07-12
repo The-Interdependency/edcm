@@ -8,22 +8,19 @@ This ledger tracks evidence against `REQUIRED_CHANGES.md` and `COMPLETED_LOOKS_L
 
 - [x] Authoritative package metadata, version, build system, typed marker, frozen canon package data, and development dependencies — merged in PR #15.
 - [x] Python 3.11–3.13 base tests, source/wheel build, `twine check`, clean-wheel install, and installed public-API smoke gate — merged in PR #15.
-- [x] EDCM-owned UCNS adapter protocol and actual public-surface implementation — active repair branch.
-- [x] Direct missing UCNS distinguished from adapter construction/import/schema failure — active repair branch.
-- [x] Actual `ucns.UCNSObject` stable hash, canonical schema, structure, and domain prerequisite metadata survive the EDCM path — active repair branch.
-- [x] UCNS package availability, adapter activation, object attachment, scope metadata, negative certification, and theorem status are reported independently — active repair branch.
-- [x] Transcript-only semantics is explicit and provenance-bearing rather than silently called `default` — active repair branch.
-- [x] Installed `edcmbone` no longer silently overrides maintained `edcm.measurement` — active repair branch.
-- [x] EDCM is declared the maintained measurement authority in code, README, agent instructions, and the consolidation record — active repair branch.
-- [x] Consolidation source commit and compatibility policy are machine-readable through `edcm.measurement.MEASUREMENT_AUTHORITY` — active repair branch.
-- [x] Actual UCNS integration CI is pinned to a specific UCNS commit and separated from base-package CI — active repair branch.
+- [x] EDCM-owned UCNS adapter over actual public surfaces, typed absence, fail-closed schema/object handling, and stable-hash preservation — merged in PR #17.
+- [x] UCNS package availability, adapter activation, object attachment, scope metadata, negative certification, and theorem status reported independently — merged in PR #17.
+- [x] Installed `edcmbone` cannot override canonical `edcm.measurement`; authority and consolidation provenance are machine-readable — merged in PR #17.
+- [x] Canonical METAPAT producer schema and actual-UCNS adapter established in `The-Interdependency/metapat` — merged in METAPAT PR #3.
+- [x] EDCM-owned METAPAT consumer validates actual envelope objects, canonical JSON, and canonical mappings through producer constructors — active PR #18.
+- [x] METAPAT canon identity, exact source statements/references, constraints, permitted interpretations, unresolved `hmmm`, and provenance digest survive the EDCM path — active PR #18.
+- [x] Final `edcm.shared-stack-result` separates source evidence, METAPAT constraints, UCNS geometry, EDCM policy identity, implementation provenance, readouts/`NA`, status evidence, and unresolved constraints — active PR #18.
+- [x] Canon or EDCM manifest rotation produces a new epoch identity; transcript measurement remains deterministic — active PR #18.
+- [x] Base, UCNS-only, METAPAT-only, full UCNS/METAPAT/EDCM, build, metadata, and clean-wheel CI gates pass — active PR #18.
 
 ## Not yet complete
 
 - [ ] Add source-of-truth drift and frozen-canon integrity checks.
-- [ ] Add the versioned immutable METAPAT semantic-envelope adapter.
-- [ ] Add METAPAT-only and full UCNS/METAPAT/EDCM shared-stack CI jobs.
-- [ ] Create the final result envelope separating source evidence, METAPAT constraints, UCNS geometry, EDCM policy identity, implementation/fallback provenance, readouts, `NA`, and unresolved fields.
 - [ ] Add official serialized UCNS bridge-record ingestion beyond live `UCNSObject` / `object_record` attachment.
 - [ ] Attach negative-certification and theorem-status evidence only through validated evidence-bearing envelopes.
 - [ ] Reconcile remaining MODULE_BUILD, DOCS, CAPABILITIES, BOUNDARIES, CONTRACTS, DEPENDENCIES, OWNERS, and skill-lib declarations.
@@ -35,4 +32,4 @@ Contact convergence, DA geometry correlation, cadence admission from text, and s
 
 ## hmmm
 
-The serialized UCNS bridge-record schema and the immutable METAPAT semantic envelope must be consumed from their actual canonical repositories rather than invented inside EDCM.
+The official serialized UCNS bridge-record schema and validated negative-certification/theorem-status evidence envelopes must come from canonical UCNS surfaces rather than being invented inside EDCM.
