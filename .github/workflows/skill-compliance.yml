@@ -1,0 +1,80 @@
+name: skill and metadata compliance
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  skill-drift:
+    name: Canonical skill-lib drift
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out EDCM
+        uses: actions/checkout@v4
+        with:
+          path: edcm
+
+      - name: Check out pinned canonical skill-lib
+        uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/skill-lib
+          ref: d0036c6c3a449f5a1213e3289dceb1c43263cb52
+          path: skill-lib
+
+      - name: Check vendored subset byte-for-byte
+        working-directory: skill-lib
+        run: |
+          python tools/check_consumer_drift.py ../edcm \
+            --sha d0036c6c3a449f5a1213e3289dceb1c43263cb52 \
+            --strict-sha \
+            --require-vendored
+
+  msdmd:
+    name: Canonical msdmd collection and native metadata
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out EDCM
+        uses: actions/checkout@v4
+        with:
+          path: edcm
+
+      - name: Check out pinned canonical skill-lib
+        uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/skill-lib
+          ref: d0036c6c3a449f5a1213e3289dceb1c43263cb52
+          path: skill-lib
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate canonical msdmd collection
+        run: |
+          PYTHONPATH=skill-lib python skill-lib/msdmd/collect.py \
+            --root edcm \
+            --repo The-Interdependency/edcm \
+            --out /tmp/edcm_msdmd.ts
+
+      - name: Validate EDCM-native metadata contracts
+        working-directory: edcm
+        run: python tools/check_metadata_contracts.py
+
+      - name: Compare tracked collection point
+        run: |
+          test -f edcm/edcm_msdmd.ts
+          diff -u edcm/edcm_msdmd.ts /tmp/edcm_msdmd.ts
+
+      - name: Upload generated collection for diagnosis
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: edcm-msdmd-collection
+          path: /tmp/edcm_msdmd.ts
+          if-no-files-found: warn
