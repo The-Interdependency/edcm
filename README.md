@@ -5,7 +5,7 @@ EDCM is the maintained consolidation of:
 - [`The-Interdependency/edcmbone`](https://github.com/The-Interdependency/edcmbone), the provenance source for structural measurement work;
 - [`erinepshovel-code/EDCM`](https://github.com/erinepshovel-code/EDCM), the earlier application work.
 
-`edcm/measurement/` is now the canonical maintained measurement implementation. The pinned `edcmbone` source commit remains machine-readable provenance; an installed `edcmbone` package does not silently override EDCM.
+`edcm/measurement/` is the canonical maintained measurement implementation. The pinned `edcmbone` source commit remains machine-readable provenance; an installed `edcmbone` package does not silently override EDCM.
 
 ## Install, test, and build
 
@@ -18,48 +18,109 @@ python -m build
 python -m twine check dist/*
 ```
 
-Check the built wheel independently:
+Integration extras install the exact verified sibling packages:
 
 ```bash
-python -m venv .wheel-venv
-.wheel-venv/bin/python -m pip install dist/*.whl
-.wheel-venv/bin/python -c "import edcm; print(edcm.__version__)"
+python -m pip install -e ".[dev,ucns]"
+python -m pip install -e ".[dev,metapat]"
+python -m pip install -e ".[dev,full-stack]"
 ```
 
-`edcm.__version__` supplies the built distribution version. Frozen measurement canon JSON and `py.typed` are included in the wheel. Base installation does not imply that UCNS or METAPAT integration ran.
+Base installation does not imply that UCNS or METAPAT ran. Frozen measurement canon JSON and `py.typed` are included in the wheel.
 
 ## Provenance-bearing four-layer pipeline
 
 `build_default_layers()` assembles:
 
-- **Semantics/geometry:** the EDCM-owned actual-UCNS adapter when `ucns` is installed; otherwise explicit transcript-only mode.
-- **Measurement:** canonical `edcm.measurement`.
-- **Composition:** an explicit local fallback pending the shared-stack composition policy.
-- **Delivery:** an explicit local fallback pending application-specific delivery selection.
+1. **Semantics:** independent METAPAT semantic-authority and UCNS geometry sublayers;
+2. **Measurement:** canonical `edcm.measurement`;
+3. **Composition:** canonical shared-stack composition;
+4. **Delivery:** deterministic `edcm.shared-stack-result` contract.
 
-Every result carries `layer_provenance` and `ucns_integration`. No layer is represented only by an unexplained `default` label.
+Every result carries:
+
+```text
+metapat_integration
+ucns_integration
+layer_provenance
+edcm_result
+```
+
+No unavailable integration is represented only by an unexplained `default` label.
 
 ```python
 from edcm import build_default_layers
 
-result = build_default_layers().run({"input": "example"})
+result = build_default_layers().run({"transcript": "A: We must decide."})
 print(result["layer_provenance"])
-print(result["ucns_integration"])
+print(result["edcm_result"]["result_identity"])
 ```
 
-### Transcript-only mode
+### Base transcript mode
 
-When UCNS is unavailable:
+Without optional siblings, measurement still runs while semantic authority and geometry remain typed absence:
 
 ```python
 result = build_default_layers().run({"transcript": "A: We must decide."})
-assert result["semantics"] == "edcm.transcript_only"
+
+assert result["metapat_integration"]["metapat_package_available"] is False
 assert result["ucns_integration"]["ucns_package_available"] is False
+assert result["edcm_result"]["metapat_semantic_constraints"]["state"] == "NA"
+assert result["edcm_result"]["ucns_geometry_identity"]["state"] == "NA"
 ```
 
-This mode is supported, but it cannot be mistaken for the full UCNS-backed path.
+`NA != 0`: absence is never reported as an enabled neutral measurement.
 
-## Actual UCNS adapter
+## Canonical METAPAT semantic authority
+
+EDCM consumes the actual public producer schema from `The-Interdependency/metapat`:
+
+- `metapat.MetapatModuleEnvelope`;
+- canonical `to_json()` / `to_dict()` serialization;
+- producer-owned `from_json()` / `from_dict()` validation;
+- `MODULE_ENVELOPE_SCHEMA_ID` and `MODULE_ENVELOPE_SCHEMA_VERSION`.
+
+EDCM accepts exactly one of:
+
+```text
+metapat_envelope
+metapat_envelope_json
+metapat_envelope_dict
+```
+
+```python
+import edcm
+import metapat
+
+envelope = metapat.root_spine_module_envelope()
+result = edcm.build_default_layers().run({
+    "transcript": "A: Preserve exact semantic authority.",
+    "metapat_envelope": envelope,
+})
+
+assert result["metapat_semantics"]["canon_digest"] == envelope.canon_digest
+assert result["metapat_semantics"]["provenance_digest"] == envelope.provenance_digest
+assert result["metapat_integration"]["metapat_envelope_attached"] is True
+assert result["metapat_integration"]["metapat_theorem_status_attached"] is False
+```
+
+The consumer preserves:
+
+```text
+schema id/version
+module id/kind
+canon version/digest
+exact source statement references
+exact source statements
+bounded constraints
+permitted interpretations
+unresolved hmmm
+provenance digest
+```
+
+Semantic labels are authority constraints and provenance. They are not calculated EDCM values.
+
+## Actual UCNS geometry
 
 EDCM does not expect UCNS to expose an EDCM-specific `SemanticsLayer`. The adapter consumes actual UCNS public surfaces:
 
@@ -83,29 +144,60 @@ assert result["ucns_integration"]["ucns_object_attached"] is True
 assert result["ucns_integration"]["ucns_theorem_status_attached"] is False
 ```
 
-The status record distinguishes:
+Package import alone does not imply object, scope, negative-certification, or theorem evidence attachment.
 
-```text
-ucns_package_available
-ucns_adapter_active
-ucns_object_attached
-ucns_scope_metadata_attached
-ucns_negative_certification_attached
-ucns_theorem_status_attached
+## Full UCNS / METAPAT / EDCM path
+
+METAPAT can adapt its semantic envelope into actual UCNS geometry while keeping exact semantic text outside UCNS payload meaning:
+
+```python
+import edcm
+import metapat
+import ucns
+
+envelope = metapat.root_spine_module_envelope()
+adaptation = metapat.adapt_envelope_to_ucns(envelope)
+
+result = edcm.build_default_layers().run({
+    "transcript": "A: Preserve the complete boundary.",
+    "source_ref": "example://root-spine",
+    "metapat_envelope": envelope,
+    "ucns_object": adaptation.ucns_object,
+})
+
+contract = result["edcm_result"]
+assert contract["metapat_semantic_constraints"]["canon_digest"] == envelope.canon_digest
+assert contract["ucns_geometry_identity"]["stable_hash"] == ucns.stable_hash(adaptation.ucns_object)
+assert contract["status_evidence"]["proof_status_transfers_to_measurement_validity"] is False
 ```
 
-Package import alone does not imply evidence attachment. Domain prerequisite metadata is attached evidence, not EDCM measurement validity and not certification of a concrete negative factorization result. See `docs/ucns-adapter.md`.
+## Final result contract
+
+`edcm_result` separates seven reviewable compartments:
+
+1. `source_evidence` — source reference, content digest, and size;
+2. `metapat_semantic_constraints` — canon identity, exact statements, constraints, and unresolved fields;
+3. `ucns_geometry_identity` — stable hash, schema, structural facts, and attached domain prerequisite evidence;
+4. `edcm_policy_manifest` — manifest fields and hash;
+5. `implementation_provenance` — selected semantic, geometry, measurement, composition, and delivery implementations;
+6. `readouts` — measured values or typed `NA`;
+7. `status_evidence` — independent theorem/negative-certification attachment flags and proof-transfer firewall.
+
+`epoch_identity` binds METAPAT canon/provenance, UCNS geometry, EDCM manifest, and implementation selection. `result_identity` additionally binds source evidence and readouts. Canon or manifest rotation creates a new epoch rather than silently rewriting historical identity.
+
+A non-default policy manifest is supplied when constructing the pipeline:
+
+```python
+from edcm import build_default_layers
+from edcm.edcmucns import PolicyManifest
+
+manifest = PolicyManifest(polarity_dictionary_version="v032")
+result = build_default_layers(manifest).run({"transcript": "A: example"})
+```
 
 ## Canonical measurement package
 
-`edcm.measurement` contains:
-
-- frozen canon data and `CanonLoader`;
-- turns/rounds transcript parsing;
-- deterministic metric computation;
-- matrix and projection surfaces;
-- closed-token encoding;
-- the lossless codec and structural-density readout.
+`edcm.measurement` contains frozen canon data, transcript parsing, deterministic metric computation, projection surfaces, closed-token encoding, and the lossless structural-density codec.
 
 ```python
 from edcm import CanonLoader, compute_transcript, parse_transcript, project_transcript
@@ -117,72 +209,18 @@ metrics = compute_transcript(parsed, canon=canon)
 agents = project_transcript(parsed, metrics)
 ```
 
-The four-layer pipeline runs the same maintained implementation:
-
-```python
-result = build_default_layers().run({"transcript": transcript})
-result["rounds"]
-result["agent_metrics"]
-result["structural_density"]
-assert result["layer_provenance"]["measurement"]["canonical"] is True
-```
-
 Machine-readable authority and consolidation provenance live in `edcm.measurement.MEASUREMENT_AUTHORITY` and `docs/consolidation-edcmbone.md`.
 
 ## edcmucns v0.3.1 architecture
 
-`edcm/edcmucns/` implements the ratified architecture described in `docs/codex_edcmucns_v031_handoff.md`: policy-manifest hashing, provenance witnesses, non-origin residue, carrier helpers, closed readout scopes, geometry/measurement equivalence separation, witness validation, `SeqAppend`, field-chain reading, and manifest-rotation epochs.
-
-```python
-from edcm.edcmucns import (
-    BoneEvent,
-    PolicyManifest,
-    edcm_measurement_equivalent,
-    encode_turn,
-)
-
-manifest = PolicyManifest()
-turn = encode_turn("t1", "A", [BoneEvent("P", "not")], manifest)
-assert edcm_measurement_equivalent(turn.window, turn.window, "operator_scope")
-```
+`edcm/edcmucns/` implements policy-manifest hashing, provenance witnesses, non-origin residue, carrier helpers, closed readout scopes, geometry/measurement equivalence separation, witness validation, `SeqAppend`, field-chain reading, and manifest-rotation epochs.
 
 Guardrails:
 
 - no-bone turns are typed absence and produce `NA`, never measured zero;
 - ordered windows use `SeqAppend`, never averaging;
 - UCNS geometry equivalence does not imply EDCM measurement equivalence;
-- contact convergence, DA geometry correlation, and cadence admission from text remain explicit `NotImplementedError` frontier gates.
-
-## EDCM construction objects
-
-`ConstraintField`, `FieldMotion`, axes, windows, turns, and readouts are EDCM objects constructed using UCNS geometry. They are not replacement implementations of `ucns.UCNSObject`.
-
-```python
-from edcm import ConstraintField
-
-field = ConstraintField(
-    grain="round",
-    raised_field_count=3,
-    contact="against",
-    resolution="open",
-)
-field.contact_state()
-field.behavioral_readouts()
-```
-
-`NA != 0`: an absent required context is disabled/typed absence; zero is an enabled neutral measurement.
-
-## Energy falsifiability audit
-
-```python
-from edcm import audit_energy_text
-
-report = audit_energy_text("The theory predicts a CMB excess.")
-print(report.flags)
-print(report.ucns_dependency)
-```
-
-The audit examines claim structure and falsifiability readiness. It does not validate external physics, import UCNS-A proof status, decide empirical truth, or treat package availability as attached UCNS scope evidence.
+- contact convergence, DA geometry correlation, cadence admission from text, and semantic-label-to-operating-state inference remain explicit non-implementations.
 
 ## Repair status
 
@@ -190,4 +228,4 @@ The ordered repair contract lives in `codex-handoff/2026-07-12-stack-repair/`. C
 
 ## hmmm
 
-The METAPAT semantic-envelope adapter, full shared-stack result envelope, serialized UCNS bridge-record ingestion, validated negative/theorem evidence envelopes, and repo-local skill-lib drift gates remain unfinished. Their absence must remain visible rather than replaced by fabricated defaults.
+Official serialized UCNS bridge-record ingestion, validated negative-certification and theorem-status evidence envelopes, and repo-local skill-lib drift/msdmd gates remain unfinished. Their absence remains visible rather than replaced by fabricated defaults.
