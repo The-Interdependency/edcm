@@ -38,7 +38,7 @@ EDCM empirical validity.
 #   network_boundary: none
 #   user_data_boundary: accepts caller-supplied UCNS objects or canonical producer records and returns deterministic evidence
 #   admin_only: false
-#   tests: tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_shared_stack_contract
+#   tests: tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_ucns_evidence_consumer, tests.test_shared_stack_contract
 #   rollout: default_enabled
 #   rollback: restore live-object-only adapter and mark serialized evidence unavailable
 #   requires: optional ucns package public surface including UCNSBridgeRecord and UCNSFactorizationEvidence
@@ -369,8 +369,6 @@ class ActualUCNSAdapter:
             if not isinstance(value, Mapping):
                 raise TypeError("ucns_bridge_record_dict must be a mapping")
             record = self._module.UCNSBridgeRecord.from_dict(value)
-        # Producer-owned round trip binds this consumer to the exact schema,
-        # type rules, canonical JSON, object hash, and evidence digest.
         return self._module.UCNSBridgeRecord.from_dict(record.to_dict()), False
 
     def _coerce_factorization_evidence(
@@ -502,7 +500,6 @@ class ActualUCNSAdapter:
             ucns_theorem_status_attached=True,
         )
         state["ucns_geometry"] = geometry.as_dict()
-        state.pop("ucns_factorization_evidence", None)
 
         if factor_key is not None:
             factor_record = self._coerce_factorization_evidence(state, factor_key)
@@ -521,6 +518,8 @@ class ActualUCNSAdapter:
                 ),
                 ucns_theorem_status_attached=True,
             )
+        else:
+            state.pop("ucns_factorization_evidence", None)
 
         state["ucns_integration"] = status.as_dict()
         return state
