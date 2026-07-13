@@ -12,7 +12,8 @@ Updated: 2026-07-13
 - Independent direct atomic and molecularly generated atomic branches implemented.
 - Validity, attestation, and soundness separated.
 - Intrinsic-only metadata-free gonol JSONL implemented.
-- Canonical `edcm_msdmd.ts` regenerated from pinned skill-lib.
+- Canonical `edcm_msdmd.ts` regenerated from pinned skill-lib using EDCM as the sole collection root.
+- Temporary bootstrap workflows removed from the resulting branch tree.
 
 ## Not yet claimed
 
