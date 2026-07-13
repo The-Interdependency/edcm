@@ -1,0 +1,1443 @@
+import { defineMsdmdCollection } from "./.agents/skills/msdmd/collection";
+
+export default defineMsdmdCollection({
+  "declarations": [
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "engine",
+        "module_name": "edcm",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "__version__, build_default_layers, EDCMLayers, LayerProvenance, ConsolidatedMeasurementLayer, CompositeSemanticsLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, ActualMetapatAdapter, MetapatIntegrationStatus, MetapatSemanticEvidence, select_metapat_adapter, inspect_metapat_adapter, ActualUCNSAdapter, UCNSIntegrationStatus, UCNSGeometryEvidence, UCNSFactorizationEvidenceRecord, select_ucns_adapter, inspect_ucns_adapter, EDCMResultContract, build_result_contract, RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, IntegrityFinding, IntegrityReport, run_integrity_gate, verify_frozen_canon, verify_measurement_authority, verify_orthogonality_alias, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, measurement, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts",
+        "requires": "edcm_layers, edcm_metapat_adapter, edcm_ucns_adapter, edcm_shared_stack, edcm_integrity, edcm_energy_claims, edcm_falsifiability_bridge, edcm_ucns_objects, edcmucns_package",
+        "rollback": "remove new exports and restore prior package root only with a result-schema migration",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "EDCM package root \u2014 declares package identity and re-exports provenance-bearing shared-stack layers, canonical METAPAT consumer surfaces, actual-UCNS bridge and factorization-evidence consumer surfaces, final result contracts, frozen-canon/authority integrity gates, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.",
+        "tests": "tests.test_measurement, tests.test_ucns_adapter, tests.test_ucns_evidence_consumer, tests.test_metapat_adapter, tests.test_shared_stack_contract, tests.test_integrity, tests.test_ucns_objects, tests.test_energy_claims, tests.test_packaging",
+        "unresolved": "UCNS evidence digests provide content identity but not cryptographic producer authentication",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/__init__.py",
+      "id": "edcm_package"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "engine",
+        "module_name": "edcmucns",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "PolicyManifest, ProvenanceWitness, Anchor, Payload, Window, Present, AbsentOperatorGeometry, OperatorTurn, BridgeDiagnostic, BoneEvent, encode_turn, make_cadence_anchor, with_cadence, REGISTRY, resolve_scope, ReadoutScope, UnknownReadoutScopeError, ucns_carrier_equivalent, edcm_measurement_equivalent, witness_geometry_consistent, validate_window, gauge_audit, seq_append, interaction_product, flat_reduction, kappa_balance, kappa_audit, EpochBreakError, EpochChain, compare_across_epochs, operator_presence_readout",
+        "requires": "edcm.ucns_objects",
+        "rollback": "remove package and its references",
+        "rollout": "default_enabled",
+        "since": "2026-07-06",
+        "storage_boundary": "none",
+        "summary": "edcmucns v0.3.1 \u2014 EDCM on UCNS mathematics, provenance as the recurring theme; architecture-only implementation surface (identity layer), empirical claims remain frontier gates",
+        "tests": "tests.test_edcmucns_identity_v031, tests.test_edcmucns_encoder_v031, tests.test_edcmucns_scopes_v031, tests.test_edcmucns_epochs_v031",
+        "unresolved": "frontier gates (contact convergence, DA_geom, cadence admission from text, corpus parallel run, operating-state validity) are NotImplemented surfaces with named falsifiers; no empirical claim is made",
+        "user_data_boundary": "transcript-shaped inputs (turn ids, speakers, surface forms, payload content)"
+      },
+      "file": "edcm/edcmucns/__init__.py",
+      "id": "edcmucns_package"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "engine",
+        "module_name": "composer",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "seq_append, InteractionSignature, interaction_product, flat_reduction, kappa_balance, kappa_audit, EpochBreakError",
+        "requires": "edcmucns_types",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-07-06",
+        "storage_boundary": "none",
+        "summary": "SeqAppend window composition (chronological append; lengths add; F concatenates; carrier = lcm), reserved interaction product, payload flat reduction, kappa ledger placeholders",
+        "tests": "tests.test_edcmucns_scopes_v031, tests.test_edcmucns_epochs_v031",
+        "unresolved": "kappa ledger is an architecture placeholder \u2014 open-payload tension only; the full stored-tension circuit remains upstream/frontier",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/edcmucns/composer.py",
+      "id": "edcmucns_composer"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "engine",
+        "module_name": "encoder",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "BoneEvent, encode_turn, make_origin_anchor, make_cadence_anchor, with_cadence, admit_cadence_from_text",
+        "requires": "edcmucns_manifest,edcmucns_types,edcmucns_provenance,edcmucns_geometry",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-07-06",
+        "storage_boundary": "none",
+        "summary": "v0.3.1 turn encoder \u2014 bone events to origin-anchored windows with provenance witnesses; no-bone turns emit AbsentOperatorGeometry; cadence admission from text is a reserved frontier gate",
+        "tests": "tests.test_edcmucns_encoder_v031",
+        "unresolved": "bone emission from raw text is out of scope here \u2014 callers supply BoneEvents; the bone_emission_policy_version pins which upstream emitter produced them",
+        "user_data_boundary": "transcript-shaped inputs (turn ids, speakers, surface forms)"
+      },
+      "file": "edcm/edcmucns/encoder.py",
+      "id": "edcmucns_encoder"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "engine",
+        "module_name": "epochs",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "EpochBoundary, EpochSegment, EpochChain, window_identity_hash, compare_across_epochs, V031_ADOPTION_NOTE",
+        "requires": "edcmucns_manifest,edcmucns_types,edcmucns_provenance,edcmucns_composer",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-07-06",
+        "storage_boundary": "none",
+        "summary": "Epoch chain for edcmucns v0.3.1 \u2014 manifest rotation seals the segment and opens a new epoch; cross-epoch comparisons are Bridge lensing events, not raw deltas",
+        "tests": "tests.test_edcmucns_epochs_v031",
+        "unresolved": "none",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/edcmucns/epochs.py",
+      "id": "edcmucns_epochs"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_operator_bundle_hash, _payload_signature, _cadence_signature",
+        "module_kind": "engine",
+        "module_name": "equivalence",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "ucns_carrier_equivalent, edcm_measurement_equivalent, contact_convergence",
+        "requires": "edcmucns_types,edcmucns_scopes,edcmucns_provenance,edcmucns_geometry",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-07-06",
+        "storage_boundary": "none",
+        "summary": "v0.3.1 equivalence tiers \u2014 ucns_carrier_equivalent (geometry only) and edcm_measurement_equivalent (geometry + in-scope witness + manifest); contact convergence is a frontier gate",
+        "tests": "tests.test_edcmucns_identity_v031",
+        "unresolved": "Theta+/F+ are compared as sorted multisets over host anchors (hmmm \u2014 ordering sensitivity lives in the witness bundle, which hashes chronologically); bridge_scope equivalence compares manifest identity only until the diagnostic vocabulary is frozen",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/edcmucns/equivalence.py",
+      "id": "edcmucns_equivalence"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "engine",
+        "module_name": "field_reader",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "FieldReading, read_field_chain, field_chain_hashes, attach_field_chain, field_readouts",
+        "requires": "edcmucns_types,edcm.ucns_objects",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-07-07",
+        "storage_boundary": "none",
+        "summary": "field reader \u2014 build the ConstraintField/FieldMotion hash chain for a window's field_scope; NA-safe motion/state readouts; no empirical claim",
+        "tests": "tests.test_edcmucns_field_reader_v031",
+        "unresolved": "contact convergence over the chain stays the frontier gate in equivalence; this reader reports geometry/state only, no empirical operating-state claim",
+        "user_data_boundary": "constraint fields may summarize user-turn field state"
+      },
+      "file": "edcm/edcmucns/field_reader.py",
+      "id": "edcmucns_field_reader"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_lcm_over",
+        "module_kind": "engine",
+        "module_name": "geometry",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "non_origin_residue, bone_theta, cadence_theta, L_geo, L_op, bone_anchors, cadence_anchors, origin_anchors, n_host_total, n_family, n_cadence, n_payload, active_families, operator_shares, lambda_field, da_geom_correlation",
+        "requires": "edcmucns_types",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-07-06",
+        "storage_boundary": "none",
+        "summary": "v0.3.1 non-origin residue rule, anchor angles, mass helpers (L_geo/L_op), carriers (n_host_total/n_family/n_cadence/n_payload), operator shares, lambda_field",
+        "tests": "tests.test_edcmucns_encoder_v031, tests.test_edcmucns_scopes_v031",
+        "unresolved": "DA_geom correlation is frontier \u2014 placeholder raises NotImplementedError; cadence theta wrap at ordinal % n == 0 collides with the datum reservation and is left to the validator (hmmm)",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/edcmucns/geometry.py",
+      "id": "edcmucns_geometry"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "schema",
+        "module_name": "manifest",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "PolicyManifest, DEFAULT_FAMILY_PRIME_GAUGE, RESIDUE_RULE_VERSION",
+        "requires": "none",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-07-06",
+        "storage_boundary": "none",
+        "summary": "PolicyManifest \u2014 the measurement-identity manifest for edcmucns v0.3.1; stable-serializable, hashable; hash changes create epoch breaks",
+        "tests": "tests.test_edcmucns_identity_v031, tests.test_edcmucns_epochs_v031",
+        "unresolved": "policy version strings are architecture placeholders; the policies they name (polarity dictionary, contact predicate, training updates) remain frontier",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/edcmucns/manifest.py",
+      "id": "edcmucns_manifest"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "schema",
+        "module_name": "provenance",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "ProvenanceWitness, READOUT_BEARING_FIELDS, canonicalize, witness_hash, bundle_hash",
+        "requires": "none",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-07-06",
+        "storage_boundary": "none",
+        "summary": "ProvenanceWitness \u2014 anchor-level testimony for edcmucns v0.3.1; provenance is measurement material, not decorative metadata",
+        "tests": "tests.test_edcmucns_identity_v031",
+        "unresolved": "constraint_governance vocabulary is not yet enumerated; carried as an opaque readout-bearing string",
+        "user_data_boundary": "transcripts may carry user speech in surface_form; hashes only summarize, they do not redact"
+      },
+      "file": "edcm/edcmucns/provenance.py",
+      "id": "edcmucns_provenance"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "schema",
+        "module_name": "scopes",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "ReadoutScope, REGISTRY, resolve_scope, UnknownReadoutScopeError",
+        "requires": "none",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-07-06",
+        "storage_boundary": "none",
+        "summary": "Closed readout_scope registry for edcmucns v0.3.1 \u2014 edcm_measurement_equivalent must not accept arbitrary strings",
+        "tests": "tests.test_edcmucns_scopes_v031",
+        "unresolved": "bridge_scope read set (witness/geometry diagnostics + manifest + epoch boundaries) is named but its diagnostic vocabulary is still growing with the validator",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/edcmucns/scopes.py",
+      "id": "edcmucns_scopes"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "schema",
+        "module_name": "types",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "ANCHOR_ROLES, Anchor, Payload, ContentLensEvent, Window, Present, AbsentOperatorGeometry, OperatorTurn, BridgeDiagnostic, operator_presence_readout",
+        "requires": "edcmucns_provenance",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-07-06",
+        "storage_boundary": "none",
+        "summary": "Core edcmucns v0.3.1 value objects \u2014 Anchor (origin/bone/cadence), Payload, Window, OperatorTurn (Present | AbsentOperatorGeometry), BridgeDiagnostic",
+        "tests": "tests.test_edcmucns_encoder_v031, tests.test_edcmucns_identity_v031",
+        "unresolved": "cadence anchors are reserved in v0.3.1 (no admission from transcript text); composite cadence exists only for explicit caller-built fixtures",
+        "user_data_boundary": "transcripts may carry user speech in payload content / lens events"
+      },
+      "file": "edcm/edcmucns/types.py",
+      "id": "edcmucns_types"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "engine",
+        "module_name": "validation",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "witness_geometry_consistent, validate_window, gauge_audit",
+        "requires": "edcmucns_types,edcmucns_manifest,edcmucns_geometry,edcmucns_provenance",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-07-06",
+        "storage_boundary": "none",
+        "summary": "witness_geometry_consistent validator + polarity gauge audit \u2014 mismatches emit Bridge diagnostics, never silent alternate readings",
+        "tests": "tests.test_edcmucns_identity_v031, tests.test_edcmucns_encoder_v031",
+        "unresolved": "none",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/edcmucns/validation.py",
+      "id": "edcmucns_validation"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_contains_any, _split_spans, _candidate, _first_unit, _claimed_quantity, _extract_after_markers, _flag, _summarize",
+        "module_kind": "engine",
+        "module_name": "energy_claims",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "EnergyClaim, AuditFlag, EnergyAuditReport, extract_energy_claim_candidates, audit_energy_claim, audit_energy_text, CAPABILITY_STATEMENT",
+        "requires": "edcm_ucns_dependency",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "stdlib-only energy-theory falsifiability audit with explicit UCNS package/adapter/evidence status and no physics validation or proof-status transfer",
+        "tests": "tests.test_energy_claims, tests.test_ucns_dependency",
+        "unresolved": "none",
+        "user_data_boundary": "audits arbitrary claim text supplied by the caller"
+      },
+      "file": "edcm/energy_claims.py",
+      "id": "edcm_energy_claims"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_has_falsifiability_bearing_claim, _texts, _edcmbone_structural_density",
+        "module_kind": "engine",
+        "module_name": "falsifiability_bridge",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "audit_falsifiability_preservation, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE",
+        "requires": "edcm_energy_claims",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "audits whether falsifiability-bearing claims survive input->output using the stdlib energy audit; optional edcmbone structural-density as auxiliary metadata only",
+        "tests": "tests.test_falsifiability_bridge",
+        "unresolved": "optional edcmbone import is best-effort; structural_density is auxiliary metadata, not a proof-status signal",
+        "user_data_boundary": "audits arbitrary input/output text supplied by the caller"
+      },
+      "file": "edcm/falsifiability_bridge.py",
+      "id": "edcm_falsifiability_bridge"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_canon_root",
+        "module_kind": "guardrail",
+        "module_name": "integrity",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "FROZEN_CANON_GIT_BLOBS, EXPECTED_MEASUREMENT_AUTHORITY, IntegrityFinding, IntegrityReport, git_blob_sha1, verify_frozen_canon, verify_measurement_authority, verify_orthogonality_alias, run_integrity_gate, main",
+        "requires": "edcm_measurement, edcm_ucns_objects",
+        "rollback": "remove integrity module and CI invocation only after replacing with an equivalent or stronger gate",
+        "rollout": "default_enabled",
+        "since": "2026-07-12",
+        "storage_boundary": "reads packaged canon resources only",
+        "summary": "non-tautological frozen-canon byte manifest and measurement source-of-truth drift gate with installed-package CLI",
+        "tests": "tests.test_integrity",
+        "unresolved": "future canon versions require an explicit versioned manifest and migration record",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/integrity.py",
+      "id": "edcm_integrity"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_record_layer, _local_provenance",
+        "module_kind": "engine",
+        "module_name": "layers",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "LayerProvenance, MeasurementLayer, SemanticsLayer, CompositionLayer, DeliveryLayer, DefaultMeasurementLayer, DefaultSemanticsLayer, DefaultCompositionLayer, DefaultDeliveryLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, CompositeSemanticsLayer, ConsolidatedMeasurementLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, EDCMLayers, build_default_layers",
+        "requires": "edcm_metapat_adapter, edcm_ucns_adapter, edcm_measurement, edcm_shared_stack",
+        "rollback": "restore prior layer assembly and remove shared-stack result delivery",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "Provenance-bearing EDCM stack with independently selected METAPAT semantic authority, actual UCNS geometry or typed absence, canonical local measurement, shared-stack composition, and final result-contract delivery.",
+        "tests": "tests.test_measurement, tests.test_ucns_adapter, tests.test_metapat_adapter, tests.test_shared_stack_contract",
+        "unresolved": "official negative-certification and theorem-status evidence envelopes remain unattached until validated schemas exist",
+        "user_data_boundary": "threads caller payloads through deterministic package-local layers; transcript content is hashed in final result identity"
+      },
+      "file": "edcm/layers.py",
+      "id": "edcm_layers"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_load",
+        "module_kind": "adapter",
+        "module_name": "loader",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "CanonLoader",
+        "requires": "none",
+        "rollback": "remove module; parser falls back to no embedded canon",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "read",
+        "summary": "loads the v1 canon data files (bones/affixes/punct/markers) and exposes a lookup API",
+        "tests": "hmmm",
+        "unresolved": "dedicated canon-loader test module not located in tracked tests/",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/measurement/canon/loader.py",
+      "id": "edcmbone_canon_loader"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_tok_to_dict,_dict_to_tok,_metrics_to_dict,_dict_to_metrics,_build_huffman_codes,_huffman_expected_bits",
+        "module_kind": "engine",
+        "module_name": "compress",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "encode,decode,to_bytes,from_bytes,compression_stats",
+        "requires": "edcmbone_parser_turns_rounds,edcmbone_metrics_compute",
+        "rollback": "remove module; transcripts persist uncompressed",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "lossless EDCM-aware codec for ParsedTranscript + RoundMetrics (separate bone/flesh streams, zlib entropy coding)",
+        "tests": "hmmm",
+        "unresolved": "none",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/measurement/compress.py",
+      "id": "edcmbone_compress"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_compute_R,_compute_F,_compute_L,_compute_N,_compute_P,_compute_O,_compute_I,_compute_C,_compute_D,_compute_E,_build_phrase_patterns,_count_marker_hits",
+        "module_kind": "engine",
+        "module_name": "compute",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "RoundMetrics,compute_round,compute_transcript,energy_step",
+        "requires": "edcmbone_metrics_stats,edcmbone_metrics_risk,edcmbone_canon_loader",
+        "rollback": "remove module; no behavioral metric vector produced",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "computes the EDCM metric vector M_t and dissonance energy for a parsed round/transcript",
+        "tests": "tests.test_metrics_layer_designation",
+        "unresolved": "per its own docstring this layer-A module canonically belongs upstream in the future edcm package",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/measurement/metrics/compute.py",
+      "id": "edcmbone_metrics_compute"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "schema",
+        "module_name": "matrix",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "freeze, diff",
+        "requires": "none",
+        "rollback": "remove module; metric projection loses its frozen coefficient source",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "explicit freezable A matrix (Layer0->Layer1) and PROJECTION_MAP (Layer1->Layer3) as versioned, diffable dicts",
+        "tests": "hmmm",
+        "unresolved": "none",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/measurement/metrics/matrix.py",
+      "id": "edcmbone_metrics_matrix"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "engine",
+        "module_name": "projection",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "AgentMetrics, project, project_transcript, gini_tbf, fire_alerts, crosswalk_risk",
+        "requires": "edcmbone_metrics_matrix",
+        "rollback": "remove module; agent-facing 6-metric view unavailable",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "projects the 11 Layer-1 Arc-Style metrics to the 6 agent-facing metrics (CM, DA, DRIFT, DVG, INT, TBF)",
+        "tests": "hmmm",
+        "unresolved": "none",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/measurement/metrics/projection.py",
+      "id": "edcmbone_metrics_projection"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "engine",
+        "module_name": "risk",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "fixation_risk, broken_return, escalation_risk, stagnation_risk, loop_risk",
+        "requires": "none",
+        "rollback": "remove module; risk composites unavailable",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "the EDCM risk proxies (fixation, broken-return, escalation, stagnation, loop), all clamped to [0,1]",
+        "tests": "hmmm",
+        "unresolved": "none",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/measurement/metrics/risk.py",
+      "id": "edcmbone_metrics_risk"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_count_vector",
+        "module_kind": "engine",
+        "module_name": "stats",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "tokenize, ngrams, ttr, repetition_ratio, shannon_entropy, rep_ngram_density, pattern_density, novelty, cosine_sim, jaccard, correction_fidelity, clamp, norm_per_100",
+        "requires": "none",
+        "rollback": "remove module; metric primitives unavailable",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "stdlib-only text statistics (TTR, entropy, novelty, cosine, n-gram density) feeding the EDCM metric vector",
+        "tests": "hmmm",
+        "unresolved": "none",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/measurement/metrics/stats.py",
+      "id": "edcmbone_metrics_stats"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_BoneClassifier, _split_turns, _group_into_rounds, _raw_tokens, _ordered_unique",
+        "module_kind": "engine",
+        "module_name": "turns_rounds",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "parse_transcript, BoneToken, FleshToken, Turn, Round, ParsedTranscript",
+        "requires": "edcmbone_canon_loader",
+        "rollback": "remove module; transcripts cannot be parsed into the EDCM structure",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "embedded rule-based transcript parser (canon-driven, no ML deps) producing bones/flesh tokens, turns, and rounds",
+        "tests": "tests.test_apostrophe_normalization_and_tokenization",
+        "unresolved": "none",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/measurement/parser/turns_rounds.py",
+      "id": "edcmbone_parser_turns_rounds"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_class_anchor, _wrap_with_class, _feature_payload, _build_dispatch_table",
+        "module_kind": "adapter",
+        "module_name": "closed_tokens",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "encode, class_of, feature_payload_of",
+        "requires": "edcmbone_ucns_v04",
+        "rollback": "remove module; closed-token UCNS encoding unavailable",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "encodes English closed-class tokens, whitespace, punctuation, and small numerals to UCNS objects on a 16-gon host carrier",
+        "tests": "tests.test_closed_tokens",
+        "unresolved": "none",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/measurement/ucns/closed_tokens.py",
+      "id": "edcmbone_ucns_closed_tokens"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_lcm, _reduce_lcm",
+        "module_kind": "engine",
+        "module_name": "ucns_v04",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "AnchorPayload, UCNSObject, unit_obj, is_unit_payload, multiply",
+        "requires": "none",
+        "rollback": "remove module; closed_tokens loses its UCNS object algebra",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "local UCNS engine using the turn-fraction angle convention on the doubled cover of the unit circle",
+        "tests": "tests.test_ucns_objects",
+        "unresolved": "this is edcmbone's local UCNS-A layer; per docs/ucns-boundary.md no UCNS-A theorem status transfers to EDCM/UCNS-G",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/measurement/ucns/ucns_v04.py",
+      "id": "edcmbone_ucns_v04"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_module_version, _failed_status, _coerce_envelope",
+        "module_kind": "adapter",
+        "module_name": "metapat_adapter",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "MetapatAdapter, ActualMetapatAdapter, MetapatAdapterSelection, MetapatIntegrationStatus, MetapatSemanticEvidence, MetapatAdapterConstructionError, UnsupportedMetapatSchemaError, select_metapat_adapter, inspect_metapat_adapter, missing_metapat_status",
+        "requires": "optional metapat package",
+        "rollback": "remove module and restore METAPAT-unavailable status in layer assembly",
+        "rollout": "default_enabled",
+        "since": "2026-07-12",
+        "storage_boundary": "no persistence; canonical envelope data is copied into the result record",
+        "summary": "EDCM-owned consumer for actual versioned immutable METAPAT semantic-authority envelopes; preserves canon identity, exact source references, constraints, permitted interpretations, hmmm, and provenance without creating metric values.",
+        "tests": "tests.test_metapat_adapter, tests.test_shared_stack_contract",
+        "unresolved": "official serialized UCNS bridge-record ingestion remains separate; METAPAT statement-to-UCNS payload/tag semantics remain hmmm",
+        "user_data_boundary": "preserves caller-supplied METAPAT source statements and references exactly"
+      },
+      "file": "edcm/metapat_adapter.py",
+      "id": "edcm_metapat_adapter"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_canonical_bytes, _digest, _source_evidence, _typed_absence, _readouts, _collect_unresolved",
+        "module_kind": "schema",
+        "module_name": "shared_stack",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, EDCMResultContract, build_result_contract",
+        "requires": "edcmucns_manifest, edcm_metapat_adapter, edcm_ucns_adapter, edcm_measurement",
+        "rollback": "remove factorization-evidence compartment and restore prior result schema only with a versioned migration",
+        "rollout": "default_enabled",
+        "since": "2026-07-12",
+        "storage_boundary": "no persistence; emits deterministic JSON-compatible records",
+        "summary": "deterministic final EDCM result contract separating source evidence, METAPAT semantic authority, UCNS geometry, authoritative UCNS factorization evidence, EDCM policy identity, implementation provenance, readouts/NA, unresolved constraints, and attachment states.",
+        "tests": "tests.test_shared_stack_contract, tests.test_ucns_evidence_consumer",
+        "unresolved": "UCNS evidence digests provide content identity but not signed producer authentication",
+        "user_data_boundary": "hashes caller transcript content and preserves caller source reference without external transmission"
+      },
+      "file": "edcm/shared_stack.py",
+      "id": "edcm_shared_stack"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_module_version, _failed_status, _one_present, _geometry_from_record, _factorization_from_record",
+        "module_kind": "adapter",
+        "module_name": "ucns_adapter",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "UCNSAdapter, ActualUCNSAdapter, UCNSAdapterSelection, UCNSIntegrationStatus, UCNSGeometryEvidence, UCNSFactorizationEvidenceRecord, UCNSAdapterConstructionError, UnsupportedUCNSSchemaError, select_ucns_adapter, inspect_ucns_adapter, missing_ucns_status",
+        "requires": "optional ucns package public surface including UCNSBridgeRecord and UCNSFactorizationEvidence",
+        "rollback": "restore live-object-only adapter and mark serialized evidence unavailable",
+        "rollout": "default_enabled",
+        "since": "2026-07-12",
+        "storage_boundary": "none",
+        "summary": "EDCM-owned consumer over actual UCNS objects, canonical bridge records, and authoritative factorization evidence with stable-hash binding and no proof-status transfer.",
+        "tests": "tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_ucns_evidence_consumer, tests.test_shared_stack_contract",
+        "unresolved": "evidence digests are content identities, not cryptographic producer signatures",
+        "user_data_boundary": "accepts caller-supplied UCNS objects or canonical producer records and returns deterministic evidence"
+      },
+      "file": "edcm/ucns_adapter.py",
+      "id": "edcm_ucns_adapter"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "adapter",
+        "module_name": "ucns_dependency",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "require_ucns, ucns_available, ucns_dependency_report, INSTALL_HINT",
+        "requires": "edcm_ucns_adapter",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "Reports independent UCNS package, adapter, object, scope, certification, and theorem-evidence states without proof-status transfer.",
+        "tests": "tests.test_ucns_dependency, tests.test_ucns_adapter",
+        "unresolved": "none",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/ucns_dependency.py",
+      "id": "edcm_ucns_dependency"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_clamp_unit, _sign",
+        "module_kind": "engine",
+        "module_name": "ucns_objects",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, field_motion_fixture, canonical_axes",
+        "requires": "none",
+        "rollback": "remove module and its references",
+        "rollout": "default_enabled",
+        "since": "2026-06-02",
+        "storage_boundary": "none",
+        "summary": "dependency-free mirror of edcmbone's UCNS metric construction layer (v0.2 signed-axis orthogonality)",
+        "tests": "tests.test_ucns_objects",
+        "unresolved": "mirror of edcmbone backend/src/edcmbone/metrics/orthogonality.py; keep in sync",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/ucns_objects.py",
+      "id": "edcm_ucns_objects"
+    }
+  ],
+  "edges": [
+    {
+      "from": "edcm_energy_claims",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_energy_claims",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_energy_claims",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_energy_claims",
+      "to": "edcm_ucns_dependency"
+    },
+    {
+      "from": "edcm_falsifiability_bridge",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_falsifiability_bridge",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_falsifiability_bridge",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_falsifiability_bridge",
+      "to": "edcm_energy_claims"
+    },
+    {
+      "from": "edcm_integrity",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_integrity",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_integrity",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_integrity",
+      "to": "edcm_measurement"
+    },
+    {
+      "from": "edcm_integrity",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_integrity",
+      "to": "edcm_ucns_objects"
+    },
+    {
+      "from": "edcm_layers",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_layers",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_layers",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_layers",
+      "to": "edcm_measurement"
+    },
+    {
+      "from": "edcm_layers",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_layers",
+      "to": "edcm_metapat_adapter"
+    },
+    {
+      "from": "edcm_layers",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_layers",
+      "to": "edcm_shared_stack"
+    },
+    {
+      "from": "edcm_layers",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_layers",
+      "to": "edcm_ucns_adapter"
+    },
+    {
+      "from": "edcm_metapat_adapter",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_metapat_adapter",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_metapat_adapter",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_metapat_adapter",
+      "to": "optional metapat package"
+    },
+    {
+      "from": "edcm_package",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_package",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_package",
+      "to": "edcm_energy_claims"
+    },
+    {
+      "from": "edcm_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_package",
+      "to": "edcm_falsifiability_bridge"
+    },
+    {
+      "from": "edcm_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_package",
+      "to": "edcm_integrity"
+    },
+    {
+      "from": "edcm_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_package",
+      "to": "edcm_layers"
+    },
+    {
+      "from": "edcm_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_package",
+      "to": "edcm_metapat_adapter"
+    },
+    {
+      "from": "edcm_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_package",
+      "to": "edcm_shared_stack"
+    },
+    {
+      "from": "edcm_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_package",
+      "to": "edcm_ucns_adapter"
+    },
+    {
+      "from": "edcm_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_package",
+      "to": "edcm_ucns_objects"
+    },
+    {
+      "from": "edcm_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_package",
+      "to": "edcmucns_package"
+    },
+    {
+      "from": "edcm_shared_stack",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_shared_stack",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_shared_stack",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_shared_stack",
+      "to": "edcm_measurement"
+    },
+    {
+      "from": "edcm_shared_stack",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_shared_stack",
+      "to": "edcm_metapat_adapter"
+    },
+    {
+      "from": "edcm_shared_stack",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_shared_stack",
+      "to": "edcm_ucns_adapter"
+    },
+    {
+      "from": "edcm_shared_stack",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_shared_stack",
+      "to": "edcmucns_manifest"
+    },
+    {
+      "from": "edcm_ucns_adapter",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_adapter",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_ucns_adapter",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_adapter",
+      "to": "optional ucns package public surface including UCNSBridgeRecord and UCNSFactorizationEvidence"
+    },
+    {
+      "from": "edcm_ucns_dependency",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_dependency",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_ucns_dependency",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_dependency",
+      "to": "edcm_ucns_adapter"
+    },
+    {
+      "from": "edcm_ucns_objects",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_objects",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_ucns_objects",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_objects",
+      "to": "none"
+    },
+    {
+      "from": "edcmbone_canon_loader",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_canon_loader",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmbone_canon_loader",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_canon_loader",
+      "to": "none"
+    },
+    {
+      "from": "edcmbone_compress",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_compress",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmbone_compress",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_compress",
+      "to": "edcmbone_metrics_compute"
+    },
+    {
+      "from": "edcmbone_compress",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_compress",
+      "to": "edcmbone_parser_turns_rounds"
+    },
+    {
+      "from": "edcmbone_metrics_compute",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_metrics_compute",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmbone_metrics_compute",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_metrics_compute",
+      "to": "edcmbone_canon_loader"
+    },
+    {
+      "from": "edcmbone_metrics_compute",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_metrics_compute",
+      "to": "edcmbone_metrics_risk"
+    },
+    {
+      "from": "edcmbone_metrics_compute",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_metrics_compute",
+      "to": "edcmbone_metrics_stats"
+    },
+    {
+      "from": "edcmbone_metrics_matrix",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_metrics_matrix",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmbone_metrics_matrix",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_metrics_matrix",
+      "to": "none"
+    },
+    {
+      "from": "edcmbone_metrics_projection",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_metrics_projection",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmbone_metrics_projection",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_metrics_projection",
+      "to": "edcmbone_metrics_matrix"
+    },
+    {
+      "from": "edcmbone_metrics_risk",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_metrics_risk",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmbone_metrics_risk",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_metrics_risk",
+      "to": "none"
+    },
+    {
+      "from": "edcmbone_metrics_stats",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_metrics_stats",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmbone_metrics_stats",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_metrics_stats",
+      "to": "none"
+    },
+    {
+      "from": "edcmbone_parser_turns_rounds",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_parser_turns_rounds",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmbone_parser_turns_rounds",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_parser_turns_rounds",
+      "to": "edcmbone_canon_loader"
+    },
+    {
+      "from": "edcmbone_ucns_closed_tokens",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_ucns_closed_tokens",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmbone_ucns_closed_tokens",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_ucns_closed_tokens",
+      "to": "edcmbone_ucns_v04"
+    },
+    {
+      "from": "edcmbone_ucns_v04",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_ucns_v04",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmbone_ucns_v04",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmbone_ucns_v04",
+      "to": "none"
+    },
+    {
+      "from": "edcmucns_composer",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_composer",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmucns_composer",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_composer",
+      "to": "edcmucns_types"
+    },
+    {
+      "from": "edcmucns_encoder",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_encoder",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmucns_encoder",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_encoder",
+      "to": "edcmucns_geometry"
+    },
+    {
+      "from": "edcmucns_encoder",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_encoder",
+      "to": "edcmucns_manifest"
+    },
+    {
+      "from": "edcmucns_encoder",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_encoder",
+      "to": "edcmucns_provenance"
+    },
+    {
+      "from": "edcmucns_encoder",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_encoder",
+      "to": "edcmucns_types"
+    },
+    {
+      "from": "edcmucns_epochs",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_epochs",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmucns_epochs",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_epochs",
+      "to": "edcmucns_composer"
+    },
+    {
+      "from": "edcmucns_epochs",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_epochs",
+      "to": "edcmucns_manifest"
+    },
+    {
+      "from": "edcmucns_epochs",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_epochs",
+      "to": "edcmucns_provenance"
+    },
+    {
+      "from": "edcmucns_epochs",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_epochs",
+      "to": "edcmucns_types"
+    },
+    {
+      "from": "edcmucns_equivalence",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_equivalence",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmucns_equivalence",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_equivalence",
+      "to": "edcmucns_geometry"
+    },
+    {
+      "from": "edcmucns_equivalence",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_equivalence",
+      "to": "edcmucns_provenance"
+    },
+    {
+      "from": "edcmucns_equivalence",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_equivalence",
+      "to": "edcmucns_scopes"
+    },
+    {
+      "from": "edcmucns_equivalence",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_equivalence",
+      "to": "edcmucns_types"
+    },
+    {
+      "from": "edcmucns_field_reader",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_field_reader",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmucns_field_reader",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_field_reader",
+      "to": "edcm.ucns_objects"
+    },
+    {
+      "from": "edcmucns_field_reader",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_field_reader",
+      "to": "edcmucns_types"
+    },
+    {
+      "from": "edcmucns_geometry",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_geometry",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmucns_geometry",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_geometry",
+      "to": "edcmucns_types"
+    },
+    {
+      "from": "edcmucns_manifest",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_manifest",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmucns_manifest",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_manifest",
+      "to": "none"
+    },
+    {
+      "from": "edcmucns_package",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_package",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmucns_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_package",
+      "to": "edcm.ucns_objects"
+    },
+    {
+      "from": "edcmucns_provenance",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_provenance",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmucns_provenance",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_provenance",
+      "to": "none"
+    },
+    {
+      "from": "edcmucns_scopes",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_scopes",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmucns_scopes",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_scopes",
+      "to": "none"
+    },
+    {
+      "from": "edcmucns_types",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_types",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmucns_types",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_types",
+      "to": "edcmucns_provenance"
+    },
+    {
+      "from": "edcmucns_validation",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_validation",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcmucns_validation",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_validation",
+      "to": "edcmucns_geometry"
+    },
+    {
+      "from": "edcmucns_validation",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_validation",
+      "to": "edcmucns_manifest"
+    },
+    {
+      "from": "edcmucns_validation",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_validation",
+      "to": "edcmucns_provenance"
+    },
+    {
+      "from": "edcmucns_validation",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcmucns_validation",
+      "to": "edcmucns_types"
+    }
+  ],
+  "gaps": [],
+  "repo": "The-Interdependency/edcm"
+});
