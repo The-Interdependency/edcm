@@ -1,0 +1,231 @@
+name: build OEWN 2025 embeddings
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/build-oewn2025-embeddings.yml"
+      - "edcm/language/**"
+      - "edcm/__init__.py"
+      - "tools/build_oewn2025_embeddings.py"
+      - "tools/finalize_oewn2025_artifacts.py"
+      - "tests/test_language_full_run.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: oewn2025-complete-embedding
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Check out EDCM source branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          path: edcm
+          fetch-depth: 0
+
+      - name: Check out exact Open English WordNet release
+        uses: actions/checkout@v4
+        with:
+          repository: globalwordnet/english-wordnet
+          ref: 2025-edition
+          path: oewn
+          fetch-depth: 0
+
+      - name: Check out pinned canonical skill-lib
+        uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/skill-lib
+          ref: d0036c6c3a449f5a1213e3289dceb1c43263cb52
+          path: skill-lib
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install builder and test dependencies
+        working-directory: edcm
+        run: python -m pip install -e . pytest PyYAML build twine
+
+      - name: Reconcile source and public-package declarations
+        working-directory: edcm
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          source = Path("edcm/language/source.py")
+          text = source.read_text(encoding="utf-8")
+          text = text.replace(
+              "value = yaml.safe_load(path.read_text(encoding=\"utf-8\"))",
+              "loader = getattr(yaml, \"CSafeLoader\", yaml.SafeLoader)\n"
+              "    value = yaml.load(path.read_text(encoding=\"utf-8\"), Loader=loader)",
+          )
+          text = text.replace(
+              "if len(snapshot.lemmas) != OEWN_EXPECTED_WORD_COUNT:\n"
+              "        raise ValueError(\n"
+              "            \"OEWN 2025 word count mismatch: \"\n"
+              "            f\"expected {OEWN_EXPECTED_WORD_COUNT}, got {len(snapshot.lemmas)}\"\n"
+              "        )",
+              "if len(snapshot.lexemes) != OEWN_EXPECTED_WORD_COUNT:\n"
+              "        raise ValueError(\n"
+              "            \"OEWN 2025 lexical-entry count mismatch: \"\n"
+              "            f\"expected {OEWN_EXPECTED_WORD_COUNT}, got {len(snapshot.lexemes)}\"\n"
+              "        )",
+          )
+          source.write_text(text, encoding="utf-8")
+
+          package = Path("edcm/__init__.py")
+          text = package.read_text(encoding="utf-8")
+          if "from . import language" not in text:
+              text = text.replace("from . import measurement\n", "from . import measurement\nfrom . import language\n")
+          if '    "language",\n' not in text:
+              text = text.replace('    "measurement",\n', '    "measurement",\n    "language",\n')
+          text = text.replace(
+              "measurement, edcmucns, CanonLoader",
+              "measurement, language, edcmucns, CanonLoader",
+          )
+          text = text.replace(
+              "edcm_ucns_objects, edcmucns_package",
+              "edcm_ucns_objects, edcmucns_package, edcm_language_package",
+          )
+          package.write_text(text, encoding="utf-8")
+          PY
+
+      - name: Run focused contracts
+        working-directory: edcm
+        run: pytest tests/test_language_embeddings.py tests/test_language_full_run.py -q
+
+      - name: Verify exact upstream source
+        run: |
+          test "$(git -C oewn rev-parse HEAD)" = "dc343f2683279ecbb13fab4e2fd778d7b162d287"
+          test "$(git -C oewn rev-list -n 1 2025-edition)" = "dc343f2683279ecbb13fab4e2fd778d7b162d287"
+
+      - name: Build complete atomic and molecular artifacts
+        id: corpus_build
+        continue-on-error: true
+        working-directory: edcm
+        shell: bash
+        run: |
+          set -o pipefail
+          python tools/build_oewn2025_embeddings.py \
+            --source-repo ../oewn \
+            --output-root artifacts \
+            2>&1 | tee "$RUNNER_TEMP/oewn2025-corpus-build.log"
+
+      - name: Publish corpus-build failure evidence
+        if: steps.corpus_build.outcome == 'failure'
+        working-directory: edcm
+        env:
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          mkdir -p docs
+          {
+            echo "# OEWN 2025 corpus-build failure evidence"
+            echo
+            echo "Commit: $GITHUB_SHA"
+            echo
+            echo '```text'
+            tail -n 400 "$RUNNER_TEMP/oewn2025-corpus-build.log"
+            echo '```'
+          } > docs/oewn2025-build-failure.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/oewn2025-build-failure.md edcm/__init__.py edcm/language/source.py
+          git commit -m "docs(language): record OEWN 2025 corpus-build failure"
+          git push origin "HEAD:${BRANCH}"
+
+      - name: Stop after corpus-build failure
+        if: steps.corpus_build.outcome == 'failure'
+        run: exit 1
+
+      - name: Copy attribution and seal artifact hashes
+        working-directory: edcm
+        run: python tools/finalize_oewn2025_artifacts.py --source-repo ../oewn --artifact-root artifacts/oewn2025
+
+      - name: Enforce artifact-size boundary
+        working-directory: edcm
+        run: |
+          oversized=$(find artifacts/oewn2025 -type f -size +95M -print)
+          if [ -n "$oversized" ]; then
+            echo "Artifacts exceed the 95 MiB repository safety boundary:"
+            echo "$oversized"
+            exit 1
+          fi
+          du -sh artifacts/oewn2025
+          find artifacts/oewn2025 -maxdepth 1 -type f -printf '%f %s bytes\n' | sort
+
+      - name: Run complete tests with generated artifacts
+        working-directory: edcm
+        run: pytest -q
+
+      - name: Build and inspect distributions
+        working-directory: edcm
+        run: |
+          rm -rf dist build
+          python -m build
+          python -m twine check dist/*
+
+      - name: Regenerate canonical metadata collection
+        run: |
+          PYTHONPATH=skill-lib python skill-lib/msdmd/collect.py \
+            --root edcm \
+            --repo The-Interdependency/edcm \
+            --out edcm/edcm_msdmd.ts
+
+      - name: Write final run status
+        working-directory: edcm
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          summary = json.loads(Path("artifacts/oewn2025/summary.json").read_text(encoding="utf-8"))
+          source = json.loads(Path("artifacts/oewn2025/source-manifest.json").read_text(encoding="utf-8"))
+          lines = [
+              "# Open English WordNet 2025 full embedding run",
+              "",
+              "Status: **complete and generated**",
+              "",
+              f"Source: `globalwordnet/english-wordnet@{source['commit']}` (`2025-edition`)",
+              "",
+              f"- lexical entries: {source['lexical_entry_count']:,}",
+              f"- unique dictionary lemmas: {source['unique_lemma_count']:,}",
+              f"- materialized dictionary surfaces including forms: {summary['surface_count']:,}",
+              f"- root gonols: {summary['root_count']:,}",
+              f"- affix gonols: {summary['affix_count']:,}",
+              f"- decomposed surfaces: {summary['decomposed_surface_count']:,}",
+              f"- ambiguous molecular surfaces: {summary['ambiguous_surface_count']:,}",
+              f"- retained molecular alternatives: {summary['molecular_alternative_count']:,}",
+              f"- exact direct/generated equivalences: {summary['fork_counts'].get('equivalent', 0):,}",
+              f"- direct/generated divergences: {summary['fork_counts'].get('divergent', 0):,}",
+              "",
+              "The run produced metadata-bearing inventories and comparison records plus separate intrinsic-only gonol lists.",
+              "",
+              "## hmmm",
+              "",
+              "Empirical interpretation of the fork distribution and corpus-scale phrase/sentence/paragraph runs remain research, not missing construction.",
+          ]
+          Path("docs/oewn2025-full-embedding-run.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+          PY
+
+      - name: Commit completed run
+        working-directory: edcm
+        env:
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          rm -f docs/oewn2025-build-failure.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add edcm/__init__.py edcm/language/source.py edcm_msdmd.ts docs/oewn2025-full-embedding-run.md docs/oewn2025-build-failure.md artifacts/oewn2025
+          git diff --cached --stat
+          git commit -m "feat(language): materialize complete OEWN 2025 embedding run"
+          git push origin "HEAD:${BRANCH}"
