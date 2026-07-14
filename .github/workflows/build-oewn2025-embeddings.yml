@@ -6,6 +6,7 @@ on:
     paths:
       - ".github/workflows/build-oewn2025-embeddings.yml"
       - "edcm/language/**"
+      - "edcm/__init__.py"
       - "tools/build_oewn2025_embeddings.py"
       - "tools/finalize_oewn2025_artifacts.py"
       - "tests/test_language_full_run.py"
@@ -36,7 +37,7 @@ jobs:
           repository: globalwordnet/english-wordnet
           ref: 2025-edition
           path: oewn
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Check out pinned canonical skill-lib
         uses: actions/checkout@v4
@@ -49,17 +50,21 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip
-          cache-dependency-path: edcm/pyproject.toml
 
-      - name: Install builder and test dependencies
-        working-directory: edcm
-        run: python -m pip install -e . pytest PyYAML build twine
-
-      - name: Reconcile source-count and public-package declarations
-        working-directory: edcm
+      - name: Execute and publish the complete run or its failure evidence
+        shell: bash
+        env:
+          BRANCH: ${{ github.ref_name }}
         run: |
-          python - <<'PY'
+          set +e
+          LOG="$RUNNER_TEMP/oewn2025-build.log"
+          : > "$LOG"
+          {
+            set -euo pipefail
+            cd edcm
+            python -m pip install -e . pytest PyYAML build twine
+
+            python - <<'PY'
           from pathlib import Path
 
           source = Path("edcm/language/source.py")
@@ -92,109 +97,92 @@ jobs:
               "edcm_ucns_objects, edcmucns_package",
               "edcm_ucns_objects, edcmucns_package, edcm_language_package",
           )
-          text = text.replace(
-              "tests.test_packaging\n",
-              "tests.test_packaging, tests.test_language_full_run\n",
-          )
           package.write_text(text, encoding="utf-8")
           PY
 
-      - name: Run focused contracts before the full build
-        working-directory: edcm
-        run: pytest tests/test_language_embeddings.py tests/test_language_full_run.py -q
+            pytest tests/test_language_embeddings.py tests/test_language_full_run.py -q
+            test "$(git -C ../oewn rev-parse HEAD)" = "dc343f2683279ecbb13fab4e2fd778d7b162d287"
+            test "$(git -C ../oewn rev-list -n 1 2025-edition)" = "dc343f2683279ecbb13fab4e2fd778d7b162d287"
 
-      - name: Verify exact upstream commit
-        run: |
-          test "$(git -C oewn rev-parse HEAD)" = "dc343f2683279ecbb13fab4e2fd778d7b162d287"
-          test "$(git -C oewn rev-list -n 1 2025-edition)" = "dc343f2683279ecbb13fab4e2fd778d7b162d287"
+            python tools/build_oewn2025_embeddings.py --source-repo ../oewn --output-root artifacts
+            python tools/finalize_oewn2025_artifacts.py --source-repo ../oewn --artifact-root artifacts/oewn2025
 
-      - name: Build the complete atomic and molecular run
-        working-directory: edcm
-        run: python tools/build_oewn2025_embeddings.py --source-repo ../oewn --output-root artifacts
+            oversized=$(find artifacts/oewn2025 -type f -size +95M -print)
+            test -z "$oversized" || { echo "Oversized artifacts:"; echo "$oversized"; exit 1; }
+            du -sh artifacts/oewn2025
+            find artifacts/oewn2025 -maxdepth 1 -type f -printf '%f %s bytes\n' | sort
 
-      - name: Copy attribution and seal artifact hashes
-        working-directory: edcm
-        run: python tools/finalize_oewn2025_artifacts.py --source-repo ../oewn --artifact-root artifacts/oewn2025
+            pytest -q
+            rm -rf dist build
+            python -m build
+            python -m twine check dist/*
 
-      - name: Reject unsafe individual artifact size
-        working-directory: edcm
-        run: |
-          oversized=$(find artifacts/oewn2025 -type f -size +95M -print)
-          if [ -n "$oversized" ]; then
-            echo "Artifacts exceed the 95 MiB repository safety boundary:"
-            echo "$oversized"
-            exit 1
-          fi
-          du -sh artifacts/oewn2025
-          find artifacts/oewn2025 -maxdepth 1 -type f -printf '%f %s bytes\n' | sort
+            cd ..
+            PYTHONPATH=skill-lib python skill-lib/msdmd/collect.py \
+              --root edcm \
+              --repo The-Interdependency/edcm \
+              --out edcm/edcm_msdmd.ts
+            cd edcm
 
-      - name: Run the complete repository tests with generated artifacts
-        working-directory: edcm
-        run: pytest -q
-
-      - name: Build and inspect distributions
-        working-directory: edcm
-        run: |
-          rm -rf dist build
-          python -m build
-          python -m twine check dist/*
-
-      - name: Regenerate canonical EDCM metadata collection
-        run: |
-          PYTHONPATH=skill-lib python skill-lib/msdmd/collect.py \
-            --root edcm \
-            --repo The-Interdependency/edcm \
-            --out edcm/edcm_msdmd.ts
-
-      - name: Write final run status
-        working-directory: edcm
-        run: |
-          python - <<'PY'
+            python - <<'PY'
           from pathlib import Path
           import json
 
           summary = json.loads(Path("artifacts/oewn2025/summary.json").read_text(encoding="utf-8"))
           source = json.loads(Path("artifacts/oewn2025/source-manifest.json").read_text(encoding="utf-8"))
-          text = f"""# Open English WordNet 2025 full embedding run
-
-          Status: **complete and generated**
-
-          Source: `globalwordnet/english-wordnet@{source['commit']}` (`2025-edition`)
-
-          - lexical entries: {source['lexical_entry_count']:,}
-          - unique dictionary lemmas: {source['unique_lemma_count']:,}
-          - materialized dictionary surfaces including forms: {summary['surface_count']:,}
-          - root gonols: {summary['root_count']:,}
-          - affix gonols: {summary['affix_count']:,}
-          - decomposed surfaces: {summary['decomposed_surface_count']:,}
-          - ambiguous molecular surfaces: {summary['ambiguous_surface_count']:,}
-          - retained molecular alternatives: {summary['molecular_alternative_count']:,}
-          - exact direct/generated equivalences: {summary['fork_counts'].get('equivalent', 0):,}
-          - direct/generated divergences: {summary['fork_counts'].get('divergent', 0):,}
-
-          Produced artifacts include metadata-bearing source, affix, root,
-          morphology, surface-index, and comparison records plus separate
-          metadata-free gonol lists for affixes, roots, direct atomic words,
-          molecular words, and generated atomic words.
-
-          ## hmmm
-
-          The run is mechanically complete. Empirical interpretation of the
-          observed fork distribution and extension into phrase, sentence, and
-          paragraph corpora remain research rather than missing construction.
-          """
-          lines = [line.strip() for line in text.splitlines()]
+          lines = [
+              "# Open English WordNet 2025 full embedding run",
+              "",
+              "Status: **complete and generated**",
+              "",
+              f"Source: `globalwordnet/english-wordnet@{source['commit']}` (`2025-edition`)",
+              "",
+              f"- lexical entries: {source['lexical_entry_count']:,}",
+              f"- unique dictionary lemmas: {source['unique_lemma_count']:,}",
+              f"- materialized dictionary surfaces including forms: {summary['surface_count']:,}",
+              f"- root gonols: {summary['root_count']:,}",
+              f"- affix gonols: {summary['affix_count']:,}",
+              f"- decomposed surfaces: {summary['decomposed_surface_count']:,}",
+              f"- ambiguous molecular surfaces: {summary['ambiguous_surface_count']:,}",
+              f"- retained molecular alternatives: {summary['molecular_alternative_count']:,}",
+              f"- exact direct/generated equivalences: {summary['fork_counts'].get('equivalent', 0):,}",
+              f"- direct/generated divergences: {summary['fork_counts'].get('divergent', 0):,}",
+              "",
+              "The run produced metadata-bearing inventories and comparison records plus separate intrinsic-only gonol lists.",
+              "",
+              "## hmmm",
+              "",
+              "Empirical interpretation of the fork distribution and corpus-scale phrase/sentence/paragraph runs remain research, not missing construction.",
+          ]
           Path("docs/oewn2025-full-embedding-run.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
           PY
+          } > >(tee -a "$LOG") 2> >(tee -a "$LOG" >&2)
+          code=$?
 
-      - name: Commit generated source fixes, metadata, and artifacts
-        working-directory: edcm
-        env:
-          BRANCH: ${{ github.ref_name }}
-        run: |
+          cd edcm
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add edcm/__init__.py edcm/language/source.py edcm_msdmd.ts docs/oewn2025-full-embedding-run.md artifacts/oewn2025
+
+          if [ "$code" -ne 0 ]; then
+            mkdir -p docs
+            {
+              echo "# OEWN 2025 build failure evidence"
+              echo
+              echo "Commit: $GITHUB_SHA"
+              echo "Exit code: $code"
+              echo
+              echo '```text'
+              tail -n 300 "$LOG"
+              echo '```'
+            } > docs/oewn2025-build-failure.md
+            git add docs/oewn2025-build-failure.md edcm/__init__.py edcm/language/source.py
+            git commit -m "docs(language): record OEWN 2025 build failure evidence"
+            git push origin "HEAD:${BRANCH}"
+            exit "$code"
+          fi
+
+          rm -f docs/oewn2025-build-failure.md
+          git add edcm/__init__.py edcm/language/source.py edcm_msdmd.ts docs/oewn2025-full-embedding-run.md docs/oewn2025-build-failure.md artifacts/oewn2025
           git diff --cached --stat
           git commit -m "feat(language): materialize complete OEWN 2025 embedding run"
           git push origin "HEAD:${BRANCH}"
