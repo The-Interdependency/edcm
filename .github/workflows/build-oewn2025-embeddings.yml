@@ -1,8 +1,8 @@
 name: build OEWN 2025 embeddings
 
 on:
-  push:
-    branches: [agent/oewn2025-complete-embedding]
+  pull_request:
+    branches: [main]
     paths:
       - ".github/workflows/build-oewn2025-embeddings.yml"
       - "edcm/language/**"
@@ -25,9 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
-      - name: Check out EDCM branch
+      - name: Check out EDCM source branch
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.head_ref }}
           path: edcm
           fetch-depth: 0
 
@@ -54,7 +55,7 @@ jobs:
       - name: Execute and publish the complete run or its failure evidence
         shell: bash
         env:
-          BRANCH: ${{ github.ref_name }}
+          BRANCH: ${{ github.head_ref }}
         run: |
           set +e
           LOG="$RUNNER_TEMP/oewn2025-build.log"
