@@ -391,6 +391,150 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "engine",
+        "module_name": "language",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "EnglishEmbeddingManifest, embedding_manifest, PUBLIC_GLYPH_FLOOR_157, CompositionNode, Attestation, Soundness, LexicalEvidence, AtomicForkRelation, AtomicForkResult, GonolRegistry, compose_gonols, materialize, compare_atomic_fork, intrinsic_gonol_record, metadata_free_jsonl, write_metadata_free_gonol_list",
+        "requires": "edcm_language_manifest, edcm_language_glyph_floor, edcm_language_model, edcm_language_composition, edcm_language_artifacts",
+        "rollback": "remove package before any published artifact depends on this surface",
+        "rollout": "default_enabled",
+        "since": "2026-07-13",
+        "storage_boundary": "write",
+        "summary": "exposes the Open English WordNet-bounded dual atomic/molecular embedding manifest, public 157-glyph floor, universal composer, explicit grouping records, and metadata-free gonol artifacts",
+        "tests": "tests.test_language_embeddings",
+        "unresolved": "complete affix, root, rendering, and independent whole-word assignment datasets are not yet materialized",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/language/__init__.py",
+      "id": "edcm_language_package"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_anchor_record",
+        "module_kind": "adapter",
+        "module_name": "artifacts",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "intrinsic_gonol_record, metadata_free_jsonl, write_metadata_free_gonol_list",
+        "requires": "edcmbone_ucns_v04",
+        "rollback": "remove language embedding package before any published artifact depends on this serialization",
+        "rollout": "default_enabled",
+        "since": "2026-07-13",
+        "storage_boundary": "write",
+        "summary": "serializes ordered UCNS gonols as intrinsic-only canonical JSONL with no words, labels, evidence, source ids, or embedding classifications",
+        "tests": "tests.test_language_embeddings",
+        "unresolved": "producer signatures and authenticated transport remain outside intrinsic gonol serialization",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/language/artifacts.py",
+      "id": "edcm_language_artifacts"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "engine",
+        "module_name": "composition",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "GonolRegistry, compose_gonols, materialize, compare_atomic_fork, MissingGonolError",
+        "requires": "edcm_language_model, edcmbone_ucns_v04",
+        "rollback": "remove language embedding package before any published artifact depends on this composer",
+        "rollout": "default_enabled",
+        "since": "2026-07-13",
+        "storage_boundary": "none",
+        "summary": "materializes explicit language composition trees through one UCNS product and compares independent direct atomic gonols with molecularly generated atomic views",
+        "tests": "tests.test_language_embeddings",
+        "unresolved": "the maintained local UCNS engine is associative while explicit language grouping remains preserved as independent provenance for comparison",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/language/composition.py",
+      "id": "edcm_language_composition"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_UPPERCASE, _LOWERCASE, _DIGITS_ODD, _DIGITS_EVEN, _PAIRED_OPEN, _PAIRED_CLOSE, _UNPAIRED_ASCII, _UNPAIRED_OPS",
+        "module_kind": "canon",
+        "module_name": "glyph_floor",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "PUBLIC_GLYPH_FLOOR_157, build_public_glyph_floor_157, validate_public_glyph_floor, glyph_floor_sha256",
+        "requires": "edcm_language_manifest",
+        "rollback": "restore the prior a0-betatest source as the only authority and remove this migrated copy",
+        "rollout": "default_enabled",
+        "since": "2026-07-13",
+        "storage_boundary": "none",
+        "summary": "reproduces and validates the exact public 157-vertex glyph arrangement selected from a0-betatest for this English embedding run",
+        "tests": "tests.test_language_embeddings",
+        "unresolved": "private per-agent phase and permutation remain outside this public embedding artifact",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/language/glyph_floor.py",
+      "id": "edcm_language_glyph_floor"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "policy",
+        "module_name": "manifest",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "EnglishEmbeddingManifest, embedding_manifest, SOURCE_DICTIONARY, PUBLIC_GLYPH_FLOOR_SOURCE",
+        "requires": "none",
+        "rollback": "remove language embedding package before any published artifact depends on this manifest",
+        "rollout": "default_enabled",
+        "since": "2026-07-13",
+        "storage_boundary": "none",
+        "summary": "pins the dictionary boundary, public 157-glyph floor provenance, and dual direct/generated English embedding doctrine",
+        "tests": "tests.test_language_embeddings",
+        "unresolved": "exact independent whole-word placement law over Open English WordNet relations and senses",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/language/manifest.py",
+      "id": "edcm_language_manifest"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
+        "module_kind": "schema",
+        "module_name": "model",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "CompositionNode, Attestation, Soundness, LexicalEvidence, AtomicForkRelation, AtomicForkResult",
+        "requires": "none",
+        "rollback": "remove language embedding package before any published artifact depends on these schemas",
+        "rollout": "default_enabled",
+        "since": "2026-07-13",
+        "storage_boundary": "none",
+        "summary": "defines explicit composition trees, evidence states, and direct/generated atomic comparison records without placing linguistic metadata inside gonols",
+        "tests": "tests.test_language_embeddings",
+        "unresolved": "whether soundness will ultimately be indexed by context, technology, community, or all three",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/language/model.py",
+      "id": "edcm_language_model"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
         "internal_surface": "_record_layer, _local_provenance",
         "module_kind": "engine",
         "module_name": "layers",
@@ -820,6 +964,125 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_integrity",
       "to": "edcm_ucns_objects"
+    },
+    {
+      "from": "edcm_language_artifacts",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_artifacts",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_language_artifacts",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_artifacts",
+      "to": "edcmbone_ucns_v04"
+    },
+    {
+      "from": "edcm_language_composition",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_composition",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_language_composition",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_composition",
+      "to": "edcm_language_model"
+    },
+    {
+      "from": "edcm_language_composition",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_composition",
+      "to": "edcmbone_ucns_v04"
+    },
+    {
+      "from": "edcm_language_glyph_floor",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_glyph_floor",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_language_glyph_floor",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_glyph_floor",
+      "to": "edcm_language_manifest"
+    },
+    {
+      "from": "edcm_language_manifest",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_manifest",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_language_manifest",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_manifest",
+      "to": "none"
+    },
+    {
+      "from": "edcm_language_model",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_model",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_language_model",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_model",
+      "to": "none"
+    },
+    {
+      "from": "edcm_language_package",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_package",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_language_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_package",
+      "to": "edcm_language_artifacts"
+    },
+    {
+      "from": "edcm_language_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_package",
+      "to": "edcm_language_composition"
+    },
+    {
+      "from": "edcm_language_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_package",
+      "to": "edcm_language_glyph_floor"
+    },
+    {
+      "from": "edcm_language_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_package",
+      "to": "edcm_language_manifest"
+    },
+    {
+      "from": "edcm_language_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_package",
+      "to": "edcm_language_model"
     },
     {
       "from": "edcm_layers",
