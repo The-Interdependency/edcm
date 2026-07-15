@@ -45,11 +45,11 @@ ucns = [
   "ucns @ git+https://github.com/The-Interdependency/ucns.git@27c004b21b6d02bf3873c280ebd3158131ef87fe",
 ]
 metapat = [
-  "metapat @ git+https://github.com/The-Interdependency/metapat.git@3a096f1789432fdb931d4f1659eebf7ef321fbaa",
+  "metapat @ git+https://github.com/The-Interdependency/metapat.git@b30b1363706731d28867ef2e6366512f9254f5e8",
 ]
 full-stack = [
   "ucns @ git+https://github.com/The-Interdependency/ucns.git@27c004b21b6d02bf3873c280ebd3158131ef87fe",
-  "metapat @ git+https://github.com/The-Interdependency/metapat.git@3a096f1789432fdb931d4f1659eebf7ef321fbaa",
+  "metapat @ git+https://github.com/The-Interdependency/metapat.git@b30b1363706731d28867ef2e6366512f9254f5e8",
 ]
 
 [tool.setuptools]
