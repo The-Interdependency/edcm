@@ -19,7 +19,8 @@ from edcm.language import (
     materialize,
     metadata_free_jsonl,
 )
-from edcm.measurement.ucns.ucns_v04 import AnchorPayload, UCNSObject
+from edcm.language.composition import compose_gonols
+from edcm.measurement.ucns.ucns_v04 import AnchorPayload, UCNSObject, unit_obj
 
 
 def _leaf_gonol(position: int, face: int = 0) -> UCNSObject:
@@ -86,6 +87,12 @@ def test_every_declared_affix_and_root_can_enter_the_same_composer() -> None:
     generated = materialize(tree, registry)
     assert isinstance(generated, UCNSObject)
     assert tuple(tree.leaves()) == ("il-", "proper", "-ly", "-es")
+
+
+def test_singleton_composition_preserves_identity_without_unit_copy() -> None:
+    gonol = _leaf_gonol(17, 1)
+    assert compose_gonols((gonol,)) is gonol
+    assert compose_gonols(()).equivalent(unit_obj())
 
 
 def test_grouping_is_preserved_even_when_current_ucns_product_is_associative() -> None:
