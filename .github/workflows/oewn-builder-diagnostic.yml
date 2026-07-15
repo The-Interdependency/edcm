@@ -7,6 +7,8 @@ on:
       - ".github/workflows/oewn-builder-diagnostic.yml"
       - "tools/build_oewn2025_embeddings.py"
       - "edcm/language/**"
+      - "tests/test_language_embeddings.py"
+      - "tests/test_language_full_run.py"
 
 permissions:
   contents: read
@@ -39,6 +41,34 @@ jobs:
       - name: Install builder dependencies
         working-directory: edcm
         run: python -m pip install -e . pytest PyYAML
+
+      - name: Capture focused repair contracts
+        working-directory: edcm
+        shell: bash
+        run: |
+          set +e
+          python -m pytest \
+            tests/test_language_embeddings.py \
+            tests/test_language_full_run.py \
+            -q > "$RUNNER_TEMP/oewn-repair-tests.log" 2>&1
+          status=$?
+          cat "$RUNNER_TEMP/oewn-repair-tests.log"
+          printf '%s\n' "$status" > "$RUNNER_TEMP/oewn-repair-tests.status"
+          exit 0
+
+      - name: Upload focused repair evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: oewn-repair-tests
+          path: |
+            ${{ runner.temp }}/oewn-repair-tests.log
+            ${{ runner.temp }}/oewn-repair-tests.status
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Preserve focused repair contract status
+        run: test "$(cat "$RUNNER_TEMP/oewn-repair-tests.status")" = "0"
 
       - name: Run bounded full-corpus diagnostic
         working-directory: edcm
