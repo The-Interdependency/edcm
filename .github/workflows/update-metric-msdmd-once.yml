@@ -1,0 +1,41 @@
+name: temporary metric MSDMD materialization
+
+on:
+  push:
+    branches:
+      - agent/ucns-resolved-metric-objects
+    paths:
+      - .github/workflows/update-metric-msdmd-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out EDCM branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ucns-resolved-metric-objects
+          fetch-depth: 0
+      - name: Check out pinned skill-lib
+        uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/skill-lib
+          ref: d0036c6c3a449f5a1213e3289dceb1c43263cb52
+          path: skill-lib
+      - name: Generate exact canonical collection
+        run: |
+          PYTHONPATH=skill-lib python skill-lib/msdmd/collect.py \
+            --root . \
+            --repo The-Interdependency/edcm \
+            --out edcm_msdmd.ts
+      - name: Commit generated collection only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add edcm_msdmd.ts
+          git diff --cached --exit-code && exit 0
+          git commit -m "build(metadata): regenerate metric resolver collection"
+          git push origin HEAD:agent/ucns-resolved-metric-objects
