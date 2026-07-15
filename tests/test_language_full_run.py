@@ -14,6 +14,7 @@ from edcm.language.placement import (
     assign_direct_atomic_gonol,
     assign_root_gonol,
     compare_gonols,
+    gonol_sha256,
     superpose_gonols,
 )
 from edcm.language.rendering import inverse_affix_candidates, render_affix_candidates
@@ -73,6 +74,48 @@ def test_complete_graph_preserves_multiple_affix_readings() -> None:
     assert len(graph.immediate("faster")) == 2
 
 
+def test_indexed_affix_candidates_match_brute_reversible_renderer() -> None:
+    selected = tuple(
+        _find_affix(surface)
+        for surface in ("un-", "-ness", "-ing", "-s", "-es")
+    )
+    surfaces = {
+        "happy",
+        "happiness",
+        "run",
+        "running",
+        "wolf",
+        "wolves",
+        "lock",
+        "unlock",
+    }
+    graph = build_morphology_graph(surfaces, selected)
+    surface_set = frozenset(surfaces)
+    expected: dict[str, set[tuple[str, tuple[str, ...]]]] = {}
+    for surface in surfaces:
+        rows: set[tuple[str, tuple[str, ...]]] = set()
+        for affix in selected:
+            for base in inverse_affix_candidates(surface, affix):
+                if base not in surface_set or len(base) >= len(surface):
+                    continue
+                affix_leaf = f"affix:{affix.affix_id}"
+                surface_leaf = f"surface:{base}"
+                parts = (
+                    (affix_leaf, surface_leaf)
+                    if affix.kind == "prefix"
+                    else (surface_leaf, affix_leaf)
+                )
+                rows.add((affix.affix_id, parts))
+        if rows:
+            expected[surface] = rows
+    observed = {
+        surface: {(item.affix_id or "", item.parts) for item in graph.immediate(surface)}
+        for surface in surfaces
+        if graph.immediate(surface)
+    }
+    assert observed == expected
+
+
 def test_direct_atomic_and_molecular_placements_are_independent() -> None:
     lexeme = _lexeme("help")
     synset = SynsetRecord(
@@ -95,6 +138,22 @@ def test_alternative_superposition_retains_payloads() -> None:
     combined = superpose_gonols((a, b))
     assert len(combined.anchors_pos) == 3
     assert sum(anchor.payload is not None for anchor in combined.anchors_pos) == 2
+
+
+def test_streaming_gonol_hash_matches_legacy_canonical_record() -> None:
+    root = assign_root_gonol("lock", (_lexeme("lock"),))
+    affix = assign_affix_gonol(_find_affix("un-"))
+    combined = superpose_gonols((root, affix))
+    legacy = sha256(
+        json.dumps(
+            intrinsic_gonol_record(combined),
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        ).encode("utf-8")
+    ).hexdigest()
+    assert gonol_sha256(combined) == legacy
+    assert gonol_sha256(combined) == legacy
 
 
 def test_intrinsic_record_contains_no_linguistic_metadata() -> None:
