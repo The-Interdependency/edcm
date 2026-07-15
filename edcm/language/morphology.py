@@ -13,7 +13,7 @@ hyphenated compounds are recursively composed by the same operation.
 #   summary: derives the run root set and the complete affix/compound decomposition DAG for every OEWN surface while preserving all valid alternatives
 #   owner: Erin Spencer
 #   public_surface: Decomposition, MorphologyGraph, build_morphology_graph
-#   internal_surface: _compound_parts, _alternative_key, _affix_candidate_index, _candidate_affixes
+#   internal_surface: _compound_parts, _alternative_key
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
