@@ -14,7 +14,7 @@ algorithm identity while retaining deterministic reproducibility.
 #   summary: assigns glyph-grounded affix/root gonols, independently assigns whole-word relation gonols, superposes molecular alternatives, and computes fork comparison invariants
 #   owner: Erin Spencer
 #   public_surface: gonol_sha256, assign_affix_gonol, assign_root_gonol, assign_direct_atomic_gonol, superpose_gonols, compare_gonols
-#   internal_surface: _canonical_bytes, _update_intrinsic_hash, _GONOL_HASH_CACHE, _feature_payload, _vertices, _glyph_vertex, _payload_depth, _theta_set
+#   internal_surface: _canonical_bytes, _feature_payload, _vertices, _glyph_vertex, _payload_depth, _theta_set
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
@@ -23,7 +23,7 @@ algorithm identity while retaining deterministic reproducibility.
 #   tests: tests.test_language_full_run
 #   rollout: default_enabled
 #   rollback: restore the prior placement version and regenerate all gonol artifacts
-#   requires: edcm_language_affixes, edcm_language_glyph_floor, edcm_language_source, edcmbone_ucns_v04
+#   requires: edcm_language_affixes, edcm_language_glyph_floor, edcm_language_source, edcm_language_artifacts, edcmbone_ucns_v04
 #   since: 2026-07-13
 #   unresolved: empirical interpretation of observed direct/generated distances remains a measurement question rather than a placement assumption
 # === END MODULE_BUILD ===
