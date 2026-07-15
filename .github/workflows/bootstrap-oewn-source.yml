@@ -29,7 +29,7 @@ jobs:
         with:
           repository: The-Interdependency/skill-lib
           ref: d0036c6c3a449f5a1213e3289dceb1c43263cb52
-          path: ../skill-lib
+          path: skill-lib
 
       - name: Reconcile committed source declarations
         run: |
@@ -76,7 +76,7 @@ jobs:
 
       - name: Regenerate exact canonical metadata
         run: |
-          PYTHONPATH=../skill-lib python ../skill-lib/msdmd/collect.py \
+          PYTHONPATH=skill-lib python skill-lib/msdmd/collect.py \
             --root . \
             --repo The-Interdependency/edcm \
             --out edcm_msdmd.ts
