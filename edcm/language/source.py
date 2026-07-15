@@ -135,7 +135,8 @@ def _load_yaml(path: Path) -> Mapping[str, Any]:
         import yaml
     except ImportError as exc:  # pragma: no cover - exercised by builder environment
         raise RuntimeError("PyYAML is required to construct OEWN artifacts") from exc
-    value = yaml.safe_load(path.read_text(encoding="utf-8"))
+    loader = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
+    value = yaml.load(path.read_text(encoding="utf-8"), Loader=loader)
     if value is None:
         return {}
     if not isinstance(value, Mapping):
@@ -272,10 +273,10 @@ def load_oewn_2025(source_root: str | Path) -> WordnetSnapshot:
         source_tree_sha256=_source_tree_digest(all_yaml, root),
         source_file_count=len(all_yaml),
     )
-    if len(snapshot.lemmas) != OEWN_EXPECTED_WORD_COUNT:
+    if len(snapshot.lexemes) != OEWN_EXPECTED_WORD_COUNT:
         raise ValueError(
-            "OEWN 2025 word count mismatch: "
-            f"expected {OEWN_EXPECTED_WORD_COUNT}, got {len(snapshot.lemmas)}"
+            "OEWN 2025 lexical-entry count mismatch: "
+            f"expected {OEWN_EXPECTED_WORD_COUNT}, got {len(snapshot.lexemes)}"
         )
     if len(snapshot.synsets) != OEWN_EXPECTED_SYNSET_COUNT:
         raise ValueError(

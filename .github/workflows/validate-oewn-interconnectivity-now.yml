@@ -1,0 +1,206 @@
+name: validate OEWN interconnectivity now
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/validate-oewn-interconnectivity-now.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Check out EDCM repair source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: edcm
+          fetch-depth: 0
+
+      - name: Check out exact Open English WordNet release
+        uses: actions/checkout@v4
+        with:
+          repository: globalwordnet/english-wordnet
+          ref: 2025-edition
+          path: oewn
+          fetch-depth: 0
+
+      - name: Check out pinned canonical skill-lib
+        uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/skill-lib
+          ref: d0036c6c3a449f5a1213e3289dceb1c43263cb52
+          path: skill-lib
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install builder and test dependencies
+        working-directory: edcm
+        run: python -m pip install -e . pytest PyYAML build twine
+
+      - name: Run focused language contracts
+        working-directory: edcm
+        run: pytest tests/test_language_embeddings.py tests/test_language_full_run.py -q
+
+      - name: Verify exact upstream identities
+        run: |
+          test "$(git -C oewn rev-parse HEAD)" = "dc343f2683279ecbb13fab4e2fd778d7b162d287"
+          test "$(git -C oewn rev-list -n 1 2025-edition)" = "dc343f2683279ecbb13fab4e2fd778d7b162d287"
+          test "$(git -C skill-lib rev-parse HEAD)" = "d0036c6c3a449f5a1213e3289dceb1c43263cb52"
+
+      - name: Build complete atomic and molecular artifacts
+        working-directory: edcm
+        shell: bash
+        run: |
+          set -o pipefail
+          rm -rf artifacts/oewn2025
+          python tools/build_oewn2025_embeddings.py \
+            --source-repo ../oewn \
+            --output-root artifacts \
+            2>&1 | tee "$RUNNER_TEMP/oewn2025-corpus-build.log"
+
+      - name: Upload corpus-build failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: oewn2025-interconnectivity-failure
+          path: ${{ runner.temp }}/oewn2025-corpus-build.log
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Write cross-repository stack manifest
+        working-directory: edcm
+        run: |
+          python - <<'PY'
+          from hashlib import sha256
+          import json
+          from pathlib import Path
+          import re
+          import subprocess
+          import tomllib
+
+          def git_commit(path: str) -> str:
+              return subprocess.check_output(
+                  ["git", "-C", path, "rev-parse", "HEAD"],
+                  text=True,
+              ).strip()
+
+          project = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
+          extras = project["project"]["optional-dependencies"]
+
+          def pinned_commit(extra: str, repository: str) -> str:
+              for value in extras[extra]:
+                  if repository in value:
+                      match = re.search(r"@([0-9a-f]{40})$", value)
+                      if match:
+                          return match.group(1)
+              raise ValueError(f"missing exact {repository} pin in {extra}")
+
+          repositories = [
+              {
+                  "repository": "The-Interdependency/edcm",
+                  "commit": git_commit("."),
+                  "authority": "measurement and English projection",
+                  "relation": "artifact producer",
+              },
+              {
+                  "repository": "globalwordnet/english-wordnet",
+                  "commit": git_commit("../oewn"),
+                  "authority": "dictionary evidence source",
+                  "relation": "pinned external evidence",
+              },
+              {
+                  "repository": "The-Interdependency/skill-lib",
+                  "commit": git_commit("../skill-lib"),
+                  "authority": "reusable build and evidence discipline",
+                  "relation": "coordination contract",
+              },
+              {
+                  "repository": "The-Interdependency/ucns",
+                  "commit": pinned_commit("ucns", "The-Interdependency/ucns"),
+                  "authority": "mathematical representation",
+                  "relation": "pinned geometry producer",
+              },
+              {
+                  "repository": "The-Interdependency/metapat",
+                  "commit": pinned_commit("metapat", "The-Interdependency/metapat"),
+                  "authority": "semantic authority",
+                  "relation": "pinned meaning producer",
+              },
+          ]
+          boundaries = {
+              "authority_transfer": False,
+              "proof_status_transfer": False,
+              "measurement_status_transfer": False,
+              "semantic_mapping": "external-provenance",
+              "agent_scope": "cross-repository-work-graph",
+              "hmmm": [
+                  "Interconnectivity means one repository / one AI is not an adequate operating model.",
+                  "Repositories retain separate authority while agents coordinate through this exact identity graph.",
+              ],
+          }
+          identity = {"repositories": repositories, "boundaries": boundaries}
+          canonical = json.dumps(identity, sort_keys=True, separators=(",", ":")).encode("utf-8")
+          manifest = {
+              "schema": "the-interdependency.stack-manifest",
+              "version": "1.0.0",
+              "work_graph_sha256": sha256(canonical).hexdigest(),
+              **identity,
+          }
+          path = Path("artifacts/oewn2025/stack-manifest.json")
+          path.write_text(
+              json.dumps(manifest, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Copy attribution and seal artifact hashes
+        working-directory: edcm
+        run: python tools/finalize_oewn2025_artifacts.py --source-repo ../oewn --artifact-root artifacts/oewn2025
+
+      - name: Enforce artifact-size boundary
+        working-directory: edcm
+        run: |
+          oversized=$(find artifacts/oewn2025 -type f -size +95M -print)
+          if [ -n "$oversized" ]; then
+            echo "Artifacts exceed the 95 MiB repository safety boundary:"
+            echo "$oversized"
+            exit 1
+          fi
+          du -sh artifacts/oewn2025
+          find artifacts/oewn2025 -maxdepth 1 -type f -printf '%f %s bytes\n' | sort
+
+      - name: Run complete tests with generated artifacts
+        working-directory: edcm
+        run: pytest -q
+
+      - name: Build and inspect distributions
+        working-directory: edcm
+        run: |
+          rm -rf dist build
+          python -m build
+          python -m twine check dist/*
+
+      - name: Verify canonical metadata collection
+        run: |
+          PYTHONPATH=skill-lib python skill-lib/msdmd/collect.py \
+            --root edcm \
+            --repo The-Interdependency/edcm \
+            --out "$RUNNER_TEMP/edcm_msdmd.ts"
+          cmp "$RUNNER_TEMP/edcm_msdmd.ts" edcm/edcm_msdmd.ts
+
+      - name: Upload validated corpus artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: oewn2025-interconnectivity-validated
+          path: edcm/artifacts/oewn2025
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7

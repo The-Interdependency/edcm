@@ -7,28 +7,34 @@ on:
       - ".github/workflows/build-oewn2025-embeddings.yml"
       - "edcm/language/**"
       - "edcm/__init__.py"
+      - "edcm_msdmd.ts"
       - "tools/build_oewn2025_embeddings.py"
       - "tools/finalize_oewn2025_artifacts.py"
       - "tests/test_language_full_run.py"
   workflow_dispatch:
+    inputs:
+      target_branch:
+        description: Existing non-main branch that will receive generated artifacts
+        required: true
+        type: string
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: oewn2025-complete-embedding
-  cancel-in-progress: true
+  group: oewn2025-${{ github.event_name }}-${{ github.event.pull_request.number || inputs.target_branch || github.ref_name }}
+  cancel-in-progress: false
 
 jobs:
-  build:
-    if: github.actor != 'github-actions[bot]'
+  validate:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
-      - name: Check out EDCM source branch
+      - name: Check out EDCM pull-request source
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.event.pull_request.head.sha }}
           path: edcm
           fetch-depth: 0
 
@@ -56,51 +62,7 @@ jobs:
         working-directory: edcm
         run: python -m pip install -e . pytest PyYAML build twine
 
-      - name: Reconcile source and public-package declarations
-        working-directory: edcm
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          source = Path("edcm/language/source.py")
-          text = source.read_text(encoding="utf-8")
-          text = text.replace(
-              "value = yaml.safe_load(path.read_text(encoding=\"utf-8\"))",
-              "loader = getattr(yaml, \"CSafeLoader\", yaml.SafeLoader)\n"
-              "    value = yaml.load(path.read_text(encoding=\"utf-8\"), Loader=loader)",
-          )
-          text = text.replace(
-              "if len(snapshot.lemmas) != OEWN_EXPECTED_WORD_COUNT:\n"
-              "        raise ValueError(\n"
-              "            \"OEWN 2025 word count mismatch: \"\n"
-              "            f\"expected {OEWN_EXPECTED_WORD_COUNT}, got {len(snapshot.lemmas)}\"\n"
-              "        )",
-              "if len(snapshot.lexemes) != OEWN_EXPECTED_WORD_COUNT:\n"
-              "        raise ValueError(\n"
-              "            \"OEWN 2025 lexical-entry count mismatch: \"\n"
-              "            f\"expected {OEWN_EXPECTED_WORD_COUNT}, got {len(snapshot.lexemes)}\"\n"
-              "        )",
-          )
-          source.write_text(text, encoding="utf-8")
-
-          package = Path("edcm/__init__.py")
-          text = package.read_text(encoding="utf-8")
-          if "from . import language" not in text:
-              text = text.replace("from . import measurement\n", "from . import measurement\nfrom . import language\n")
-          if '    "language",\n' not in text:
-              text = text.replace('    "measurement",\n', '    "measurement",\n    "language",\n')
-          text = text.replace(
-              "measurement, edcmucns, CanonLoader",
-              "measurement, language, edcmucns, CanonLoader",
-          )
-          text = text.replace(
-              "edcm_ucns_objects, edcmucns_package",
-              "edcm_ucns_objects, edcmucns_package, edcm_language_package",
-          )
-          package.write_text(text, encoding="utf-8")
-          PY
-
-      - name: Run focused contracts
+      - name: Run focused language contracts
         working-directory: edcm
         run: pytest tests/test_language_embeddings.py tests/test_language_full_run.py -q
 
@@ -108,10 +70,9 @@ jobs:
         run: |
           test "$(git -C oewn rev-parse HEAD)" = "dc343f2683279ecbb13fab4e2fd778d7b162d287"
           test "$(git -C oewn rev-list -n 1 2025-edition)" = "dc343f2683279ecbb13fab4e2fd778d7b162d287"
+          test "$(git -C skill-lib rev-parse HEAD)" = "d0036c6c3a449f5a1213e3289dceb1c43263cb52"
 
       - name: Build complete atomic and molecular artifacts
-        id: corpus_build
-        continue-on-error: true
         working-directory: edcm
         shell: bash
         run: |
@@ -121,31 +82,305 @@ jobs:
             --output-root artifacts \
             2>&1 | tee "$RUNNER_TEMP/oewn2025-corpus-build.log"
 
-      - name: Publish corpus-build failure evidence
-        if: steps.corpus_build.outcome == 'failure'
-        working-directory: edcm
-        env:
-          BRANCH: ${{ github.head_ref }}
-        run: |
-          mkdir -p docs
-          {
-            echo "# OEWN 2025 corpus-build failure evidence"
-            echo
-            echo "Commit: $GITHUB_SHA"
-            echo
-            echo '```text'
-            tail -n 400 "$RUNNER_TEMP/oewn2025-corpus-build.log"
-            echo '```'
-          } > docs/oewn2025-build-failure.md
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/oewn2025-build-failure.md edcm/__init__.py edcm/language/source.py
-          git commit -m "docs(language): record OEWN 2025 corpus-build failure"
-          git push origin "HEAD:${BRANCH}"
+      - name: Upload corpus-build failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: oewn2025-corpus-build-failure
+          path: ${{ runner.temp }}/oewn2025-corpus-build.log
+          if-no-files-found: warn
+          retention-days: 14
 
-      - name: Stop after corpus-build failure
-        if: steps.corpus_build.outcome == 'failure'
-        run: exit 1
+      - name: Write cross-repository stack manifest
+        working-directory: edcm
+        run: |
+          python - <<'PY'
+          from hashlib import sha256
+          import json
+          from pathlib import Path
+          import re
+          import subprocess
+          import tomllib
+
+          def git_commit(path: str) -> str:
+              return subprocess.check_output(
+                  ["git", "-C", path, "rev-parse", "HEAD"],
+                  text=True,
+              ).strip()
+
+          project = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
+          extras = project["project"]["optional-dependencies"]
+
+          def pinned_commit(extra: str, repository: str) -> str:
+              for value in extras[extra]:
+                  if repository in value:
+                      match = re.search(r"@([0-9a-f]{40})$", value)
+                      if match:
+                          return match.group(1)
+              raise ValueError(f"missing exact {repository} pin in {extra}")
+
+          repositories = [
+              {
+                  "repository": "The-Interdependency/edcm",
+                  "commit": git_commit("."),
+                  "authority": "measurement and English projection",
+                  "relation": "artifact producer",
+              },
+              {
+                  "repository": "globalwordnet/english-wordnet",
+                  "commit": git_commit("../oewn"),
+                  "authority": "dictionary evidence source",
+                  "relation": "pinned external evidence",
+              },
+              {
+                  "repository": "The-Interdependency/skill-lib",
+                  "commit": git_commit("../skill-lib"),
+                  "authority": "reusable build and evidence discipline",
+                  "relation": "coordination contract",
+              },
+              {
+                  "repository": "The-Interdependency/ucns",
+                  "commit": pinned_commit("ucns", "The-Interdependency/ucns"),
+                  "authority": "mathematical representation",
+                  "relation": "pinned geometry producer",
+              },
+              {
+                  "repository": "The-Interdependency/metapat",
+                  "commit": pinned_commit("metapat", "The-Interdependency/metapat"),
+                  "authority": "semantic authority",
+                  "relation": "pinned meaning producer",
+              },
+          ]
+          boundaries = {
+              "authority_transfer": False,
+              "proof_status_transfer": False,
+              "measurement_status_transfer": False,
+              "semantic_mapping": "external-provenance",
+              "agent_scope": "cross-repository-work-graph",
+              "hmmm": [
+                  "Interconnectivity means one repository / one AI is not an adequate operating model.",
+                  "Repositories retain separate authority while agents coordinate through this exact identity graph.",
+              ],
+          }
+          identity = {"repositories": repositories, "boundaries": boundaries}
+          canonical = json.dumps(identity, sort_keys=True, separators=(",", ":")).encode("utf-8")
+          manifest = {
+              "schema": "the-interdependency.stack-manifest",
+              "version": "1.0.0",
+              "work_graph_sha256": sha256(canonical).hexdigest(),
+              **identity,
+          }
+          path = Path("artifacts/oewn2025/stack-manifest.json")
+          path.write_text(
+              json.dumps(manifest, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Copy attribution and seal artifact hashes
+        working-directory: edcm
+        run: python tools/finalize_oewn2025_artifacts.py --source-repo ../oewn --artifact-root artifacts/oewn2025
+
+      - name: Enforce artifact-size boundary
+        working-directory: edcm
+        run: |
+          oversized=$(find artifacts/oewn2025 -type f -size +95M -print)
+          if [ -n "$oversized" ]; then
+            echo "Artifacts exceed the 95 MiB repository safety boundary:"
+            echo "$oversized"
+            exit 1
+          fi
+          du -sh artifacts/oewn2025
+          find artifacts/oewn2025 -maxdepth 1 -type f -printf '%f %s bytes\n' | sort
+
+      - name: Run complete tests with generated artifacts
+        working-directory: edcm
+        run: pytest -q
+
+      - name: Build and inspect distributions
+        working-directory: edcm
+        run: |
+          rm -rf dist build
+          python -m build
+          python -m twine check dist/*
+
+      - name: Verify canonical metadata collection
+        run: |
+          PYTHONPATH=skill-lib python skill-lib/msdmd/collect.py \
+            --root edcm \
+            --repo The-Interdependency/edcm \
+            --out "$RUNNER_TEMP/edcm_msdmd.ts"
+          cmp "$RUNNER_TEMP/edcm_msdmd.ts" edcm/edcm_msdmd.ts
+
+      - name: Upload validated corpus artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: oewn2025-validated-artifacts
+          path: edcm/artifacts/oewn2025
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+
+  materialize:
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Reject direct materialization to main
+        env:
+          TARGET_BRANCH: ${{ inputs.target_branch }}
+        run: |
+          test -n "$TARGET_BRANCH"
+          test "$TARGET_BRANCH" != "main"
+
+      - name: Check out target EDCM branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target_branch }}
+          path: edcm
+          fetch-depth: 0
+
+      - name: Check out exact Open English WordNet release
+        uses: actions/checkout@v4
+        with:
+          repository: globalwordnet/english-wordnet
+          ref: 2025-edition
+          path: oewn
+          fetch-depth: 0
+
+      - name: Check out pinned canonical skill-lib
+        uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/skill-lib
+          ref: d0036c6c3a449f5a1213e3289dceb1c43263cb52
+          path: skill-lib
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install builder and test dependencies
+        working-directory: edcm
+        run: python -m pip install -e . pytest PyYAML build twine
+
+      - name: Run focused language contracts
+        working-directory: edcm
+        run: pytest tests/test_language_embeddings.py tests/test_language_full_run.py -q
+
+      - name: Verify exact upstream identities
+        run: |
+          test "$(git -C oewn rev-parse HEAD)" = "dc343f2683279ecbb13fab4e2fd778d7b162d287"
+          test "$(git -C oewn rev-list -n 1 2025-edition)" = "dc343f2683279ecbb13fab4e2fd778d7b162d287"
+          test "$(git -C skill-lib rev-parse HEAD)" = "d0036c6c3a449f5a1213e3289dceb1c43263cb52"
+
+      - name: Build complete atomic and molecular artifacts
+        working-directory: edcm
+        shell: bash
+        run: |
+          set -o pipefail
+          rm -rf artifacts/oewn2025
+          python tools/build_oewn2025_embeddings.py \
+            --source-repo ../oewn \
+            --output-root artifacts \
+            2>&1 | tee "$RUNNER_TEMP/oewn2025-corpus-build.log"
+
+      - name: Upload corpus-build failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: oewn2025-materialization-failure
+          path: ${{ runner.temp }}/oewn2025-corpus-build.log
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Write cross-repository stack manifest
+        working-directory: edcm
+        run: |
+          python - <<'PY'
+          from hashlib import sha256
+          import json
+          from pathlib import Path
+          import re
+          import subprocess
+          import tomllib
+
+          def git_commit(path: str) -> str:
+              return subprocess.check_output(
+                  ["git", "-C", path, "rev-parse", "HEAD"],
+                  text=True,
+              ).strip()
+
+          project = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
+          extras = project["project"]["optional-dependencies"]
+
+          def pinned_commit(extra: str, repository: str) -> str:
+              for value in extras[extra]:
+                  if repository in value:
+                      match = re.search(r"@([0-9a-f]{40})$", value)
+                      if match:
+                          return match.group(1)
+              raise ValueError(f"missing exact {repository} pin in {extra}")
+
+          repositories = [
+              {
+                  "repository": "The-Interdependency/edcm",
+                  "commit": git_commit("."),
+                  "authority": "measurement and English projection",
+                  "relation": "artifact producer",
+              },
+              {
+                  "repository": "globalwordnet/english-wordnet",
+                  "commit": git_commit("../oewn"),
+                  "authority": "dictionary evidence source",
+                  "relation": "pinned external evidence",
+              },
+              {
+                  "repository": "The-Interdependency/skill-lib",
+                  "commit": git_commit("../skill-lib"),
+                  "authority": "reusable build and evidence discipline",
+                  "relation": "coordination contract",
+              },
+              {
+                  "repository": "The-Interdependency/ucns",
+                  "commit": pinned_commit("ucns", "The-Interdependency/ucns"),
+                  "authority": "mathematical representation",
+                  "relation": "pinned geometry producer",
+              },
+              {
+                  "repository": "The-Interdependency/metapat",
+                  "commit": pinned_commit("metapat", "The-Interdependency/metapat"),
+                  "authority": "semantic authority",
+                  "relation": "pinned meaning producer",
+              },
+          ]
+          boundaries = {
+              "authority_transfer": False,
+              "proof_status_transfer": False,
+              "measurement_status_transfer": False,
+              "semantic_mapping": "external-provenance",
+              "agent_scope": "cross-repository-work-graph",
+              "hmmm": [
+                  "Interconnectivity means one repository / one AI is not an adequate operating model.",
+                  "Repositories retain separate authority while agents coordinate through this exact identity graph.",
+              ],
+          }
+          identity = {"repositories": repositories, "boundaries": boundaries}
+          canonical = json.dumps(identity, sort_keys=True, separators=(",", ":")).encode("utf-8")
+          manifest = {
+              "schema": "the-interdependency.stack-manifest",
+              "version": "1.0.0",
+              "work_graph_sha256": sha256(canonical).hexdigest(),
+              **identity,
+          }
+          path = Path("artifacts/oewn2025/stack-manifest.json")
+          path.write_text(
+              json.dumps(manifest, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+              encoding="utf-8",
+          )
+          PY
 
       - name: Copy attribution and seal artifact hashes
         working-directory: edcm
@@ -190,12 +425,14 @@ jobs:
 
           summary = json.loads(Path("artifacts/oewn2025/summary.json").read_text(encoding="utf-8"))
           source = json.loads(Path("artifacts/oewn2025/source-manifest.json").read_text(encoding="utf-8"))
+          stack = json.loads(Path("artifacts/oewn2025/stack-manifest.json").read_text(encoding="utf-8"))
           lines = [
               "# Open English WordNet 2025 full embedding run",
               "",
-              "Status: **complete and generated**",
+              "Status: **complete, generated, and cross-repository identified**",
               "",
               f"Source: `globalwordnet/english-wordnet@{source['commit']}` (`2025-edition`)",
+              f"Work graph: `{stack['work_graph_sha256']}`",
               "",
               f"- lexical entries: {source['lexical_entry_count']:,}",
               f"- unique dictionary lemmas: {source['unique_lemma_count']:,}",
@@ -213,19 +450,23 @@ jobs:
               "## hmmm",
               "",
               "Empirical interpretation of the fork distribution and corpus-scale phrase/sentence/paragraph runs remain research, not missing construction.",
+              "Interconnectivity is carried by the exact stack manifest; repository boundaries remain authority boundaries, not agent boundaries.",
           ]
-          Path("docs/oewn2025-full-embedding-run.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+          Path("docs/oewn2025-full-embedding-run.md").write_text(
+              "\n".join(lines) + "\n",
+              encoding="utf-8",
+          )
           PY
 
-      - name: Commit completed run
+      - name: Commit completed materialization
         working-directory: edcm
         env:
-          BRANCH: ${{ github.head_ref }}
+          TARGET_BRANCH: ${{ inputs.target_branch }}
         run: |
           rm -f docs/oewn2025-build-failure.md
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add edcm/__init__.py edcm/language/source.py edcm_msdmd.ts docs/oewn2025-full-embedding-run.md docs/oewn2025-build-failure.md artifacts/oewn2025
+          git add edcm_msdmd.ts docs/oewn2025-full-embedding-run.md docs/oewn2025-build-failure.md artifacts/oewn2025
           git diff --cached --stat
           git commit -m "feat(language): materialize complete OEWN 2025 embedding run"
-          git push origin "HEAD:${BRANCH}"
+          git push origin "HEAD:${TARGET_BRANCH}"
