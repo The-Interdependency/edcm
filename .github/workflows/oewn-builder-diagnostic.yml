@@ -1,0 +1,102 @@
+name: temporary OEWN builder diagnostic
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/oewn-builder-diagnostic.yml"
+      - "tools/build_oewn2025_embeddings.py"
+      - "edcm/language/**"
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out EDCM diagnostic source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: edcm
+          fetch-depth: 0
+
+      - name: Check out exact Open English WordNet release
+        uses: actions/checkout@v4
+        with:
+          repository: globalwordnet/english-wordnet
+          ref: 2025-edition
+          path: oewn
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install builder dependencies
+        working-directory: edcm
+        run: python -m pip install -e . pytest PyYAML
+
+      - name: Run bounded full-corpus diagnostic
+        working-directory: edcm
+        shell: bash
+        run: |
+          set +e
+          {
+            echo "=== host ==="
+            date -u
+            uname -a
+            free -h
+            df -h .
+            ulimit -a
+            echo "=== build ==="
+          } > "$RUNNER_TEMP/oewn-builder-diagnostic.log"
+
+          /usr/bin/time -v timeout --signal=TERM --kill-after=30 480 \
+            python -u - <<'PY' \
+            >> "$RUNNER_TEMP/oewn-builder-diagnostic.log" 2>&1
+          import faulthandler
+          from pathlib import Path
+
+          from tools.build_oewn2025_embeddings import build
+
+          faulthandler.enable()
+          faulthandler.dump_traceback_later(60, repeat=True)
+          try:
+              manifest = build(Path("../oewn"), Path("artifacts"))
+              print("BUILD_COMPLETE", manifest["summary"], flush=True)
+          finally:
+              faulthandler.cancel_dump_traceback_later()
+          PY
+          status=$?
+
+          {
+            echo "=== result ==="
+            echo "exit_status=$status"
+            date -u
+            free -h
+            df -h .
+            echo "=== partial artifact sizes ==="
+            du -ah artifacts/oewn2025 2>/dev/null | sort -h | tail -100 || true
+            echo "=== partial file inventory ==="
+            find artifacts/oewn2025 -maxdepth 1 -type f -printf '%f %s bytes\n' 2>/dev/null | sort || true
+          } >> "$RUNNER_TEMP/oewn-builder-diagnostic.log"
+          printf '%s\n' "$status" > "$RUNNER_TEMP/oewn-builder-diagnostic.status"
+          exit 0
+
+      - name: Upload diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: oewn-builder-diagnostic
+          path: |
+            ${{ runner.temp }}/oewn-builder-diagnostic.log
+            ${{ runner.temp }}/oewn-builder-diagnostic.status
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Preserve diagnostic exit status
+        run: test "$(cat "$RUNNER_TEMP/oewn-builder-diagnostic.status")" = "0"
