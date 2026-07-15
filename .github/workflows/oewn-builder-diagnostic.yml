@@ -87,20 +87,27 @@ jobs:
 
           /usr/bin/time -v timeout --signal=TERM --kill-after=30 480 \
             python -u - <<'PY' \
-            >> "$RUNNER_TEMP/oewn-builder-diagnostic.log" 2>&1
-          import faulthandler
+            >> "$RUNNER_TEMP/oewn-builder-diagnostic.log" 2>&1 &
           from pathlib import Path
 
           from tools.build_oewn2025_embeddings import build
 
-          faulthandler.enable()
-          faulthandler.dump_traceback_later(60, repeat=True)
-          try:
-              manifest = build(Path("../oewn"), Path("artifacts"))
-              print("BUILD_COMPLETE", manifest["summary"], flush=True)
-          finally:
-              faulthandler.cancel_dump_traceback_later()
+          manifest = build(Path("../oewn"), Path("artifacts"))
+          print("BUILD_COMPLETE", manifest["summary"], flush=True)
           PY
+          build_pid=$!
+
+          while kill -0 "$build_pid" 2>/dev/null; do
+            sleep 60
+            {
+              echo "=== sample ==="
+              date -u
+              ps -eo pid,ppid,etime,rss,vsz,%cpu,cmd --sort=-rss | head -20
+              free -h
+              df -h .
+            } >> "$RUNNER_TEMP/oewn-builder-diagnostic.log"
+          done
+          wait "$build_pid"
           status=$?
 
           {
