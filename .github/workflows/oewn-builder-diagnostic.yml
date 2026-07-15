@@ -97,7 +97,11 @@ jobs:
           PY
           build_pid=$!
 
-          while kill -0 "$build_pid" 2>/dev/null; do
+          while true; do
+            state="$(ps -o stat= -p "$build_pid" 2>/dev/null | tr -d ' ' || true)"
+            if [ -z "$state" ] || [[ "$state" == Z* ]]; then
+              break
+            fi
             sleep 60
             {
               echo "=== sample ==="
