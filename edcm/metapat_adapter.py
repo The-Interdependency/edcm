@@ -31,7 +31,7 @@ producer schema or convert semantic labels into measured values.
 #   rollback: remove module and restore METAPAT-unavailable status in layer assembly
 #   requires: optional metapat package
 #   since: 2026-07-12
-#   unresolved: official serialized UCNS bridge-record ingestion remains separate; METAPAT statement-to-UCNS payload/tag semantics remain hmmm
+#   unresolved: official serialized UCNS bridge-record ingestion remains separate; payload-fork meaning requires explicit METAPAT authorization plus downstream topology lint
 # === END MODULE_BUILD ===
 
 from __future__ import annotations
@@ -45,9 +45,17 @@ METAPAT_SOURCE_REPOSITORY = "https://github.com/The-Interdependency/metapat"
 METAPAT_INSTALL_HINT = (
     "Install the canonical METAPAT package with: "
     "python -m pip install 'metapat @ git+https://github.com/"
-    "The-Interdependency/metapat.git@3a096f1789432fdb931d4f1659eebf7ef321fbaa'"
+    "The-Interdependency/metapat.git@b30b1363706731d28867ef2e6366512f9254f5e8'"
 )
-SUPPORTED_ENVELOPE_SCHEMAS = frozenset({("metapat.module-envelope", "1.0.0")})
+# Schema 1.2.0 expands producer-owned module kinds and source-reference
+# precision while retaining the consumer fields projected below. Keep 1.0.0
+# readable for already-recorded envelopes; reject unreviewed future schemas.
+SUPPORTED_ENVELOPE_SCHEMAS = frozenset(
+    {
+        ("metapat.module-envelope", "1.0.0"),
+        ("metapat.module-envelope", "1.2.0"),
+    }
+)
 _ENVELOPE_INPUT_KEYS = (
     "metapat_envelope",
     "metapat_envelope_json",
