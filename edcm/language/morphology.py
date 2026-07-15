@@ -13,7 +13,7 @@ hyphenated compounds are recursively composed by the same operation.
 #   summary: derives the run root set and the complete affix/compound decomposition DAG for every OEWN surface while preserving all valid alternatives
 #   owner: Erin Spencer
 #   public_surface: Decomposition, MorphologyGraph, build_morphology_graph
-#   internal_surface: _compound_parts, _alternative_key
+#   internal_surface: _compound_parts, _alternative_key, _affix_candidate_index, _candidate_affixes
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
@@ -29,6 +29,7 @@ hyphenated compounds are recursively composed by the same operation.
 
 from __future__ import annotations
 
+from collections import defaultdict
 from dataclasses import asdict, dataclass
 import re
 from typing import Iterable, Iterator, Mapping
@@ -126,26 +127,79 @@ def _alternative_key(item: Decomposition) -> tuple[int, int, str, tuple[str, ...
     return (-affix_length, len(item.parts), item.rule, item.parts)
 
 
+def _affix_candidate_index(
+    affixes: tuple[AffixRecord, ...],
+) -> tuple[dict[str, tuple[int, ...]], dict[str, tuple[int, ...]], tuple[int, ...], int, int]:
+    """Index candidates without changing the reversible renderer's authority.
+
+    Every non-empty inverse prefix candidate starts with the normalized bare
+    prefix, and every suffix/contraction candidate ends with its normalized bare
+    token, including the codified spelling transformations. Unknown future kinds
+    remain in the residual full-check set.
+    """
+
+    prefix: dict[str, list[int]] = defaultdict(list)
+    suffix: dict[str, list[int]] = defaultdict(list)
+    residual: list[int] = []
+    max_prefix = 0
+    max_suffix = 0
+    for index, affix in enumerate(affixes):
+        token = normalize_lemma(affix.bare)
+        if not token:
+            residual.append(index)
+        elif affix.kind == "prefix":
+            prefix[token].append(index)
+            max_prefix = max(max_prefix, len(token))
+        elif affix.kind in {"suffix", "contraction"}:
+            suffix[token].append(index)
+            max_suffix = max(max_suffix, len(token))
+        else:
+            residual.append(index)
+    return (
+        {token: tuple(values) for token, values in prefix.items()},
+        {token: tuple(values) for token, values in suffix.items()},
+        tuple(residual),
+        max_prefix,
+        max_suffix,
+    )
+
+
+def _candidate_affixes(
+    surface: str,
+    affixes: tuple[AffixRecord, ...],
+    index: tuple[dict[str, tuple[int, ...]], dict[str, tuple[int, ...]], tuple[int, ...], int, int],
+) -> Iterator[AffixRecord]:
+    prefix, suffix, residual, max_prefix, max_suffix = index
+    positions: set[int] = set(residual)
+    for length in range(1, min(max_prefix, len(surface) - 1) + 1):
+        positions.update(prefix.get(surface[:length], ()))
+    for length in range(1, min(max_suffix, len(surface) - 1) + 1):
+        positions.update(suffix.get(surface[-length:], ()))
+    for position in sorted(positions):
+        yield affixes[position]
+
+
 def build_morphology_graph(
     surfaces: Iterable[str],
     affixes: Iterable[AffixRecord],
 ) -> MorphologyGraph:
     """Build the complete finite run graph.
 
-    Every affix is tested against every surface through reversible rendering.
-    A decomposition becomes dictionary-sound for this run when its base is also
-    present in the selected materialized surface set. Universal validity exists
-    beyond this finite graph and is represented by the renderer itself.
+    Candidate lookup narrows only impossible string alignments. Every affix that
+    can produce a non-empty result under ``inverse_affix_candidates`` is still
+    passed through that authoritative reversible renderer, and every resulting
+    dictionary-sound decomposition is retained.
     """
 
     ordered_surfaces = tuple(sorted({normalize_lemma(value) for value in surfaces if value.strip()}))
     surface_set = frozenset(ordered_surfaces)
     affix_values = tuple(affixes)
+    affix_index = _affix_candidate_index(affix_values)
     alternatives: dict[str, tuple[Decomposition, ...]] = {}
 
     for surface in ordered_surfaces:
         found: set[Decomposition] = set()
-        for affix in affix_values:
+        for affix in _candidate_affixes(surface, affix_values, affix_index):
             for base in inverse_affix_candidates(surface, affix):
                 if base not in surface_set or len(base) >= len(surface):
                     continue
