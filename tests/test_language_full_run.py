@@ -125,3 +125,46 @@ def test_generated_artifact_manifest_when_present() -> None:
     serialized = json.dumps(first, sort_keys=True)
     assert "surface" not in serialized
     assert "source" not in serialized
+
+
+def test_cross_repository_stack_manifest_when_present() -> None:
+    root = Path(__file__).resolve().parents[1]
+    path = root / "artifacts" / "oewn2025" / "stack-manifest.json"
+    if not path.exists():
+        return
+
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    assert manifest["schema"] == "the-interdependency.stack-manifest"
+    assert manifest["version"] == "1.0.0"
+
+    repositories = {
+        record["repository"]: record
+        for record in manifest["repositories"]
+    }
+    assert set(repositories) == {
+        "The-Interdependency/edcm",
+        "The-Interdependency/metapat",
+        "The-Interdependency/skill-lib",
+        "The-Interdependency/ucns",
+        "globalwordnet/english-wordnet",
+    }
+    assert all(len(record["commit"]) == 40 for record in repositories.values())
+
+    boundaries = manifest["boundaries"]
+    assert boundaries["authority_transfer"] is False
+    assert boundaries["proof_status_transfer"] is False
+    assert boundaries["measurement_status_transfer"] is False
+    assert boundaries["semantic_mapping"] == "external-provenance"
+    assert boundaries["agent_scope"] == "cross-repository-work-graph"
+    assert any("one repository / one AI" in value for value in boundaries["hmmm"])
+
+    identity = {
+        "repositories": manifest["repositories"],
+        "boundaries": boundaries,
+    }
+    canonical = json.dumps(
+        identity,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    assert sha256(canonical).hexdigest() == manifest["work_graph_sha256"]
