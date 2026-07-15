@@ -12,15 +12,15 @@ export default defineMsdmdCollection({
         "module_name": "edcm",
         "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "__version__, build_default_layers, EDCMLayers, LayerProvenance, ConsolidatedMeasurementLayer, CompositeSemanticsLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, ActualMetapatAdapter, MetapatIntegrationStatus, MetapatSemanticEvidence, select_metapat_adapter, inspect_metapat_adapter, ActualUCNSAdapter, UCNSIntegrationStatus, UCNSGeometryEvidence, UCNSFactorizationEvidenceRecord, select_ucns_adapter, inspect_ucns_adapter, EDCMResultContract, build_result_contract, RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, IntegrityFinding, IntegrityReport, run_integrity_gate, verify_frozen_canon, verify_measurement_authority, verify_orthogonality_alias, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, measurement, language, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts",
-        "requires": "edcm_layers, edcm_metapat_adapter, edcm_ucns_adapter, edcm_shared_stack, edcm_integrity, edcm_energy_claims, edcm_falsifiability_bridge, edcm_ucns_objects, edcmucns_package, edcm_language_package",
+        "public_surface": "__version__, build_default_layers, EDCMLayers, LayerProvenance, ConsolidatedMeasurementLayer, CompositeSemanticsLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, ActualMetapatAdapter, MetapatIntegrationStatus, MetapatSemanticEvidence, select_metapat_adapter, inspect_metapat_adapter, ActualUCNSAdapter, UCNSIntegrationStatus, UCNSGeometryEvidence, UCNSFactorizationEvidenceRecord, select_ucns_adapter, inspect_ucns_adapter, AuthorizedUCNSFork, UCNSForkTopologyBinding, UCNSForkLintReport, ForkLintDependencyError, ForkTopologyError, build_fork_topology_binding, enumerate_payload_fork_paths, lint_fork_topology, lint_all_payload_forks, EDCMResultContract, build_result_contract, RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, IntegrityFinding, IntegrityReport, run_integrity_gate, verify_frozen_canon, verify_measurement_authority, verify_orthogonality_alias, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, measurement, language, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts",
+        "requires": "edcm_layers, edcm_metapat_adapter, edcm_ucns_adapter, edcm_ucns_fork_lint, edcm_shared_stack, edcm_integrity, edcm_energy_claims, edcm_falsifiability_bridge, edcm_ucns_objects, edcmucns_package, edcm_language_package",
         "rollback": "remove new exports and restore prior package root only with a result-schema migration",
         "rollout": "default_enabled",
         "since": "2026-06-02",
         "storage_boundary": "none",
-        "summary": "EDCM package root \u2014 declares package identity and re-exports provenance-bearing shared-stack layers, canonical METAPAT consumer surfaces, actual-UCNS bridge and factorization-evidence consumer surfaces, final result contracts, frozen-canon/authority integrity gates, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.",
-        "tests": "tests.test_measurement, tests.test_ucns_adapter, tests.test_ucns_evidence_consumer, tests.test_metapat_adapter, tests.test_shared_stack_contract, tests.test_integrity, tests.test_ucns_objects, tests.test_energy_claims, tests.test_packaging",
-        "unresolved": "UCNS evidence digests provide content identity but not cryptographic producer authentication",
+        "summary": "EDCM package root \u2014 declares package identity and re-exports provenance-bearing shared-stack layers, canonical METAPAT consumer surfaces, actual-UCNS bridge and factorization-evidence consumer surfaces, fail-closed METAPAT-to-UCNS fork topology lint, final result contracts, frozen-canon/authority integrity gates, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.",
+        "tests": "tests.test_measurement, tests.test_ucns_adapter, tests.test_ucns_evidence_consumer, tests.test_metapat_adapter, tests.test_shared_stack_contract, tests.test_integrity, tests.test_ucns_objects, tests.test_ucns_fork_lint, tests.test_energy_claims, tests.test_packaging",
+        "unresolved": "UCNS evidence digests and fork topology bindings provide content identity but not cryptographic producer authentication; the first accepted production fork fixture remains unselected",
         "user_data_boundary": "none"
       },
       "file": "edcm/__init__.py",
@@ -1011,6 +1011,147 @@ export default defineMsdmdCollection({
       "id": "edcm_ucns_dependency"
     },
     {
+      "block": "BOUNDARIES",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "network_boundary": "none",
+        "storage_boundary": "serialization-only",
+        "summary": "EDCM verifies authority-to-geometry binding but does not invent METAPAT meaning, alter UCNS algebra, or transfer proof status into measurement validity",
+        "user_data_boundary": "no transcript or measurement values"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_ucns_fork_lint_boundary"
+    },
+    {
+      "block": "CAPABILITIES",
+      "fields": {
+        "boundaries": "auth:none, storage:serialization-only, network:none, user_data:semantic provenance only",
+        "exposes": "edcm.lint_all_payload_forks",
+        "inputs": "actual UCNSObject root and AuthorizedUCNSFork declarations",
+        "outputs": "UCNSForkLintReport or typed failure",
+        "summary": "validates every actual recursive UCNS payload fork against one exact METAPAT authorization and topology binding"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fail_closed_ucns_fork_lint"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "integration_contract",
+        "given": "a METAPAT authorization is bound to an actual UCNS fork",
+        "then": "root hash, fork path/hash, payload indices, ordered child ids/hashes, canon, policy, and authorization digest are exact"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_binding_exact_topology"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "schema_contract",
+        "given": "a topology binding is serialized and reconstructed",
+        "then": "every field survives exactly and malformed or tampered records fail closed"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_binding_roundtrip"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a recursive UCNS object is linted",
+        "then": "every object with at least two payload children has exactly one valid declaration"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_lint_complete_coverage"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "UCNS or METAPAT is directly absent or transitively broken",
+        "then": "direct absence is typed and transitive import failure remains visible"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_lint_dependency_visible"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "payload order, cell indices, object hashes, canon, policy, or producer authorization changes",
+        "then": "lint fails closed"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_lint_drift_rejected"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a declaration is missing, duplicated, or targets a non-fork path",
+        "then": "lint fails closed"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_lint_missing_extra_rejected"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "boundary_contract",
+        "given": "geometry has fewer than two payload children or no declaration",
+        "then": "no constitutive meaning is inferred; only actual forks require explicit authority"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_lint_no_inference"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "boundary_contract",
+        "given": "a valid binding and lint report",
+        "then": "theorem_status_transfer and measurement_validity_claim remain false"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_lint_no_status_transfer"
+    },
+    {
+      "block": "DOCS",
+      "fields": {
+        "audience": "developer",
+        "covers": "UCNSForkTopologyBinding, build_fork_topology_binding, lint_fork_topology, lint_all_payload_forks",
+        "source": "docs/ucns-fork-lint.md",
+        "status": "current",
+        "summary": "documents exact topology binding, complete recursive coverage, negative fixtures, and authority boundaries"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_ucns_fork_lint_docs"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_load_stack, _canonical_json, _text, _strings, _indices, _binding_payload, _binding_digest, _resolve_path, _payload_cells",
+        "module_kind": "adapter",
+        "module_name": "ucns_fork_lint",
+        "network_boundary": "optional package import only; no network performed by runtime code",
+        "owner": "Erin Spencer",
+        "public_surface": "UCNSForkTopologyBinding, AuthorizedUCNSFork, UCNSForkLintReport, ForkLintDependencyError, ForkTopologyError, build_fork_topology_binding, lint_fork_topology, lint_all_payload_forks, enumerate_payload_fork_paths",
+        "requires": "edcm_metapat_adapter, edcm_ucns_adapter",
+        "rollback": "remove exports and consumer call sites; METAPAT authorization and UCNS geometry remain separate upstream authorities",
+        "rollout": "optional_full_stack_integration",
+        "since": "2026-07-15",
+        "storage_boundary": "serialization-only",
+        "summary": "binds METAPAT constitutive-fork authorizations to exact UCNS payload paths, indices, and stable hashes and fails closed over the complete recursive object",
+        "tests": "tests.test_ucns_fork_lint",
+        "unresolved": "no accepted production fixture exists until a caller supplies complete authorizations for every actual payload fork",
+        "user_data_boundary": "semantic module ids and unresolved constraints remain producer provenance; transcript content and measurement values are not accepted"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_ucns_fork_lint"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
@@ -1033,9 +1174,781 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/ucns_objects.py",
       "id": "edcm_ucns_objects"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "content": "- Skills live as root directories with SKILL.md files and optional helpers."
+      },
+      "file": "skill-lib/llms/metadata.py",
+      "id": "architecture_summary"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "msdmd": "Module Self-Declared Metadata in Markdown \u2014 the foundational convention where each source module declares its own structured metadata in a fenced comment block."
+      },
+      "file": "skill-lib/llms/metadata.py",
+      "id": "key_definitions"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "content": "skill-lib is the canonical organization-wide source for reusable agent skills in The Interdependency."
+      },
+      "file": "skill-lib/llms/metadata.py",
+      "id": "project_overview"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "content": "- Read AGENTS.md, skills.json, and the relevant skill file before changing a skill."
+      },
+      "file": "skill-lib/llms/metadata.py",
+      "id": "usage_rules"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "`loto clear` on a scar",
+        "then": "refused on dirty tree; on clean tree produces a commit touching zero files, carrying scar trailers, and deletes the scar"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_clear_is_empty_commit"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "one in-scope mutation commit and passing test evidence; `loto close`",
+        "then": ".loto/ is empty and HEAD carries Loto-* trailers; git is the only archive"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_close_deletes_tag"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a failing run of a test command followed by a passing run of the identical command",
+        "then": "close proceeds; a distinct command whose latest run failed still blocks close"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_latest_test_wins"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "more than one commit between base and HEAD at close",
+        "then": "close refuses (v0.1 invariant: one session, one mutation commit)"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_one_commit_per_session"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "clean working tree; `loto open` succeeds",
+        "then": "working tree is still clean; exclusion went to .git/info/exclude, never .gitignore"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_open_never_dirties"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "an unacknowledged SCAR-*.json in .loto/",
+        "then": "`loto open` refuses and `loto guard` exits nonzero"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_scar_blocks_work"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "files touched outside the declared --files globs",
+        "then": "close refuses with the violating paths named"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_scope_enforced"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_load, _save, _touched_files, _scope_violations, _trailers, _digest, _commit, _git, _ensure_gitignored",
+        "module_kind": "instrument",
+        "module_name": "repo_loto",
+        "network_boundary": "none",
+        "owner": "Way Seer Erin",
+        "public_surface": "loto open, loto run, loto test, loto close, loto fail, loto clear, loto status, loto guard, loto install-hook",
+        "rollback": "rm -rf .loto/ and remove hook line",
+        "rollout": "manual invocation; pre-push hook calls `loto guard`",
+        "storage_boundary": "write",
+        "summary": "delete-on-completion session gate for repo mutation; presence of state means open work, absence means clean",
+        "tests": "tests/test_repo_loto.py (CHECKS-declared, reconciled via --audit)",
+        "unresolved": "credential-gate integration, ratios bookends",
+        "user_data_boundary": "none"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "repo_mutation_gate"
+    },
+    {
+      "block": "DOCS",
+      "fields": {
+        "source": "docs/module.md",
+        "status": "current",
+        "summary": "module docs"
+      },
+      "file": "skill-lib/tests/test_collect.py",
+      "id": "module_docs"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "content": "example only"
+      },
+      "file": "skill-lib/tests/test_llms_build.py",
+      "id": "project_overview"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "content": "real declaration"
+      },
+      "file": "skill-lib/tests/test_llms_build.py",
+      "id": "project_overview"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_clear_is_empty_commit",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_clear_is_empty_commit",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "check_clear_is_empty_commit"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_close_deletes_tag",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_close_deletes_tag",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "check_close_deletes_tag"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_latest_test_wins",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_latest_test_wins",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "check_latest_test_wins"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_one_commit_per_session",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_one_commit_per_session",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "check_one_commit_per_session"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_open_never_dirties",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_open_never_dirties",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "check_open_never_dirties"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_scar_blocks_work",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_scar_blocks_work",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "check_scar_blocks_work"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_scope_enforced",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_scope_enforced",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "check_scope_enforced"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "internal_surface": "_mk_repo, _run, _loto, _parse_block, _resolve_call, _requires_met",
+        "module_kind": "checks",
+        "module_name": "test_repo_loto",
+        "owner": "Way Seer Erin",
+        "public_surface": "test_* functions, main, --audit",
+        "summary": "evidentiary procedures for repo_loto CONTRACTS; standalone or pytest; --audit reconciles the declared graph without execution",
+        "tests": "self",
+        "unresolved": "mutation-level verification that checks actually exercise their contracts"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "repo_loto_evidence"
+    },
+    {
+      "block": "DOCS",
+      "fields": {
+        "summary": "second"
+      },
+      "file": "skill-lib/tests/test_universal_parser.py",
+      "id": "second_docs"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_binding_captures_exact_payload_topology",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_binding_exact_topology"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_binding_exact"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_complete_recursive_lint_accepts_every_declared_fork",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_lint_complete_coverage"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_complete_coverage"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_direct_dependency_absence_is_typed",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_lint_dependency_visible"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_dependency"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_payload_order_or_object_drift_fails_closed",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_lint_drift_rejected"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_drift"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_missing_duplicate_and_extra_declarations_fail_closed",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_lint_missing_extra_rejected"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_missing_extra"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_single_payload_is_not_silently_typed_as_a_fork",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_lint_no_inference"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_no_inference"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_binding_roundtrip_is_strict_and_tamper_evident",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_binding_roundtrip"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_roundtrip"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_valid_report_preserves_status_firewall",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_lint_no_status_transfer"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_status_firewall"
     }
   ],
   "edges": [
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "exposes",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "edcm.lint_all_payload_forks"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "auth:none"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "network:none"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "storage:serialization-only"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "user_data:semantic provenance only"
+    },
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "self::test_clear_is_empty_commit"
+    },
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "loto_clear_is_empty_commit"
+    },
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "git"
+    },
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "python3"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "self::test_close_deletes_tag"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "loto_close_deletes_tag"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "git"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "python3"
+    },
+    {
+      "from": "check_edcm_fork_binding_exact",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_binding_exact",
+      "to": "self::test_binding_captures_exact_payload_topology"
+    },
+    {
+      "from": "check_edcm_fork_binding_exact",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_binding_exact",
+      "to": "edcm_fork_binding_exact_topology"
+    },
+    {
+      "from": "check_edcm_fork_complete_coverage",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_complete_coverage",
+      "to": "self::test_complete_recursive_lint_accepts_every_declared_fork"
+    },
+    {
+      "from": "check_edcm_fork_complete_coverage",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_complete_coverage",
+      "to": "edcm_fork_lint_complete_coverage"
+    },
+    {
+      "from": "check_edcm_fork_dependency",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_dependency",
+      "to": "self::test_direct_dependency_absence_is_typed"
+    },
+    {
+      "from": "check_edcm_fork_dependency",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_dependency",
+      "to": "edcm_fork_lint_dependency_visible"
+    },
+    {
+      "from": "check_edcm_fork_drift",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_drift",
+      "to": "self::test_payload_order_or_object_drift_fails_closed"
+    },
+    {
+      "from": "check_edcm_fork_drift",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_drift",
+      "to": "edcm_fork_lint_drift_rejected"
+    },
+    {
+      "from": "check_edcm_fork_missing_extra",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_missing_extra",
+      "to": "self::test_missing_duplicate_and_extra_declarations_fail_closed"
+    },
+    {
+      "from": "check_edcm_fork_missing_extra",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_missing_extra",
+      "to": "edcm_fork_lint_missing_extra_rejected"
+    },
+    {
+      "from": "check_edcm_fork_no_inference",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_no_inference",
+      "to": "self::test_single_payload_is_not_silently_typed_as_a_fork"
+    },
+    {
+      "from": "check_edcm_fork_no_inference",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_no_inference",
+      "to": "edcm_fork_lint_no_inference"
+    },
+    {
+      "from": "check_edcm_fork_roundtrip",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_roundtrip",
+      "to": "self::test_binding_roundtrip_is_strict_and_tamper_evident"
+    },
+    {
+      "from": "check_edcm_fork_roundtrip",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_roundtrip",
+      "to": "edcm_fork_binding_roundtrip"
+    },
+    {
+      "from": "check_edcm_fork_status_firewall",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_status_firewall",
+      "to": "self::test_valid_report_preserves_status_firewall"
+    },
+    {
+      "from": "check_edcm_fork_status_firewall",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_status_firewall",
+      "to": "edcm_fork_lint_no_status_transfer"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
+      "to": "self::test_latest_test_wins"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
+      "to": "loto_latest_test_wins"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
+      "to": "git"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
+      "to": "python3"
+    },
+    {
+      "from": "check_one_commit_per_session",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "self::test_one_commit_per_session"
+    },
+    {
+      "from": "check_one_commit_per_session",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "loto_one_commit_per_session"
+    },
+    {
+      "from": "check_one_commit_per_session",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "git"
+    },
+    {
+      "from": "check_one_commit_per_session",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_one_commit_per_session",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "python3"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "self::test_open_never_dirties"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "loto_open_never_dirties"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "git"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "python3"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "self::test_scar_blocks_work"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "loto_scar_blocks_work"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "git"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "python3"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "self::test_scope_enforced"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "loto_scope_enforced"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "git"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "python3"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "UCNSForkTopologyBinding"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "build_fork_topology_binding"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "lint_all_payload_forks"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "lint_fork_topology"
+    },
     {
       "from": "edcm_energy_claims",
       "kind": "owns",
@@ -1468,6 +2381,13 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_package",
+      "to": "edcm_ucns_fork_lint"
+    },
+    {
+      "from": "edcm_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_package",
       "to": "edcm_ucns_objects"
     },
     {
@@ -1538,6 +2458,27 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_ucns_dependency",
+      "to": "edcm_ucns_adapter"
+    },
+    {
+      "from": "edcm_ucns_fork_lint",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_fork_lint",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_ucns_fork_lint",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_fork_lint",
+      "to": "edcm_metapat_adapter"
+    },
+    {
+      "from": "edcm_ucns_fork_lint",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_fork_lint",
       "to": "edcm_ucns_adapter"
     },
     {
@@ -1973,6 +2914,20 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcmucns_validation",
       "to": "edcmucns_types"
+    },
+    {
+      "from": "repo_loto_evidence",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "repo_loto_evidence",
+      "to": "Way Seer Erin"
+    },
+    {
+      "from": "repo_mutation_gate",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "repo_mutation_gate",
+      "to": "Way Seer Erin"
     }
   ],
   "gaps": [],
