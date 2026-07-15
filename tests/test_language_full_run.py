@@ -156,6 +156,14 @@ def test_streaming_gonol_hash_matches_legacy_canonical_record() -> None:
     assert gonol_sha256(combined) == legacy
 
 
+def test_gonol_hash_cache_preserves_structural_identity_across_objects() -> None:
+    left = assign_root_gonol("lock", (_lexeme("lock"),))
+    right = assign_root_gonol("lock", (_lexeme("lock"),))
+    assert left is not right
+    assert left.equivalent(right)
+    assert gonol_sha256(left) == gonol_sha256(right)
+
+
 def test_intrinsic_record_contains_no_linguistic_metadata() -> None:
     gonol = assign_root_gonol("help", (_lexeme("help"),))
     record = intrinsic_gonol_record(gonol)
