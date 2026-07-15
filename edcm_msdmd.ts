@@ -12,8 +12,8 @@ export default defineMsdmdCollection({
         "module_name": "edcm",
         "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "__version__, build_default_layers, EDCMLayers, LayerProvenance, ConsolidatedMeasurementLayer, CompositeSemanticsLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, ActualMetapatAdapter, MetapatIntegrationStatus, MetapatSemanticEvidence, select_metapat_adapter, inspect_metapat_adapter, ActualUCNSAdapter, UCNSIntegrationStatus, UCNSGeometryEvidence, UCNSFactorizationEvidenceRecord, select_ucns_adapter, inspect_ucns_adapter, EDCMResultContract, build_result_contract, RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, IntegrityFinding, IntegrityReport, run_integrity_gate, verify_frozen_canon, verify_measurement_authority, verify_orthogonality_alias, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, measurement, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts",
-        "requires": "edcm_layers, edcm_metapat_adapter, edcm_ucns_adapter, edcm_shared_stack, edcm_integrity, edcm_energy_claims, edcm_falsifiability_bridge, edcm_ucns_objects, edcmucns_package",
+        "public_surface": "__version__, build_default_layers, EDCMLayers, LayerProvenance, ConsolidatedMeasurementLayer, CompositeSemanticsLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, ActualMetapatAdapter, MetapatIntegrationStatus, MetapatSemanticEvidence, select_metapat_adapter, inspect_metapat_adapter, ActualUCNSAdapter, UCNSIntegrationStatus, UCNSGeometryEvidence, UCNSFactorizationEvidenceRecord, select_ucns_adapter, inspect_ucns_adapter, EDCMResultContract, build_result_contract, RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, IntegrityFinding, IntegrityReport, run_integrity_gate, verify_frozen_canon, verify_measurement_authority, verify_orthogonality_alias, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, measurement, language, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts",
+        "requires": "edcm_layers, edcm_metapat_adapter, edcm_ucns_adapter, edcm_shared_stack, edcm_integrity, edcm_energy_claims, edcm_falsifiability_bridge, edcm_ucns_objects, edcmucns_package, edcm_language_package",
         "rollback": "remove new exports and restore prior package root only with a result-schema migration",
         "rollout": "default_enabled",
         "since": "2026-06-02",
@@ -396,19 +396,43 @@ export default defineMsdmdCollection({
         "module_name": "language",
         "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "EnglishEmbeddingManifest, embedding_manifest, PUBLIC_GLYPH_FLOOR_157, CompositionNode, Attestation, Soundness, LexicalEvidence, AtomicForkRelation, AtomicForkResult, GonolRegistry, compose_gonols, materialize, compare_atomic_fork, intrinsic_gonol_record, metadata_free_jsonl, write_metadata_free_gonol_list",
-        "requires": "edcm_language_manifest, edcm_language_glyph_floor, edcm_language_model, edcm_language_composition, edcm_language_artifacts",
-        "rollback": "remove package before any published artifact depends on this surface",
+        "public_surface": "EnglishEmbeddingManifest, embedding_manifest, PUBLIC_GLYPH_FLOOR_157, CompositionNode, Attestation, Soundness, LexicalEvidence, AtomicForkRelation, AtomicForkResult, GonolRegistry, compose_gonols, materialize, compare_atomic_fork, intrinsic_gonol_record, metadata_free_jsonl, write_metadata_free_gonol_list, AffixRecord, load_affix_inventory, TransformationRule, transformation_inventory, render_affix_candidates, inverse_affix_candidates, compound_candidates, normalize_lemma, Decomposition, MorphologyGraph, build_morphology_graph, OEWN_REPOSITORY, OEWN_TAG, OEWN_COMMIT, OEWN_LICENSE, LexemeRecord, SenseRecord, SynsetRecord, WordnetSnapshot, load_oewn_2025, assign_affix_gonol, assign_root_gonol, assign_direct_atomic_gonol, superpose_gonols, compare_gonols, gonol_sha256",
+        "requires": "edcm_language_manifest, edcm_language_glyph_floor, edcm_language_model, edcm_language_composition, edcm_language_artifacts, edcm_language_oewn_source, edcm_language_affixes, edcm_language_rendering, edcm_language_morphology, edcm_language_placement",
+        "rollback": "remove generated artifacts and restore the prior language package plus its metadata collection",
         "rollout": "default_enabled",
         "since": "2026-07-13",
-        "storage_boundary": "write",
-        "summary": "exposes the Open English WordNet-bounded dual atomic/molecular embedding manifest, public 157-glyph floor, universal composer, explicit grouping records, and metadata-free gonol artifacts",
-        "tests": "tests.test_language_embeddings",
-        "unresolved": "complete affix, root, rendering, and independent whole-word assignment datasets are not yet materialized",
+        "storage_boundary": "read_write",
+        "summary": "exposes the pinned OEWN 2025 source, complete run affixes, universal rendering and morphology, independent atomic/molecular placement laws, public 157-glyph floor, and metadata-free gonol artifacts",
+        "tests": "tests.test_language_embeddings, tests.test_language_full_run",
+        "unresolved": "pronunciation rendering and empirical interpretation of fork distances remain subsequent research layers",
         "user_data_boundary": "none"
       },
       "file": "edcm/language/__init__.py",
       "id": "edcm_language_package"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_canon_path, _slug",
+        "module_kind": "engine",
+        "module_name": "affixes",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "AffixRecord, load_affix_inventory, affix_inventory_record",
+        "requires": "edcm measurement canon bones_affixes_v1.json",
+        "rollback": "restore the prior inventory version and regenerate every dependent artifact",
+        "rollout": "default_enabled",
+        "since": "2026-07-13",
+        "storage_boundary": "read",
+        "summary": "expands every canonical EDCM affix and allomorph into a deterministic universally applicable inventory for the OEWN 2025 run",
+        "tests": "tests.test_language_full_run",
+        "unresolved": "future run versions may add newly documented English affixes without invalidating this freeze",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/language/affixes.py",
+      "id": "edcm_language_affixes"
     },
     {
       "block": "MODULE_BUILD",
@@ -529,6 +553,102 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/language/model.py",
       "id": "edcm_language_model"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_compound_parts, _alternative_key",
+        "module_kind": "engine",
+        "module_name": "morphology",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "Decomposition, MorphologyGraph, build_morphology_graph",
+        "requires": "edcm_language_affixes, edcm_language_rendering, edcm_language_model",
+        "rollback": "restore the prior graph builder and regenerate all molecular artifacts",
+        "rollout": "builder_only",
+        "since": "2026-07-13",
+        "storage_boundary": "none",
+        "summary": "derives the run root set and the complete affix/compound decomposition DAG for every OEWN surface while preserving all valid alternatives",
+        "tests": "tests.test_language_full_run",
+        "unresolved": "closed compounds without explicit dictionary separators remain whole roots unless an affix analysis reaches them",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/language/morphology.py",
+      "id": "edcm_language_morphology"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_canonical_bytes, _feature_payload, _vertices, _glyph_vertex, _payload_depth, _theta_set",
+        "module_kind": "engine",
+        "module_name": "placement",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "gonol_sha256, assign_affix_gonol, assign_root_gonol, assign_direct_atomic_gonol, superpose_gonols, compare_gonols",
+        "requires": "edcm_language_affixes, edcm_language_glyph_floor, edcm_language_source, edcm_language_artifacts, edcmbone_ucns_v04",
+        "rollback": "restore the prior placement version and regenerate all gonol artifacts",
+        "rollout": "default_enabled",
+        "since": "2026-07-13",
+        "storage_boundary": "none",
+        "summary": "assigns glyph-grounded affix/root gonols, independently assigns whole-word relation gonols, superposes molecular alternatives, and computes fork comparison invariants",
+        "tests": "tests.test_language_full_run",
+        "unresolved": "empirical interpretation of observed direct/generated distances remains a measurement question rather than a placement assumption",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/language/placement.py",
+      "id": "edcm_language_placement"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_is_cvc, _ordered_unique",
+        "module_kind": "engine",
+        "module_name": "rendering",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "TransformationRule, transformation_inventory, render_affix_candidates, inverse_affix_candidates, compound_candidates, normalize_lemma",
+        "requires": "edcm_language_affixes",
+        "rollback": "restore the prior renderer version and regenerate all molecular artifacts",
+        "rollout": "default_enabled",
+        "since": "2026-07-13",
+        "storage_boundary": "none",
+        "summary": "codifies reversible English orthographic and compounding transformations without using them as composition gates",
+        "tests": "tests.test_language_full_run",
+        "unresolved": "pronunciation rendering remains outside this first complete written-English run",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/language/rendering.py",
+      "id": "edcm_language_rendering"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_load_yaml, _source_tree_digest, _relation_values",
+        "module_kind": "adapter",
+        "module_name": "source",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "OEWN_REPOSITORY, OEWN_TAG, OEWN_COMMIT, OEWN_LICENSE, LexemeRecord, SenseRecord, SynsetRecord, WordnetSnapshot, load_oewn_2025",
+        "requires": "PyYAML only during artifact construction",
+        "rollback": "remove loader and generated artifacts before publishing another source manifest",
+        "rollout": "builder_only",
+        "since": "2026-07-13",
+        "storage_boundary": "read",
+        "summary": "loads the exact Open English WordNet 2025 YAML release into deterministic lemma, sense, synset, and relation records and computes a source-tree digest",
+        "tests": "tests.test_language_full_run",
+        "unresolved": "none",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/language/source.py",
+      "id": "edcm_language_oewn_source"
     },
     {
       "block": "MODULE_BUILD",
@@ -913,9 +1033,518 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/ucns_objects.py",
       "id": "edcm_ucns_objects"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "content": "- Skills live as root directories with SKILL.md files and optional helpers."
+      },
+      "file": "skill-lib/llms/metadata.py",
+      "id": "architecture_summary"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "msdmd": "Module Self-Declared Metadata in Markdown \u2014 the foundational convention where each source module declares its own structured metadata in a fenced comment block."
+      },
+      "file": "skill-lib/llms/metadata.py",
+      "id": "key_definitions"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "content": "skill-lib is the canonical organization-wide source for reusable agent skills in The Interdependency."
+      },
+      "file": "skill-lib/llms/metadata.py",
+      "id": "project_overview"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "content": "- Read AGENTS.md, skills.json, and the relevant skill file before changing a skill."
+      },
+      "file": "skill-lib/llms/metadata.py",
+      "id": "usage_rules"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "`loto clear` on a scar",
+        "then": "refused on dirty tree; on clean tree produces a commit touching zero files, carrying scar trailers, and deletes the scar"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_clear_is_empty_commit"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "one in-scope mutation commit and passing test evidence; `loto close`",
+        "then": ".loto/ is empty and HEAD carries Loto-* trailers; git is the only archive"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_close_deletes_tag"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a failing run of a test command followed by a passing run of the identical command",
+        "then": "close proceeds; a distinct command whose latest run failed still blocks close"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_latest_test_wins"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "more than one commit between base and HEAD at close",
+        "then": "close refuses (v0.1 invariant: one session, one mutation commit)"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_one_commit_per_session"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "clean working tree; `loto open` succeeds",
+        "then": "working tree is still clean; exclusion went to .git/info/exclude, never .gitignore"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_open_never_dirties"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "an unacknowledged SCAR-*.json in .loto/",
+        "then": "`loto open` refuses and `loto guard` exits nonzero"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_scar_blocks_work"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "files touched outside the declared --files globs",
+        "then": "close refuses with the violating paths named"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_scope_enforced"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_load, _save, _touched_files, _scope_violations, _trailers, _digest, _commit, _git, _ensure_gitignored",
+        "module_kind": "instrument",
+        "module_name": "repo_loto",
+        "network_boundary": "none",
+        "owner": "Way Seer Erin",
+        "public_surface": "loto open, loto run, loto test, loto close, loto fail, loto clear, loto status, loto guard, loto install-hook",
+        "rollback": "rm -rf .loto/ and remove hook line",
+        "rollout": "manual invocation; pre-push hook calls `loto guard`",
+        "storage_boundary": "write",
+        "summary": "delete-on-completion session gate for repo mutation; presence of state means open work, absence means clean",
+        "tests": "tests/test_repo_loto.py (CHECKS-declared, reconciled via --audit)",
+        "unresolved": "credential-gate integration, ratios bookends",
+        "user_data_boundary": "none"
+      },
+      "file": "skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "repo_mutation_gate"
+    },
+    {
+      "block": "DOCS",
+      "fields": {
+        "source": "docs/module.md",
+        "status": "current",
+        "summary": "module docs"
+      },
+      "file": "skill-lib/tests/test_collect.py",
+      "id": "module_docs"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "content": "example only"
+      },
+      "file": "skill-lib/tests/test_llms_build.py",
+      "id": "project_overview"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "content": "real declaration"
+      },
+      "file": "skill-lib/tests/test_llms_build.py",
+      "id": "project_overview"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_clear_is_empty_commit",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_clear_is_empty_commit",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "check_clear_is_empty_commit"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_close_deletes_tag",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_close_deletes_tag",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "check_close_deletes_tag"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_latest_test_wins",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_latest_test_wins",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "check_latest_test_wins"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_one_commit_per_session",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_one_commit_per_session",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "check_one_commit_per_session"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_open_never_dirties",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_open_never_dirties",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "check_open_never_dirties"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_scar_blocks_work",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_scar_blocks_work",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "check_scar_blocks_work"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_scope_enforced",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_scope_enforced",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "check_scope_enforced"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "internal_surface": "_mk_repo, _run, _loto, _parse_block, _resolve_call, _requires_met",
+        "module_kind": "checks",
+        "module_name": "test_repo_loto",
+        "owner": "Way Seer Erin",
+        "public_surface": "test_* functions, main, --audit",
+        "summary": "evidentiary procedures for repo_loto CONTRACTS; standalone or pytest; --audit reconciles the declared graph without execution",
+        "tests": "self",
+        "unresolved": "mutation-level verification that checks actually exercise their contracts"
+      },
+      "file": "skill-lib/tests/test_repo_loto.py",
+      "id": "repo_loto_evidence"
+    },
+    {
+      "block": "DOCS",
+      "fields": {
+        "summary": "second"
+      },
+      "file": "skill-lib/tests/test_universal_parser.py",
+      "id": "second_docs"
     }
   ],
   "edges": [
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "self::test_clear_is_empty_commit"
+    },
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "loto_clear_is_empty_commit"
+    },
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "git"
+    },
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "python3"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "self::test_close_deletes_tag"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "loto_close_deletes_tag"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "git"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "python3"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
+      "to": "self::test_latest_test_wins"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
+      "to": "loto_latest_test_wins"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
+      "to": "git"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
+      "to": "python3"
+    },
+    {
+      "from": "check_one_commit_per_session",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "self::test_one_commit_per_session"
+    },
+    {
+      "from": "check_one_commit_per_session",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "loto_one_commit_per_session"
+    },
+    {
+      "from": "check_one_commit_per_session",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "git"
+    },
+    {
+      "from": "check_one_commit_per_session",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_one_commit_per_session",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "python3"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "self::test_open_never_dirties"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "loto_open_never_dirties"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "git"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "python3"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "self::test_scar_blocks_work"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "loto_scar_blocks_work"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "git"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "python3"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "self::test_scope_enforced"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "loto_scope_enforced"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "git"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "python3"
+    },
     {
       "from": "edcm_energy_claims",
       "kind": "owns",
@@ -966,6 +1595,20 @@ export default defineMsdmdCollection({
       "to": "edcm_ucns_objects"
     },
     {
+      "from": "edcm_language_affixes",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_affixes",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_language_affixes",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_affixes",
+      "to": "edcm measurement canon bones_affixes_v1.json"
+    },
+    {
       "from": "edcm_language_artifacts",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
@@ -1043,11 +1686,60 @@ export default defineMsdmdCollection({
       "to": "none"
     },
     {
+      "from": "edcm_language_morphology",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_morphology",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_language_morphology",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_morphology",
+      "to": "edcm_language_affixes"
+    },
+    {
+      "from": "edcm_language_morphology",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_morphology",
+      "to": "edcm_language_model"
+    },
+    {
+      "from": "edcm_language_morphology",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_morphology",
+      "to": "edcm_language_rendering"
+    },
+    {
+      "from": "edcm_language_oewn_source",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_oewn_source",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_language_oewn_source",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_oewn_source",
+      "to": "PyYAML only during artifact construction"
+    },
+    {
       "from": "edcm_language_package",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_language_package",
       "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_language_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_package",
+      "to": "edcm_language_affixes"
     },
     {
       "from": "edcm_language_package",
@@ -1083,6 +1775,90 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_language_package",
       "to": "edcm_language_model"
+    },
+    {
+      "from": "edcm_language_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_package",
+      "to": "edcm_language_morphology"
+    },
+    {
+      "from": "edcm_language_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_package",
+      "to": "edcm_language_oewn_source"
+    },
+    {
+      "from": "edcm_language_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_package",
+      "to": "edcm_language_placement"
+    },
+    {
+      "from": "edcm_language_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_package",
+      "to": "edcm_language_rendering"
+    },
+    {
+      "from": "edcm_language_placement",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_placement",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_language_placement",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_placement",
+      "to": "edcm_language_affixes"
+    },
+    {
+      "from": "edcm_language_placement",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_placement",
+      "to": "edcm_language_artifacts"
+    },
+    {
+      "from": "edcm_language_placement",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_placement",
+      "to": "edcm_language_glyph_floor"
+    },
+    {
+      "from": "edcm_language_placement",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_placement",
+      "to": "edcm_language_source"
+    },
+    {
+      "from": "edcm_language_placement",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_placement",
+      "to": "edcmbone_ucns_v04"
+    },
+    {
+      "from": "edcm_language_rendering",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_rendering",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_language_rendering",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_rendering",
+      "to": "edcm_language_affixes"
     },
     {
       "from": "edcm_layers",
@@ -1160,6 +1936,13 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_package",
       "to": "edcm_integrity"
+    },
+    {
+      "from": "edcm_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_package",
+      "to": "edcm_language_package"
     },
     {
       "from": "edcm_package",
@@ -1699,6 +2482,20 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcmucns_validation",
       "to": "edcmucns_types"
+    },
+    {
+      "from": "repo_loto_evidence",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "repo_loto_evidence",
+      "to": "Way Seer Erin"
+    },
+    {
+      "from": "repo_mutation_gate",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "repo_mutation_gate",
+      "to": "Way Seer Erin"
     }
   ],
   "gaps": [],
