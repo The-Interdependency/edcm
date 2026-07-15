@@ -932,7 +932,7 @@ export default defineMsdmdCollection({
         "storage_boundary": "no persistence; canonical envelope data is copied into the result record",
         "summary": "EDCM-owned consumer for actual versioned immutable METAPAT semantic-authority envelopes; preserves canon identity, exact source references, constraints, permitted interpretations, hmmm, and provenance without creating metric values.",
         "tests": "tests.test_metapat_adapter, tests.test_shared_stack_contract",
-        "unresolved": "official serialized UCNS bridge-record ingestion remains separate; METAPAT statement-to-UCNS payload/tag semantics remain hmmm",
+        "unresolved": "official serialized UCNS bridge-record ingestion remains separate; payload-fork meaning requires explicit METAPAT authorization plus downstream topology lint",
         "user_data_boundary": "preserves caller-supplied METAPAT source statements and references exactly"
       },
       "file": "edcm/metapat_adapter.py",
