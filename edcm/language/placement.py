@@ -14,7 +14,7 @@ algorithm identity while retaining deterministic reproducibility.
 #   summary: assigns glyph-grounded affix/root gonols, independently assigns whole-word relation gonols, superposes molecular alternatives, and computes fork comparison invariants
 #   owner: Erin Spencer
 #   public_surface: gonol_sha256, assign_affix_gonol, assign_root_gonol, assign_direct_atomic_gonol, superpose_gonols, compare_gonols
-#   internal_surface: _canonical_bytes, _feature_payload, _vertices, _glyph_vertex, _payload_depth, _theta_set
+#   internal_surface: _canonical_bytes, _update_intrinsic_hash, _GONOL_HASH_CACHE, _feature_payload, _vertices, _glyph_vertex, _payload_depth, _theta_set
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
@@ -23,7 +23,7 @@ algorithm identity while retaining deterministic reproducibility.
 #   tests: tests.test_language_full_run
 #   rollout: default_enabled
 #   rollback: restore the prior placement version and regenerate all gonol artifacts
-#   requires: edcm_language_affixes, edcm_language_glyph_floor, edcm_language_source, edcm_language_artifacts, edcmbone_ucns_v04
+#   requires: edcm_language_affixes, edcm_language_glyph_floor, edcm_language_source, edcmbone_ucns_v04
 #   since: 2026-07-13
 #   unresolved: empirical interpretation of observed direct/generated distances remains a measurement question rather than a placement assumption
 # === END MODULE_BUILD ===
@@ -35,26 +35,76 @@ from fractions import Fraction
 from hashlib import sha256, shake_256
 import json
 from typing import Any, Iterable, Mapping, Sequence
+from weakref import WeakKeyDictionary
 
 from edcm.measurement.ucns.ucns_v04 import AnchorPayload, UCNSObject
 
 from .affixes import AffixRecord
-from .artifacts import intrinsic_gonol_record
 from .glyph_floor import PUBLIC_GLYPH_FLOOR_157
 from .source import LexemeRecord, SynsetRecord
 
 _NONZERO_VERTEX_COUNT = 156
 _GLYPH_INDEX = {glyph: index for index, glyph in enumerate(PUBLIC_GLYPH_FLOOR_157)}
+_GONOL_HASH_CACHE: WeakKeyDictionary[UCNSObject, str] = WeakKeyDictionary()
 
 
 def _canonical_bytes(value: Any) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
 
 
-def gonol_sha256(gonol: UCNSObject) -> str:
-    """Stable identity of intrinsic gonol data only."""
+def _update_intrinsic_hash(digest: Any, gonol: UCNSObject) -> None:
+    """Feed the exact canonical intrinsic JSON bytes without building a record tree.
 
-    return sha256(_canonical_bytes(intrinsic_gonol_record(gonol))).hexdigest()
+    ``intrinsic_gonol_record`` contains only integer arrays, null payloads, and
+    nested records. Its sorted-key canonical JSON order is therefore fixed. The
+    streaming form keeps the historical digest exactly while avoiding a second
+    in-memory tree for large recursively shared molecular objects.
+    """
+
+    digest.update(b'{"anchors":[')
+    for index, anchor in enumerate(gonol.anchors_pos):
+        if index:
+            digest.update(b",")
+        digest.update(b'{"payload":')
+        if anchor.payload is None:
+            digest.update(b"null")
+        else:
+            _update_intrinsic_hash(digest, anchor.payload)
+        digest.update(b',"theta":[')
+        digest.update(str(anchor.theta.numerator).encode("ascii"))
+        digest.update(b",")
+        digest.update(str(anchor.theta.denominator).encode("ascii"))
+        digest.update(b"]}")
+    digest.update(b'],"faces":[')
+    for index, face in enumerate(gonol.faces_pos):
+        if index:
+            digest.update(b",")
+        digest.update(str(face).encode("ascii"))
+    digest.update(b'],"n_dec":')
+    digest.update(str(gonol.n_dec).encode("ascii"))
+    digest.update(b',"n_min":')
+    digest.update(str(gonol.n_min).encode("ascii"))
+    digest.update(b"}")
+
+
+def gonol_sha256(gonol: UCNSObject) -> str:
+    """Stable identity of intrinsic gonol data only.
+
+    UCNS language gonols are construction-complete objects and are not mutated
+    after placement. The weak identity cache therefore removes repeated deep
+    traversals without extending object lifetime or changing canonical bytes.
+    """
+
+    if not isinstance(gonol, UCNSObject):
+        raise TypeError("gonol must be a UCNSObject")
+    cached = _GONOL_HASH_CACHE.get(gonol)
+    if cached is not None:
+        return cached
+    digest = sha256()
+    _update_intrinsic_hash(digest, gonol)
+    value = digest.hexdigest()
+    _GONOL_HASH_CACHE[gonol] = value
+    return value
 
 
 def _vertices(domain: str, evidence: Any, count: int) -> tuple[int, ...]:
@@ -250,12 +300,11 @@ def superpose_gonols(gonols: Iterable[UCNSObject]) -> UCNSObject:
         raise ValueError("superposition requires at least one gonol")
     if len(values) == 1:
         return values[0]
-    ordered = tuple(sorted(values, key=gonol_sha256))
+    identified = sorted(((gonol_sha256(value), value) for value in values), key=lambda item: item[0])
     anchors: list[AnchorPayload] = [AnchorPayload(Fraction(0), None)]
     faces: list[int] = [0]
     occupied: set[int] = set()
-    for value in ordered:
-        digest = gonol_sha256(value)
+    for digest, value in identified:
         vertex = 1 + int(digest[:16], 16) % _NONZERO_VERTEX_COUNT
         while vertex in occupied:
             vertex = 1 + vertex % _NONZERO_VERTEX_COUNT
