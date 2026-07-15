@@ -100,13 +100,17 @@ def compare_atomic_fork(
     try:
         direct = direct_atomic_registry.resolve(surface)
     except MissingGonolError:
-        return AtomicForkResult(surface, AtomicForkRelation.GENERATED_ONLY, None, generated)
+        return AtomicForkResult(
+            surface,
+            AtomicForkRelation.DIRECT_MISSING,
+            molecular_tree,
+        )
     relation = (
         AtomicForkRelation.EQUIVALENT
         if direct.equivalent(generated)
         else AtomicForkRelation.DIVERGENT
     )
-    return AtomicForkResult(surface, relation, direct, generated)
+    return AtomicForkResult(surface, relation, molecular_tree)
 
 
 __all__ = [
