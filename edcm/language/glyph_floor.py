@@ -1,141 +1,133 @@
-"""Public 157-vertex glyph floor migrated from a0-betatest."""
+"""Compatibility access to the UCNS-owned public gonol.
+
+EDCM does not construct or own the public 157-gonal. The canonical source is
+the UCNS public package, promoted from ``a0-betatest@7af8deb``. This module is a
+lazy compatibility adapter so importing the base EDCM package does not imply
+that the optional UCNS integration is installed or active.
+"""
 
 # === MODULE_BUILD ===
 # id: edcm_language_glyph_floor
 #   module_name: glyph_floor
-#   module_kind: canon
-#   summary: reproduces and validates the exact public 157-vertex glyph arrangement selected from a0-betatest for this English embedding run
+#   module_kind: adapter
+#   summary: lazily consumes the UCNS-owned public gonol without retaining a competing EDCM arrangement authority
 #   owner: Erin Spencer
-#   public_surface: PUBLIC_GLYPH_FLOOR_157, build_public_glyph_floor_157, validate_public_glyph_floor, glyph_floor_sha256
-#   internal_surface: _UPPERCASE, _LOWERCASE, _DIGITS_ODD, _DIGITS_EVEN, _PAIRED_OPEN, _PAIRED_CLOSE, _UNPAIRED_ASCII, _UNPAIRED_OPS
+#   public_surface: PUBLIC_GLYPH_FLOOR_157, build_public_glyph_floor_157, validate_public_glyph_floor, glyph_floor_sha256, UCNSPublicGonolDependencyError, UCNSPublicGonolContractError
+#   internal_surface: _load_ucns_public_gonol, _PublicGonolProxy
 #   auth_boundary: none
 #   storage_boundary: none
-#   network_boundary: none
+#   network_boundary: package_import_only
 #   user_data_boundary: none
 #   admin_only: false
 #   tests: tests.test_language_embeddings
-#   rollout: default_enabled
-#   rollback: restore the prior a0-betatest source as the only authority and remove this migrated copy
+#   rollout: compatibility_only
+#   rollback: restore only after reverting canonical ownership to the exact pinned UCNS source
 #   requires: edcm_language_manifest
-#   since: 2026-07-13
-#   unresolved: private per-agent phase and permutation remain outside this public embedding artifact
+#   since: 2026-07-16
+#   unresolved: canonical public-gonol to EDCM language-object bridge remains hmmm
 # === END MODULE_BUILD ===
 
 from __future__ import annotations
 
 import hashlib
-import string
+import importlib
+from collections.abc import Iterator, Sequence
+from types import ModuleType
 
 from .manifest import PUBLIC_GLYPH_FLOOR_SHA256
 
-_UPPERCASE = tuple(string.ascii_uppercase)
-_LOWERCASE = tuple(string.ascii_lowercase)
-_DIGITS_ODD = ("1", "3", "5", "7", "9")
-_DIGITS_EVEN = ("2", "4", "6", "8", "0")
-_PAIRED_OPEN = ("(", "[", "{", "<", "‘", "“", "«")
-_PAIRED_CLOSE = (")", "]", "}", ">", "’", "”", "»")
-_UNPAIRED_ASCII = tuple(
-    chr(index)
-    for index in range(33, 127)
-    if chr(index)
-    not in (
-        set(_UPPERCASE)
-        | set(_LOWERCASE)
-        | set(string.digits)
-        | set(_PAIRED_OPEN)
-        | set(_PAIRED_CLOSE)
-        | {" "}
+_EXPECTED_A0_SOURCE_COMMIT = "7af8debf6ef3905f01baff02b43d8c3bee16ccbc"
+
+
+class UCNSPublicGonolDependencyError(ModuleNotFoundError):
+    """Raised when the optional canonical UCNS public gonol is unavailable."""
+
+
+class UCNSPublicGonolContractError(RuntimeError):
+    """Raised when an installed UCNS package lacks or drifts from the canon."""
+
+
+def _load_ucns_public_gonol() -> ModuleType:
+    try:
+        module = importlib.import_module("ucns")
+    except ModuleNotFoundError as exc:
+        if exc.name != "ucns":
+            raise
+        raise UCNSPublicGonolDependencyError(
+            "EDCM no longer owns a public-gonol copy; install the pinned UCNS integration",
+            name="ucns",
+        ) from exc
+
+    required = (
+        "PUBLIC_GONOL_157",
+        "PUBLIC_GONOL_SHA256",
+        "PUBLIC_GONOL_SOURCE_COMMIT",
+        "public_gonol_sha256",
     )
-)
-_UNPAIRED_OPS = (
-    "…", "—", "–", "·", "°", "±", "×", "÷", "√", "∂", "∫", "∑", "∏", "∇", "∞",
-    "≈", "≠", "≤", "≥", "→", "←", "↑", "↓", "↔", "⊕", "⊗", "⊙", "⊘", "∈", "∉",
-    "⊂", "⊃", "⊆", "⊇", "∩", "∪", "∧", "∨", "¬", "∀", "∃", "⊢", "⊨", "∴", "∵",
-    "≡", "ψ", "φ", "ω", "α", "β", "γ", "δ", "λ", "π", "σ", "τ", "θ", "∅", "ℕ", "ℤ",
-    "ℚ", "ℝ", "ℂ", "ℵ",
-)
+    missing = tuple(name for name in required if not hasattr(module, name))
+    if missing:
+        raise UCNSPublicGonolContractError(
+            "installed ucns is missing canonical public-gonol surfaces: "
+            + ", ".join(missing)
+        )
+    if module.PUBLIC_GONOL_SOURCE_COMMIT != _EXPECTED_A0_SOURCE_COMMIT:
+        raise UCNSPublicGonolContractError("UCNS public-gonol source commit mismatch")
+    glyphs = tuple(module.PUBLIC_GONOL_157)
+    if len(glyphs) != 157 or glyphs[0] != " ":
+        raise UCNSPublicGonolContractError("UCNS public gonol lost its fixed SPACE/ZERO origin")
+    digest = module.public_gonol_sha256(glyphs)
+    if digest != PUBLIC_GLYPH_FLOOR_SHA256 or digest != module.PUBLIC_GONOL_SHA256:
+        raise UCNSPublicGonolContractError("UCNS public-gonol arrangement digest mismatch")
+    return module
+
+
+class _PublicGonolProxy(Sequence[str]):
+    """Read-only lazy sequence backed exclusively by the UCNS public canon."""
+
+    def _glyphs(self) -> tuple[str, ...]:
+        return tuple(_load_ucns_public_gonol().PUBLIC_GONOL_157)
+
+    def __getitem__(self, index):
+        return self._glyphs()[index]
+
+    def __len__(self) -> int:
+        return len(self._glyphs())
+
+    def __iter__(self) -> Iterator[str]:
+        return iter(self._glyphs())
+
+    def __repr__(self) -> str:
+        return "<UCNS-owned public gonol; lazy EDCM compatibility view>"
 
 
 def build_public_glyph_floor_157() -> tuple[str, ...]:
-    """Reproduce a0-betatest ``EXAMPLE_157`` exactly and deterministically."""
+    """Return a caller-owned immutable view of the UCNS public gonol."""
 
-    size = 157
-    slots = [""] * size
-    slots[0] = " "
-    upper_arc = list(range(1, (size // 2) + 1))
-    lower_arc = list(range((size // 2) + 1, size))
-
-    upper_letters = list(range(1, upper_arc[-1], 3))[:26]
-    lower_letters = list(range(lower_arc[1], lower_arc[-1], 3))[:26]
-    for index, glyph in enumerate(_UPPERCASE):
-        slots[upper_letters[index]] = glyph
-    for index, glyph in enumerate(_LOWERCASE):
-        slots[lower_letters[index]] = glyph
-
-    upper_gaps = [position for position in upper_arc if slots[position] == ""]
-    upper_step = max(1, len(upper_gaps) // (len(_DIGITS_ODD) + 1))
-    for index, glyph in enumerate(_DIGITS_ODD):
-        target = upper_step * (index + 1)
-        if target < len(upper_gaps):
-            slots[upper_gaps[target]] = glyph
-
-    lower_gaps = [position for position in lower_arc if slots[position] == ""]
-    lower_step = max(1, len(lower_gaps) // (len(_DIGITS_EVEN) + 1))
-    for index, glyph in enumerate(_DIGITS_EVEN):
-        target = lower_step * (index + 1)
-        if target < len(lower_gaps):
-            slots[lower_gaps[target]] = glyph
-
-    upper_remaining = [position for position in upper_arc if slots[position] == ""]
-    lower_remaining = [position for position in lower_arc if slots[position] == ""]
-    open_step = max(1, len(upper_remaining) // (len(_PAIRED_OPEN) + 1))
-    close_step = max(1, len(lower_remaining) // (len(_PAIRED_CLOSE) + 1))
-    for index, glyph in enumerate(_PAIRED_OPEN):
-        target = open_step * (index + 1)
-        if target < len(upper_remaining):
-            slots[upper_remaining[target]] = glyph
-    for index, glyph in enumerate(_PAIRED_CLOSE):
-        target = close_step * (index + 1)
-        if target < len(lower_remaining):
-            slots[lower_remaining[target]] = glyph
-
-    unpaired = _UNPAIRED_ASCII + _UNPAIRED_OPS
-    fill_positions = [position for position in range(size) if slots[position] == ""]
-    if len(fill_positions) > len(unpaired):
-        raise ValueError("the declared public glyph inventory does not fill 157 vertices")
-    for index, position in enumerate(fill_positions):
-        slots[position] = unpaired[index]
-
-    result = tuple(slots)
-    validate_public_glyph_floor(result)
-    return result
+    return tuple(_load_ucns_public_gonol().PUBLIC_GONOL_157)
 
 
-def glyph_floor_sha256(glyphs: tuple[str, ...]) -> str:
-    """Hash the one-glyph-per-line canonical floor representation."""
+def glyph_floor_sha256(glyphs: Sequence[str]) -> str:
+    """Hash the one-glyph-per-line arrangement without defining its authority."""
 
     return hashlib.sha256(("\n".join(glyphs) + "\n").encode("utf-8")).hexdigest()
 
 
-def validate_public_glyph_floor(glyphs: tuple[str, ...]) -> None:
-    if len(glyphs) != 157:
-        raise ValueError("public glyph floor must contain exactly 157 vertices")
-    if glyphs[0] != " ":
-        raise ValueError("vertex zero must remain the literal-space seam")
-    if len(set(glyphs)) != len(glyphs):
-        raise ValueError("public glyph floor must be bijective")
-    if any(not glyph or glyph.startswith("\x00") for glyph in glyphs):
-        raise ValueError("every public vertex must contain one explicit non-NUL glyph")
-    digest = glyph_floor_sha256(glyphs)
-    if digest != PUBLIC_GLYPH_FLOOR_SHA256:
-        raise ValueError(f"public glyph floor drift: expected {PUBLIC_GLYPH_FLOOR_SHA256}, got {digest}")
+def validate_public_glyph_floor(glyphs: Sequence[str]) -> None:
+    """Require exact equality with the UCNS-owned canon."""
+
+    canonical = build_public_glyph_floor_157()
+    candidate = tuple(glyphs)
+    if candidate != canonical:
+        raise UCNSPublicGonolContractError("EDCM glyph input differs from UCNS public gonol")
 
 
-PUBLIC_GLYPH_FLOOR_157 = build_public_glyph_floor_157()
+PUBLIC_GLYPH_FLOOR_157: Sequence[str] = _PublicGonolProxy()
 
 
 __all__ = [
     "PUBLIC_GLYPH_FLOOR_157",
+    "UCNSPublicGonolDependencyError",
+    "UCNSPublicGonolContractError",
     "build_public_glyph_floor_157",
     "glyph_floor_sha256",
     "validate_public_glyph_floor",
