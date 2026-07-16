@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import importlib.util
 import json
 from fractions import Fraction
+
+import pytest
 
 from edcm.language import (
     AtomicForkRelation,
@@ -9,15 +12,20 @@ from edcm.language import (
     CompositionNode,
     GonolRegistry,
     LexicalEvidence,
+    NonCanonicalLanguagePlacementError,
     PUBLIC_GLYPH_FLOOR_157,
-    PUBLIC_GLYPH_FLOOR_SHA256,
     SOURCE_DICTIONARY,
     Soundness,
+    UCNSPublicGonolDependencyError,
+    assign_affix_gonol,
+    assign_direct_atomic_gonol,
+    assign_root_gonol,
+    build_public_glyph_floor_157,
     compare_atomic_fork,
     embedding_manifest,
-    glyph_floor_sha256,
     materialize,
     metadata_free_jsonl,
+    superpose_gonols,
 )
 from edcm.language.composition import compose_gonols
 from edcm.measurement.ucns.ucns_v04 import AnchorPayload, UCNSObject, unit_obj
@@ -53,26 +61,32 @@ def _ilproperlies_fixture() -> tuple[GonolRegistry, CompositionNode]:
     return registry, tree
 
 
-def test_manifest_pins_selected_run_without_selection_restrictions() -> None:
+def test_manifest_retires_noncanonical_placement_and_names_ucns_authority() -> None:
     manifest = embedding_manifest()
     assert manifest.source_dictionary == SOURCE_DICTIONARY
     assert manifest.source_dictionary_is_exclusive is True
-    assert manifest.public_glyph_floor_vertices == 157
-    assert manifest.universal_composition is True
-    assert manifest.affix_selection_restrictions is False
-    assert manifest.direct_atomic_assignment_is_independent is True
-    assert manifest.shared_superposition_count == 1
-    assert manifest.scale_changes_operation is False
+    assert "The-Interdependency/ucns@" in manifest.public_glyph_floor_source
+    assert manifest.canonical_public_gonol_required is True
+    assert manifest.edcm_owns_public_gonol is False
+    assert manifest.legacy_hash_placement_retired is True
+    assert manifest.universal_composition is False
+    assert manifest.direct_atomic_assignment_is_independent is False
+    assert manifest.molecular_results_generate_atomic_views is False
+    assert manifest.shared_superposition_count == 0
 
 
-def test_public_glyph_floor_is_exactly_delineated_and_frozen() -> None:
-    assert len(PUBLIC_GLYPH_FLOOR_157) == 157
-    assert len(set(PUBLIC_GLYPH_FLOOR_157)) == 157
-    assert PUBLIC_GLYPH_FLOOR_157[0] == " "
-    assert glyph_floor_sha256(PUBLIC_GLYPH_FLOOR_157) == PUBLIC_GLYPH_FLOOR_SHA256
+def test_public_gonol_is_lazy_and_requires_canonical_ucns() -> None:
+    assert "UCNS-owned public gonol" in repr(PUBLIC_GLYPH_FLOOR_157)
+    if importlib.util.find_spec("ucns") is None:
+        with pytest.raises(UCNSPublicGonolDependencyError):
+            build_public_glyph_floor_157()
+    else:
+        import ucns
+
+        assert build_public_glyph_floor_157() == tuple(ucns.PUBLIC_GONOL_157)
 
 
-def test_ilproperlies_is_valid_and_currently_unsound() -> None:
+def test_ilproperlies_remains_structurally_valid_and_currently_unsound() -> None:
     evidence = LexicalEvidence(
         surface="ilproperlies",
         attestation=Attestation.UNATTESTED,
@@ -82,7 +96,7 @@ def test_ilproperlies_is_valid_and_currently_unsound() -> None:
     assert evidence.valid is True
 
 
-def test_every_declared_affix_and_root_can_enter_the_same_composer() -> None:
+def test_existing_local_composition_helpers_remain_read_only_compatible() -> None:
     registry, tree = _ilproperlies_fixture()
     generated = materialize(tree, registry)
     assert isinstance(generated, UCNSObject)
@@ -95,22 +109,7 @@ def test_singleton_composition_preserves_identity_without_unit_copy() -> None:
     assert compose_gonols(()).equivalent(unit_obj())
 
 
-def test_grouping_is_preserved_even_when_current_ucns_product_is_associative() -> None:
-    registry = GonolRegistry({"a": _leaf_gonol(2), "b": _leaf_gonol(3), "c": _leaf_gonol(5)})
-    left = CompositionNode.compose(
-        CompositionNode.compose(CompositionNode.leaf("a"), CompositionNode.leaf("b")),
-        CompositionNode.leaf("c"),
-    )
-    right = CompositionNode.compose(
-        CompositionNode.leaf("a"),
-        CompositionNode.compose(CompositionNode.leaf("b"), CompositionNode.leaf("c")),
-    )
-    assert left != right
-    assert tuple(left.leaves()) == tuple(right.leaves())
-    assert materialize(left, registry).equivalent(materialize(right, registry))
-
-
-def test_direct_and_generated_atomic_gonols_form_a_real_fork() -> None:
+def test_existing_direct_generated_comparison_remains_an_inspection_surface() -> None:
     molecular_registry, tree = _ilproperlies_fixture()
     direct_registry = GonolRegistry({"ilproperlies": _leaf_gonol(7)})
     result = compare_atomic_fork(
@@ -123,33 +122,18 @@ def test_direct_and_generated_atomic_gonols_form_a_real_fork() -> None:
     assert result.molecular_tree is tree
 
 
-def test_lazy_generated_atomic_cache_is_not_a_fork_when_identity_is_preserved() -> None:
-    molecular_registry, tree = _ilproperlies_fixture()
-    generated = materialize(tree, molecular_registry)
-    direct_registry = GonolRegistry({"ilproperlies": generated})
-    result = compare_atomic_fork(
-        "ilproperlies",
-        tree,
-        molecular_registry,
-        direct_registry,
-    )
-    assert result.relation is AtomicForkRelation.EQUIVALENT
-    assert result.molecular_tree is tree
+def test_new_language_gonol_placement_fails_closed() -> None:
+    with pytest.raises(NonCanonicalLanguagePlacementError):
+        assign_affix_gonol(None)
+    with pytest.raises(NonCanonicalLanguagePlacementError):
+        assign_root_gonol("word", ())
+    with pytest.raises(NonCanonicalLanguagePlacementError):
+        assign_direct_atomic_gonol("word", (), {})
+    with pytest.raises(NonCanonicalLanguagePlacementError):
+        superpose_gonols((_leaf_gonol(1), _leaf_gonol(2)))
 
 
-def test_missing_direct_atomic_uses_declared_relation() -> None:
-    molecular_registry, tree = _ilproperlies_fixture()
-    result = compare_atomic_fork(
-        "ilproperlies",
-        tree,
-        molecular_registry,
-        GonolRegistry(),
-    )
-    assert result.relation is AtomicForkRelation.DIRECT_MISSING
-    assert result.molecular_tree is tree
-
-
-def test_metadata_free_gonol_list_contains_only_intrinsic_fields() -> None:
+def test_metadata_free_compatibility_record_contains_only_intrinsic_fields() -> None:
     registry, tree = _ilproperlies_fixture()
     encoded = metadata_free_jsonl([materialize(tree, registry)])
     record = json.loads(encoded)

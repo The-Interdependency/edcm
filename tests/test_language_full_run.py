@@ -1,27 +1,20 @@
 from __future__ import annotations
 
 from dataclasses import replace
-import gzip
-from hashlib import sha256
-import json
-from pathlib import Path
-import sqlite3
+
+import pytest
 
 from edcm.language.affixes import AffixRecord, load_affix_inventory
-from edcm.language.artifacts import intrinsic_gonol_record
-from edcm.language.composition import compose_gonols
 from edcm.language.morphology import build_morphology_graph
 from edcm.language.placement import (
+    NonCanonicalLanguagePlacementError,
     assign_affix_gonol,
     assign_direct_atomic_gonol,
     assign_root_gonol,
-    compare_gonols,
-    gonol_sha256,
     superpose_gonols,
 )
 from edcm.language.rendering import inverse_affix_candidates, render_affix_candidates
-from edcm.language.source import LexemeRecord, SenseRecord, SynsetRecord
-from tools.build_oewn2025_embeddings import _canonical_json, _materialize_row_store
+from tools.build_oewn2025_embeddings import main as build_oewn_main
 
 
 def _find_affix(surface: str, primary: str | None = None) -> AffixRecord:
@@ -30,15 +23,6 @@ def _find_affix(surface: str, primary: str | None = None) -> AffixRecord:
         matches = [record for record in matches if record.primary == primary]
     assert matches
     return matches[0]
-
-
-def _lexeme(lemma: str, synset: str = "00000001-n") -> LexemeRecord:
-    return LexemeRecord(
-        lemma=lemma,
-        part_of_speech="n",
-        forms=(),
-        senses=(SenseRecord(f"{lemma}%1:00:00::", synset, ()),),
-    )
 
 
 def test_every_affix_is_universally_applicable_and_variants_are_materialized() -> None:
@@ -60,7 +44,7 @@ def test_rendering_preserves_literal_and_conventional_surfaces() -> None:
     assert "run" in inverse_affix_candidates("running", ing)
 
 
-def test_ilproperlies_is_valid_and_can_remain_unsound() -> None:
+def test_ilproperlies_is_a_retained_morphology_reading_without_gonol_placement() -> None:
     il = _find_affix("il-")
     ly = _find_affix("-ly")
     es = _find_affix("-es")
@@ -119,216 +103,17 @@ def test_indexed_affix_candidates_match_brute_reversible_renderer() -> None:
     assert observed == expected
 
 
-def test_direct_atomic_and_molecular_placements_are_independent() -> None:
-    lexeme = _lexeme("help")
-    synset = SynsetRecord(
-        synset_id="00000001-n",
-        part_of_speech="n",
-        members=("help", "aid"),
-        definitions=("the activity of contributing",),
-        relations=(("hypernym", ("00000002-n",)),),
-    )
-    root = assign_root_gonol("help", (lexeme,))
-    direct = assign_direct_atomic_gonol("help", (lexeme,), {synset.synset_id: synset})
-    comparison = compare_gonols(direct, root)
-    assert not comparison["equivalent"]
-    assert comparison["direct_sha256"] != comparison["generated_sha256"]
+def test_all_noncanonical_language_gonol_construction_fails_closed() -> None:
+    with pytest.raises(NonCanonicalLanguagePlacementError):
+        assign_affix_gonol(_find_affix("un-"))
+    with pytest.raises(NonCanonicalLanguagePlacementError):
+        assign_root_gonol("root", ())
+    with pytest.raises(NonCanonicalLanguagePlacementError):
+        assign_direct_atomic_gonol("word", (), {})
+    with pytest.raises(NonCanonicalLanguagePlacementError):
+        superpose_gonols(())
 
 
-def test_alternative_superposition_retains_payloads() -> None:
-    a = assign_root_gonol("lock", (_lexeme("lock"),))
-    b = assign_affix_gonol(_find_affix("un-"))
-    combined = superpose_gonols((a, b))
-    assert len(combined.anchors_pos) == 3
-    assert sum(anchor.payload is not None for anchor in combined.anchors_pos) == 2
-
-
-def test_streaming_gonol_hash_matches_legacy_canonical_record() -> None:
-    root = assign_root_gonol("lock", (_lexeme("lock"),))
-    affix = assign_affix_gonol(_find_affix("un-"))
-    combined = superpose_gonols((root, affix))
-    legacy = sha256(
-        json.dumps(
-            intrinsic_gonol_record(combined),
-            sort_keys=True,
-            separators=(",", ":"),
-            ensure_ascii=False,
-        ).encode("utf-8")
-    ).hexdigest()
-    assert gonol_sha256(combined) == legacy
-    assert gonol_sha256(combined) == legacy
-
-
-def test_gonol_hash_cache_preserves_structural_identity_across_objects() -> None:
-    left = assign_root_gonol("lock", (_lexeme("lock"),))
-    right = assign_root_gonol("lock", (_lexeme("lock"),))
-    assert left is not right
-    assert left.equivalent(right)
-    assert gonol_sha256(left) == gonol_sha256(right)
-
-
-def test_disk_row_store_matches_naive_complete_materialization() -> None:
-    affix = _find_affix("un-")
-    surface_lexemes = {
-        "lock": (_lexeme("lock"),),
-        "unlock": (_lexeme("unlock", "00000002-n"),),
-    }
-    graph = build_morphology_graph(surface_lexemes, (affix,))
-    affix_gonols = {affix.affix_id: assign_affix_gonol(affix)}
-    connection = sqlite3.connect(":memory:")
-    try:
-        relation_counts, theta_total, peak_cache_size = _materialize_row_store(
-            connection,
-            graph,
-            surface_lexemes,
-            {},
-            affix_gonols,
-        )
-        stored = {
-            surface: {
-                "direct_json": direct_json,
-                "generated_json": generated_json,
-                "direct_hash": direct_hash,
-                "generated_hash": generated_hash,
-                "comparison_json": comparison_json,
-                "is_root": bool(is_root),
-            }
-            for (
-                surface,
-                direct_json,
-                generated_json,
-                direct_hash,
-                generated_hash,
-                comparison_json,
-                is_root,
-            ) in connection.execute(
-                "SELECT surface, direct_json, generated_json, direct_hash, "
-                "generated_hash, comparison_json, is_root "
-                "FROM materialized ORDER BY surface"
-            )
-        }
-    finally:
-        connection.close()
-
-    naive_cache: dict[str, object] = {}
-
-    def naive_generated(surface: str):
-        if surface in naive_cache:
-            return naive_cache[surface]
-        alternatives = graph.immediate(surface)
-        if not alternatives:
-            result = assign_root_gonol(surface, surface_lexemes[surface])
-        else:
-            branches = []
-            for alternative in alternatives:
-                parts = []
-                for part in alternative.parts:
-                    if part.startswith("affix:"):
-                        parts.append(affix_gonols[part.removeprefix("affix:")])
-                    else:
-                        parts.append(naive_generated(part.removeprefix("surface:")))
-                branches.append(compose_gonols(parts))
-            result = superpose_gonols(branches)
-        naive_cache[surface] = result
-        return result
-
-    expected_counts: dict[str, int] = {}
-    expected_theta_total = 0.0
-    for surface in sorted(surface_lexemes):
-        direct = assign_direct_atomic_gonol(surface, surface_lexemes[surface], {})
-        generated = naive_generated(surface)
-        comparison = compare_gonols(direct, generated)
-        key = "equivalent" if comparison["equivalent"] else "divergent"
-        expected_counts[key] = expected_counts.get(key, 0) + 1
-        if comparison["carrier_equal"]:
-            expected_counts["carrier_equal"] = expected_counts.get("carrier_equal", 0) + 1
-        if comparison["face_histogram_equal"]:
-            expected_counts["face_histogram_equal"] = (
-                expected_counts.get("face_histogram_equal", 0) + 1
-            )
-        expected_theta_total += float(comparison["theta_jaccard"])
-
-        row = stored[surface]
-        assert row["direct_json"] == _canonical_json(intrinsic_gonol_record(direct))
-        assert row["generated_json"] == _canonical_json(intrinsic_gonol_record(generated))
-        assert row["direct_hash"] == gonol_sha256(direct)
-        assert row["generated_hash"] == gonol_sha256(generated)
-        assert row["comparison_json"] == _canonical_json({"surface": surface, **comparison})
-        assert row["is_root"] is (not graph.immediate(surface))
-
-    assert dict(relation_counts) == expected_counts
-    assert theta_total == expected_theta_total
-    assert peak_cache_size <= 1
-
-
-def test_intrinsic_record_contains_no_linguistic_metadata() -> None:
-    gonol = assign_root_gonol("help", (_lexeme("help"),))
-    record = intrinsic_gonol_record(gonol)
-    text = json.dumps(record, sort_keys=True)
-    for forbidden in ("help", "surface", "attestation", "soundness", "source", "embedding"):
-        assert forbidden not in text
-
-
-def test_generated_artifact_manifest_when_present() -> None:
-    root = Path(__file__).resolve().parents[1]
-    manifest_path = root / "artifacts" / "oewn2025" / "manifest.json"
-    if not manifest_path.exists():
-        return
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    assert manifest["summary"]["surface_count"] > 100_000
-    assert manifest["summary"]["root_count"] > 0
-    for record in manifest["files"]:
-        path = root / "artifacts" / record["path"]
-        assert path.is_file()
-        assert path.stat().st_size == record["bytes"]
-        assert sha256(path.read_bytes()).hexdigest() == record["sha256"]
-
-    pure_path = root / "artifacts" / "oewn2025" / "atomic-direct.gonols.jsonl.gz"
-    with gzip.open(pure_path, "rt", encoding="utf-8") as handle:
-        first = json.loads(handle.readline())
-    serialized = json.dumps(first, sort_keys=True)
-    assert "surface" not in serialized
-    assert "source" not in serialized
-
-
-def test_cross_repository_stack_manifest_when_present() -> None:
-    root = Path(__file__).resolve().parents[1]
-    path = root / "artifacts" / "oewn2025" / "stack-manifest.json"
-    if not path.exists():
-        return
-
-    manifest = json.loads(path.read_text(encoding="utf-8"))
-    assert manifest["schema"] == "the-interdependency.stack-manifest"
-    assert manifest["version"] == "1.0.0"
-
-    repositories = {
-        record["repository"]: record
-        for record in manifest["repositories"]
-    }
-    assert set(repositories) == {
-        "The-Interdependency/edcm",
-        "The-Interdependency/metapat",
-        "The-Interdependency/skill-lib",
-        "The-Interdependency/ucns",
-        "globalwordnet/english-wordnet",
-    }
-    assert all(len(record["commit"]) == 40 for record in repositories.values())
-
-    boundaries = manifest["boundaries"]
-    assert boundaries["authority_transfer"] is False
-    assert boundaries["proof_status_transfer"] is False
-    assert boundaries["measurement_status_transfer"] is False
-    assert boundaries["semantic_mapping"] == "external-provenance"
-    assert boundaries["agent_scope"] == "cross-repository-work-graph"
-    assert any("one repository / one AI" in value for value in boundaries["hmmm"])
-
-    identity = {
-        "repositories": manifest["repositories"],
-        "boundaries": boundaries,
-    }
-    canonical = json.dumps(
-        identity,
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode("utf-8")
-    assert sha256(canonical).hexdigest() == manifest["work_graph_sha256"]
+def test_retired_oewn_builder_fails_before_reading_or_writing_corpus_data() -> None:
+    with pytest.raises(NonCanonicalLanguagePlacementError):
+        build_oewn_main()
