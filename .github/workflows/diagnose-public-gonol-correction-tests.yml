@@ -1,0 +1,50 @@
+name: diagnose public-gonol correction tests
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/diagnose-public-gonol-correction-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out target correction branch
+        uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/edcm
+          ref: agent/retire-noncanonical-language-gonols
+          path: target
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install base package and tests
+        working-directory: target
+        run: python -m pip install -e .[dev]
+
+      - name: Capture exact pytest result
+        working-directory: target
+        shell: bash
+        run: |
+          set +e
+          python -m pytest -q 2>&1 | tee "$RUNNER_TEMP/public-gonol-correction-pytest.log"
+          status=${PIPESTATUS[0]}
+          echo "$status" > "$RUNNER_TEMP/public-gonol-correction-pytest.status"
+          exit 0
+
+      - name: Upload diagnostic
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-gonol-correction-pytest
+          path: |
+            ${{ runner.temp }}/public-gonol-correction-pytest.log
+            ${{ runner.temp }}/public-gonol-correction-pytest.status
+          if-no-files-found: error
+          retention-days: 7
