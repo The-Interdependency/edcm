@@ -28,7 +28,7 @@ from dataclasses import dataclass
 SOURCE_DICTIONARY = "Open English WordNet 2025"
 PUBLIC_GLYPH_FLOOR_SOURCE = (
     "The-Interdependency/ucns@"
-    "c7849498bb5b14b87dbb4cffb6522fbc82639373:"
+    "3cac8d0bb3170f73fb6529a619ca225f2821eff4:"
     "ucns/public_gonol.py#PUBLIC_GONOL_157"
 )
 PUBLIC_GLYPH_FLOOR_SHA256 = "20d6ed51fdff5505ed9696c38d6dcc82f982eba166d9b712bee68c4521b751ac"
