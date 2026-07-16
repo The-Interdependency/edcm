@@ -1,0 +1,120 @@
+name: export Gemini Drive bridge
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/export-gemini-drive-bridge.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Check out exact EDCM snapshot
+        uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/edcm
+          ref: f1cb17cce977c815c90079bc7d5ed7aa277a3a2d
+          path: snapshots/edcm
+          fetch-depth: 1
+
+      - name: Check out exact UCNS snapshot
+        uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/ucns
+          ref: 85342dddaab1bf2bc7050faa66f3f45d662a62fb
+          path: snapshots/ucns
+          fetch-depth: 1
+
+      - name: Check out exact METAPAT snapshot
+        uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/metapat
+          ref: 85168a6073b4093246273d460e1340bfec87fa22
+          path: snapshots/metapat
+          fetch-depth: 1
+
+      - name: Check out exact skill-lib snapshot
+        uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/skill-lib
+          ref: d0497a1e49fc225181385667c5edaa14dd4637bb
+          path: snapshots/skill-lib
+          fetch-depth: 1
+
+      - name: Check out exact Open English WordNet snapshot
+        uses: actions/checkout@v4
+        with:
+          repository: globalwordnet/english-wordnet
+          ref: dc343f2683279ecbb13fab4e2fd778d7b162d287
+          path: snapshots/english-wordnet
+          fetch-depth: 1
+
+      - name: Verify exact identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C snapshots/edcm rev-parse HEAD)" = "f1cb17cce977c815c90079bc7d5ed7aa277a3a2d"
+          test "$(git -C snapshots/ucns rev-parse HEAD)" = "85342dddaab1bf2bc7050faa66f3f45d662a62fb"
+          test "$(git -C snapshots/metapat rev-parse HEAD)" = "85168a6073b4093246273d460e1340bfec87fa22"
+          test "$(git -C snapshots/skill-lib rev-parse HEAD)" = "d0497a1e49fc225181385667c5edaa14dd4637bb"
+          test "$(git -C snapshots/english-wordnet rev-parse HEAD)" = "dc343f2683279ecbb13fab4e2fd778d7b162d287"
+
+      - name: Remove Git metadata and write snapshot manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          find snapshots -type d -name .git -prune -exec rm -rf {} +
+          cat > snapshots/WORK_GRAPH_MANIFEST.json <<'JSON'
+          {
+            "schema": "the-interdependency.gemini-drive-github-bridge",
+            "version": "1.0.0",
+            "prepared_date": "2026-07-16",
+            "repositories": {
+              "edcm": "f1cb17cce977c815c90079bc7d5ed7aa277a3a2d",
+              "ucns": "85342dddaab1bf2bc7050faa66f3f45d662a62fb",
+              "metapat": "85168a6073b4093246273d460e1340bfec87fa22",
+              "skill-lib": "d0497a1e49fc225181385667c5edaa14dd4637bb",
+              "english-wordnet": "dc343f2683279ecbb13fab4e2fd778d7b162d287"
+            },
+            "english_wordnet_tag": "2025-edition",
+            "authority_transfer": false,
+            "proof_status_transfer": false,
+            "measurement_status_transfer": false,
+            "instruction": "Read the Google Docs in the sibling Drive folder before editing. Return patches to Gemini Output Inbox; do not edit this snapshot archive."
+          }
+          JSON
+          cat > snapshots/README_FIRST.txt <<'TXT'
+          These are immutable source snapshots for the Gemini → Drive → GitHub bridge.
+
+          Read the Google Docs in the parent Drive folder first:
+          - Gemini GitHub Bridge — OEWN Work Graph Handoff
+          - Work Graph Manifest — Gemini Bridge
+          - OEWN 2025 Full-Corpus Experiment Specification
+          - Gemini Return Contract — Drive to GitHub
+
+          Do not modify the Open English WordNet snapshot.
+          Do not treat the OEWN experiment as a UCNS release requirement.
+          Save generated patches and replacement files to the Gemini Output Inbox folder.
+          TXT
+
+      - name: Inventory snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          du -sh snapshots/*
+          find snapshots -type f | sort > snapshots/FILE_INVENTORY.txt
+          sha256sum snapshots/WORK_GRAPH_MANIFEST.json snapshots/README_FIRST.txt > snapshots/HANDOFF_SHA256SUMS.txt
+
+      - name: Upload exact repository snapshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: gemini-github-bridge-repository-snapshots-2026-07-16
+          path: snapshots
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
