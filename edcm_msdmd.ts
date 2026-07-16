@@ -12,15 +12,15 @@ export default defineMsdmdCollection({
         "module_name": "edcm",
         "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "__version__, build_default_layers, EDCMLayers, LayerProvenance, ConsolidatedMeasurementLayer, CompositeSemanticsLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, ActualMetapatAdapter, MetapatIntegrationStatus, MetapatSemanticEvidence, select_metapat_adapter, inspect_metapat_adapter, ActualUCNSAdapter, UCNSIntegrationStatus, UCNSGeometryEvidence, UCNSFactorizationEvidenceRecord, select_ucns_adapter, inspect_ucns_adapter, EDCMResultContract, build_result_contract, RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, IntegrityFinding, IntegrityReport, run_integrity_gate, verify_frozen_canon, verify_measurement_authority, verify_orthogonality_alias, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, MetricDefinition, ResolvedMetricUCNS, UCNSMetricDependencyError, UCNSMetricResolutionError, METRIC_DEFINITIONS, SYMBOL_TO_METRIC_ID, resolve_metric_axis, resolve_metric_value, resolve_metric_vector, resolve_round_metrics, resolved_metric_objects_payload, measurement, language, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts",
-        "requires": "edcm_layers, edcm_metapat_adapter, edcm_ucns_adapter, edcm_shared_stack, edcm_integrity, edcm_energy_claims, edcm_falsifiability_bridge, edcm_ucns_objects, edcm_ucns_metrics, edcmucns_package, edcm_language_package",
+        "public_surface": "__version__, build_default_layers, EDCMLayers, LayerProvenance, ConsolidatedMeasurementLayer, CompositeSemanticsLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, ActualMetapatAdapter, MetapatIntegrationStatus, MetapatSemanticEvidence, select_metapat_adapter, inspect_metapat_adapter, ActualUCNSAdapter, UCNSIntegrationStatus, UCNSGeometryEvidence, UCNSFactorizationEvidenceRecord, select_ucns_adapter, inspect_ucns_adapter, AuthorizedUCNSFork, UCNSForkTopologyBinding, UCNSForkLintReport, ForkLintDependencyError, ForkTopologyError, build_fork_topology_binding, enumerate_payload_fork_paths, lint_fork_topology, lint_all_payload_forks, EDCMResultContract, build_result_contract, RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, IntegrityFinding, IntegrityReport, run_integrity_gate, verify_frozen_canon, verify_measurement_authority, verify_orthogonality_alias, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, MetricDefinition, ResolvedMetricUCNS, UCNSMetricDependencyError, UCNSMetricResolutionError, METRIC_DEFINITIONS, SYMBOL_TO_METRIC_ID, resolve_metric_axis, resolve_metric_value, resolve_metric_vector, resolve_round_metrics, resolved_metric_objects_payload, measurement, language, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts",
+        "requires": "edcm_layers, edcm_metapat_adapter, edcm_ucns_adapter, edcm_ucns_fork_lint, edcm_shared_stack, edcm_integrity, edcm_energy_claims, edcm_falsifiability_bridge, edcm_ucns_objects, edcm_ucns_metrics, edcmucns_package, edcm_language_package",
         "rollback": "remove new exports and restore prior package root only with a result-schema migration",
         "rollout": "default_enabled",
         "since": "2026-06-02",
         "storage_boundary": "none",
-        "summary": "EDCM package root \u2014 declares package identity and re-exports provenance-bearing shared-stack layers, canonical METAPAT consumer surfaces, actual-UCNS bridge, factorization-evidence and metric-object consumer surfaces, final result contracts, frozen-canon/authority integrity gates, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.",
-        "tests": "tests.test_measurement, tests.test_ucns_adapter, tests.test_ucns_evidence_consumer, tests.test_metapat_adapter, tests.test_shared_stack_contract, tests.test_integrity, tests.test_ucns_objects, tests.test_ucns_metrics, tests.test_energy_claims, tests.test_packaging",
-        "unresolved": "UCNS evidence digests and metric-object hashes provide content identity but not cryptographic producer authentication",
+        "summary": "EDCM package root \u2014 declares package identity and re-exports provenance-bearing shared-stack layers, canonical METAPAT consumer surfaces, actual-UCNS bridge, factorization-evidence and metric-object consumer surfaces, fail-closed METAPAT-to-UCNS fork topology lint, final result contracts, frozen-canon/authority integrity gates, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.",
+        "tests": "tests.test_measurement, tests.test_ucns_adapter, tests.test_ucns_evidence_consumer, tests.test_metapat_adapter, tests.test_shared_stack_contract, tests.test_integrity, tests.test_ucns_objects, tests.test_ucns_fork_lint, tests.test_ucns_metrics, tests.test_energy_claims, tests.test_packaging",
+        "unresolved": "UCNS evidence digests, fork topology bindings, and metric-object hashes provide content identity but not cryptographic producer authentication; the first accepted production fork fixture remains unselected",
         "user_data_boundary": "none"
       },
       "file": "edcm/__init__.py",
@@ -932,7 +932,7 @@ export default defineMsdmdCollection({
         "storage_boundary": "no persistence; canonical envelope data is copied into the result record",
         "summary": "EDCM-owned consumer for actual versioned immutable METAPAT semantic-authority envelopes; preserves canon identity, exact source references, constraints, permitted interpretations, hmmm, and provenance without creating metric values.",
         "tests": "tests.test_metapat_adapter, tests.test_shared_stack_contract",
-        "unresolved": "official serialized UCNS bridge-record ingestion remains separate; METAPAT statement-to-UCNS payload/tag semantics remain hmmm",
+        "unresolved": "official serialized UCNS bridge-record ingestion remains separate; payload-fork meaning requires explicit METAPAT authorization plus downstream topology lint",
         "user_data_boundary": "preserves caller-supplied METAPAT source statements and references exactly"
       },
       "file": "edcm/metapat_adapter.py",
@@ -1011,6 +1011,147 @@ export default defineMsdmdCollection({
       "id": "edcm_ucns_dependency"
     },
     {
+      "block": "BOUNDARIES",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "network_boundary": "none",
+        "storage_boundary": "serialization-only",
+        "summary": "EDCM verifies authority-to-geometry binding but does not invent METAPAT meaning, alter UCNS algebra, or transfer proof status into measurement validity",
+        "user_data_boundary": "no transcript or measurement values"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_ucns_fork_lint_boundary"
+    },
+    {
+      "block": "CAPABILITIES",
+      "fields": {
+        "boundaries": "auth:none, storage:serialization-only, network:none, user_data:semantic provenance only",
+        "exposes": "edcm.lint_all_payload_forks",
+        "inputs": "actual UCNSObject root and AuthorizedUCNSFork declarations",
+        "outputs": "UCNSForkLintReport or typed failure",
+        "summary": "validates every actual recursive UCNS payload fork against one exact METAPAT authorization and topology binding"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fail_closed_ucns_fork_lint"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "integration_contract",
+        "given": "a METAPAT authorization is bound to an actual UCNS fork",
+        "then": "root hash, fork path/hash, payload indices, ordered child ids/hashes, canon, policy, and authorization digest are exact"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_binding_exact_topology"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "schema_contract",
+        "given": "a topology binding is serialized and reconstructed",
+        "then": "every field survives exactly and malformed or tampered records fail closed"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_binding_roundtrip"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a recursive UCNS object is linted",
+        "then": "every object with at least two payload children has exactly one valid declaration"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_lint_complete_coverage"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "UCNS or METAPAT is directly absent or transitively broken",
+        "then": "direct absence is typed and transitive import failure remains visible"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_lint_dependency_visible"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "payload order, cell indices, object hashes, canon, policy, or producer authorization changes",
+        "then": "lint fails closed"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_lint_drift_rejected"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a declaration is missing, duplicated, or targets a non-fork path",
+        "then": "lint fails closed"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_lint_missing_extra_rejected"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "boundary_contract",
+        "given": "geometry has fewer than two payload children or no declaration",
+        "then": "no constitutive meaning is inferred; only actual forks require explicit authority"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_lint_no_inference"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "boundary_contract",
+        "given": "a valid binding and lint report",
+        "then": "theorem_status_transfer and measurement_validity_claim remain false"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_fork_lint_no_status_transfer"
+    },
+    {
+      "block": "DOCS",
+      "fields": {
+        "audience": "developer",
+        "covers": "UCNSForkTopologyBinding, build_fork_topology_binding, lint_fork_topology, lint_all_payload_forks",
+        "source": "docs/ucns-fork-lint.md",
+        "status": "current",
+        "summary": "documents exact topology binding, complete recursive coverage, negative fixtures, and authority boundaries"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_ucns_fork_lint_docs"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_load_stack, _canonical_json, _text, _strings, _indices, _binding_payload, _binding_digest, _resolve_path, _payload_cells",
+        "module_kind": "adapter",
+        "module_name": "ucns_fork_lint",
+        "network_boundary": "optional package import only; no network performed by runtime code",
+        "owner": "Erin Spencer",
+        "public_surface": "UCNSForkTopologyBinding, AuthorizedUCNSFork, UCNSForkLintReport, ForkLintDependencyError, ForkTopologyError, build_fork_topology_binding, lint_fork_topology, lint_all_payload_forks, enumerate_payload_fork_paths",
+        "requires": "edcm_metapat_adapter, edcm_ucns_adapter",
+        "rollback": "remove exports and consumer call sites; METAPAT authorization and UCNS geometry remain separate upstream authorities",
+        "rollout": "optional_full_stack_integration",
+        "since": "2026-07-15",
+        "storage_boundary": "serialization-only",
+        "summary": "binds METAPAT constitutive-fork authorizations to exact UCNS payload paths, indices, and stable hashes and fails closed over the complete recursive object",
+        "tests": "tests.test_ucns_fork_lint",
+        "unresolved": "no accepted production fixture exists until a caller supplies complete authorizations for every actual payload fork",
+        "user_data_boundary": "semantic module ids and unresolved constraints remain producer provenance; transcript content and measurement values are not accepted"
+      },
+      "file": "edcm/ucns_fork_lint.py",
+      "id": "edcm_ucns_fork_lint"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
@@ -1057,9 +1198,272 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/ucns_objects.py",
       "id": "edcm_ucns_objects"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_binding_captures_exact_payload_topology",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_binding_exact_topology"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_binding_exact"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_complete_recursive_lint_accepts_every_declared_fork",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_lint_complete_coverage"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_complete_coverage"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_direct_dependency_absence_is_typed",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_lint_dependency_visible"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_dependency"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_payload_order_or_object_drift_fails_closed",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_lint_drift_rejected"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_drift"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_missing_duplicate_and_extra_declarations_fail_closed",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_lint_missing_extra_rejected"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_missing_extra"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_single_payload_is_not_silently_typed_as_a_fork",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_lint_no_inference"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_no_inference"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_binding_roundtrip_is_strict_and_tamper_evident",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_binding_roundtrip"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_roundtrip"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_valid_report_preserves_status_firewall",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_fork_lint_no_status_transfer"
+      },
+      "file": "tests/test_ucns_fork_lint.py",
+      "id": "check_edcm_fork_status_firewall"
     }
   ],
   "edges": [
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "exposes",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "edcm.lint_all_payload_forks"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "auth:none"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "network:none"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "storage:serialization-only"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "user_data:semantic provenance only"
+    },
+    {
+      "from": "check_edcm_fork_binding_exact",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_binding_exact",
+      "to": "self::test_binding_captures_exact_payload_topology"
+    },
+    {
+      "from": "check_edcm_fork_binding_exact",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_binding_exact",
+      "to": "edcm_fork_binding_exact_topology"
+    },
+    {
+      "from": "check_edcm_fork_complete_coverage",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_complete_coverage",
+      "to": "self::test_complete_recursive_lint_accepts_every_declared_fork"
+    },
+    {
+      "from": "check_edcm_fork_complete_coverage",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_complete_coverage",
+      "to": "edcm_fork_lint_complete_coverage"
+    },
+    {
+      "from": "check_edcm_fork_dependency",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_dependency",
+      "to": "self::test_direct_dependency_absence_is_typed"
+    },
+    {
+      "from": "check_edcm_fork_dependency",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_dependency",
+      "to": "edcm_fork_lint_dependency_visible"
+    },
+    {
+      "from": "check_edcm_fork_drift",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_drift",
+      "to": "self::test_payload_order_or_object_drift_fails_closed"
+    },
+    {
+      "from": "check_edcm_fork_drift",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_drift",
+      "to": "edcm_fork_lint_drift_rejected"
+    },
+    {
+      "from": "check_edcm_fork_missing_extra",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_missing_extra",
+      "to": "self::test_missing_duplicate_and_extra_declarations_fail_closed"
+    },
+    {
+      "from": "check_edcm_fork_missing_extra",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_missing_extra",
+      "to": "edcm_fork_lint_missing_extra_rejected"
+    },
+    {
+      "from": "check_edcm_fork_no_inference",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_no_inference",
+      "to": "self::test_single_payload_is_not_silently_typed_as_a_fork"
+    },
+    {
+      "from": "check_edcm_fork_no_inference",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_no_inference",
+      "to": "edcm_fork_lint_no_inference"
+    },
+    {
+      "from": "check_edcm_fork_roundtrip",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_roundtrip",
+      "to": "self::test_binding_roundtrip_is_strict_and_tamper_evident"
+    },
+    {
+      "from": "check_edcm_fork_roundtrip",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_roundtrip",
+      "to": "edcm_fork_binding_roundtrip"
+    },
+    {
+      "from": "check_edcm_fork_status_firewall",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_status_firewall",
+      "to": "self::test_valid_report_preserves_status_firewall"
+    },
+    {
+      "from": "check_edcm_fork_status_firewall",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_fork_status_firewall",
+      "to": "edcm_fork_lint_no_status_transfer"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "UCNSForkTopologyBinding"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "build_fork_topology_binding"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "lint_all_payload_forks"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "lint_fork_topology"
+    },
     {
       "from": "edcm_energy_claims",
       "kind": "owns",
@@ -1492,6 +1896,13 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_package",
+      "to": "edcm_ucns_fork_lint"
+    },
+    {
+      "from": "edcm_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_package",
       "to": "edcm_ucns_metrics"
     },
     {
@@ -1569,6 +1980,27 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_ucns_dependency",
+      "to": "edcm_ucns_adapter"
+    },
+    {
+      "from": "edcm_ucns_fork_lint",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_fork_lint",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_ucns_fork_lint",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_fork_lint",
+      "to": "edcm_metapat_adapter"
+    },
+    {
+      "from": "edcm_ucns_fork_lint",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_fork_lint",
       "to": "edcm_ucns_adapter"
     },
     {

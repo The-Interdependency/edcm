@@ -1,0 +1,78 @@
+name: UCNS fork authorization lint
+
+on:
+  pull_request:
+    paths:
+      - "edcm/ucns_fork_lint.py"
+      - "tests/test_ucns_fork_lint.py"
+      - "docs/ucns-fork-lint.md"
+      - "pyproject.toml"
+      - ".github/workflows/ucns-fork-lint.yml"
+  push:
+    branches: [main]
+    paths:
+      - "edcm/ucns_fork_lint.py"
+      - "tests/test_ucns_fork_lint.py"
+      - "docs/ucns-fork-lint.md"
+      - "pyproject.toml"
+      - ".github/workflows/ucns-fork-lint.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  actual-full-stack:
+    name: Actual METAPAT authority / UCNS topology
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out EDCM
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install pinned full stack
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev,full-stack]"
+
+      - name: Run complete fork-lint contracts
+        run: python -m pytest -q tests/test_ucns_fork_lint.py
+
+      - name: Prove producer and topology identities remain separate
+        run: |
+          python - <<'PY'
+          from fractions import Fraction
+
+          import edcm
+          import metapat
+          import ucns
+
+          left = ucns.UCNSObject(1, 1, [(Fraction(0, 1), None)], [0])
+          right = ucns.UCNSObject(1, 1, [(Fraction(0, 1), None)], [1])
+          root = ucns.UCNSObject(
+              2,
+              2,
+              [(Fraction(0, 1), left), (Fraction(1, 1), right)],
+              [0, 1],
+          )
+          envelope = metapat.root_spine_module_envelope()
+          authorization = metapat.authorize_constitutive_fork(
+              envelope,
+              child_module_ids=("metapat.child.alpha", "metapat.child.beta"),
+              source_statement_refs=(envelope.source_statement_refs[0],),
+          )
+          binding = edcm.build_fork_topology_binding(root, authorization)
+          report = edcm.lint_all_payload_forks(
+              root,
+              (edcm.AuthorizedUCNSFork(envelope, authorization, binding),),
+          )
+          assert binding.authorization_digest == authorization.authorization_digest
+          assert binding.root_object_hash == ucns.stable_hash(root)
+          assert report.valid is True
+          assert report.theorem_status_transfer is False
+          assert report.measurement_validity_claim is False
+          PY
