@@ -19,7 +19,8 @@ from edcm.language import (
     materialize,
     metadata_free_jsonl,
 )
-from edcm.measurement.ucns.ucns_v04 import AnchorPayload, UCNSObject
+from edcm.language.composition import compose_gonols
+from edcm.measurement.ucns.ucns_v04 import AnchorPayload, UCNSObject, unit_obj
 
 
 def _leaf_gonol(position: int, face: int = 0) -> UCNSObject:
@@ -88,6 +89,12 @@ def test_every_declared_affix_and_root_can_enter_the_same_composer() -> None:
     assert tuple(tree.leaves()) == ("il-", "proper", "-ly", "-es")
 
 
+def test_singleton_composition_preserves_identity_without_unit_copy() -> None:
+    gonol = _leaf_gonol(17, 1)
+    assert compose_gonols((gonol,)) is gonol
+    assert compose_gonols(()).equivalent(unit_obj())
+
+
 def test_grouping_is_preserved_even_when_current_ucns_product_is_associative() -> None:
     registry = GonolRegistry({"a": _leaf_gonol(2), "b": _leaf_gonol(3), "c": _leaf_gonol(5)})
     left = CompositionNode.compose(
@@ -113,6 +120,7 @@ def test_direct_and_generated_atomic_gonols_form_a_real_fork() -> None:
         direct_registry,
     )
     assert result.relation is AtomicForkRelation.DIVERGENT
+    assert result.molecular_tree is tree
 
 
 def test_lazy_generated_atomic_cache_is_not_a_fork_when_identity_is_preserved() -> None:
@@ -126,6 +134,19 @@ def test_lazy_generated_atomic_cache_is_not_a_fork_when_identity_is_preserved() 
         direct_registry,
     )
     assert result.relation is AtomicForkRelation.EQUIVALENT
+    assert result.molecular_tree is tree
+
+
+def test_missing_direct_atomic_uses_declared_relation() -> None:
+    molecular_registry, tree = _ilproperlies_fixture()
+    result = compare_atomic_fork(
+        "ilproperlies",
+        tree,
+        molecular_registry,
+        GonolRegistry(),
+    )
+    assert result.relation is AtomicForkRelation.DIRECT_MISSING
+    assert result.molecular_tree is tree
 
 
 def test_metadata_free_gonol_list_contains_only_intrinsic_fields() -> None:

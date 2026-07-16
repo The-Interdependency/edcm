@@ -58,10 +58,22 @@ class GonolRegistry:
 
 
 def compose_gonols(parts: Iterable[UCNSObject]) -> UCNSObject:
-    """Compose any ordered gonol sequence through the one universal product."""
+    """Compose an ordered sequence without an avoidable unit multiplication.
 
-    result = unit_obj()
-    for part in parts:
+    The universal unit remains the exact empty-sequence result. A non-empty
+    sequence starts from its first validated part because ``unit × part`` is
+    canonically equivalent to that part but allocates a redundant recursive
+    copy for every molecular alternative.
+    """
+
+    iterator = iter(parts)
+    try:
+        result = next(iterator)
+    except StopIteration:
+        return unit_obj()
+    if not isinstance(result, UCNSObject):
+        raise TypeError("every composition part must be a UCNSObject")
+    for part in iterator:
         if not isinstance(part, UCNSObject):
             raise TypeError("every composition part must be a UCNSObject")
         result = multiply(result, part)
@@ -88,14 +100,17 @@ def compare_atomic_fork(
     try:
         direct = direct_atomic_registry.resolve(surface)
     except MissingGonolError:
-        relation = AtomicForkRelation.DIRECT_MISSING
-    else:
-        relation = (
-            AtomicForkRelation.EQUIVALENT
-            if direct.equivalent(generated)
-            else AtomicForkRelation.DIVERGENT
+        return AtomicForkResult(
+            surface,
+            AtomicForkRelation.DIRECT_MISSING,
+            molecular_tree,
         )
-    return AtomicForkResult(surface=surface, relation=relation, molecular_tree=molecular_tree)
+    relation = (
+        AtomicForkRelation.EQUIVALENT
+        if direct.equivalent(generated)
+        else AtomicForkRelation.DIVERGENT
+    )
+    return AtomicForkResult(surface, relation, molecular_tree)
 
 
 __all__ = [

@@ -5,19 +5,23 @@ import gzip
 from hashlib import sha256
 import json
 from pathlib import Path
+import sqlite3
 
 from edcm.language.affixes import AffixRecord, load_affix_inventory
 from edcm.language.artifacts import intrinsic_gonol_record
+from edcm.language.composition import compose_gonols
 from edcm.language.morphology import build_morphology_graph
 from edcm.language.placement import (
     assign_affix_gonol,
     assign_direct_atomic_gonol,
     assign_root_gonol,
     compare_gonols,
+    gonol_sha256,
     superpose_gonols,
 )
 from edcm.language.rendering import inverse_affix_candidates, render_affix_candidates
 from edcm.language.source import LexemeRecord, SenseRecord, SynsetRecord
+from tools.build_oewn2025_embeddings import _canonical_json, _materialize_row_store
 
 
 def _find_affix(surface: str, primary: str | None = None) -> AffixRecord:
@@ -73,6 +77,48 @@ def test_complete_graph_preserves_multiple_affix_readings() -> None:
     assert len(graph.immediate("faster")) == 2
 
 
+def test_indexed_affix_candidates_match_brute_reversible_renderer() -> None:
+    selected = tuple(
+        _find_affix(surface)
+        for surface in ("un-", "-ness", "-ing", "-s", "-es")
+    )
+    surfaces = {
+        "happy",
+        "happiness",
+        "run",
+        "running",
+        "wolf",
+        "wolves",
+        "lock",
+        "unlock",
+    }
+    graph = build_morphology_graph(surfaces, selected)
+    surface_set = frozenset(surfaces)
+    expected: dict[str, set[tuple[str, tuple[str, ...]]]] = {}
+    for surface in surfaces:
+        rows: set[tuple[str, tuple[str, ...]]] = set()
+        for affix in selected:
+            for base in inverse_affix_candidates(surface, affix):
+                if base not in surface_set or len(base) >= len(surface):
+                    continue
+                affix_leaf = f"affix:{affix.affix_id}"
+                surface_leaf = f"surface:{base}"
+                parts = (
+                    (affix_leaf, surface_leaf)
+                    if affix.kind == "prefix"
+                    else (surface_leaf, affix_leaf)
+                )
+                rows.add((affix.affix_id, parts))
+        if rows:
+            expected[surface] = rows
+    observed = {
+        surface: {(item.affix_id or "", item.parts) for item in graph.immediate(surface)}
+        for surface in surfaces
+        if graph.immediate(surface)
+    }
+    assert observed == expected
+
+
 def test_direct_atomic_and_molecular_placements_are_independent() -> None:
     lexeme = _lexeme("help")
     synset = SynsetRecord(
@@ -95,6 +141,124 @@ def test_alternative_superposition_retains_payloads() -> None:
     combined = superpose_gonols((a, b))
     assert len(combined.anchors_pos) == 3
     assert sum(anchor.payload is not None for anchor in combined.anchors_pos) == 2
+
+
+def test_streaming_gonol_hash_matches_legacy_canonical_record() -> None:
+    root = assign_root_gonol("lock", (_lexeme("lock"),))
+    affix = assign_affix_gonol(_find_affix("un-"))
+    combined = superpose_gonols((root, affix))
+    legacy = sha256(
+        json.dumps(
+            intrinsic_gonol_record(combined),
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        ).encode("utf-8")
+    ).hexdigest()
+    assert gonol_sha256(combined) == legacy
+    assert gonol_sha256(combined) == legacy
+
+
+def test_gonol_hash_cache_preserves_structural_identity_across_objects() -> None:
+    left = assign_root_gonol("lock", (_lexeme("lock"),))
+    right = assign_root_gonol("lock", (_lexeme("lock"),))
+    assert left is not right
+    assert left.equivalent(right)
+    assert gonol_sha256(left) == gonol_sha256(right)
+
+
+def test_disk_row_store_matches_naive_complete_materialization() -> None:
+    affix = _find_affix("un-")
+    surface_lexemes = {
+        "lock": (_lexeme("lock"),),
+        "unlock": (_lexeme("unlock", "00000002-n"),),
+    }
+    graph = build_morphology_graph(surface_lexemes, (affix,))
+    affix_gonols = {affix.affix_id: assign_affix_gonol(affix)}
+    connection = sqlite3.connect(":memory:")
+    try:
+        relation_counts, theta_total, peak_cache_size = _materialize_row_store(
+            connection,
+            graph,
+            surface_lexemes,
+            {},
+            affix_gonols,
+        )
+        stored = {
+            surface: {
+                "direct_json": direct_json,
+                "generated_json": generated_json,
+                "direct_hash": direct_hash,
+                "generated_hash": generated_hash,
+                "comparison_json": comparison_json,
+                "is_root": bool(is_root),
+            }
+            for (
+                surface,
+                direct_json,
+                generated_json,
+                direct_hash,
+                generated_hash,
+                comparison_json,
+                is_root,
+            ) in connection.execute(
+                "SELECT surface, direct_json, generated_json, direct_hash, "
+                "generated_hash, comparison_json, is_root "
+                "FROM materialized ORDER BY surface"
+            )
+        }
+    finally:
+        connection.close()
+
+    naive_cache: dict[str, object] = {}
+
+    def naive_generated(surface: str):
+        if surface in naive_cache:
+            return naive_cache[surface]
+        alternatives = graph.immediate(surface)
+        if not alternatives:
+            result = assign_root_gonol(surface, surface_lexemes[surface])
+        else:
+            branches = []
+            for alternative in alternatives:
+                parts = []
+                for part in alternative.parts:
+                    if part.startswith("affix:"):
+                        parts.append(affix_gonols[part.removeprefix("affix:")])
+                    else:
+                        parts.append(naive_generated(part.removeprefix("surface:")))
+                branches.append(compose_gonols(parts))
+            result = superpose_gonols(branches)
+        naive_cache[surface] = result
+        return result
+
+    expected_counts: dict[str, int] = {}
+    expected_theta_total = 0.0
+    for surface in sorted(surface_lexemes):
+        direct = assign_direct_atomic_gonol(surface, surface_lexemes[surface], {})
+        generated = naive_generated(surface)
+        comparison = compare_gonols(direct, generated)
+        key = "equivalent" if comparison["equivalent"] else "divergent"
+        expected_counts[key] = expected_counts.get(key, 0) + 1
+        if comparison["carrier_equal"]:
+            expected_counts["carrier_equal"] = expected_counts.get("carrier_equal", 0) + 1
+        if comparison["face_histogram_equal"]:
+            expected_counts["face_histogram_equal"] = (
+                expected_counts.get("face_histogram_equal", 0) + 1
+            )
+        expected_theta_total += float(comparison["theta_jaccard"])
+
+        row = stored[surface]
+        assert row["direct_json"] == _canonical_json(intrinsic_gonol_record(direct))
+        assert row["generated_json"] == _canonical_json(intrinsic_gonol_record(generated))
+        assert row["direct_hash"] == gonol_sha256(direct)
+        assert row["generated_hash"] == gonol_sha256(generated)
+        assert row["comparison_json"] == _canonical_json({"surface": surface, **comparison})
+        assert row["is_root"] is (not graph.immediate(surface))
+
+    assert dict(relation_counts) == expected_counts
+    assert theta_total == expected_theta_total
+    assert peak_cache_size <= 1
 
 
 def test_intrinsic_record_contains_no_linguistic_metadata() -> None:

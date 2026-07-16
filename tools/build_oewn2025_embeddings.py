@@ -17,8 +17,10 @@ from hashlib import sha256
 import io
 import json
 from pathlib import Path
+import sqlite3
 import subprocess
 import sys
+import tempfile
 from typing import Any, Iterable, Iterator, Mapping, Sequence, TextIO
 
 from edcm.language.affixes import affix_inventory_record, load_affix_inventory
@@ -49,6 +51,7 @@ from edcm.language.source import (
 
 SCHEMA_VERSION = "1.0.0"
 ARTIFACT_DIRECTORY = "oewn2025"
+_PROGRESS_INTERVAL = 1_000
 
 
 def _git(repo: Path, *arguments: str) -> str:
@@ -92,6 +95,31 @@ def _write_jsonl_gz(path: Path, rows: Iterable[Any]) -> int:
     return count
 
 
+def _write_canonical_jsonl_gz(path: Path, rows: Iterable[str]) -> int:
+    """Write rows already encoded by :func:`_canonical_json`.
+
+    This preserves the historical bytes while letting full-corpus construction
+    spill completed recursive objects to disk instead of retaining them all in
+    Python dictionaries.
+    """
+
+    text, raw = _gzip_text_writer(path)
+    count = 0
+    try:
+        for row in rows:
+            if not isinstance(row, str):
+                raise TypeError("canonical JSONL rows must be strings")
+            text.write(row)
+            text.write("\n")
+            count += 1
+        text.flush()
+        text.close()
+    finally:
+        if not raw.closed:
+            raw.close()
+    return count
+
+
 def _file_sha256(path: Path) -> str:
     digest = sha256()
     with path.open("rb") as handle:
@@ -124,60 +152,182 @@ def _surface_lexeme_map(snapshot: Any) -> dict[str, tuple[LexemeRecord, ...]]:
     }
 
 
-def _materializer(
+def _surface_dependency_counts(graph: MorphologyGraph) -> Counter[str]:
+    """Count every generated child consumption across all alternatives."""
+
+    counts: Counter[str] = Counter()
+    for surface in graph.surfaces:
+        for alternative in graph.immediate(surface):
+            for part in alternative.parts:
+                if part.startswith("surface:"):
+                    counts[part.removeprefix("surface:")] += 1
+    return counts
+
+
+def _initialize_row_store(connection: sqlite3.Connection) -> None:
+    connection.execute("PRAGMA journal_mode=OFF")
+    connection.execute("PRAGMA synchronous=OFF")
+    connection.execute("PRAGMA temp_store=FILE")
+    connection.execute(
+        """
+        CREATE TABLE materialized (
+            surface TEXT PRIMARY KEY,
+            direct_json TEXT NOT NULL,
+            generated_json TEXT NOT NULL,
+            direct_hash TEXT NOT NULL,
+            generated_hash TEXT NOT NULL,
+            comparison_json TEXT NOT NULL,
+            is_root INTEGER NOT NULL CHECK (is_root IN (0, 1))
+        )
+        """
+    )
+
+
+def _materialize_row_store(
+    connection: sqlite3.Connection,
     graph: MorphologyGraph,
-    root_gonols: Mapping[str, Any],
+    surface_lexemes: Mapping[str, tuple[LexemeRecord, ...]],
+    synset_map: Mapping[str, Any],
     affix_gonols: Mapping[str, Any],
-):
-    primary_cache: dict[str, Any] = {}
-    all_cache: dict[str, Any] = {}
+) -> tuple[Counter[str], float, int]:
+    """Build the complete branch into a bounded-memory, disk-backed row store.
 
-    def resolve_part(part: str, *, all_alternatives: bool) -> Any:
-        if part.startswith("affix:"):
-            return affix_gonols[part.removeprefix("affix:")]
-        surface = part.removeprefix("surface:")
-        return materialize_all(surface) if all_alternatives else materialize_primary(surface)
+    Morphology edges always point to a shorter surface, so increasing
+    ``(len(surface), surface)`` order is topological. Generated objects remain
+    live only until their final declared parent consumes them. Canonical JSON,
+    stable hashes, and comparison rows are stored immediately; later writers
+    recover them in the historical lexicographic row order.
+    """
 
-    def materialize_primary(surface: str) -> Any:
-        if surface in primary_cache:
-            return primary_cache[surface]
+    _initialize_row_store(connection)
+    remaining_uses = _surface_dependency_counts(graph)
+    generated_cache: dict[str, Any] = {}
+    relation_counts: Counter[str] = Counter()
+    theta_total = 0.0
+    peak_cache_size = 0
+    ordered_surfaces = tuple(sorted(graph.surfaces, key=lambda value: (len(value), value)))
+
+    for index, surface in enumerate(ordered_surfaces, start=1):
         alternatives = graph.immediate(surface)
+        consumed_children: list[str] = []
         if not alternatives:
-            result = root_gonols[surface]
+            generated = assign_root_gonol(surface, surface_lexemes[surface])
+            is_root = 1
         else:
-            selected_tree = graph.primary_tree(surface)
-
-            def materialize_tree(node: Any) -> Any:
-                if node.leaf_id is not None:
-                    if node.leaf_id.startswith("affix:"):
-                        return affix_gonols[node.leaf_id.removeprefix("affix:")]
-                    return root_gonols[node.leaf_id.removeprefix("root:")]
-                return compose_gonols(materialize_tree(child) for child in node.children)
-
-            result = materialize_tree(selected_tree)
-        primary_cache[surface] = result
-        return result
-
-    def materialize_all(surface: str) -> Any:
-        if surface in all_cache:
-            return all_cache[surface]
-        alternatives = graph.immediate(surface)
-        if not alternatives:
-            result = root_gonols[surface]
-        else:
-            branch_gonols = []
+            branches = []
             for alternative in alternatives:
-                branch_gonols.append(
-                    compose_gonols(
-                        resolve_part(part, all_alternatives=True)
-                        for part in alternative.parts
-                    )
-                )
-            result = superpose_gonols(branch_gonols)
-        all_cache[surface] = result
-        return result
+                parts = []
+                for part in alternative.parts:
+                    if part.startswith("affix:"):
+                        parts.append(affix_gonols[part.removeprefix("affix:")])
+                        continue
+                    child_surface = part.removeprefix("surface:")
+                    try:
+                        child = generated_cache[child_surface]
+                    except KeyError as exc:
+                        raise RuntimeError(
+                            "generated dependency was evicted before its final use: "
+                            f"parent={surface!r}, child={child_surface!r}"
+                        ) from exc
+                    parts.append(child)
+                    consumed_children.append(child_surface)
+                branches.append(compose_gonols(parts))
+            generated = superpose_gonols(branches)
+            is_root = 0
 
-    return materialize_primary, materialize_all
+        direct = assign_direct_atomic_gonol(
+            surface,
+            surface_lexemes[surface],
+            synset_map,
+        )
+        comparison = compare_gonols(direct, generated)
+        direct_hash = gonol_sha256(direct)
+        generated_hash = gonol_sha256(generated)
+        direct_json = _canonical_json(intrinsic_gonol_record(direct))
+        generated_json = _canonical_json(intrinsic_gonol_record(generated))
+        comparison_json = _canonical_json({"surface": surface, **comparison})
+
+        connection.execute(
+            """
+            INSERT INTO materialized (
+                surface,
+                direct_json,
+                generated_json,
+                direct_hash,
+                generated_hash,
+                comparison_json,
+                is_root
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                surface,
+                direct_json,
+                generated_json,
+                direct_hash,
+                generated_hash,
+                comparison_json,
+                is_root,
+            ),
+        )
+
+        relation_counts["equivalent" if comparison["equivalent"] else "divergent"] += 1
+        if comparison["carrier_equal"]:
+            relation_counts["carrier_equal"] += 1
+        if comparison["face_histogram_equal"]:
+            relation_counts["face_histogram_equal"] += 1
+        theta_total += float(comparison["theta_jaccard"])
+
+        if remaining_uses[surface] > 0:
+            generated_cache[surface] = generated
+            peak_cache_size = max(peak_cache_size, len(generated_cache))
+
+        for child_surface in consumed_children:
+            remaining_uses[child_surface] -= 1
+            if remaining_uses[child_surface] < 0:
+                raise RuntimeError(f"negative dependency count for {child_surface!r}")
+            if remaining_uses[child_surface] == 0:
+                generated_cache.pop(child_surface, None)
+
+        if index % _PROGRESS_INTERVAL == 0 or index == len(ordered_surfaces):
+            connection.commit()
+            print(
+                "materialized "
+                f"{index}/{len(ordered_surfaces)} surfaces; "
+                f"active_generated={len(generated_cache)}; "
+                f"peak_active_generated={peak_cache_size}",
+                flush=True,
+            )
+
+    connection.commit()
+    unresolved = {surface: count for surface, count in remaining_uses.items() if count != 0}
+    if unresolved:
+        sample = dict(list(sorted(unresolved.items()))[:10])
+        raise RuntimeError(f"unresolved generated dependency counts: {sample!r}")
+    if generated_cache:
+        raise RuntimeError(
+            "generated cache was not empty after the final dependency use: "
+            f"{tuple(sorted(generated_cache)[:10])!r}"
+        )
+    return relation_counts, theta_total, peak_cache_size
+
+
+def _stored_column_rows(
+    connection: sqlite3.Connection,
+    column: str,
+    *,
+    roots_only: bool = False,
+) -> Iterator[str]:
+    allowed = {
+        "direct_json",
+        "generated_json",
+        "comparison_json",
+    }
+    if column not in allowed:
+        raise ValueError(f"unsupported stored column: {column!r}")
+    where = " WHERE is_root = 1" if roots_only else ""
+    query = f"SELECT {column} FROM materialized{where} ORDER BY surface"
+    for (value,) in connection.execute(query):
+        yield str(value)
 
 
 def _artifact_manifest(root: Path, paths: Sequence[Path]) -> dict[str, Any]:
@@ -222,23 +372,7 @@ def build(source_repo: Path, output_root: Path) -> dict[str, Any]:
 
     affixes = load_affix_inventory()
     graph = build_morphology_graph(surfaces, affixes)
-
     affix_gonols = {record.affix_id: assign_affix_gonol(record) for record in affixes}
-    root_gonols = {
-        root: assign_root_gonol(root, surface_lexemes[root])
-        for root in graph.roots
-    }
-    direct_gonols = {
-        surface: assign_direct_atomic_gonol(surface, surface_lexemes[surface], synset_map)
-        for surface in surfaces
-    }
-    materialize_primary, materialize_all = _materializer(graph, root_gonols, affix_gonols)
-
-    # Force the complete generated branch in increasing length order so every
-    # dependency is already memoized when possible.
-    generated_gonols: dict[str, Any] = {}
-    for surface in sorted(surfaces, key=lambda value: (len(value), value)):
-        generated_gonols[surface] = materialize_all(surface)
 
     _write_json(target / "source-manifest.json", {
         "schema": "edcm.oewn-source-manifest",
@@ -261,86 +395,104 @@ def build(source_repo: Path, output_root: Path) -> dict[str, Any]:
     _write_json(target / "affixes.json", affix_inventory_record(affixes))
     _write_json(target / "transformations.json", transformation_inventory())
 
-    _write_jsonl_gz(
-        target / "roots.metadata.jsonl.gz",
-        (
-            {
-                "root": root,
-                "lexical_entries": len(surface_lexemes[root]),
-                "parts_of_speech": sorted({item.part_of_speech for item in surface_lexemes[root]}),
-                "gonol_sha256": gonol_sha256(root_gonols[root]),
-            }
-            for root in graph.roots
-        ),
-    )
-    _write_jsonl_gz(
-        target / "morphology.metadata.jsonl.gz",
-        (
-            {
-                "surface": surface,
-                "is_root": surface in root_gonols,
-                "primary_tree": _tree_record(graph.primary_tree(surface)),
-                "alternatives": [_decomposition_record(item) for item in graph.immediate(surface)],
-                "generated_gonol_sha256": gonol_sha256(generated_gonols[surface]),
-            }
-            for surface in surfaces
-        ),
-    )
+    with tempfile.TemporaryDirectory(prefix="oewn2025-row-store-", dir=output_root) as temporary:
+        database_path = Path(temporary) / "materialized.sqlite3"
+        connection = sqlite3.connect(database_path)
+        try:
+            relation_counts, theta_total, peak_cache_size = _materialize_row_store(
+                connection,
+                graph,
+                surface_lexemes,
+                synset_map,
+                affix_gonols,
+            )
 
-    comparisons: dict[str, dict[str, Any]] = {}
-    relation_counts: Counter[str] = Counter()
-    theta_total = 0.0
-    for surface in surfaces:
-        comparison = compare_gonols(direct_gonols[surface], generated_gonols[surface])
-        comparisons[surface] = comparison
-        relation_counts["equivalent" if comparison["equivalent"] else "divergent"] += 1
-        if comparison["carrier_equal"]:
-            relation_counts["carrier_equal"] += 1
-        if comparison["face_histogram_equal"]:
-            relation_counts["face_histogram_equal"] += 1
-        theta_total += float(comparison["theta_jaccard"])
+            _write_jsonl_gz(
+                target / "roots.metadata.jsonl.gz",
+                (
+                    {
+                        "root": surface,
+                        "lexical_entries": len(surface_lexemes[surface]),
+                        "parts_of_speech": sorted(
+                            {item.part_of_speech for item in surface_lexemes[surface]}
+                        ),
+                        "gonol_sha256": generated_hash,
+                    }
+                    for surface, generated_hash in connection.execute(
+                        "SELECT surface, generated_hash FROM materialized "
+                        "WHERE is_root = 1 ORDER BY surface"
+                    )
+                ),
+            )
+            _write_jsonl_gz(
+                target / "morphology.metadata.jsonl.gz",
+                (
+                    {
+                        "surface": surface,
+                        "is_root": bool(is_root),
+                        "primary_tree": _tree_record(graph.primary_tree(surface)),
+                        "alternatives": [
+                            _decomposition_record(item)
+                            for item in graph.immediate(surface)
+                        ],
+                        "generated_gonol_sha256": generated_hash,
+                    }
+                    for surface, generated_hash, is_root in connection.execute(
+                        "SELECT surface, generated_hash, is_root "
+                        "FROM materialized ORDER BY surface"
+                    )
+                ),
+            )
+            _write_canonical_jsonl_gz(
+                target / "comparison.metadata.jsonl.gz",
+                _stored_column_rows(connection, "comparison_json"),
+            )
+            _write_jsonl_gz(
+                target / "surface-index.jsonl.gz",
+                (
+                    {
+                        "row": index,
+                        "surface": surface,
+                        "attestation": "attested",
+                        "soundness": "sound",
+                        "parts_of_speech": sorted(
+                            {item.part_of_speech for item in surface_lexemes[surface]}
+                        ),
+                        "direct_gonol_sha256": direct_hash,
+                        "generated_gonol_sha256": generated_hash,
+                    }
+                    for index, (surface, direct_hash, generated_hash) in enumerate(
+                        connection.execute(
+                            "SELECT surface, direct_hash, generated_hash "
+                            "FROM materialized ORDER BY surface"
+                        )
+                    )
+                ),
+            )
 
-    _write_jsonl_gz(
-        target / "comparison.metadata.jsonl.gz",
-        ({"surface": surface, **comparisons[surface]} for surface in surfaces),
-    )
-    _write_jsonl_gz(
-        target / "surface-index.jsonl.gz",
-        (
-            {
-                "row": index,
-                "surface": surface,
-                "attestation": "attested",
-                "soundness": "sound",
-                "parts_of_speech": sorted({item.part_of_speech for item in surface_lexemes[surface]}),
-                "direct_gonol_sha256": gonol_sha256(direct_gonols[surface]),
-                "generated_gonol_sha256": gonol_sha256(generated_gonols[surface]),
-            }
-            for index, surface in enumerate(surfaces)
-        ),
-    )
-
-    # Intrinsic-only lists. Their order is bound only by the separate index.
-    _write_jsonl_gz(
-        target / "atomic-direct.gonols.jsonl.gz",
-        (intrinsic_gonol_record(direct_gonols[surface]) for surface in surfaces),
-    )
-    _write_jsonl_gz(
-        target / "molecular.gonols.jsonl.gz",
-        (intrinsic_gonol_record(generated_gonols[surface]) for surface in surfaces),
-    )
-    _write_jsonl_gz(
-        target / "atomic-generated.gonols.jsonl.gz",
-        (intrinsic_gonol_record(generated_gonols[surface]) for surface in surfaces),
-    )
-    _write_jsonl_gz(
-        target / "roots.gonols.jsonl.gz",
-        (intrinsic_gonol_record(root_gonols[root]) for root in graph.roots),
-    )
-    _write_jsonl_gz(
-        target / "affixes.gonols.jsonl.gz",
-        (intrinsic_gonol_record(affix_gonols[record.affix_id]) for record in affixes),
-    )
+            # Intrinsic-only lists. Their order is bound only by the separate index.
+            _write_canonical_jsonl_gz(
+                target / "atomic-direct.gonols.jsonl.gz",
+                _stored_column_rows(connection, "direct_json"),
+            )
+            _write_canonical_jsonl_gz(
+                target / "molecular.gonols.jsonl.gz",
+                _stored_column_rows(connection, "generated_json"),
+            )
+            _write_canonical_jsonl_gz(
+                target / "atomic-generated.gonols.jsonl.gz",
+                _stored_column_rows(connection, "generated_json"),
+            )
+            _write_canonical_jsonl_gz(
+                target / "roots.gonols.jsonl.gz",
+                _stored_column_rows(connection, "generated_json", roots_only=True),
+            )
+            _write_jsonl_gz(
+                target / "affixes.gonols.jsonl.gz",
+                (intrinsic_gonol_record(affix_gonols[record.affix_id]) for record in affixes),
+            )
+        finally:
+            connection.close()
 
     summary = {
         "schema": "edcm.oewn-atomic-molecular-run-summary",
@@ -356,6 +508,7 @@ def build(source_repo: Path, output_root: Path) -> dict[str, Any]:
         "direct_assignment": "whole-word OEWN sense and relation topology",
         "molecular_assignment": "public 157-glyph components plus universal UCNS composition",
         "generated_atomic_materialization": "complete alternative superposition",
+        "peak_active_generated_cache": peak_cache_size,
     }
     _write_json(target / "summary.json", summary)
 
