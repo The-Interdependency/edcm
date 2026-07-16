@@ -42,13 +42,13 @@ dev = [
   "twine>=5.0",
 ]
 ucns = [
-  "ucns @ git+https://github.com/The-Interdependency/ucns.git@c7849498bb5b14b87dbb4cffb6522fbc82639373",
+  "ucns @ git+https://github.com/The-Interdependency/ucns.git@3cac8d0bb3170f73fb6529a619ca225f2821eff4",
 ]
 metapat = [
   "metapat @ git+https://github.com/The-Interdependency/metapat.git@b30b1363706731d28867ef2e6366512f9254f5e8",
 ]
 full-stack = [
-  "ucns @ git+https://github.com/The-Interdependency/ucns.git@c7849498bb5b14b87dbb4cffb6522fbc82639373",
+  "ucns @ git+https://github.com/The-Interdependency/ucns.git@3cac8d0bb3170f73fb6529a619ca225f2821eff4",
   "metapat @ git+https://github.com/The-Interdependency/metapat.git@b30b1363706731d28867ef2e6366512f9254f5e8",
 ]
 
