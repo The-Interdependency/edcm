@@ -41,8 +41,8 @@ from weakref import WeakKeyDictionary
 from edcm.measurement.ucns.ucns_v04 import UCNSObject
 
 _RETIREMENT_MESSAGE = (
-    "EDCM language-gonol placement is retired: the prior hash/evidence-derived "
-    "Fraction(vertex, 157) construction is not the canonical public gonol. "
+    "EDCM language-gonol placement is retired: the prior fractional, "
+    "hash/evidence-derived construction is not the canonical public gonol. "
     "UCNS now owns the exact A0 public gonol, and no bridge into EDCM's local "
     "UCNSObject representation has been ratified."
 )
