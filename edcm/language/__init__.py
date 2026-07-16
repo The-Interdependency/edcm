@@ -1,24 +1,31 @@
-"""EDCM-owned English atomic and molecular embedding implementation."""
+"""EDCM English-language evidence and retired gonol-placement surfaces.
+
+EDCM no longer owns the public gonol and no longer constructs language gonols
+through the superseded hash/evidence-derived placement law. The canonical
+public gonol belongs to UCNS. Morphology, rendering, source loading, and
+inspection helpers remain available; new gonol construction fails closed until
+an Erin-ratified UCNS bridge is implemented.
+"""
 
 # === MODULE_BUILD ===
 # id: edcm_language_package
 #   module_name: language
 #   module_kind: engine
-#   summary: exposes the pinned OEWN 2025 source, complete run affixes, universal rendering and morphology, independent atomic/molecular placement laws, public 157-glyph floor, and metadata-free gonol artifacts
+#   summary: exposes OEWN source, morphology and rendering evidence while consuming UCNS public-gonol authority lazily and retiring noncanonical placement
 #   owner: Erin Spencer
-#   public_surface: EnglishEmbeddingManifest, embedding_manifest, PUBLIC_GLYPH_FLOOR_157, CompositionNode, Attestation, Soundness, LexicalEvidence, AtomicForkRelation, AtomicForkResult, GonolRegistry, compose_gonols, materialize, compare_atomic_fork, intrinsic_gonol_record, metadata_free_jsonl, write_metadata_free_gonol_list, AffixRecord, load_affix_inventory, TransformationRule, transformation_inventory, render_affix_candidates, inverse_affix_candidates, compound_candidates, normalize_lemma, Decomposition, MorphologyGraph, build_morphology_graph, OEWN_REPOSITORY, OEWN_TAG, OEWN_COMMIT, OEWN_LICENSE, LexemeRecord, SenseRecord, SynsetRecord, WordnetSnapshot, load_oewn_2025, assign_affix_gonol, assign_root_gonol, assign_direct_atomic_gonol, superpose_gonols, compare_gonols, gonol_sha256
+#   public_surface: EnglishEmbeddingManifest, embedding_manifest, PUBLIC_GLYPH_FLOOR_157, UCNSPublicGonolDependencyError, UCNSPublicGonolContractError, NonCanonicalLanguagePlacementError, require_canonical_language_placement, CompositionNode, Attestation, Soundness, LexicalEvidence, AtomicForkRelation, AtomicForkResult, GonolRegistry, compose_gonols, materialize, compare_atomic_fork, intrinsic_gonol_record, metadata_free_jsonl, write_metadata_free_gonol_list, AffixRecord, load_affix_inventory, TransformationRule, transformation_inventory, render_affix_candidates, inverse_affix_candidates, compound_candidates, normalize_lemma, Decomposition, MorphologyGraph, build_morphology_graph, OEWN_REPOSITORY, OEWN_TAG, OEWN_COMMIT, OEWN_LICENSE, LexemeRecord, SenseRecord, SynsetRecord, WordnetSnapshot, load_oewn_2025, assign_affix_gonol, assign_root_gonol, assign_direct_atomic_gonol, superpose_gonols, compare_gonols, gonol_sha256
 #   internal_surface: none
 #   auth_boundary: none
-#   storage_boundary: read_write
-#   network_boundary: none
+#   storage_boundary: read
+#   network_boundary: optional_package_import
 #   user_data_boundary: none
 #   admin_only: false
 #   tests: tests.test_language_embeddings, tests.test_language_full_run
-#   rollout: default_enabled
-#   rollback: remove generated artifacts and restore the prior language package plus its metadata collection
+#   rollout: fail_closed_pending_canonical_bridge
+#   rollback: restore active placement only after an Erin-ratified UCNS public-gonol bridge exists
 #   requires: edcm_language_manifest, edcm_language_glyph_floor, edcm_language_model, edcm_language_composition, edcm_language_artifacts, edcm_language_oewn_source, edcm_language_affixes, edcm_language_rendering, edcm_language_morphology, edcm_language_placement
-#   since: 2026-07-13
-#   unresolved: pronunciation rendering and empirical interpretation of fork distances remain subsequent research layers
+#   since: 2026-07-16
+#   unresolved: public-gonol to EDCM language-object bridge remains hmmm
 # === END MODULE_BUILD ===
 
 from .affixes import AffixRecord, affix_inventory_record, load_affix_inventory
@@ -36,6 +43,8 @@ from .composition import (
 )
 from .glyph_floor import (
     PUBLIC_GLYPH_FLOOR_157,
+    UCNSPublicGonolContractError,
+    UCNSPublicGonolDependencyError,
     build_public_glyph_floor_157,
     glyph_floor_sha256,
     validate_public_glyph_floor,
@@ -57,11 +66,13 @@ from .model import (
 )
 from .morphology import Decomposition, MorphologyGraph, build_morphology_graph
 from .placement import (
+    NonCanonicalLanguagePlacementError,
     assign_affix_gonol,
     assign_direct_atomic_gonol,
     assign_root_gonol,
     compare_gonols,
     gonol_sha256,
+    require_canonical_language_placement,
     superpose_gonols,
 )
 from .rendering import (
@@ -97,6 +108,7 @@ __all__ = [
     "LexicalEvidence",
     "MissingGonolError",
     "MorphologyGraph",
+    "NonCanonicalLanguagePlacementError",
     "OEWN_COMMIT",
     "OEWN_LICENSE",
     "OEWN_REPOSITORY",
@@ -109,6 +121,8 @@ __all__ = [
     "Soundness",
     "SynsetRecord",
     "TransformationRule",
+    "UCNSPublicGonolContractError",
+    "UCNSPublicGonolDependencyError",
     "WordnetSnapshot",
     "affix_inventory_record",
     "assign_affix_gonol",
@@ -131,6 +145,7 @@ __all__ = [
     "metadata_free_jsonl",
     "normalize_lemma",
     "render_affix_candidates",
+    "require_canonical_language_placement",
     "superpose_gonols",
     "transformation_inventory",
     "validate_public_glyph_floor",
