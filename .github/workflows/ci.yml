@@ -60,8 +60,8 @@ jobs:
       - name: Run adversarial integrity contracts
         run: python -m pytest -q tests/test_integrity.py
 
-  ucns-integration:
-    name: Actual UCNS bridge and certification evidence
+  ucns-reset-boundary:
+    name: UCNS reset boundary / typed absence
     runs-on: ubuntu-latest
 
     steps:
@@ -74,12 +74,12 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Install EDCM with pinned UCNS extra
+      - name: Install EDCM without archived UCNS
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e ".[dev,ucns]"
+          python -m pip install -e ".[dev]"
 
-      - name: Run UCNS adapter and evidence contracts
+      - name: Run UCNS absence and firewall contracts
         run: |
           python -m pytest -q \
             tests/test_ucns_adapter.py \
@@ -88,32 +88,29 @@ jobs:
             tests/test_measurement.py \
             tests/test_shared_stack_contract.py
 
-      - name: Prove canonical certified evidence survives the EDCM path
+      - name: Prove archived UCNS is not a managed producer
         run: |
           python - <<'PY'
-          import edcm
-          import ucns
+          import importlib.util
 
-          bridge = ucns.bridge_record(ucns.S2)
-          factorization = ucns.factorization_evidence(ucns.S2)
+          import edcm
+
+          assert importlib.util.find_spec("ucns") is None
           result = edcm.build_default_layers().run({
-              "transcript": "A: Preserve authoritative UCNS evidence.",
-              "ucns_bridge_record_json": bridge.to_json(),
-              "ucns_factorization_evidence_json": factorization.to_json(),
+              "transcript": "A: Preserve UCNS typed absence.",
           })
           contract = result["edcm_result"]
-          assert result["ucns_geometry"]["stable_hash"] == ucns.stable_hash(ucns.S2)
-          assert result["ucns_geometry"]["bridge_evidence_digest"] == bridge.evidence_digest
-          assert result["ucns_integration"]["ucns_object_attached"] is False
-          assert result["ucns_integration"]["ucns_bridge_record_attached"] is True
-          assert result["ucns_integration"]["ucns_factorization_evidence_attached"] is True
-          assert result["ucns_integration"]["ucns_negative_certification_attached"] is True
-          assert result["ucns_integration"]["ucns_theorem_status_attached"] is True
-          assert result["metapat_integration"]["metapat_package_available"] is False
-          assert contract["schema_version"] == "1.1.0"
-          assert contract["ucns_geometry_identity"]["stable_hash"] == bridge.object_hash
-          assert contract["ucns_factorization_evidence"]["evidence_digest"] == factorization.evidence_digest
-          assert contract["ucns_factorization_evidence"]["negative_result_certified"] is True
+          status = result["ucns_integration"]
+
+          assert status["ucns_package_available"] is False
+          assert status["ucns_adapter_active"] is False
+          assert status["ucns_object_attached"] is False
+          assert status["ucns_bridge_record_attached"] is False
+          assert status["ucns_factorization_evidence_attached"] is False
+          assert status["ucns_negative_certification_attached"] is False
+          assert status["ucns_theorem_status_attached"] is False
+          assert contract["ucns_geometry_identity"]["state"] == "NA"
+          assert contract["ucns_factorization_evidence"]["state"] == "NA"
           assert contract["status_evidence"]["proof_status_transfers_to_measurement_validity"] is False
           PY
 
@@ -164,8 +161,8 @@ jobs:
           assert result["edcm_result"]["status_evidence"]["semantic_labels_are_measurement_values"] is False
           PY
 
-  full-shared-stack:
-    name: Full UCNS / METAPAT / EDCM contract
+  maintained-stack:
+    name: METAPAT / EDCM contract with UCNS suspended
     runs-on: ubuntu-latest
 
     steps:
@@ -178,12 +175,12 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Install EDCM with pinned full-stack extra
+      - name: Install maintained full-stack extra
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev,full-stack]"
 
-      - name: Run full shared-stack fixtures
+      - name: Run maintained shared-stack fixtures
         run: |
           python -m pytest -q \
             tests/test_metapat_adapter.py \
@@ -193,34 +190,33 @@ jobs:
             tests/test_measurement.py \
             tests/test_shared_stack_contract.py
 
-      - name: Prove all identities and evidence states remain separate
+      - name: Prove semantic and measurement identities remain separate from UCNS absence
         run: |
           python - <<'PY'
+          import importlib.util
+
           import edcm
           import metapat
-          import ucns
           from edcm.edcmucns import PolicyManifest
 
+          assert importlib.util.find_spec("ucns") is None
           envelope = metapat.root_spine_module_envelope()
-          adaptation = metapat.adapt_envelope_to_ucns(envelope)
           result = edcm.build_default_layers().run({
-              "transcript": "A: Preserve the complete shared-stack boundary.",
-              "source_ref": "ci://full-shared-stack",
+              "transcript": "A: Preserve the maintained shared-stack boundary.",
+              "source_ref": "ci://maintained-stack",
               "metapat_envelope": envelope,
-              "ucns_object": adaptation.ucns_object,
           })
           contract = result["edcm_result"]
           assert contract["metapat_semantic_constraints"]["canon_digest"] == envelope.canon_digest
           assert contract["metapat_semantic_constraints"]["provenance_digest"] == envelope.provenance_digest
-          assert contract["ucns_geometry_identity"]["stable_hash"] == ucns.stable_hash(adaptation.ucns_object)
-          assert contract["ucns_geometry_identity"]["bridge_evidence_digest"]
+          assert contract["ucns_geometry_identity"]["state"] == "NA"
           assert contract["ucns_factorization_evidence"]["state"] == "NA"
           assert contract["edcm_policy_manifest"]["manifest_hash"] == PolicyManifest().manifest_hash()
           assert contract["readouts"]["state"] == "measured"
-          assert contract["status_evidence"]["ucns_bridge_record_attached"] is True
+          assert contract["status_evidence"]["ucns_bridge_record_attached"] is False
           assert contract["status_evidence"]["ucns_factorization_evidence_attached"] is False
           assert contract["status_evidence"]["ucns_negative_certification_attached"] is False
-          assert contract["status_evidence"]["ucns_theorem_status_attached"] is True
+          assert contract["status_evidence"]["ucns_theorem_status_attached"] is False
           assert contract["status_evidence"]["proof_status_transfers_to_measurement_validity"] is False
           assert contract["status_evidence"]["semantic_labels_are_measurement_values"] is False
           PY
