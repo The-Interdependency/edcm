@@ -38,16 +38,43 @@ These states may not be collapsed:
 
 The repository currently permits states 1–3. State 4 does not yet exist for the joint surface.
 
-## First experiment dimensions
+## Experiment generations
 
-The initial program pressures four load-bearing distinctions:
+The joint program currently retains four immutable evidence generations.
 
-- **order:** identical turns in different sequence;
-- **multiplicity:** one occurrence versus repeated occurrence;
-- **constraint pressure:** low-pressure versus high-pressure prompts;
-- **resolution timing:** resolution after refusal versus refusal after apparent resolution.
+### v0.1 — local order and multiplicity
 
-These dimensions are selected because sequence-, set-, and multiset-based UCNS policies make different predictions about whether EDCM readouts should remain invariant.
+- exact turn order;
+- occurrence multiplicity;
+- constraint pressure;
+- resolution timing;
+- sequence, multiset, and set policy consequences.
+
+### v0.2 — dose, coverage, latency, and support
+
+- refusal dose curves;
+- constraint phrase-family coverage;
+- resolution horizon, peak, accumulated, and terminal state;
+- unit, token, occurrence, and dissonance support assignments.
+
+### v0.3 — assertion and local scope
+
+- assertion versus negation;
+- direct versus quoted or hypothetical mention;
+- speaker-owned versus attributed refusal;
+- retraction and repair topology;
+- scope-bearing structural identities.
+
+### v0.4 — discourse-linked scope graphs
+
+- event nodes and positive reference expressions;
+- explicit, ordinal, nearest, ownership-aware, family-wide, and ambiguity-preserving target resolution;
+- graph alternatives and ambiguity-bundle identity;
+- quote containment;
+- suspension, resumption, activation, deactivation, contradiction, repair, and retraction;
+- node/reference support separated from selected-edge support and graph-dependent state.
+
+Each generation preserves its own report identity and falsifiers. Later programs may depend on prior report digests but may not rewrite prior results.
 
 ## Baseline candidate
 
@@ -76,6 +103,17 @@ Every joint experiment must record:
 - whether evidence is development, holdout, or external;
 - no canonical winner unless separately authorized.
 
+Where discourse graphs are involved, the experiment must additionally retain:
+
+- reference expressions independently from selected targets;
+- unresolved references as positive evidence;
+- every admissible graph alternative within the declared bound;
+- relation labels, direction, source, and target identity;
+- speaker ownership when used by a resolver or readout;
+- quote containment and other structural edges;
+- a canonical bundle identity across alternatives;
+- information loss for every graph projection.
+
 Hypothesis failure is a valid experiment result and must not be converted into a build failure merely to preserve a preferred model.
 
 ## Non-transfer firewall
@@ -99,6 +137,9 @@ This phase may implement:
 - deterministic EDCM baseline and contrastive candidate readouts;
 - explicit event-to-UCNS encoding candidates;
 - UCNS equivalence, product-character, and breadth candidate evaluation;
+- scope-bearing event and discourse-graph candidates;
+- competing resolver and graph-projection policies;
+- positive unresolved-reference and alternative-bundle evidence;
 - reproducible reports and policy-preservation findings;
 - CI execution against an exact UCNS commit.
 
@@ -109,19 +150,22 @@ This phase may not promote:
 - canonical structural equivalence;
 - canonical product character `M`;
 - canonical faithful breadth `B`;
+- canonical discourse resolver, relation vocabulary, or graph precedence;
 - diagnosis, intention, morality, consciousness, or external truth claims;
 - a complete production `UCNSObject` or EDCM deployment contract.
 
 ## Usage guidance
 
-Run the joint program only in an environment containing the exact UCNS experiment commit declared by the runner:
+Run each joint program only in an environment containing the exact UCNS experiment commit declared by the runner. The current discourse-graph program is:
 
 ```text
-python -m edcm.ucns_edcm_experiments --ucns-source-root /path/to/ucns-checkout --output ucns-edcm-report.json
+python -m edcm.ucns_edcm_experiments_v4 \
+  --ucns-source-root /path/to/ucns-checkout \
+  --output ucns-edcm-v0.4.0.json
 ```
 
-The report is research evidence. It is not a canon file and must not be renamed or imported as one.
+Every report is research evidence. No report is a canon file, and no report may be renamed or imported as one.
 
 ## hmmm
 
-External holdout custody, human outcome labels, independent replication, and the authority procedure for the first joint canon selection remain open.
+External holdout custody, independently authored graph annotations, human outcome labels, multilingual evidence, separate implementation replication, and the authority procedure for the first joint canon selection remain open.
