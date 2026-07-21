@@ -1,0 +1,100 @@
+name: UCNS-EDCM joint experiments
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  joint-experiment:
+    name: joint experiment (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - name: Check out EDCM
+        uses: actions/checkout@v4
+        with:
+          path: edcm
+
+      - name: Check out exact UCNS experiment authority
+        uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/ucns
+          ref: 5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed
+          path: ucns
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: |
+            edcm/pyproject.toml
+            ucns/pyproject.toml
+
+      - name: Install exact research stack
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ./ucns
+          python -m pip install -e ./edcm[dev]
+
+      - name: Validate EDCM-native metadata
+        working-directory: edcm
+        run: python tools/check_metadata_contracts.py
+
+      - name: Run EDCM-only and joint experiment tests
+        working-directory: edcm
+        run: python -m pytest -q tests/test_ucns_edcm_experiments.py
+
+      - name: Run experiment twice
+        working-directory: edcm
+        env:
+          EDCM_EXPERIMENT_COMMIT: ${{ github.sha }}
+        run: |
+          mkdir -p artifacts
+          python -m edcm.ucns_edcm_experiments \
+            --edcm-commit "${GITHUB_SHA}" \
+            --ucns-commit 5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed \
+            --output artifacts/ucns-edcm-report.json
+          python -m edcm.ucns_edcm_experiments \
+            --edcm-commit "${GITHUB_SHA}" \
+            --ucns-commit 5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed \
+            --output artifacts/ucns-edcm-report-repeat.json
+          diff -u artifacts/ucns-edcm-report.json artifacts/ucns-edcm-report-repeat.json
+
+      - name: Summarize experiment report
+        working-directory: edcm
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path("artifacts/ucns-edcm-report.json").read_text())
+          verdicts = report["relation_verdicts"]
+          summary = {
+              "schema": report["schema"],
+              "report_digest": report["report_digest"],
+              "supported": sum(item["status"] == "supported" for item in verdicts),
+              "falsified": sum(item["status"] == "falsified" for item in verdicts),
+              "errors": sum(item["status"] == "error" for item in verdicts),
+              "canon_selection": report["canon_selection"],
+          }
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          PY
+
+      - name: Upload research evidence
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ucns-edcm-experiment-report
+          path: |
+            edcm/artifacts/ucns-edcm-report.json
+            edcm/artifacts/ucns-edcm-report-repeat.json
+          if-no-files-found: error
