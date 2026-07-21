@@ -1,0 +1,50 @@
+name: patch v0.4 nested quotation readout once
+
+on:
+  push:
+    branches: [agent/ucns-edcm-v0-4-discourse-graphs]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/ucns-edcm-v0-4-discourse-graphs
+          fetch-depth: 0
+      - name: Patch source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('edcm/ucns_edcm_experiments_v4.py')
+          s = p.read_text()
+          s = s.replace(
+              '    per_node: dict[str, list[float]] = {node_id: [] for node_id in node_ids}\n    contradiction_counts = []',
+              '    per_node: dict[str, list[float]] = {node_id: [] for node_id in node_ids}\n    per_node_retracted: dict[str, list[float]] = {node_id: [] for node_id in node_ids}\n    contradiction_counts = []',
+          )
+          s = s.replace(
+              '        for node_id in node_ids:\n            per_node[node_id].append(1.0 if states[node_id].state == _STATE_ACTIVE else 0.0)',
+              '        for node_id in node_ids:\n            per_node[node_id].append(1.0 if states[node_id].state == _STATE_ACTIVE else 0.0)\n            per_node_retracted[node_id].append(1.0 if states[node_id].state == _STATE_RETRACTED else 0.0)',
+          )
+          s = s.replace(
+              '    for node_id in node_ids:\n        values.append((f"graph.node.{node_id}.active", float(min(per_node[node_id]))))',
+              '    for node_id in node_ids:\n        values.append((f"graph.node.{node_id}.active", float(min(per_node[node_id]))))\n        values.append((f"graph.node.{node_id}.retracted", float(max(per_node_retracted[node_id]))))',
+          )
+          s = s.replace(
+              'GraphExpectedRelation("nested-inner-survives", "graph.node.C1.active", f"nested-quotation::{EXPLICIT_RESOLVER}", RelationOperator.GT, f"nested-quotation::{FAMILY_WIDE_RESOLVER}", "rescinding the outer notice must not automatically retract the inner quoted command")',
+              'GraphExpectedRelation("nested-inner-survives", "graph.node.C1.retracted", f"nested-quotation::{EXPLICIT_RESOLVER}", RelationOperator.LT, f"nested-quotation::{FAMILY_WIDE_RESOLVER}", "rescinding the outer notice must not automatically retract the inner quoted command")',
+          )
+          p.write_text(s)
+          PY
+          rm .github/workflows/patch-v0.4-nested-readout-once.yml
+      - name: Commit patch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add edcm/ucns_edcm_experiments_v4.py .github/workflows/patch-v0.4-nested-readout-once.yml
+          git commit -m 'fix: measure nested retraction directly'
+          git push origin HEAD:agent/ucns-edcm-v0-4-discourse-graphs
