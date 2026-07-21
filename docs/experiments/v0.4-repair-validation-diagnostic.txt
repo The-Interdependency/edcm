@@ -1,7 +1,5 @@
-=== pip upgrade ===
 Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages (26.1.2)
-status=0
-=== install ucns ===
+pip_upgrade=0
 Processing ./ucns-source
   Installing build dependencies: started
   Installing build dependencies: finished with status 'done'
@@ -12,13 +10,12 @@ Processing ./ucns-source
 Building wheels for collected packages: ucns
   Building wheel for ucns (pyproject.toml): started
   Building wheel for ucns (pyproject.toml): finished with status 'done'
-  Created wheel for ucns: filename=ucns-0.0.0.dev0-py3-none-any.whl size=40414 sha256=338b4459304f62f2eadba22771f413564b86d683d13ab20456b410892e2e9de5
+  Created wheel for ucns: filename=ucns-0.0.0.dev0-py3-none-any.whl size=40414 sha256=c5b0defa4b7700839ab2b599dcd5e8015d486cb23c8cc4b2a753d1ecb2d8fff2
   Stored in directory: /home/runner/.cache/pip/wheels/48/07/fc/e7b3e9f6429351533073074cf45f3920b23a4e9924dc9d21e0
 Successfully built ucns
 Installing collected packages: ucns
 Successfully installed ucns-0.0.0.dev0
-status=0
-=== install edcm ===
+ucns_install=0
 Obtaining file:///home/runner/work/edcm/edcm
   Installing build dependencies: started
   Installing build dependencies: finished with status 'done'
@@ -98,15 +95,15 @@ Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
 Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
 Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
 Downloading pygments-2.20.0-py3-none-any.whl (1.2 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 23.5 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 36.1 MB/s  0:00:00
 Downloading twine-6.2.0-py3-none-any.whl (42 kB)
 Downloading keyring-25.7.0-py3-none-any.whl (39 kB)
 Downloading jeepney-0.9.0-py3-none-any.whl (49 kB)
 Downloading readme_renderer-45.0-py3-none-any.whl (14 kB)
 Downloading docutils-0.23-py3-none-any.whl (634 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 634.7/634.7 kB 92.0 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 634.7/634.7 kB 118.4 MB/s  0:00:00
 Downloading nh3-0.3.6-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (806 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 806.7/806.7 kB 113.6 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 806.7/806.7 kB 141.4 MB/s  0:00:00
 Downloading requests-2.34.2-py3-none-any.whl (73 kB)
 Downloading charset_normalizer-3.4.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (224 kB)
 Downloading idna-3.18-py3-none-any.whl (65 kB)
@@ -119,7 +116,7 @@ Downloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
 Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
 Downloading secretstorage-3.5.0-py3-none-any.whl (15 kB)
 Downloading cryptography-49.0.0-cp311-abi3-manylinux_2_34_x86_64.whl (4.7 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 123.3 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 149.3 MB/s  0:00:00
 Downloading cffi-2.1.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (221 kB)
 Downloading id-1.6.1-py3-none-any.whl (14 kB)
 Downloading jaraco.classes-3.4.0-py3-none-any.whl (6.8 kB)
@@ -131,81 +128,24 @@ Downloading pyproject_hooks-1.2.0-py3-none-any.whl (10 kB)
 Building wheels for collected packages: edcm
   Building editable for edcm (pyproject.toml): started
   Building editable for edcm (pyproject.toml): finished with status 'done'
-  Created wheel for edcm: filename=edcm-0.1.0-0.editable-py3-none-any.whl size=11030 sha256=814b34caf60f7d064d8f36be29b81ad4948b1a1691e7b54435f79eb4ed371b54
-  Stored in directory: /tmp/pip-ephem-wheel-cache-b_pswzbo/wheels/1f/3e/2d/07e94e42fbb2af1bc7bc8637667a021f3886bc1a246df1ec98
+  Created wheel for edcm: filename=edcm-0.1.0-0.editable-py3-none-any.whl size=11030 sha256=b024eb1a44769f196e07b009802aa8a5dd1e7a4563e4fff1076f111a56fdac01
+  Stored in directory: /tmp/pip-ephem-wheel-cache-6gpaybnx/wheels/1f/3e/2d/07e94e42fbb2af1bc7bc8637667a021f3886bc1a246df1ec98
 Successfully built edcm
 Installing collected packages: urllib3, rfc3986, pyproject_hooks, pygments, pycparser, pluggy, packaging, nh3, more-itertools, mdurl, jeepney, jaraco.context, iniconfig, idna, edcm, docutils, charset_normalizer, certifi, requests, readme-renderer, pytest, markdown-it-py, jaraco.functools, jaraco.classes, id, cffi, build, rich, requests-toolbelt, cryptography, SecretStorage, keyring, twine
 
 Successfully installed SecretStorage-3.5.0 build-1.5.0 certifi-2026.6.17 cffi-2.1.0 charset_normalizer-3.4.9 cryptography-49.0.0 docutils-0.23 edcm-0.1.0 id-1.6.1 idna-3.18 iniconfig-2.3.0 jaraco.classes-3.4.0 jaraco.context-6.1.2 jaraco.functools-4.6.0 jeepney-0.9.0 keyring-25.7.0 markdown-it-py-4.2.0 mdurl-0.1.2 more-itertools-11.1.0 nh3-0.3.6 packaging-26.2 pluggy-1.6.0 pycparser-3.0 pygments-2.20.0 pyproject_hooks-1.2.0 pytest-9.1.1 readme-renderer-45.0 requests-2.34.2 requests-toolbelt-1.0.0 rfc3986-2.0.0 rich-15.0.0 twine-6.2.0 urllib3-2.7.0
-status=0
-=== metadata ===
+edcm_install=0
 {
   "findings": [],
   "modules_checked": 28,
   "passed": true
 }
-status=0
-=== pytest ===
-
-==================================== ERRORS ====================================
-___________ ERROR collecting tests/test_ucns_edcm_experiments_v4.py ____________
-/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/_pytest/python.py:508: in importtestmodule
-    mod = import_path(
-/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/_pytest/pathlib.py:596: in import_path
-    importlib.import_module(module_name)
-/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/importlib/__init__.py:90: in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-<frozen importlib._bootstrap>:1387: in _gcd_import
-    ???
-<frozen importlib._bootstrap>:1360: in _find_and_load
-    ???
-<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
-    ???
-<frozen importlib._bootstrap>:935: in _load_unlocked
-    ???
-/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:179: in exec_module
-    source_stat, co = _rewrite_test(fn, self.config)
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:348: in _rewrite_test
-    tree = ast.parse(source, filename=strfn)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/ast.py:52: in parse
-    return compile(source, filename, mode, flags,
-E     File "/home/runner/work/edcm/edcm/tests/test_ucns_edcm_experiments_v4.py", line 182
-E       if row.case_id == case_id and row.error is None:
-E                                                       ^
-E   IndentationError: unindent does not match any outer indentation level
-=========================== short test summary info ============================
-ERROR tests/test_ucns_edcm_experiments_v4.py
-!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
-1 error in 0.51s
-status=2
-=== report first ===
-Traceback (most recent call last):
-  File "<frozen runpy>", line 189, in _run_module_as_main
-  File "<frozen runpy>", line 159, in _get_module_details
-  File "<frozen importlib._bootstrap_external>", line 1133, in get_code
-  File "<frozen importlib._bootstrap_external>", line 1063, in source_to_code
-  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
-  File "/home/runner/work/edcm/edcm/edcm/ucns_edcm_experiments_v4.py", line 630
-    per_node[node_id].append(1.0 if states[node_id].state == _STATE_ACTIVE else 0.0)
-                                                                                    ^
-IndentationError: unindent does not match any outer indentation level
-status=1
-=== report repeat ===
-Traceback (most recent call last):
-  File "<frozen runpy>", line 189, in _run_module_as_main
-  File "<frozen runpy>", line 159, in _get_module_details
-  File "<frozen importlib._bootstrap_external>", line 1133, in get_code
-  File "<frozen importlib._bootstrap_external>", line 1063, in source_to_code
-  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
-  File "/home/runner/work/edcm/edcm/edcm/ucns_edcm_experiments_v4.py", line 630
-    per_node[node_id].append(1.0 if states[node_id].state == _STATE_ACTIVE else 0.0)
-                                                                                    ^
-IndentationError: unindent does not match any outer indentation level
-status=1
-=== diff ===
-diff: /tmp/v0.4.json: No such file or directory
-diff: /tmp/v0.4-repeat.json: No such file or directory
-status=2
+metadata=0
+.................                                                        [100%]
+17 passed in 1.67s
+pytest=0
+{"canon_selection": null, "errors": 0, "falsified": 5, "output": "/tmp/v0.4.json", "report_digest": "b559a7f0fbcd31ce287f9d35a0915b60608fdd229dd946abe66777ac51aa326a", "supported": 14}
+report_first=0
+{"canon_selection": null, "errors": 0, "falsified": 5, "output": "/tmp/v0.4-repeat.json", "report_digest": "b559a7f0fbcd31ce287f9d35a0915b60608fdd229dd946abe66777ac51aa326a", "supported": 14}
+report_repeat=0
+diff=0
