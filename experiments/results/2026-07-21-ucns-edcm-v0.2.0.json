@@ -1,0 +1,7081 @@
+{
+  "candidate_identities": [
+    [
+      "edcm-measurement-v1",
+      "The-Interdependency/edcm:edcm/measurement@0.1.0"
+    ],
+    [
+      "edcm-occurrence-coverage-v1",
+      "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2"
+    ],
+    [
+      "ucns-candidate-packs-v0.2",
+      "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed"
+    ],
+    [
+      "comparison-policy",
+      "ucns-edcm-v0.2-combined/1(rel=1e-9,abs=1e-12)"
+    ]
+  ],
+  "canon_selection": null,
+  "cases": [
+    {
+      "case_id": "refusal-dose-0",
+      "manipulation": "zero explicit refusal occurrences",
+      "partition": "development",
+      "provenance": "synthetic development contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "refusal-dose",
+        "zero"
+      ],
+      "transcript": "A: Please decide when ready.\nB: I will consider it."
+    },
+    {
+      "case_id": "refusal-dose-1",
+      "manipulation": "one explicit refusal occurrence",
+      "partition": "development",
+      "provenance": "synthetic development contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "refusal-dose",
+        "one"
+      ],
+      "transcript": "A: Please decide when ready.\nB: I refuse."
+    },
+    {
+      "case_id": "refusal-dose-2",
+      "manipulation": "two refusal phrasings",
+      "partition": "development",
+      "provenance": "synthetic development contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "refusal-dose",
+        "two",
+        "paraphrase"
+      ],
+      "transcript": "A: Please decide when ready.\nB: I refuse.\nB: I will not comply."
+    },
+    {
+      "case_id": "refusal-dose-4",
+      "manipulation": "four refusal phrasings",
+      "partition": "holdout",
+      "provenance": "synthetic holdout contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "refusal-dose",
+        "four",
+        "holdout",
+        "paraphrase"
+      ],
+      "transcript": "A: Please decide when ready.\nB: I refuse.\nB: I will not comply.\nB: I cannot comply.\nB: I decline."
+    },
+    {
+      "case_id": "constraint-known-low",
+      "manipulation": "low-pressure control for known marker phrasing",
+      "partition": "development",
+      "provenance": "synthetic development contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "constraint",
+        "control",
+        "known"
+      ],
+      "transcript": "A: You may choose any option when ready.\nB: I will consider it."
+    },
+    {
+      "case_id": "constraint-known-high",
+      "manipulation": "obligation, immediacy, and removed alternatives",
+      "partition": "development",
+      "provenance": "synthetic development contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "constraint",
+        "high",
+        "known"
+      ],
+      "transcript": "A: You must choose now; there is no alternative.\nB: I refuse."
+    },
+    {
+      "case_id": "constraint-option-low",
+      "manipulation": "available alternatives and time",
+      "partition": "holdout",
+      "provenance": "synthetic holdout contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "constraint",
+        "control",
+        "option"
+      ],
+      "transcript": "A: Several options remain available until noon.\nB: I will consider them."
+    },
+    {
+      "case_id": "constraint-option-high",
+      "manipulation": "only permitted option plus deadline",
+      "partition": "holdout",
+      "provenance": "synthetic holdout contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "constraint",
+        "high",
+        "option",
+        "paraphrase"
+      ],
+      "transcript": "A: Only one permitted option remains and the window closes at noon.\nB: I decline."
+    },
+    {
+      "case_id": "constraint-consequence-low",
+      "manipulation": "no deadline and no adverse consequence",
+      "partition": "holdout",
+      "provenance": "synthetic holdout contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "constraint",
+        "control",
+        "consequence"
+      ],
+      "transcript": "A: You can decide later without penalty.\nB: I will consider it."
+    },
+    {
+      "case_id": "constraint-consequence-high",
+      "manipulation": "immediacy plus explicit adverse consequence",
+      "partition": "holdout",
+      "provenance": "synthetic holdout contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "constraint",
+        "high",
+        "consequence",
+        "paraphrase"
+      ],
+      "transcript": "A: Decide immediately or access will be revoked.\nB: I cannot comply."
+    },
+    {
+      "case_id": "constraint-authority-low",
+      "manipulation": "optional suggestion control",
+      "partition": "development",
+      "provenance": "synthetic development contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "constraint",
+        "control",
+        "authority"
+      ],
+      "transcript": "A: This is a suggestion; participation is optional.\nB: Understood."
+    },
+    {
+      "case_id": "constraint-authority-high",
+      "manipulation": "mandatory compliance condition",
+      "partition": "holdout",
+      "provenance": "synthetic holdout contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "constraint",
+        "high",
+        "authority",
+        "paraphrase"
+      ],
+      "transcript": "A: Compliance is mandatory before entry.\nB: I refuse."
+    },
+    {
+      "case_id": "resolution-immediate",
+      "manipulation": "repair immediately follows first refusal",
+      "partition": "development",
+      "provenance": "synthetic development contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "resolution-latency",
+        "immediate"
+      ],
+      "transcript": "A: You must decide now.\nB: I refuse.\nA: Let me clarify.\nB: I agree; that works."
+    },
+    {
+      "case_id": "resolution-delayed",
+      "manipulation": "repair follows a second pressure-refusal cycle",
+      "partition": "holdout",
+      "provenance": "synthetic holdout contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "resolution-latency",
+        "delayed"
+      ],
+      "transcript": "A: You must decide now.\nB: I refuse.\nA: Compliance is required immediately.\nB: I will not comply.\nA: Let me clarify.\nB: I agree; that works."
+    },
+    {
+      "case_id": "resolution-absent",
+      "manipulation": "no repair follows repeated pressure",
+      "partition": "holdout",
+      "provenance": "synthetic holdout contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "resolution-latency",
+        "absent"
+      ],
+      "transcript": "A: You must decide now.\nB: I refuse.\nA: Compliance is required immediately.\nB: I will not comply."
+    },
+    {
+      "case_id": "resolution-preemptive",
+      "manipulation": "same repair and pressure events with repair before pressure",
+      "partition": "development",
+      "provenance": "synthetic development contrast authored for UCNS-EDCM experiment v0.2",
+      "tags": [
+        "resolution-latency",
+        "preemptive",
+        "order"
+      ],
+      "transcript": "A: Let me clarify.\nB: I agree; that works.\nA: You must decide now.\nB: I refuse."
+    }
+  ],
+  "dose_curves": [
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_ids": [
+        "refusal-dose-0",
+        "refusal-dose-1",
+        "refusal-dose-2",
+        "refusal-dose-4"
+      ],
+      "nondecreasing": true,
+      "plateau_pairs": [],
+      "readout": "edcm.occurrence.refusal_occurrences",
+      "strictly_increasing": true,
+      "values": [
+        0.0,
+        1.0,
+        2.0,
+        4.0
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_ids": [
+        "refusal-dose-0",
+        "refusal-dose-1",
+        "refusal-dose-2",
+        "refusal-dose-4"
+      ],
+      "nondecreasing": true,
+      "plateau_pairs": [],
+      "readout": "edcm.occurrence.tension_area",
+      "strictly_increasing": true,
+      "values": [
+        0.0,
+        0.55,
+        1.5290000000000001,
+        4.417243600000001
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_ids": [
+        "refusal-dose-0",
+        "refusal-dose-1",
+        "refusal-dose-2",
+        "refusal-dose-4"
+      ],
+      "nondecreasing": true,
+      "plateau_pairs": [
+        [
+          "refusal-dose-1",
+          "refusal-dose-2"
+        ],
+        [
+          "refusal-dose-2",
+          "refusal-dose-4"
+        ]
+      ],
+      "readout": "edcm.baseline.R_mean",
+      "strictly_increasing": false,
+      "values": [
+        0.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence",
+      "case_ids": [
+        "refusal-dose-0",
+        "refusal-dose-1",
+        "refusal-dose-2",
+        "refusal-dose-4"
+      ],
+      "nondecreasing": true,
+      "plateau_pairs": [],
+      "readout": "ucns.occurrence-turn.B.cell-detail",
+      "strictly_increasing": true,
+      "values": [
+        3.386294361119891,
+        3.791759469228055,
+        5.8903717578961645,
+        10.087596335232384
+      ]
+    }
+  ],
+  "edcm_commit": "d734dfb047e0e2b0b2df70141db5ddaa150e8fe9",
+  "latency_findings": [
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "delayed_case": "resolution-delayed",
+      "delayed_value": 4.0,
+      "immediate_case": "resolution-immediate",
+      "immediate_value": 2.0,
+      "readout": "edcm.occurrence.resolution_latency_horizon",
+      "status": "strict-latency-order",
+      "unresolved_case": "resolution-absent",
+      "unresolved_value": 5.0
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "delayed_case": "resolution-delayed",
+      "delayed_value": 1.6373512000000001,
+      "immediate_case": "resolution-immediate",
+      "immediate_value": 1.018,
+      "readout": "edcm.occurrence.peak_tension",
+      "status": "partial-latency-order",
+      "unresolved_case": "resolution-absent",
+      "unresolved_value": 1.6373512000000001
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "delayed_case": "resolution-delayed",
+      "delayed_value": 0.0,
+      "immediate_case": "resolution-immediate",
+      "immediate_value": 0.0,
+      "readout": "edcm.occurrence.final_tension",
+      "status": "partial-latency-order",
+      "unresolved_case": "resolution-absent",
+      "unresolved_value": 1.6373512000000001
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "delayed_case": "resolution-delayed",
+      "delayed_value": 0.25690923442425506,
+      "immediate_case": "resolution-immediate",
+      "immediate_value": 0.21833126524082266,
+      "readout": "edcm.baseline.energy_mean",
+      "status": "strict-latency-order",
+      "unresolved_case": "resolution-absent",
+      "unresolved_value": 0.33261697952653696
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "delayed_case": "resolution-delayed",
+      "delayed_value": 0.04565949938210245,
+      "immediate_case": "resolution-immediate",
+      "immediate_value": 0.0,
+      "readout": "edcm.baseline.kappa_final",
+      "status": "strict-latency-order",
+      "unresolved_case": "resolution-absent",
+      "unresolved_value": 0.24531486105471034
+    }
+  ],
+  "notes": [
+    "v0.1 result remains immutable prior evidence.",
+    "Falsified relations and collapsed candidate curves remain evidence.",
+    "No EDCM axis, UCNS support policy, M, B, equivalence relation, or threshold is selected as canon."
+  ],
+  "phrase_coverage": [
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "detected_high": true,
+      "false_positive_low": false,
+      "family": "known",
+      "high_case": "constraint-known-high",
+      "high_value": 3.0,
+      "low_case": "constraint-known-low",
+      "low_value": 0.0,
+      "readout": "edcm.occurrence.constraint_occurrences",
+      "status": "detected-with-clean-control"
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "detected_high": false,
+      "false_positive_low": false,
+      "family": "known",
+      "high_case": "constraint-known-high",
+      "high_value": 0.0,
+      "low_case": "constraint-known-low",
+      "low_value": 0.0,
+      "readout": "edcm.baseline.C_mean",
+      "status": "missed"
+    },
+    {
+      "candidate_id": "ucns-dissonance",
+      "detected_high": true,
+      "false_positive_low": false,
+      "family": "known",
+      "high_case": "constraint-known-high",
+      "high_value": 4.70805020110221,
+      "low_case": "constraint-known-low",
+      "low_value": 3.386294361119891,
+      "readout": "ucns.dissonance-turn.B.cell-detail",
+      "status": "detected-with-clean-control"
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "detected_high": true,
+      "false_positive_low": false,
+      "family": "option",
+      "high_case": "constraint-option-high",
+      "high_value": 2.0,
+      "low_case": "constraint-option-low",
+      "low_value": 0.0,
+      "readout": "edcm.occurrence.constraint_occurrences",
+      "status": "detected-with-clean-control"
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "detected_high": false,
+      "false_positive_low": false,
+      "family": "option",
+      "high_case": "constraint-option-high",
+      "high_value": 0.0,
+      "low_case": "constraint-option-low",
+      "low_value": 0.0,
+      "readout": "edcm.baseline.C_mean",
+      "status": "missed"
+    },
+    {
+      "candidate_id": "ucns-dissonance",
+      "detected_high": true,
+      "false_positive_low": false,
+      "family": "option",
+      "high_case": "constraint-option-high",
+      "high_value": 4.484906649788,
+      "low_case": "constraint-option-low",
+      "low_value": 3.386294361119891,
+      "readout": "ucns.dissonance-turn.B.cell-detail",
+      "status": "detected-with-clean-control"
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "detected_high": true,
+      "false_positive_low": true,
+      "family": "consequence",
+      "high_case": "constraint-consequence-high",
+      "high_value": 2.0,
+      "low_case": "constraint-consequence-low",
+      "low_value": 1.0,
+      "readout": "edcm.occurrence.constraint_occurrences",
+      "status": "detected-with-control-signal"
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "detected_high": false,
+      "false_positive_low": false,
+      "family": "consequence",
+      "high_case": "constraint-consequence-high",
+      "high_value": 0.0,
+      "low_case": "constraint-consequence-low",
+      "low_value": 0.0,
+      "readout": "edcm.baseline.C_mean",
+      "status": "missed"
+    },
+    {
+      "candidate_id": "ucns-dissonance",
+      "detected_high": true,
+      "false_positive_low": false,
+      "family": "consequence",
+      "high_case": "constraint-consequence-high",
+      "high_value": 4.484906649788,
+      "low_case": "constraint-consequence-low",
+      "low_value": 3.791759469228055,
+      "readout": "ucns.dissonance-turn.B.cell-detail",
+      "status": "detected-with-clean-control"
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "detected_high": true,
+      "false_positive_low": false,
+      "family": "authority",
+      "high_case": "constraint-authority-high",
+      "high_value": 1.0,
+      "low_case": "constraint-authority-low",
+      "low_value": 0.0,
+      "readout": "edcm.occurrence.constraint_occurrences",
+      "status": "detected-with-clean-control"
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "detected_high": false,
+      "false_positive_low": false,
+      "family": "authority",
+      "high_case": "constraint-authority-high",
+      "high_value": 0.0,
+      "low_case": "constraint-authority-low",
+      "low_value": 0.0,
+      "readout": "edcm.baseline.C_mean",
+      "status": "missed"
+    },
+    {
+      "candidate_id": "ucns-dissonance",
+      "detected_high": true,
+      "false_positive_low": false,
+      "family": "authority",
+      "high_case": "constraint-authority-high",
+      "high_value": 4.197224577336219,
+      "low_case": "constraint-authority-low",
+      "low_value": 3.386294361119891,
+      "readout": "ucns.dissonance-turn.B.cell-detail",
+      "status": "detected-with-clean-control"
+    }
+  ],
+  "prior_program_schema": "edcm.ucns-edcm-experiment-report/0.1.0",
+  "prior_report_digest": "4c8bd8496ec549c1073320bafc995c7c65eaf81c9385e4dc6fff7794ed3b1124",
+  "program_version": "0.2.0",
+  "readouts": [
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "refusal-dose-0",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.029999999999999992
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.3
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.33512287620450554
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          4.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.09501755374350078
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.0
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          10.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "refusal-dose-0",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          0.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          0.0
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          0.0
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.0
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          0.0
+        ],
+        [
+          "edcm.occurrence.token_count",
+          8.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          2.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-0",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-0",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          8.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          4.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.1972245773362196
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          5.218875824868201
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          7.19722457733622
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-0",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-0",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "refusal-dose-1",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.6
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.0375
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.3125
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.365
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          1.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          2.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.3307142857142858
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.12992857142857153
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          8.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "refusal-dose-1",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          0.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          0.55
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          0.55
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          1.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.5
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          3.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          0.55
+        ],
+        [
+          "edcm.occurrence.token_count",
+          6.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          2.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-1",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-1",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          6.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          2.82842712474619
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          1.9459101490553132
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          4.70805020110221
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          6.9459101490553135
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-1",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          3.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          1.414213562373095
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          1.3862943611198906
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          3.791759469228055
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          6.386294361119891
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-1",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          3.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          1.414213562373095
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          1.3862943611198906
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          3.791759469228055
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          6.386294361119891
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "refusal-dose-2",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.6
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.06923076923076922
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.36538461538461536
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.41122821897332085
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          1.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          5.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.34940622908410074
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.15422809780933094
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          13.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "refusal-dose-2",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          0.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          0.9790000000000001
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          0.9790000000000001
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          2.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.6666666666666666
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          4.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          1.5290000000000001
+        ],
+        [
+          "edcm.occurrence.token_count",
+          10.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          3.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-2",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          3.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.3862943611198906
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          5.079441541679836
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          7.386294361119891
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-2",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          10.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          3.1748021039363987
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.3978952727983707
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          7.31748811353631
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          8.39789527279837
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-2",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          5.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          1.5874010519681994
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          1.791759469228055
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          5.8903717578961645
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          7.7917594692280545
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-2",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          5.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          1.5874010519681994
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          1.791759469228055
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          5.8903717578961645
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          7.7917594692280545
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "refusal-dose-4",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.6
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.13666666666666666
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.45
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.5103421571533792
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          1.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          7.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.3852869748314352
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.20087306728086576
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          20.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "refusal-dose-4",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          0.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          1.5746236000000002
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          1.5746236000000002
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          4.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.8
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          6.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          4.417243600000001
+        ],
+        [
+          "edcm.occurrence.token_count",
+          15.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          5.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-4",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          5.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.791759469228055
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          8.465735902799727
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          9.791759469228055
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-4",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          15.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          2.861938162210511
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.772588722239781
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          11.80239476332431
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          10.772588722239782
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-4",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          9.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          1.7411011265922482
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          2.302585092994046
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          10.087596335232384
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          10.302585092994047
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "refusal-dose-4",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          9.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          1.7411011265922482
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          2.302585092994046
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          10.087596335232384
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          10.302585092994047
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "constraint-known-low",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.02307692307692306
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.28846153846153844
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.30429010358204855
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          7.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.08797550930293
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.0
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          13.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "constraint-known-low",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          0.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          0.0
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          0.0
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.0
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          0.0
+        ],
+        [
+          "edcm.occurrence.token_count",
+          11.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          2.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "constraint-known-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "constraint-known-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          11.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          5.2915026221291805
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          7.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.4849066497880004
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          5.688879454113936
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          7.484906649788
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "constraint-known-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "constraint-known-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "constraint-known-high",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.46153846153846145
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.02307692307692306
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.28846153846153844
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.30429010358204855
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.7692307692307692
+        ],
+        [
+          "edcm.baseline.bone_count",
+          8.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.26379968512710583
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.04293959066523759
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          13.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "constraint-known-high",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          3.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          3.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          1.252
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          1.252
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          1.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.5
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          3.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          2.152
+        ],
+        [
+          "edcm.occurrence.token_count",
+          10.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          2.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "constraint-known-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "constraint-known-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          10.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          4.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          8.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.3978952727983707
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          5.295836866004329
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          7.397895272798371
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "constraint-known-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          6.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          2.82842712474619
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          4.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          1.9459101490553132
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          4.70805020110221
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          6.9459101490553135
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "constraint-known-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          6.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          2.82842712474619
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          4.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          1.9459101490553132
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          4.70805020110221
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          6.9459101490553135
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "constraint-option-low",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.025000000000000012
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.2916666666666667
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.3132681666378205
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          5.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.0899906904720696
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.0
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          12.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "constraint-option-low",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          0.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          0.0
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          0.0
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.0
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          0.0
+        ],
+        [
+          "edcm.occurrence.token_count",
+          10.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          2.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "constraint-option-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "constraint-option-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          10.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          4.898979485566356
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          6.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.3978952727983707
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          5.555348061489413
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          7.397895272798371
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "constraint-option-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "constraint-option-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "constraint-option-high",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.39999999999999997
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.019999999999999993
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.2833333333333333
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.2890577095089926
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.6666666666666666
+        ],
+        [
+          "edcm.baseline.bone_count",
+          5.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.23700824421557037
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.008110717480241475
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          15.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "constraint-option-high",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          2.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          2.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          1.018
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          1.018
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          1.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.5
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          3.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          1.6179999999999999
+        ],
+        [
+          "edcm.occurrence.token_count",
+          13.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          2.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "constraint-option-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "constraint-option-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          13.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          4.69041575982343
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          11.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.639057329615259
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          5.58351893845611
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          7.639057329615259
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "constraint-option-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          5.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          2.449489742783178
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          3.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          1.791759469228055
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          4.484906649788
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          6.7917594692280545
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "constraint-option-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          5.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          2.449489742783178
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          3.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          1.791759469228055
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          4.484906649788
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          6.7917594692280545
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "constraint-consequence-low",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.025000000000000012
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.2916666666666667
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.3132681666378205
+        ],
+        [
+          "edcm.baseline.O_mean",
+          -1.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          6.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.0899906904720696
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.0
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          12.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "constraint-consequence-low",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          1.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          1.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          0.23399999999999999
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          0.3
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.0
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          3.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          0.534
+        ],
+        [
+          "edcm.occurrence.token_count",
+          10.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          2.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "constraint-consequence-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "constraint-consequence-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          10.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          4.898979485566356
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          6.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.3978952727983707
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          5.555348061489413
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          7.397895272798371
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "constraint-consequence-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          3.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          1.414213562373095
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          1.3862943611198906
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          3.791759469228055
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          6.386294361119891
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "constraint-consequence-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          3.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          1.414213562373095
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          1.3862943611198906
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          3.791759469228055
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          6.386294361119891
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "constraint-consequence-high",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.025000000000000012
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.2916666666666667
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.3132681666378205
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          5.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.0899906904720696
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.0
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          12.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "constraint-consequence-high",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          2.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          2.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          1.018
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          1.018
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          1.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.5
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          3.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          1.6179999999999999
+        ],
+        [
+          "edcm.occurrence.token_count",
+          10.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          2.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "constraint-consequence-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "constraint-consequence-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          10.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          4.58257569495584
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          7.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          3.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.3978952727983707
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          5.465735902799726
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          7.397895272798371
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "constraint-consequence-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          5.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          2.449489742783178
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          3.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          1.791759469228055
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          4.484906649788
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          6.7917594692280545
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "constraint-consequence-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          5.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          2.449489742783178
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          3.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          1.791759469228055
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          4.484906649788
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          6.7917594692280545
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "constraint-authority-low",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.05454545454545453
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.3409090909090909
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.3852590988908717
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          5.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.11153052062077386
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.0
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          11.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "constraint-authority-low",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          0.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          0.0
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          0.0
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.0
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          1.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          0.0
+        ],
+        [
+          "edcm.occurrence.token_count",
+          8.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          2.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "constraint-authority-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "constraint-authority-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          8.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          2.6457513110645903
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          7.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.1972245773362196
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          4.772588722239782
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          7.19722457733622
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "constraint-authority-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          3.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          1.414213562373095
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          1.3862943611198906
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          3.791759469228055
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          6.386294361119891
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "constraint-authority-low",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "constraint-authority-high",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.6
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.03333333333333335
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.3055555555555556
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.34875855549786317
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          1.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          3.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.326806777769536
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.1248488111003968
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          9.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "constraint-authority-high",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          1.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          1.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          0.784
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          0.784
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          1.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.5
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          3.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          1.084
+        ],
+        [
+          "edcm.occurrence.token_count",
+          7.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          2.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "constraint-authority-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "constraint-authority-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          7.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          3.162277660168379
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          5.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.0794415416798357
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          4.8903717578961645
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          7.079441541679836
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "constraint-authority-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          4.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          1.6094379124341003
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          4.197224577336219
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          6.6094379124341005
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "constraint-authority-high",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          4.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          1.6094379124341003
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          4.197224577336219
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          6.6094379124341005
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "resolution-immediate",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.27178226770618075
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.32825741858350554
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.09375000000000001
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.25625
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.35006143810225276
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.4870493159918081
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.bone_count",
+          8.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.21833126524082266
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.0
+        ],
+        [
+          "edcm.baseline.round_count",
+          2.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          18.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "resolution-immediate",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          2.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          2.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          0.0
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          1.018
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          1.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.25
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          2.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          2.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          3.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          1.7620399999999998
+        ],
+        [
+          "edcm.occurrence.token_count",
+          13.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          4.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "resolution-immediate",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          4.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.6094379124341003
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          6.772588722239782
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          8.6094379124341
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "resolution-immediate",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          13.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          3.1301691601465746
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.639057329615259
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          9.703782474656201
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          9.639057329615259
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "resolution-immediate",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          10.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          2.449489742783178
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          3.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          2.3978952727983707
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          8.969813299576
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          9.39789527279837
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "resolution-immediate",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          7.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          1.5650845800732873
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          3.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          2.0794415416798357
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          7.871201010907891
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          9.079441541679836
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "resolution-delayed",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.3756326229152316
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.4366160568334481
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.1125
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.23750000000000002
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.3450819174696704
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.4646995439945387
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.6666666666666666
+        ],
+        [
+          "edcm.baseline.bone_count",
+          13.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.25690923442425506
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.04565949938210245
+        ],
+        [
+          "edcm.baseline.round_count",
+          3.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          28.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "resolution-delayed",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          4.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          4.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          0.0
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          1.6373512000000001
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          2.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.3333333333333333
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          4.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          4.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          3.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          5.276525136
+        ],
+        [
+          "edcm.occurrence.token_count",
+          21.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          6.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "resolution-delayed",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          6.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.9459101490553132
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          10.158883083359672
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          10.945910149055313
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "resolution-delayed",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          21.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          3.3967626591299056
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          3.091042453358316
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          14.922658299524402
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          12.091042453358316
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "resolution-delayed",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          15.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          2.4494897427831783
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          3.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          2.772588722239781
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          13.454719949364002
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          11.772588722239782
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "resolution-delayed",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          12.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          1.8171205928321397
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          3.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          2.5649493574615367
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          12.35610766069589
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          11.564949357461536
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "resolution-absent",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.27178226770618075
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.6282574185835055
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.09375000000000001
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.25625
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.35006143810225276
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.4870493159918081
+        ],
+        [
+          "edcm.baseline.R_mean",
+          1.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          9.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.33261697952653696
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.24531486105471034
+        ],
+        [
+          "edcm.baseline.round_count",
+          2.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          18.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "resolution-absent",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          4.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          4.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          1.6373512000000001
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          1.6373512000000001
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          2.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.5
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          5.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          4.6493912
+        ],
+        [
+          "edcm.occurrence.token_count",
+          14.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          4.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "resolution-absent",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          4.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.6094379124341003
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          6.772588722239782
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          8.6094379124341
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "resolution-absent",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          14.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          3.363585661014858
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.70805020110221
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          9.92692602597041
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          9.70805020110221
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "resolution-absent",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          10.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          2.449489742783178
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          3.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          2.3978952727983707
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          8.969813299576
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          9.39789527279837
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "resolution-absent",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          10.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          2.449489742783178
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          3.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          2.3978952727983707
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          8.969813299576
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          9.39789527279837
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "resolution-preemptive",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm/measurement@0.1.0",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.27178226770618075
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.33075741858350555
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.10875000000000001
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.275
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.35006143810225276
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.4375
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.bone_count",
+          8.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.22350983666939403
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.15760275547387345
+        ],
+        [
+          "edcm.baseline.round_count",
+          2.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          18.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-occurrence-coverage-v1",
+      "case_id": "resolution-preemptive",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",
+      "values": [
+        [
+          "edcm.occurrence.constraint_family_hits",
+          2.0
+        ],
+        [
+          "edcm.occurrence.constraint_occurrences",
+          2.0
+        ],
+        [
+          "edcm.occurrence.final_tension",
+          1.018
+        ],
+        [
+          "edcm.occurrence.peak_tension",
+          1.018
+        ],
+        [
+          "edcm.occurrence.refusal_occurrences",
+          1.0
+        ],
+        [
+          "edcm.occurrence.refusal_rate",
+          0.25
+        ],
+        [
+          "edcm.occurrence.repetition_occurrences",
+          0.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency",
+          -1.0
+        ],
+        [
+          "edcm.occurrence.resolution_latency_horizon",
+          5.0
+        ],
+        [
+          "edcm.occurrence.resolution_occurrences",
+          3.0
+        ],
+        [
+          "edcm.occurrence.tension_area",
+          1.6179999999999999
+        ],
+        [
+          "edcm.occurrence.token_count",
+          13.0
+        ],
+        [
+          "edcm.occurrence.turn_count",
+          4.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack-v0.2",
+      "case_id": "resolution-preemptive",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          4.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.6094379124341003
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          6.772588722239782
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          8.6094379124341
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack-v0.2",
+      "case_id": "resolution-preemptive",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          13.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          3.1301691601465746
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.639057329615259
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          9.703782474656201
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          9.639057329615259
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-occurrence-turn-candidate-pack-v0.2",
+      "case_id": "resolution-preemptive",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.occurrence-turn.W.cell-support",
+          10.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-geometric-mean",
+          2.449489742783178
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-maximum",
+          3.0
+        ],
+        [
+          "ucns.occurrence-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-log-support",
+          2.3978952727983707
+        ],
+        [
+          "ucns.occurrence-turn.B.cell-detail",
+          8.969813299576
+        ],
+        [
+          "ucns.occurrence-turn.B.retained-presence",
+          9.39789527279837
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-dissonance-turn-candidate-pack-v0.2",
+      "case_id": "resolution-preemptive",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.dissonance-turn.W.cell-support",
+          7.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-geometric-mean",
+          1.5650845800732873
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-maximum",
+          3.0
+        ],
+        [
+          "ucns.dissonance-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-log-support",
+          2.0794415416798357
+        ],
+        [
+          "ucns.dissonance-turn.B.cell-detail",
+          7.871201010907891
+        ],
+        [
+          "ucns.dissonance-turn.B.retained-presence",
+          9.079441541679836
+        ]
+      ]
+    }
+  ],
+  "relation_verdicts": [
+    {
+      "detail": "raw refusal occurrences should rise with the declared dose",
+      "left_case": "refusal-dose-0",
+      "left_value": 0.0,
+      "operator": "lt",
+      "readout": "edcm.occurrence.refusal_occurrences",
+      "relation_id": "dose-occurrence-refusal-dose-0-refusal-dose-1",
+      "right_case": "refusal-dose-1",
+      "right_value": 1.0,
+      "status": "supported"
+    },
+    {
+      "detail": "accumulated candidate tension should rise with refusal dose",
+      "left_case": "refusal-dose-0",
+      "left_value": 0.0,
+      "operator": "lt",
+      "readout": "edcm.occurrence.tension_area",
+      "relation_id": "dose-tension-area-refusal-dose-0-refusal-dose-1",
+      "right_case": "refusal-dose-1",
+      "right_value": 0.55,
+      "status": "supported"
+    },
+    {
+      "detail": "the frozen baseline refusal axis is retested for unsaturated dose sensitivity",
+      "left_case": "refusal-dose-0",
+      "left_value": 0.0,
+      "operator": "lt",
+      "readout": "edcm.baseline.R_mean",
+      "relation_id": "dose-baseline-R-refusal-dose-0-refusal-dose-1",
+      "right_case": "refusal-dose-1",
+      "right_value": 1.0,
+      "status": "supported"
+    },
+    {
+      "detail": "raw refusal occurrences should rise with the declared dose",
+      "left_case": "refusal-dose-1",
+      "left_value": 1.0,
+      "operator": "lt",
+      "readout": "edcm.occurrence.refusal_occurrences",
+      "relation_id": "dose-occurrence-refusal-dose-1-refusal-dose-2",
+      "right_case": "refusal-dose-2",
+      "right_value": 2.0,
+      "status": "supported"
+    },
+    {
+      "detail": "accumulated candidate tension should rise with refusal dose",
+      "left_case": "refusal-dose-1",
+      "left_value": 0.55,
+      "operator": "lt",
+      "readout": "edcm.occurrence.tension_area",
+      "relation_id": "dose-tension-area-refusal-dose-1-refusal-dose-2",
+      "right_case": "refusal-dose-2",
+      "right_value": 1.5290000000000001,
+      "status": "supported"
+    },
+    {
+      "detail": "the frozen baseline refusal axis is retested for unsaturated dose sensitivity",
+      "left_case": "refusal-dose-1",
+      "left_value": 1.0,
+      "operator": "lt",
+      "readout": "edcm.baseline.R_mean",
+      "relation_id": "dose-baseline-R-refusal-dose-1-refusal-dose-2",
+      "right_case": "refusal-dose-2",
+      "right_value": 1.0,
+      "status": "falsified"
+    },
+    {
+      "detail": "raw refusal occurrences should rise with the declared dose",
+      "left_case": "refusal-dose-2",
+      "left_value": 2.0,
+      "operator": "lt",
+      "readout": "edcm.occurrence.refusal_occurrences",
+      "relation_id": "dose-occurrence-refusal-dose-2-refusal-dose-4",
+      "right_case": "refusal-dose-4",
+      "right_value": 4.0,
+      "status": "supported"
+    },
+    {
+      "detail": "accumulated candidate tension should rise with refusal dose",
+      "left_case": "refusal-dose-2",
+      "left_value": 1.5290000000000001,
+      "operator": "lt",
+      "readout": "edcm.occurrence.tension_area",
+      "relation_id": "dose-tension-area-refusal-dose-2-refusal-dose-4",
+      "right_case": "refusal-dose-4",
+      "right_value": 4.417243600000001,
+      "status": "supported"
+    },
+    {
+      "detail": "the frozen baseline refusal axis is retested for unsaturated dose sensitivity",
+      "left_case": "refusal-dose-2",
+      "left_value": 1.0,
+      "operator": "lt",
+      "readout": "edcm.baseline.R_mean",
+      "relation_id": "dose-baseline-R-refusal-dose-2-refusal-dose-4",
+      "right_case": "refusal-dose-4",
+      "right_value": 1.0,
+      "status": "falsified"
+    },
+    {
+      "detail": "the phrase-family candidate should detect declared constraint pressure",
+      "left_case": "constraint-known-high",
+      "left_value": 3.0,
+      "operator": "gt",
+      "readout": "edcm.occurrence.constraint_occurrences",
+      "relation_id": "coverage-occurrence-known",
+      "right_case": "constraint-known-low",
+      "right_value": 0.0,
+      "status": "supported"
+    },
+    {
+      "detail": "the frozen baseline constraint axis is retested across paraphrase families",
+      "left_case": "constraint-known-high",
+      "left_value": 0.0,
+      "operator": "gt",
+      "readout": "edcm.baseline.C_mean",
+      "relation_id": "coverage-baseline-known",
+      "right_case": "constraint-known-low",
+      "right_value": 0.0,
+      "status": "falsified"
+    },
+    {
+      "detail": "dissonance-weighted support should preserve the declared high/low contrast",
+      "left_case": "constraint-known-high",
+      "left_value": 4.70805020110221,
+      "operator": "gt",
+      "readout": "ucns.dissonance-turn.B.cell-detail",
+      "relation_id": "coverage-ucns-dissonance-known",
+      "right_case": "constraint-known-low",
+      "right_value": 3.386294361119891,
+      "status": "supported"
+    },
+    {
+      "detail": "the phrase-family candidate should detect declared constraint pressure",
+      "left_case": "constraint-option-high",
+      "left_value": 2.0,
+      "operator": "gt",
+      "readout": "edcm.occurrence.constraint_occurrences",
+      "relation_id": "coverage-occurrence-option",
+      "right_case": "constraint-option-low",
+      "right_value": 0.0,
+      "status": "supported"
+    },
+    {
+      "detail": "the frozen baseline constraint axis is retested across paraphrase families",
+      "left_case": "constraint-option-high",
+      "left_value": 0.0,
+      "operator": "gt",
+      "readout": "edcm.baseline.C_mean",
+      "relation_id": "coverage-baseline-option",
+      "right_case": "constraint-option-low",
+      "right_value": 0.0,
+      "status": "falsified"
+    },
+    {
+      "detail": "dissonance-weighted support should preserve the declared high/low contrast",
+      "left_case": "constraint-option-high",
+      "left_value": 4.484906649788,
+      "operator": "gt",
+      "readout": "ucns.dissonance-turn.B.cell-detail",
+      "relation_id": "coverage-ucns-dissonance-option",
+      "right_case": "constraint-option-low",
+      "right_value": 3.386294361119891,
+      "status": "supported"
+    },
+    {
+      "detail": "the phrase-family candidate should detect declared constraint pressure",
+      "left_case": "constraint-consequence-high",
+      "left_value": 2.0,
+      "operator": "gt",
+      "readout": "edcm.occurrence.constraint_occurrences",
+      "relation_id": "coverage-occurrence-consequence",
+      "right_case": "constraint-consequence-low",
+      "right_value": 1.0,
+      "status": "supported"
+    },
+    {
+      "detail": "the frozen baseline constraint axis is retested across paraphrase families",
+      "left_case": "constraint-consequence-high",
+      "left_value": 0.0,
+      "operator": "gt",
+      "readout": "edcm.baseline.C_mean",
+      "relation_id": "coverage-baseline-consequence",
+      "right_case": "constraint-consequence-low",
+      "right_value": 0.0,
+      "status": "falsified"
+    },
+    {
+      "detail": "dissonance-weighted support should preserve the declared high/low contrast",
+      "left_case": "constraint-consequence-high",
+      "left_value": 4.484906649788,
+      "operator": "gt",
+      "readout": "ucns.dissonance-turn.B.cell-detail",
+      "relation_id": "coverage-ucns-dissonance-consequence",
+      "right_case": "constraint-consequence-low",
+      "right_value": 3.791759469228055,
+      "status": "supported"
+    },
+    {
+      "detail": "the phrase-family candidate should detect declared constraint pressure",
+      "left_case": "constraint-authority-high",
+      "left_value": 1.0,
+      "operator": "gt",
+      "readout": "edcm.occurrence.constraint_occurrences",
+      "relation_id": "coverage-occurrence-authority",
+      "right_case": "constraint-authority-low",
+      "right_value": 0.0,
+      "status": "supported"
+    },
+    {
+      "detail": "the frozen baseline constraint axis is retested across paraphrase families",
+      "left_case": "constraint-authority-high",
+      "left_value": 0.0,
+      "operator": "gt",
+      "readout": "edcm.baseline.C_mean",
+      "relation_id": "coverage-baseline-authority",
+      "right_case": "constraint-authority-low",
+      "right_value": 0.0,
+      "status": "falsified"
+    },
+    {
+      "detail": "dissonance-weighted support should preserve the declared high/low contrast",
+      "left_case": "constraint-authority-high",
+      "left_value": 4.197224577336219,
+      "operator": "gt",
+      "readout": "ucns.dissonance-turn.B.cell-detail",
+      "relation_id": "coverage-ucns-dissonance-authority",
+      "right_case": "constraint-authority-low",
+      "right_value": 3.386294361119891,
+      "status": "supported"
+    },
+    {
+      "detail": "delayed repair should have a longer pressure-to-resolution horizon",
+      "left_case": "resolution-immediate",
+      "left_value": 2.0,
+      "operator": "lt",
+      "readout": "edcm.occurrence.resolution_latency_horizon",
+      "relation_id": "latency-occurrence-horizon-immediate-delayed",
+      "right_case": "resolution-delayed",
+      "right_value": 4.0,
+      "status": "supported"
+    },
+    {
+      "detail": "absence of repair should exceed the delayed-repair horizon",
+      "left_case": "resolution-delayed",
+      "left_value": 4.0,
+      "operator": "lt",
+      "readout": "edcm.occurrence.resolution_latency_horizon",
+      "relation_id": "latency-occurrence-horizon-delayed-absent",
+      "right_case": "resolution-absent",
+      "right_value": 5.0,
+      "status": "supported"
+    },
+    {
+      "detail": "delayed repair should accumulate more tension than immediate repair",
+      "left_case": "resolution-immediate",
+      "left_value": 1.7620399999999998,
+      "operator": "lt",
+      "readout": "edcm.occurrence.tension_area",
+      "relation_id": "latency-occurrence-area-immediate-delayed",
+      "right_case": "resolution-delayed",
+      "right_value": 5.276525136,
+      "status": "supported"
+    },
+    {
+      "detail": "completed delayed repair should leave less terminal tension than absent repair",
+      "left_case": "resolution-delayed",
+      "left_value": 0.0,
+      "operator": "lt",
+      "readout": "edcm.occurrence.final_tension",
+      "relation_id": "latency-occurrence-terminal-delayed-absent",
+      "right_case": "resolution-absent",
+      "right_value": 1.6373512000000001,
+      "status": "supported"
+    },
+    {
+      "detail": "the baseline energy summary is tested for repair latency",
+      "left_case": "resolution-immediate",
+      "left_value": 0.21833126524082266,
+      "operator": "lt",
+      "readout": "edcm.baseline.energy_mean",
+      "relation_id": "latency-baseline-immediate-delayed",
+      "right_case": "resolution-delayed",
+      "right_value": 0.25690923442425506,
+      "status": "supported"
+    },
+    {
+      "detail": "the baseline energy summary is tested for absent repair",
+      "left_case": "resolution-delayed",
+      "left_value": 0.25690923442425506,
+      "operator": "lt",
+      "readout": "edcm.baseline.energy_mean",
+      "relation_id": "latency-baseline-delayed-absent",
+      "right_case": "resolution-absent",
+      "right_value": 0.33261697952653696,
+      "status": "supported"
+    },
+    {
+      "detail": "repair before later pressure must not count as equivalent to repair after pressure",
+      "left_case": "resolution-immediate",
+      "left_value": 0.0,
+      "operator": "lt",
+      "readout": "edcm.occurrence.final_tension",
+      "relation_id": "preemptive-order-occurrence",
+      "right_case": "resolution-preemptive",
+      "right_value": 1.018,
+      "status": "supported"
+    },
+    {
+      "detail": "occurrence-weighted breadth should retain the refusal-dose contrast",
+      "left_case": "refusal-dose-1",
+      "left_value": 3.791759469228055,
+      "operator": "lt",
+      "readout": "ucns.occurrence-turn.B.cell-detail",
+      "relation_id": "refusal-occurrence-breadth",
+      "right_case": "refusal-dose-4",
+      "right_value": 10.087596335232384,
+      "status": "supported"
+    }
+  ],
+  "report_digest": "85d6a9c7504a7e9b7fdb21e0dec5ff8e588d12e9d893f1a22854c1ae2ebbf0e4",
+  "schema": "edcm.ucns-edcm-experiment-report/0.2.0",
+  "structural_signatures": [
+    {
+      "case_id": "constraint-authority-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "053a1d28163902bb484a4188f37e836ed92938838eeda01faa89dd9198ecacc7",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-authority-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "1d48a9421d79d76ba7b86353e9ae9ddcda8e063d2016f1866fa9e459bb15f927",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-authority-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "3ba573ebd49187d052b75692094974fa2427ff3d605e1ba6668fb0b6c43fe006",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-authority-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "053a1d28163902bb484a4188f37e836ed92938838eeda01faa89dd9198ecacc7",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-authority-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "1d48a9421d79d76ba7b86353e9ae9ddcda8e063d2016f1866fa9e459bb15f927",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-authority-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "3ba573ebd49187d052b75692094974fa2427ff3d605e1ba6668fb0b6c43fe006",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-authority-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "053a1d28163902bb484a4188f37e836ed92938838eeda01faa89dd9198ecacc7",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-authority-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "1d48a9421d79d76ba7b86353e9ae9ddcda8e063d2016f1866fa9e459bb15f927",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-authority-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "3ba573ebd49187d052b75692094974fa2427ff3d605e1ba6668fb0b6c43fe006",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-authority-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "053a1d28163902bb484a4188f37e836ed92938838eeda01faa89dd9198ecacc7",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-authority-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "1d48a9421d79d76ba7b86353e9ae9ddcda8e063d2016f1866fa9e459bb15f927",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-authority-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "3ba573ebd49187d052b75692094974fa2427ff3d605e1ba6668fb0b6c43fe006",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-authority-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "b60507cdf74ce9a2c106fd3218485a1b983ffa90a4878b7f5d1a26ed3962cbc9",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-authority-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "17c6f958a09e9a98bb1442602fd680cb1e13c1bc9d1259659bbdddd747a5fef2",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-authority-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "b441b2b160c2e2f84c6650578637adbca88f08cb656ff1df3fd18e710be8cc94",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-authority-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "b60507cdf74ce9a2c106fd3218485a1b983ffa90a4878b7f5d1a26ed3962cbc9",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-authority-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "17c6f958a09e9a98bb1442602fd680cb1e13c1bc9d1259659bbdddd747a5fef2",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-authority-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "b441b2b160c2e2f84c6650578637adbca88f08cb656ff1df3fd18e710be8cc94",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-authority-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "b60507cdf74ce9a2c106fd3218485a1b983ffa90a4878b7f5d1a26ed3962cbc9",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-authority-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "17c6f958a09e9a98bb1442602fd680cb1e13c1bc9d1259659bbdddd747a5fef2",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-authority-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "b441b2b160c2e2f84c6650578637adbca88f08cb656ff1df3fd18e710be8cc94",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-authority-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "b60507cdf74ce9a2c106fd3218485a1b983ffa90a4878b7f5d1a26ed3962cbc9",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-authority-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "17c6f958a09e9a98bb1442602fd680cb1e13c1bc9d1259659bbdddd747a5fef2",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-authority-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "b441b2b160c2e2f84c6650578637adbca88f08cb656ff1df3fd18e710be8cc94",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-consequence-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "4e29526cc512f2309cfb3d82ddd16683f88502d65226acfe911f6211de5d9ef7",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-consequence-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "27101f29ae52188ec461ba05d46075f6bd9a90a137239b0c91245e50feea579d",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-consequence-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "63951f19212e76ea13e164fd4c05720c4a77ddef53af4a48bb7c305d78f2e463",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-consequence-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "4e29526cc512f2309cfb3d82ddd16683f88502d65226acfe911f6211de5d9ef7",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-consequence-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "27101f29ae52188ec461ba05d46075f6bd9a90a137239b0c91245e50feea579d",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-consequence-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "63951f19212e76ea13e164fd4c05720c4a77ddef53af4a48bb7c305d78f2e463",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-consequence-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "4e29526cc512f2309cfb3d82ddd16683f88502d65226acfe911f6211de5d9ef7",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-consequence-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "27101f29ae52188ec461ba05d46075f6bd9a90a137239b0c91245e50feea579d",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-consequence-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "63951f19212e76ea13e164fd4c05720c4a77ddef53af4a48bb7c305d78f2e463",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-consequence-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "4e29526cc512f2309cfb3d82ddd16683f88502d65226acfe911f6211de5d9ef7",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-consequence-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "27101f29ae52188ec461ba05d46075f6bd9a90a137239b0c91245e50feea579d",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-consequence-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "63951f19212e76ea13e164fd4c05720c4a77ddef53af4a48bb7c305d78f2e463",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-consequence-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "92445b289238b27908c6c6d009df10423428170120a7cb6a0b51d7b458cfd481",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-consequence-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "93c70633161c74d74f42db2e25147db90afee13623c1ebc9d0a5a12b4eb1909a",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-consequence-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "1b92d84df427f864aa45381756849bb82fe8cf448c033936694f20d533f56639",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-consequence-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "92445b289238b27908c6c6d009df10423428170120a7cb6a0b51d7b458cfd481",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-consequence-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "93c70633161c74d74f42db2e25147db90afee13623c1ebc9d0a5a12b4eb1909a",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-consequence-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "1b92d84df427f864aa45381756849bb82fe8cf448c033936694f20d533f56639",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-consequence-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "92445b289238b27908c6c6d009df10423428170120a7cb6a0b51d7b458cfd481",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-consequence-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "93c70633161c74d74f42db2e25147db90afee13623c1ebc9d0a5a12b4eb1909a",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-consequence-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "1b92d84df427f864aa45381756849bb82fe8cf448c033936694f20d533f56639",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-consequence-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "92445b289238b27908c6c6d009df10423428170120a7cb6a0b51d7b458cfd481",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-consequence-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "93c70633161c74d74f42db2e25147db90afee13623c1ebc9d0a5a12b4eb1909a",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-consequence-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "1b92d84df427f864aa45381756849bb82fe8cf448c033936694f20d533f56639",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-known-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "262615c7a7c474aa51b9dabe6f8c93778c2984fb841c00b67e9d48d14e7f3f6c",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-known-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "e1c7e6b92d19d44da7a22eaa56b0adf5daf3cc560290c7a9f3b602cb2b066c20",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-known-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "638641ae1867ceab4e8e345f7d2269f8334f35bd3e3bf6c38ea8e992c0849752",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-known-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "262615c7a7c474aa51b9dabe6f8c93778c2984fb841c00b67e9d48d14e7f3f6c",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-known-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "e1c7e6b92d19d44da7a22eaa56b0adf5daf3cc560290c7a9f3b602cb2b066c20",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-known-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "638641ae1867ceab4e8e345f7d2269f8334f35bd3e3bf6c38ea8e992c0849752",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-known-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "262615c7a7c474aa51b9dabe6f8c93778c2984fb841c00b67e9d48d14e7f3f6c",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-known-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "e1c7e6b92d19d44da7a22eaa56b0adf5daf3cc560290c7a9f3b602cb2b066c20",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-known-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "638641ae1867ceab4e8e345f7d2269f8334f35bd3e3bf6c38ea8e992c0849752",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-known-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "262615c7a7c474aa51b9dabe6f8c93778c2984fb841c00b67e9d48d14e7f3f6c",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-known-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "e1c7e6b92d19d44da7a22eaa56b0adf5daf3cc560290c7a9f3b602cb2b066c20",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-known-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "638641ae1867ceab4e8e345f7d2269f8334f35bd3e3bf6c38ea8e992c0849752",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-known-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "72651f91f10bb35c9b2d79dfc403b2a6cc63487b36593275ce36538dda79abc2",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-known-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "306da49dead110c531e3180d1500094ab02d767dc0b59550896edb9e6dd55eea",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-known-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "fcbbd17de363698448dfc59a7361085d2ac990102c94726d1e87a395b6707768",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-known-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "72651f91f10bb35c9b2d79dfc403b2a6cc63487b36593275ce36538dda79abc2",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-known-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "306da49dead110c531e3180d1500094ab02d767dc0b59550896edb9e6dd55eea",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-known-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "fcbbd17de363698448dfc59a7361085d2ac990102c94726d1e87a395b6707768",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-known-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "72651f91f10bb35c9b2d79dfc403b2a6cc63487b36593275ce36538dda79abc2",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-known-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "306da49dead110c531e3180d1500094ab02d767dc0b59550896edb9e6dd55eea",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-known-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "fcbbd17de363698448dfc59a7361085d2ac990102c94726d1e87a395b6707768",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-known-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "72651f91f10bb35c9b2d79dfc403b2a6cc63487b36593275ce36538dda79abc2",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-known-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "306da49dead110c531e3180d1500094ab02d767dc0b59550896edb9e6dd55eea",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-known-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "fcbbd17de363698448dfc59a7361085d2ac990102c94726d1e87a395b6707768",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-option-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "31ef4495c830e2e3c8d2af6f3d0c9643e7694627e74b79a94c1ed63a3927369f",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-option-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "02e51c421280127a09b1a6e6a8d6cd92e52894fa9ffce0a119a8b58caf7de4bf",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-option-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "3e748ffca359ea4201118fdb127ac1c6d0992d5c3c2b8183e56d2cc92efa1b45",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-option-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "31ef4495c830e2e3c8d2af6f3d0c9643e7694627e74b79a94c1ed63a3927369f",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-option-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "02e51c421280127a09b1a6e6a8d6cd92e52894fa9ffce0a119a8b58caf7de4bf",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-option-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "3e748ffca359ea4201118fdb127ac1c6d0992d5c3c2b8183e56d2cc92efa1b45",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-option-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "31ef4495c830e2e3c8d2af6f3d0c9643e7694627e74b79a94c1ed63a3927369f",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-option-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "02e51c421280127a09b1a6e6a8d6cd92e52894fa9ffce0a119a8b58caf7de4bf",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-option-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "3e748ffca359ea4201118fdb127ac1c6d0992d5c3c2b8183e56d2cc92efa1b45",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-option-high",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "31ef4495c830e2e3c8d2af6f3d0c9643e7694627e74b79a94c1ed63a3927369f",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-option-high",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "02e51c421280127a09b1a6e6a8d6cd92e52894fa9ffce0a119a8b58caf7de4bf",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-option-high",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "3e748ffca359ea4201118fdb127ac1c6d0992d5c3c2b8183e56d2cc92efa1b45",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-option-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "f73fd80c8f4cccf8c9315de278705565aa43f210005dbe9de07fd92462278243",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-option-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "eaa035fca4d5566b579189cd190e82ce483a7b53550980d6945c5bdd54420bf1",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-option-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "d966828c5ce1a8c06d56d51fc3a72f1e9528130b377bcd2ecfc486838d9f3101",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "constraint-option-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "f73fd80c8f4cccf8c9315de278705565aa43f210005dbe9de07fd92462278243",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-option-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "eaa035fca4d5566b579189cd190e82ce483a7b53550980d6945c5bdd54420bf1",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-option-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "d966828c5ce1a8c06d56d51fc3a72f1e9528130b377bcd2ecfc486838d9f3101",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "constraint-option-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "f73fd80c8f4cccf8c9315de278705565aa43f210005dbe9de07fd92462278243",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-option-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "eaa035fca4d5566b579189cd190e82ce483a7b53550980d6945c5bdd54420bf1",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-option-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "d966828c5ce1a8c06d56d51fc3a72f1e9528130b377bcd2ecfc486838d9f3101",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "constraint-option-low",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "f73fd80c8f4cccf8c9315de278705565aa43f210005dbe9de07fd92462278243",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-option-low",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "eaa035fca4d5566b579189cd190e82ce483a7b53550980d6945c5bdd54420bf1",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "constraint-option-low",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "d966828c5ce1a8c06d56d51fc3a72f1e9528130b377bcd2ecfc486838d9f3101",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "refusal-dose-0",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "70476ef607d2e6f7b025cc88209bf65402eb754f1ec0d90e40b1cefb16292780",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "refusal-dose-0",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "0b2d519e5fcae034b651971e83b027baeec1e4870d1e7b054382c6839eb4cc37",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "refusal-dose-0",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "b351217e6ad97ed27c6c7ab262034426e57de434c2842436639ea2da89396ccc",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "refusal-dose-0",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "70476ef607d2e6f7b025cc88209bf65402eb754f1ec0d90e40b1cefb16292780",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "refusal-dose-0",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "0b2d519e5fcae034b651971e83b027baeec1e4870d1e7b054382c6839eb4cc37",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "refusal-dose-0",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "b351217e6ad97ed27c6c7ab262034426e57de434c2842436639ea2da89396ccc",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "refusal-dose-0",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "70476ef607d2e6f7b025cc88209bf65402eb754f1ec0d90e40b1cefb16292780",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "refusal-dose-0",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "0b2d519e5fcae034b651971e83b027baeec1e4870d1e7b054382c6839eb4cc37",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "refusal-dose-0",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "b351217e6ad97ed27c6c7ab262034426e57de434c2842436639ea2da89396ccc",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "refusal-dose-0",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "70476ef607d2e6f7b025cc88209bf65402eb754f1ec0d90e40b1cefb16292780",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "refusal-dose-0",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "0b2d519e5fcae034b651971e83b027baeec1e4870d1e7b054382c6839eb4cc37",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "refusal-dose-0",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "b351217e6ad97ed27c6c7ab262034426e57de434c2842436639ea2da89396ccc",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "refusal-dose-1",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "2bec0c678a162829f2a550c3e7b63416806a752225577bb790e167e4f2eee83f",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "refusal-dose-1",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "0a484efc4f5273e1119ee94a477a36079423eb5c487c3c61016d5ddb2605da46",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "refusal-dose-1",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "021c761ddd174c7b21cd165ec65d436353c4f59fd522e4534ff97d6e0ce46062",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "refusal-dose-1",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "2bec0c678a162829f2a550c3e7b63416806a752225577bb790e167e4f2eee83f",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "refusal-dose-1",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "0a484efc4f5273e1119ee94a477a36079423eb5c487c3c61016d5ddb2605da46",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "refusal-dose-1",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "021c761ddd174c7b21cd165ec65d436353c4f59fd522e4534ff97d6e0ce46062",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "refusal-dose-1",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "2bec0c678a162829f2a550c3e7b63416806a752225577bb790e167e4f2eee83f",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "refusal-dose-1",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "0a484efc4f5273e1119ee94a477a36079423eb5c487c3c61016d5ddb2605da46",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "refusal-dose-1",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "021c761ddd174c7b21cd165ec65d436353c4f59fd522e4534ff97d6e0ce46062",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "refusal-dose-1",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "2bec0c678a162829f2a550c3e7b63416806a752225577bb790e167e4f2eee83f",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "refusal-dose-1",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "0a484efc4f5273e1119ee94a477a36079423eb5c487c3c61016d5ddb2605da46",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "refusal-dose-1",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "021c761ddd174c7b21cd165ec65d436353c4f59fd522e4534ff97d6e0ce46062",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "refusal-dose-2",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "083a829e557d1e59978f4fb890c09226087ee512540d95e81d2dd89b550e4e24",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "refusal-dose-2",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "23a01f75982467a30c807b66537f8af91527d919a773a342eede3c975c3e7e5f",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "refusal-dose-2",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "2e12987522d6f5ede0ea8f0137e2bfbae8eb2268121f239f97bf17167614734d",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "refusal-dose-2",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "083a829e557d1e59978f4fb890c09226087ee512540d95e81d2dd89b550e4e24",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "refusal-dose-2",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "23a01f75982467a30c807b66537f8af91527d919a773a342eede3c975c3e7e5f",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "refusal-dose-2",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "2e12987522d6f5ede0ea8f0137e2bfbae8eb2268121f239f97bf17167614734d",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "refusal-dose-2",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "083a829e557d1e59978f4fb890c09226087ee512540d95e81d2dd89b550e4e24",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "refusal-dose-2",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "23a01f75982467a30c807b66537f8af91527d919a773a342eede3c975c3e7e5f",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "refusal-dose-2",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "2e12987522d6f5ede0ea8f0137e2bfbae8eb2268121f239f97bf17167614734d",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "refusal-dose-2",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "083a829e557d1e59978f4fb890c09226087ee512540d95e81d2dd89b550e4e24",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "refusal-dose-2",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "23a01f75982467a30c807b66537f8af91527d919a773a342eede3c975c3e7e5f",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "refusal-dose-2",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "2e12987522d6f5ede0ea8f0137e2bfbae8eb2268121f239f97bf17167614734d",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "refusal-dose-4",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "8b87e80835b4a0111cf7ca93dd6321629f5cf4ab0f99108f22d6787a293f1713",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "refusal-dose-4",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "eb6b68cab952b9ee08231ebd6436b777e66c4e82255d6ba72469036a409098e6",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "refusal-dose-4",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "668d937a4c613394130400524631cf29da897f7eace060b6d73c0538f94e3da3",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "refusal-dose-4",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "8b87e80835b4a0111cf7ca93dd6321629f5cf4ab0f99108f22d6787a293f1713",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "refusal-dose-4",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "eb6b68cab952b9ee08231ebd6436b777e66c4e82255d6ba72469036a409098e6",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "refusal-dose-4",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "668d937a4c613394130400524631cf29da897f7eace060b6d73c0538f94e3da3",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "refusal-dose-4",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "8b87e80835b4a0111cf7ca93dd6321629f5cf4ab0f99108f22d6787a293f1713",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "refusal-dose-4",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "eb6b68cab952b9ee08231ebd6436b777e66c4e82255d6ba72469036a409098e6",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "refusal-dose-4",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "668d937a4c613394130400524631cf29da897f7eace060b6d73c0538f94e3da3",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "refusal-dose-4",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "8b87e80835b4a0111cf7ca93dd6321629f5cf4ab0f99108f22d6787a293f1713",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "refusal-dose-4",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "eb6b68cab952b9ee08231ebd6436b777e66c4e82255d6ba72469036a409098e6",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "refusal-dose-4",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "668d937a4c613394130400524631cf29da897f7eace060b6d73c0538f94e3da3",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolution-absent",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "c1e7c8482e2ed39dc25b54ad40af5c6370c3b471ec443fdf048b609fca3f554e",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "resolution-absent",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "f410d937e262228008ff4ceafecdec904a180ef0e6256784b94cbf6e5b21ce52",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "resolution-absent",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "60debb19af9b5312b01e80a85cc400adf4fa9251fc6851fbcfd701474db61fd7",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "resolution-absent",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "c1e7c8482e2ed39dc25b54ad40af5c6370c3b471ec443fdf048b609fca3f554e",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "resolution-absent",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "f410d937e262228008ff4ceafecdec904a180ef0e6256784b94cbf6e5b21ce52",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "resolution-absent",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "60debb19af9b5312b01e80a85cc400adf4fa9251fc6851fbcfd701474db61fd7",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "resolution-absent",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "c1e7c8482e2ed39dc25b54ad40af5c6370c3b471ec443fdf048b609fca3f554e",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolution-absent",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "f410d937e262228008ff4ceafecdec904a180ef0e6256784b94cbf6e5b21ce52",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolution-absent",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "60debb19af9b5312b01e80a85cc400adf4fa9251fc6851fbcfd701474db61fd7",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolution-absent",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "c1e7c8482e2ed39dc25b54ad40af5c6370c3b471ec443fdf048b609fca3f554e",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolution-absent",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "f410d937e262228008ff4ceafecdec904a180ef0e6256784b94cbf6e5b21ce52",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolution-absent",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "60debb19af9b5312b01e80a85cc400adf4fa9251fc6851fbcfd701474db61fd7",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolution-delayed",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "3b6c84b18266c4d3886038406e1c88a0910c59a3dbf15367b06d9cc2f84e09a9",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "resolution-delayed",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "bc7db7e4617b2a1638d96aaa0dcc10046866466e085534b7dc4615218d1b9c9f",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "resolution-delayed",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "8b34d33ba683691a504d9e363fd30e2611a057bcccb7cf0a76985bb43cb25a3e",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "resolution-delayed",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "3b6c84b18266c4d3886038406e1c88a0910c59a3dbf15367b06d9cc2f84e09a9",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "resolution-delayed",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "bc7db7e4617b2a1638d96aaa0dcc10046866466e085534b7dc4615218d1b9c9f",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "resolution-delayed",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "8b34d33ba683691a504d9e363fd30e2611a057bcccb7cf0a76985bb43cb25a3e",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "resolution-delayed",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "3b6c84b18266c4d3886038406e1c88a0910c59a3dbf15367b06d9cc2f84e09a9",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolution-delayed",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "bc7db7e4617b2a1638d96aaa0dcc10046866466e085534b7dc4615218d1b9c9f",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolution-delayed",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "8b34d33ba683691a504d9e363fd30e2611a057bcccb7cf0a76985bb43cb25a3e",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolution-delayed",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "3b6c84b18266c4d3886038406e1c88a0910c59a3dbf15367b06d9cc2f84e09a9",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolution-delayed",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "bc7db7e4617b2a1638d96aaa0dcc10046866466e085534b7dc4615218d1b9c9f",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolution-delayed",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "8b34d33ba683691a504d9e363fd30e2611a057bcccb7cf0a76985bb43cb25a3e",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolution-immediate",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "d0ef42c445e10f6e88cca41dda4f19d96bde77e28b8f3492044a5c2de43d5840",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "resolution-immediate",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "be03d02a850434f2c47683fc58c9d2c39f7dab1fdbd53d430f5a648e54bbdf3e",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "resolution-immediate",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "27128ddc9dd163518847092e8b3b041b74afdf6b6448fa2a51156eaedffdddc7",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "resolution-immediate",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "d0ef42c445e10f6e88cca41dda4f19d96bde77e28b8f3492044a5c2de43d5840",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "resolution-immediate",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "be03d02a850434f2c47683fc58c9d2c39f7dab1fdbd53d430f5a648e54bbdf3e",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "resolution-immediate",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "27128ddc9dd163518847092e8b3b041b74afdf6b6448fa2a51156eaedffdddc7",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "resolution-immediate",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "d0ef42c445e10f6e88cca41dda4f19d96bde77e28b8f3492044a5c2de43d5840",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolution-immediate",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "be03d02a850434f2c47683fc58c9d2c39f7dab1fdbd53d430f5a648e54bbdf3e",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolution-immediate",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "27128ddc9dd163518847092e8b3b041b74afdf6b6448fa2a51156eaedffdddc7",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolution-immediate",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "d0ef42c445e10f6e88cca41dda4f19d96bde77e28b8f3492044a5c2de43d5840",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolution-immediate",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "be03d02a850434f2c47683fc58c9d2c39f7dab1fdbd53d430f5a648e54bbdf3e",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolution-immediate",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "27128ddc9dd163518847092e8b3b041b74afdf6b6448fa2a51156eaedffdddc7",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolution-preemptive",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "22661176d7dc2e59d281b0aebbb794271bf3443ec0c7b2c1f1355d3d40781e70",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "resolution-preemptive",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "be03d02a850434f2c47683fc58c9d2c39f7dab1fdbd53d430f5a648e54bbdf3e",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "resolution-preemptive",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "27128ddc9dd163518847092e8b3b041b74afdf6b6448fa2a51156eaedffdddc7",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "case_id": "resolution-preemptive",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "22661176d7dc2e59d281b0aebbb794271bf3443ec0c7b2c1f1355d3d40781e70",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "resolution-preemptive",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "be03d02a850434f2c47683fc58c9d2c39f7dab1fdbd53d430f5a648e54bbdf3e",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "resolution-preemptive",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "27128ddc9dd163518847092e8b3b041b74afdf6b6448fa2a51156eaedffdddc7",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "case_id": "resolution-preemptive",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "22661176d7dc2e59d281b0aebbb794271bf3443ec0c7b2c1f1355d3d40781e70",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolution-preemptive",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "be03d02a850434f2c47683fc58c9d2c39f7dab1fdbd53d430f5a648e54bbdf3e",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolution-preemptive",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "27128ddc9dd163518847092e8b3b041b74afdf6b6448fa2a51156eaedffdddc7",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolution-preemptive",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "22661176d7dc2e59d281b0aebbb794271bf3443ec0c7b2c1f1355d3d40781e70",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolution-preemptive",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "be03d02a850434f2c47683fc58c9d2c39f7dab1fdbd53d430f5a648e54bbdf3e",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolution-preemptive",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "27128ddc9dd163518847092e8b3b041b74afdf6b6448fa2a51156eaedffdddc7",
+      "support_policy": "unit-turn"
+    }
+  ],
+  "support_stability": [
+    {
+      "expected_direction": "gt",
+      "left_case": "refusal-dose-4",
+      "left_value": 8.465735902799727,
+      "pair_id": "refusal-dose",
+      "readout": "ucns.unit-turn.B.cell-detail",
+      "right_case": "refusal-dose-1",
+      "right_value": 3.386294361119891,
+      "status": "preserved",
+      "support_policy": "unit-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "refusal-dose-4",
+      "left_value": 11.80239476332431,
+      "pair_id": "refusal-dose",
+      "readout": "ucns.token-turn.B.cell-detail",
+      "right_case": "refusal-dose-1",
+      "right_value": 4.70805020110221,
+      "status": "preserved",
+      "support_policy": "token-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "refusal-dose-4",
+      "left_value": 10.087596335232384,
+      "pair_id": "refusal-dose",
+      "readout": "ucns.occurrence-turn.B.cell-detail",
+      "right_case": "refusal-dose-1",
+      "right_value": 3.791759469228055,
+      "status": "preserved",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "refusal-dose-4",
+      "left_value": 10.087596335232384,
+      "pair_id": "refusal-dose",
+      "readout": "ucns.dissonance-turn.B.cell-detail",
+      "right_case": "refusal-dose-1",
+      "right_value": 3.791759469228055,
+      "status": "preserved",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-known-high",
+      "left_value": 3.386294361119891,
+      "pair_id": "constraint-known",
+      "readout": "ucns.unit-turn.B.cell-detail",
+      "right_case": "constraint-known-low",
+      "right_value": 3.386294361119891,
+      "status": "collapsed-or-reversed",
+      "support_policy": "unit-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-known-high",
+      "left_value": 5.295836866004329,
+      "pair_id": "constraint-known",
+      "readout": "ucns.token-turn.B.cell-detail",
+      "right_case": "constraint-known-low",
+      "right_value": 5.688879454113936,
+      "status": "collapsed-or-reversed",
+      "support_policy": "token-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-known-high",
+      "left_value": 4.70805020110221,
+      "pair_id": "constraint-known",
+      "readout": "ucns.occurrence-turn.B.cell-detail",
+      "right_case": "constraint-known-low",
+      "right_value": 3.386294361119891,
+      "status": "preserved",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-known-high",
+      "left_value": 4.70805020110221,
+      "pair_id": "constraint-known",
+      "readout": "ucns.dissonance-turn.B.cell-detail",
+      "right_case": "constraint-known-low",
+      "right_value": 3.386294361119891,
+      "status": "preserved",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-option-high",
+      "left_value": 3.386294361119891,
+      "pair_id": "constraint-option",
+      "readout": "ucns.unit-turn.B.cell-detail",
+      "right_case": "constraint-option-low",
+      "right_value": 3.386294361119891,
+      "status": "collapsed-or-reversed",
+      "support_policy": "unit-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-option-high",
+      "left_value": 5.58351893845611,
+      "pair_id": "constraint-option",
+      "readout": "ucns.token-turn.B.cell-detail",
+      "right_case": "constraint-option-low",
+      "right_value": 5.555348061489413,
+      "status": "preserved",
+      "support_policy": "token-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-option-high",
+      "left_value": 4.484906649788,
+      "pair_id": "constraint-option",
+      "readout": "ucns.occurrence-turn.B.cell-detail",
+      "right_case": "constraint-option-low",
+      "right_value": 3.386294361119891,
+      "status": "preserved",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-option-high",
+      "left_value": 4.484906649788,
+      "pair_id": "constraint-option",
+      "readout": "ucns.dissonance-turn.B.cell-detail",
+      "right_case": "constraint-option-low",
+      "right_value": 3.386294361119891,
+      "status": "preserved",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-consequence-high",
+      "left_value": 3.386294361119891,
+      "pair_id": "constraint-consequence",
+      "readout": "ucns.unit-turn.B.cell-detail",
+      "right_case": "constraint-consequence-low",
+      "right_value": 3.386294361119891,
+      "status": "collapsed-or-reversed",
+      "support_policy": "unit-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-consequence-high",
+      "left_value": 5.465735902799726,
+      "pair_id": "constraint-consequence",
+      "readout": "ucns.token-turn.B.cell-detail",
+      "right_case": "constraint-consequence-low",
+      "right_value": 5.555348061489413,
+      "status": "collapsed-or-reversed",
+      "support_policy": "token-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-consequence-high",
+      "left_value": 4.484906649788,
+      "pair_id": "constraint-consequence",
+      "readout": "ucns.occurrence-turn.B.cell-detail",
+      "right_case": "constraint-consequence-low",
+      "right_value": 3.791759469228055,
+      "status": "preserved",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-consequence-high",
+      "left_value": 4.484906649788,
+      "pair_id": "constraint-consequence",
+      "readout": "ucns.dissonance-turn.B.cell-detail",
+      "right_case": "constraint-consequence-low",
+      "right_value": 3.791759469228055,
+      "status": "preserved",
+      "support_policy": "dissonance-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-authority-high",
+      "left_value": 3.386294361119891,
+      "pair_id": "constraint-authority",
+      "readout": "ucns.unit-turn.B.cell-detail",
+      "right_case": "constraint-authority-low",
+      "right_value": 3.386294361119891,
+      "status": "collapsed-or-reversed",
+      "support_policy": "unit-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-authority-high",
+      "left_value": 4.8903717578961645,
+      "pair_id": "constraint-authority",
+      "readout": "ucns.token-turn.B.cell-detail",
+      "right_case": "constraint-authority-low",
+      "right_value": 4.772588722239782,
+      "status": "preserved",
+      "support_policy": "token-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-authority-high",
+      "left_value": 4.197224577336219,
+      "pair_id": "constraint-authority",
+      "readout": "ucns.occurrence-turn.B.cell-detail",
+      "right_case": "constraint-authority-low",
+      "right_value": 3.791759469228055,
+      "status": "preserved",
+      "support_policy": "occurrence-turn"
+    },
+    {
+      "expected_direction": "gt",
+      "left_case": "constraint-authority-high",
+      "left_value": 4.197224577336219,
+      "pair_id": "constraint-authority",
+      "readout": "ucns.dissonance-turn.B.cell-detail",
+      "right_case": "constraint-authority-low",
+      "right_value": 3.386294361119891,
+      "status": "preserved",
+      "support_policy": "dissonance-turn"
+    }
+  ],
+  "ucns_commit": "5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+  "ucns_identity_verified": true,
+  "ucns_source_manifest": "48f3607869cd4f713fd0bc28d32eac9d96b9fbd13e70f20a21dff7dd6a012f30"
+}

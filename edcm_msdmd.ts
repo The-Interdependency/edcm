@@ -1035,6 +1035,30 @@ export default defineMsdmdCollection({
       "id": "edcm_ucns_edcm_experiments"
     },
     {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_phrase_counts, _v2_turn_signals, _build_v2_envelope, _candidate_values_for_case, _dose_curve_findings, _phrase_coverage_findings, _latency_findings, _support_findings",
+        "module_kind": "instrument",
+        "module_name": "ucns_edcm_experiments_v2",
+        "network_boundary": "none; exact UCNS checkout and installed package are verified locally",
+        "owner": "Erin Spencer",
+        "public_surface": "V2ExperimentReport, DoseCurveFinding, PhraseCoverageFinding, LatencyFinding, SupportStabilityFinding, occurrence_coverage_readout, build_v2_program, run_v2_experiments, main",
+        "requires": "edcm_ucns_edcm_experiments, edcmbone_parser_turns_rounds, edcmbone_metrics_compute",
+        "rollback": "remove v0.2 module, workflow calls, and result; v0.1 and frozen baseline remain unchanged",
+        "rollout": "explicit versioned research program; v0.1 evidence remains immutable and no canon selection is made",
+        "since": "2026-07-21",
+        "storage_boundary": "writes only caller-selected report path",
+        "summary": "expands the joint UCNS-EDCM falsifier program across refusal dose, constraint paraphrase coverage, resolution latency, and explicit support-assignment stability",
+        "tests": "tests/test_ucns_edcm_experiments_v2.py",
+        "unresolved": "independent paraphrase corpus, external outcome labels, sealed holdout custody, replication, and joint canon decision authority",
+        "user_data_boundary": "fixed synthetic development and holdout transcripts only"
+      },
+      "file": "edcm/ucns_edcm_experiments_v2.py",
+      "id": "edcm_ucns_edcm_experiments_v2"
+    },
+    {
       "block": "BOUNDARIES",
       "fields": {
         "admin_only": "false",
@@ -1261,6 +1285,45 @@ export default defineMsdmdCollection({
       },
       "file": "tests/test_ucns_edcm_experiments.py",
       "id": "check_ucns_edcm_program_structure"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_occurrence_coverage_candidate_invariants",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_ucns_edcm_experiments_v2",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_ucns_edcm_experiments_v2.py",
+      "id": "check_occurrence_coverage_candidate"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v2_joint_report_preserves_prior_evidence_and_no_canon",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_ucns_edcm_experiments_v2",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_ucns_edcm_experiments_v2.py",
+      "id": "check_ucns_edcm_v2_joint_report"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v2_program_structure",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_ucns_edcm_experiments_v2",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_ucns_edcm_experiments_v2.py",
+      "id": "check_ucns_edcm_v2_program"
     },
     {
       "block": "CHECKS",
@@ -1542,6 +1605,27 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
+      "from": "check_occurrence_coverage_candidate",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_occurrence_coverage_candidate",
+      "to": "self::test_occurrence_coverage_candidate_invariants"
+    },
+    {
+      "from": "check_occurrence_coverage_candidate",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_occurrence_coverage_candidate",
+      "to": "edcm_ucns_edcm_experiments_v2"
+    },
+    {
+      "from": "check_occurrence_coverage_candidate",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_occurrence_coverage_candidate",
+      "to": "python3"
+    },
+    {
       "from": "check_ucns_edcm_program_structure",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -1560,6 +1644,48 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "CHECKS",
       "source_id": "check_ucns_edcm_program_structure",
+      "to": "python3"
+    },
+    {
+      "from": "check_ucns_edcm_v2_joint_report",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_ucns_edcm_v2_joint_report",
+      "to": "self::test_v2_joint_report_preserves_prior_evidence_and_no_canon"
+    },
+    {
+      "from": "check_ucns_edcm_v2_joint_report",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_ucns_edcm_v2_joint_report",
+      "to": "edcm_ucns_edcm_experiments_v2"
+    },
+    {
+      "from": "check_ucns_edcm_v2_joint_report",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_ucns_edcm_v2_joint_report",
+      "to": "python3"
+    },
+    {
+      "from": "check_ucns_edcm_v2_program",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_ucns_edcm_v2_program",
+      "to": "self::test_v2_program_structure"
+    },
+    {
+      "from": "check_ucns_edcm_v2_program",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_ucns_edcm_v2_program",
+      "to": "edcm_ucns_edcm_experiments_v2"
+    },
+    {
+      "from": "check_ucns_edcm_v2_program",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_ucns_edcm_v2_program",
       "to": "python3"
     },
     {
@@ -2106,6 +2232,34 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_ucns_edcm_experiments",
+      "to": "edcmbone_parser_turns_rounds"
+    },
+    {
+      "from": "edcm_ucns_edcm_experiments_v2",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_edcm_experiments_v2",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_ucns_edcm_experiments_v2",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_edcm_experiments_v2",
+      "to": "edcm_ucns_edcm_experiments"
+    },
+    {
+      "from": "edcm_ucns_edcm_experiments_v2",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_edcm_experiments_v2",
+      "to": "edcmbone_metrics_compute"
+    },
+    {
+      "from": "edcm_ucns_edcm_experiments_v2",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_edcm_experiments_v2",
       "to": "edcmbone_parser_turns_rounds"
     },
     {
