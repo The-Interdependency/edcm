@@ -23,6 +23,29 @@ Interpretation:
 
 - [`../docs/experiments/2026-07-21-initial-ucns-edcm-findings.md`](../docs/experiments/2026-07-21-initial-ucns-edcm-findings.md)
 
-The report records the verified UCNS Git commit, a deterministic manifest of the UCNS package bytes, all structural signatures, candidate readouts, relation verdicts, policy-preservation findings, disagreements, and `canon_selection = null`.
+## UCNS–EDCM v0.2.0
+
+```text
+program:       edcm.ucns-edcm-experiment-report/0.2.0
+EDCM evidence: d734dfb047e0e2b0b2df70141db5ddaa150e8fe9
+UCNS source:   5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed
+prior report:  4c8bd8496ec549c1073320bafc995c7c65eaf81c9385e4dc6fff7794ed3b1124
+report digest: 85d6a9c7504a7e9b7fdb21e0dec5ff8e588d12e9d893f1a22854c1ae2ebbf0e4
+supported:     23
+falsified:     6
+errors:        0
+canon:         not selected
+```
+
+Evidence file:
+
+- [`results/2026-07-21-ucns-edcm-v0.2.0.json`](results/2026-07-21-ucns-edcm-v0.2.0.json)
+
+Design and interpretation:
+
+- [`../docs/experiments/2026-07-21-ucns-edcm-v0.2-design.md`](../docs/experiments/2026-07-21-ucns-edcm-v0.2-design.md)
+- [`../docs/experiments/2026-07-21-ucns-edcm-v0.2-findings.md`](../docs/experiments/2026-07-21-ucns-edcm-v0.2-findings.md)
+
+The reports record verified UCNS Git and package-byte identities, all candidate readouts, every structural signature, supported/falsified/errored relations, and `canon_selection = null`.
 
 Do not edit a result file in place. A changed corpus, candidate, policy, expected relation, comparison rule, or report schema requires a new versioned result.
