@@ -50,16 +50,17 @@ jobs:
         working-directory: edcm
         run: python tools/check_metadata_contracts.py
 
-      - name: Run EDCM-only and joint experiment tests
+      - name: Run all joint experiment tests
         working-directory: edcm
         env:
           UCNS_SOURCE_ROOT: ../ucns
         run: |
           python -m pytest -q \
             tests/test_ucns_edcm_experiments.py \
-            tests/test_ucns_edcm_experiments_v2.py
+            tests/test_ucns_edcm_experiments_v2.py \
+            tests/test_ucns_edcm_experiments_v3.py
 
-      - name: Run v0.1 and v0.2 twice
+      - name: Run v0.1, v0.2, and v0.3 twice
         working-directory: edcm
         run: |
           mkdir -p artifacts
@@ -87,13 +88,29 @@ jobs:
             --output artifacts/ucns-edcm-v0.2.0-repeat.json
           diff -u artifacts/ucns-edcm-v0.2.0.json artifacts/ucns-edcm-v0.2.0-repeat.json
 
+          python -m edcm.ucns_edcm_experiments_v3 \
+            --edcm-commit "${GITHUB_SHA}" \
+            --ucns-commit 5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed \
+            --ucns-source-root ../ucns \
+            --output artifacts/ucns-edcm-v0.3.0.json
+          python -m edcm.ucns_edcm_experiments_v3 \
+            --edcm-commit "${GITHUB_SHA}" \
+            --ucns-commit 5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed \
+            --ucns-source-root ../ucns \
+            --output artifacts/ucns-edcm-v0.3.0-repeat.json
+          diff -u artifacts/ucns-edcm-v0.3.0.json artifacts/ucns-edcm-v0.3.0-repeat.json
+
       - name: Summarize experiment reports
         working-directory: edcm
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          for name in ("ucns-edcm-v0.1.0.json", "ucns-edcm-v0.2.0.json"):
+          for name in (
+              "ucns-edcm-v0.1.0.json",
+              "ucns-edcm-v0.2.0.json",
+              "ucns-edcm-v0.3.0.json",
+          ):
               report = json.loads((Path("artifacts") / name).read_text())
               verdicts = report["relation_verdicts"]
               summary = {
@@ -119,4 +136,6 @@ jobs:
             edcm/artifacts/ucns-edcm-v0.1.0-repeat.json
             edcm/artifacts/ucns-edcm-v0.2.0.json
             edcm/artifacts/ucns-edcm-v0.2.0-repeat.json
+            edcm/artifacts/ucns-edcm-v0.3.0.json
+            edcm/artifacts/ucns-edcm-v0.3.0-repeat.json
           if-no-files-found: error
