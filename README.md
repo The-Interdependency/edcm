@@ -123,7 +123,7 @@ METAPAT integration remains optional:
 python -m pip install -e .[dev,metapat]
 ```
 
-The `full-stack` extra installs the exact reviewed METAPAT and UCNS research commits. Package availability alone still attaches no evidence.
+The historical `full-stack` compatibility extra remains METAPAT-only. Use the separate `ucns-experiments` extra for the pinned joint research stack. This prevents package availability from activating the historical UCNS adapter path, and package availability alone still attaches no evidence.
 
 ## Integrity gate
 
