@@ -1087,7 +1087,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_candidate_targets, _apply_edges, _graph_views, _build_ucns_graph_envelope, _resolution_readout, _pair_findings",
+        "internal_surface": "_candidate_targets, _apply_edges, _graph_view, _build_ucns_graph_envelope, _resolution_values, _pair_findings",
         "module_kind": "instrument",
         "module_name": "ucns_edcm_experiments_v4",
         "network_boundary": "none; exact UCNS checkout and installed package are verified locally",
