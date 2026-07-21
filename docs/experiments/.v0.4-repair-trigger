@@ -1,1 +1,1 @@
-Trigger the validated repair commit after the commit launcher exists.
+Retrigger the validated repair with verifier checkout excluded from staging.
