@@ -18,20 +18,21 @@ jobs:
         with:
           ref: agent/ucns-edcm-experiment-first
           fetch-depth: 0
+          path: edcm
 
       - name: Check out pinned canonical skill-lib
         uses: actions/checkout@v4
         with:
           repository: The-Interdependency/skill-lib
           ref: d0036c6c3a449f5a1213e3289dceb1c43263cb52
-          path: /tmp/skill-lib
+          path: skill-lib
 
       - name: Check out exact UCNS experiment authority
         uses: actions/checkout@v4
         with:
           repository: The-Interdependency/ucns
           ref: 5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed
-          path: /tmp/ucns
+          path: ucns
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -39,13 +40,14 @@ jobs:
           python-version: "3.12"
 
       - name: Generate tracked metadata and reproducible report
+        working-directory: edcm
         run: |
-          PYTHONPATH=/tmp/skill-lib python /tmp/skill-lib/msdmd/collect.py \
+          PYTHONPATH=../skill-lib python ../skill-lib/msdmd/collect.py \
             --root . \
             --repo The-Interdependency/edcm \
             --out edcm_msdmd.ts
           python -m pip install --upgrade pip
-          python -m pip install /tmp/ucns
+          python -m pip install ../ucns
           python -m pip install -e .[dev]
           mkdir -p experiments/results
           python -m edcm.ucns_edcm_experiments \
@@ -60,6 +62,7 @@ jobs:
           rm .github/workflows/materialize-edcm-msdmd-once.yml
 
       - name: Commit exact generated results and remove materializer
+        working-directory: edcm
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
