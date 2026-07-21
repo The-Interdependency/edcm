@@ -25,6 +25,8 @@
 # === END CHECKS ===
 
 import json
+import os
+from pathlib import Path
 
 import pytest
 
@@ -42,6 +44,13 @@ from edcm.ucns_edcm_experiments import (
 def _case(case_id):
     cases, _ = build_default_program()
     return next(case for case in cases if case.case_id == case_id)
+
+
+def _ucns_source_root() -> Path:
+    value = os.environ.get("UCNS_SOURCE_ROOT")
+    if not value:
+        pytest.skip("joint source-identity test requires UCNS_SOURCE_ROOT")
+    return Path(value)
 
 
 def test_default_program_structure() -> None:
@@ -99,16 +108,24 @@ def test_baseline_candidate_is_readable_but_not_assumed_correct() -> None:
 
 def test_joint_runner_preserves_no_canon(tmp_path) -> None:
     pytest.importorskip("ucns")
+    source_root = _ucns_source_root()
     report = run_default_experiments(
         edcm_commit="test-edcm-commit",
         ucns_commit=EXPECTED_UCNS_COMMIT,
+        ucns_source_root=source_root,
     )
     assert report.canon_selection is None
     assert report.ucns_commit == EXPECTED_UCNS_COMMIT
+    assert report.ucns_identity_verified
+    assert report.ucns_source_manifest
     assert report.edcm_commit == "test-edcm-commit"
     assert report.readouts
+    assert report.structural_signatures
     assert report.relation_verdicts
-    assert all(verdict.status in {"supported", "falsified", "error"} for verdict in report.relation_verdicts)
+    assert all(
+        verdict.status in {"supported", "falsified", "error"}
+        for verdict in report.relation_verdicts
+    )
 
     transparent = {
         verdict.relation_id: verdict.status for verdict in report.relation_verdicts
@@ -140,6 +157,25 @@ def test_joint_runner_preserves_no_canon(tmp_path) -> None:
     assert multiplicity_set_findings[0].status == "incompatible-for-readout"
     assert "multiplicity" in multiplicity_set_findings[0].information_loss
 
+    order_signatures = [
+        item
+        for item in report.structural_signatures
+        if item.case_id in {"order-resolution-last", "order-refusal-last"}
+        and item.support_policy == "unit-turn"
+    ]
+    assert len(order_signatures) == 6
+    by_case_policy = {
+        (item.case_id, item.policy_name): item.signature for item in order_signatures
+    }
+    assert (
+        by_case_policy[("order-resolution-last", "ordered-sequence")]
+        != by_case_policy[("order-refusal-last", "ordered-sequence")]
+    )
+    assert (
+        by_case_policy[("order-resolution-last", "set")]
+        == by_case_policy[("order-refusal-last", "set")]
+    )
+
     output = tmp_path / "report.json"
     assert main(
         [
@@ -149,15 +185,23 @@ def test_joint_runner_preserves_no_canon(tmp_path) -> None:
             "test-edcm-commit",
             "--ucns-commit",
             EXPECTED_UCNS_COMMIT,
+            "--ucns-source-root",
+            str(source_root),
         ]
     ) == 0
     payload = json.loads(output.read_text(encoding="utf-8"))
     assert payload["canon_selection"] is None
+    assert payload["ucns_identity_verified"] is True
+    assert payload["structural_signatures"]
     assert payload["report_digest"]
     assert payload["schema"].startswith("edcm.ucns-edcm-experiment-report/")
 
 
 def test_runner_rejects_wrong_ucns_identity() -> None:
     pytest.importorskip("ucns")
+    source_root = _ucns_source_root()
     with pytest.raises(ValueError):
-        run_default_experiments(ucns_commit="wrong")
+        run_default_experiments(
+            ucns_commit="wrong",
+            ucns_source_root=source_root,
+        )
