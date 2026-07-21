@@ -1,245 +1,170 @@
-# edcm
+# EDCM
 
-EDCM is the maintained, provenance-bearing Energy–Dissonance Circuit Model
-package.
+EDCM is the Energy–Dissonance Circuit Model research and measurement repository.
 
-It consolidates:
+The repository now has two deliberately separate surfaces:
 
-- [`The-Interdependency/edcmbone`](https://github.com/The-Interdependency/edcmbone), the provenance source for structural measurement work; and
-- [`erinepshovel-code/EDCM`](https://github.com/erinepshovel-code/EDCM), the earlier application lineage.
+1. **Frozen maintained baseline:** `edcm/measurement/`, preserved as candidate `edcm-measurement-v1` with byte-checked canon and provenance.
+2. **Experiment-first joint program:** reproducible UCNS–EDCM experiments that determine which structural and measurement candidates deserve later canon review.
 
-`edcm/measurement/` is the canonical maintained measurement implementation.
-The pinned edcmbone source commit remains machine-readable provenance; an
-installed `edcmbone` package does not silently replace EDCM.
+The baseline is executable. It is not automatically the final UCNS–EDCM canon.
 
-## Current UCNS boundary
+## UCNS–EDCM canon
 
-`The-Interdependency/ucns` reset its public root on 2026-07-19 after finding that
-the former object type omitted the intrinsic Möbius twist/seam, hidden zero, and
-720-degree return required by UCNS canon.
+The joint canon is reciprocal rather than inherited:
 
-UCNS currently publishes no root implementation and no current producer schema.
-EDCM therefore has no managed UCNS dependency and must represent UCNS geometry,
-factorization, certification, and theorem evidence as typed `NA`.
+```text
+EDCM proposes observable distinctions and falsifiable readouts.
+UCNS proposes structural policies and candidate instruments.
+Experiments test both directions.
+A separate evidence-bearing decision may later select canon.
+```
 
-Do not install or pin an archived pre-reset UCNS commit as current authority.
-Surface-name compatibility is not object-definition compatibility.
+Neither side transfers status automatically:
 
-See [`docs/ucns-adapter.md`](docs/ucns-adapter.md).
+```text
+UCNS proof status -> EDCM empirical validity: false
+EDCM empirical fit -> UCNS proof status: false
+candidate registration -> canon: false
+passing development fixtures -> canon: false
+NA -> 0: false
+```
 
-## Install, verify, test, and build
+See [`CANON.md`](CANON.md) and
+[`docs/UCNS_EDCM_EXPERIMENT_PROGRAM.md`](docs/UCNS_EDCM_EXPERIMENT_PROGRAM.md).
 
-EDCM requires Python 3.11 or newer. The base package has no third-party runtime
-dependencies.
+## First joint experiment
+
+The initial fixed corpus pressures four load-bearing distinctions:
+
+- order;
+- multiplicity;
+- constraint pressure;
+- resolution timing.
+
+It compares:
+
+- the maintained EDCM baseline;
+- a transparent sequence-sensitive EDCM candidate;
+- unit-, token-, and pressure-weighted UCNS cell encodings;
+- UCNS ordered, multiset, and set structural views;
+- noncanonical UCNS product-character and faithful-breadth candidate families.
+
+The experiment records supported, falsified, and errored hypotheses. A falsified hypothesis is valid research evidence and does not fail the build merely because a preferred candidate lost.
+
+### Run locally
+
+The base package remains dependency-free. Joint experiments are opt-in and pin the exact reviewed UCNS commit.
+
+```bash
+python -m pip install -e .[dev,ucns-experiments]
+python -m pytest -q tests/test_ucns_edcm_experiments.py
+python -m edcm.ucns_edcm_experiments \
+  --output artifacts/ucns-edcm-report.json
+```
+
+The dedicated workflow checks out UCNS at:
+
+```text
+The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed
+```
+
+It runs the experiment twice and requires byte-identical reports before uploading the evidence artifact.
+
+## Evidence states
+
+The following remain distinct:
+
+1. represented evidence;
+2. candidate-measured evidence;
+3. experiment-supported evidence;
+4. canonically measured evidence.
+
+The repository currently supports the first three. The experiment report always contains:
+
+```text
+canon_selection = null
+```
+
+## Frozen maintained baseline
+
+`edcm/measurement/` consolidates the reviewed structural-measurement lineage from:
+
+- `The-Interdependency/edcmbone`; and
+- the earlier `erinepshovel-code/EDCM` application lineage.
+
+It contains:
+
+- frozen measurement canon data;
+- deterministic transcript parsing;
+- the eleven-component round vector;
+- circuit-state recurrence;
+- projection and risk surfaces;
+- provenance and integrity gates.
+
+Its maintained identity is useful as a baseline candidate. Integrity means the implementation did not drift; it does not mean the readouts are empirically validated.
+
+## Install and validate the baseline
+
+EDCM requires Python 3.11 or newer.
 
 ```bash
 python -m pip install -e .[dev]
 python -m edcm.integrity
 python -m pytest -q
+python tools/check_metadata_contracts.py
 python -m build
 python -m twine check dist/*
 ```
 
-METAPAT integration is optional and pinned to its reviewed producer commit:
+METAPAT integration remains optional:
 
 ```bash
-python -m pip install -e ".[dev,metapat]"
+python -m pip install -e .[dev,metapat]
 ```
 
-The `full-stack` extra currently installs METAPAT only. UCNS must not return to
-that extra until a new twist-bearing producer contract and migration are
-published.
-
-```bash
-python -m pip install -e ".[dev,full-stack]"
-```
-
-Base installation does not imply that METAPAT or UCNS ran. Frozen measurement
-canon JSON and `py.typed` are included in the wheel.
+The `full-stack` extra installs the exact reviewed METAPAT and UCNS research commits. Package availability alone still attaches no evidence.
 
 ## Integrity gate
 
-`python -m edcm.integrity` fails when any of these drift:
+`python -m edcm.integrity` checks the frozen baseline:
 
-- the complete set or exact bytes of frozen `*_v1.json` canon files;
-- the machine-readable measurement source-of-truth and compatibility policy;
-- the no-fork identity between `edcm.measurement.metrics` and canonical EDCM
-  orthogonality classes.
+- complete and exact `*_v1.json` canon bytes;
+- measurement authority and compatibility policy;
+- orthogonality-class no-fork identity;
+- source and wheel behavior.
 
-The gate runs from both the editable source install and a clean installed wheel.
-See [`docs/integrity-gates.md`](docs/integrity-gates.md).
-
-```python
-import edcm
-
-assert edcm.run_integrity_gate().passed
-```
-
-A legitimate canon change requires a new versioned file and migration record.
-Do not update pinned identities merely to silence continuous integration.
-
-## Maintained measurement authority
-
-```text
-repo:   The-Interdependency/edcm
-path:   edcm/measurement/
-policy: canonical-maintained-edcm-v1
-```
-
-Machine-readable authority is available as:
-
-```python
-from edcm.measurement import MEASUREMENT_AUTHORITY
-
-assert MEASUREMENT_AUTHORITY["canonical"] is True
-assert MEASUREMENT_AUTHORITY["runtime_override_by_edcmbone"] is False
-assert MEASUREMENT_AUTHORITY["ucns_theorem_status_transfer"] is False
-```
-
-`edcm.measurement` contains frozen canon data, transcript parsing, deterministic
-metric computation, projection surfaces, closed-token lineage, and the lossless
-structural-density codec.
-
-Consolidation provenance and compatibility policy are documented in
-[`docs/consolidation-edcmbone.md`](docs/consolidation-edcmbone.md).
+A legitimate baseline-canon change requires a new versioned file and migration record. Do not update identities merely to silence continuous integration.
 
 ## Provenance-bearing pipeline
 
-`build_default_layers()` assembles:
+The existing shared-stack pipeline remains available for compatibility and comparison. It separates:
 
-1. **Semantics:** independent METAPAT semantic authority when available, plus
-   explicit UCNS geometry absence during the reset;
-2. **Measurement:** canonical `edcm.measurement`;
-3. **Composition:** canonical shared-stack composition; and
-4. **Delivery:** deterministic `edcm.shared-stack-result` contract.
+- source evidence;
+- METAPAT semantic constraints;
+- UCNS attachment records;
+- EDCM policy and implementation provenance;
+- readouts;
+- status evidence.
 
-Every result carries independent integration and provenance records:
-
-```text
-metapat_integration
-ucns_integration
-layer_provenance
-edcm_result
-```
-
-No unavailable integration is represented only by an unexplained `default`
-label.
-
-```python
-from edcm import build_default_layers
-
-result = build_default_layers().run({
-    "transcript": "A: We must decide.\nB: Only after we define the constraint."
-})
-
-print(result["layer_provenance"])
-print(result["edcm_result"]["result_identity"])
-```
+Its older UCNS adapter surfaces are historical compatibility machinery. The new joint experiment runner consumes the current UCNS research infrastructure directly from the pinned commit and does not treat pre-reset factorization or theorem surfaces as current authority.
 
 ## Typed absence
 
-Without optional semantic authority, measurement still runs while unavailable
-inputs remain typed absence:
+`NA != 0` remains non-negotiable.
 
-```python
-result = build_default_layers().run({"transcript": "A: We must decide."})
-
-assert result["edcm_result"]["ucns_geometry_identity"]["state"] == "NA"
-assert result["edcm_result"]["ucns_factorization_evidence"]["state"] == "NA"
-```
-
-`NA != 0`: absence is never reported as an enabled neutral measurement.
-
-During the UCNS reset, environments must not install a pre-reset `ucns` package
-beside EDCM. The dependency pin and public installation path have been removed;
-a code-level automatic rejection guard remains an explicit unfinished repair.
-
-## METAPAT semantic authority
-
-EDCM may consume the public producer schema from
-`The-Interdependency/metapat`:
-
-```text
-metapat.MetapatModuleEnvelope
-canonical to_json() / to_dict() serialization
-producer-owned from_json() / from_dict() validation
-MODULE_ENVELOPE_SCHEMA_ID
-MODULE_ENVELOPE_SCHEMA_VERSION
-```
-
-Semantic labels are authority constraints and provenance, not calculated EDCM
-values. METAPAT theorem or ontology status does not validate EDCM measurement.
-
-See the package adapter documentation and tests for the exact accepted forms.
-
-## Final result contract
-
-Result schema `edcm.shared-stack-result/1.1.0` separates reviewable
-compartments:
-
-1. `source_evidence`;
-2. `metapat_semantic_constraints`;
-3. `ucns_geometry_identity`;
-4. `ucns_factorization_evidence`;
-5. `edcm_policy_manifest`;
-6. `implementation_provenance`;
-7. `readouts`; and
-8. `status_evidence`.
-
-`epoch_identity` binds the governing canon and implementation selections.
-`result_identity` additionally binds source evidence, readouts, and attachment
-states.
-
-See [`docs/shared-stack-result.md`](docs/shared-stack-result.md).
+Unavailable evidence is typed absence. A candidate may fail scope, return an explicit error, or remain unmeasured; it may not invent a neutral measurement.
 
 ## Proof and measurement firewall
 
-The result contract preserves:
+No UCNS or METAPAT status validates EDCM readouts, external truth, diagnosis, intention, morality, or consciousness.
 
-```text
-theorem_status_transfer = false
-measurement_validity_claim = false
-proof_status_transfers_to_measurement_validity = false
-```
+The joint experiment reports structural preservation and candidate behavior only.
 
-No UCNS or METAPAT status validates EDCM readouts, external truth, diagnosis,
-intention, morality, or consciousness.
+## Repository provenance
 
-## edcmucns architecture
-
-`edcm/edcmucns/` implements policy-manifest hashing, provenance witnesses,
-non-origin residue, carrier helpers, closed readout scopes,
-geometry/measurement equivalence separation, witness validation, `SeqAppend`,
-field-chain reading, and manifest-rotation epochs.
-
-Guardrails:
-
-- no-bone turns are typed absence and produce `NA`, never measured zero;
-- ordered windows use `SeqAppend`, never averaging;
-- geometry equivalence does not imply measurement equivalence;
-- contact convergence, DA geometry correlation, cadence admission from text,
-  and semantic-label-to-operating-state inference remain explicit
-  non-implementations.
-
-## Recovered source packet
-
-The reviewed 2026-07-20 source packet is recorded under
-[`archive/source-packets/2026-07-20-interdependency-project-files/`](archive/source-packets/2026-07-20-interdependency-project-files/).
-
-It preserves provenance for alternate historical metric systems, threshold
-proposals, parser doctrine, and pre-reset closed-token geometry without making
-any of them a competing active authority.
-
-## Repair status
-
-The ordered stack-repair contract remains under
-`codex-handoff/2026-07-12-stack-repair/`. Current evidence is tracked in
-`IMPLEMENTATION_STATUS.md`.
+Historical implementation, source packets, repair handoffs, and prior adapter contracts remain preserved in Git history and under `archive/` or `codex-handoff/` where already present. They remain evidence, not automatic current canon.
 
 ## hmmm
 
-Automatic runtime rejection of separately installed pre-reset UCNS packages and
-renaming of the embedded legacy `measurement/ucns/` encoder remain unfinished.
-The dependency path and documentation now fail closed in principle; the code
-must be brought into exact agreement before UCNS-related integration can be
-called safe.
+The first joint canon decision still requires independent corpus review, sealed holdout custody, external replication, and an explicit authority procedure. The current experiment creates the mechanism and first evidence; it does not appoint the winner.
