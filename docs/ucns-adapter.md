@@ -2,136 +2,129 @@
 
 ## Status
 
-**Suspended.**
+**Experimentally active; production adapter remains unselected.**
 
-On 2026-07-19, `The-Interdependency/ucns` reset its public root after finding
-that the previous `UCNSObject` omitted the load-bearing object invariant:
-
-- every UCNS object is an intrinsically Möbius-twisted recursive carrier;
-- its unique hidden twist/seam is zero;
-- one visible circuit reverses orientation;
-- two circuits complete the return; and
-- normalization cannot choose, move, expose, or erase the seam.
-
-The UCNS root currently publishes no implementation and no system-wide theorem
-claim. Its former Python package, bridge records, factorization evidence, and
-schemas are preserved under the UCNS archive as historical evidence.
-
-They are not a current producer contract.
-
-## Immediate EDCM rule
-
-EDCM must treat UCNS geometry, factorization, certification, and theorem status
-as typed absence until UCNS publishes a new twist-bearing producer surface.
-
-Expected result state:
+UCNS now publishes a definition-first structural and candidate-research surface at the exact commit pinned by the joint EDCM workflow:
 
 ```text
-ucns_geometry_identity.state = NA
-ucns_factorization_evidence.state = NA
-ucns_package_available = false or non-authoritative
-ucns_adapter_active = false
-ucns_object_attached = false
-ucns_bridge_record_attached = false
-ucns_scope_metadata_attached = false
-ucns_factorization_evidence_attached = false
-ucns_negative_certification_attached = false
-ucns_theorem_status_attached = false
+The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed
 ```
 
-`NA != 0`: the absence of lawful UCNS geometry is not neutral geometry and must
-not be converted into a zero-valued measurement.
+That surface provides:
 
-EDCM measurement continues independently through the maintained
-`edcm/measurement/` package. UCNS absence does not disable transcript
-measurement, and archived UCNS proof status never validates EDCM readouts.
+- directed 720-degree carrier foundations;
+- Structural Null and fail-closed cells;
+- retained structural layers;
+- explicit structural and comparison policies;
+- reproducible witness and experiment manifests;
+- competing noncanonical equivalence, product-character, and faithful-breadth candidates.
+
+It does **not** publish a complete canonical `UCNSObject`, canonical `M`, canonical `B`, factorization authority, or theorem status suitable for direct EDCM validity claims.
+
+## Two separate integration paths
+
+### Historical compatibility adapter
+
+`edcm.ucns_adapter` preserves the former bridge/factorization consumer contract for archaeology, migration analysis, and compatibility fixtures.
+
+It is not used by the new joint experiment runner and must not treat surface-name compatibility as current authority.
+
+### Joint research interface
+
+`edcm.ucns_edcm_experiments` consumes the current UCNS research surface directly from the pinned commit.
+
+It uses UCNS only to:
+
+- encode EDCM turns under explicit support policies;
+- retain raw transcript and provenance layers;
+- apply ordered, multiset, and set views;
+- run named `M` and `B` candidates;
+- compare structural equivalence predictions with EDCM readout changes;
+- record supported, falsified, errored, and scope-failed results.
+
+This path is research infrastructure, not a production adapter.
 
 ## Dependency policy
 
-The managed optional dependency on an archived pre-reset UCNS commit has been
-removed from `pyproject.toml`.
+The base EDCM package has no UCNS dependency.
 
-Do not restore an old commit, PyPI release, local checkout, or compatibility
-package as the canonical producer merely because it still exposes:
+The opt-in extra is pinned:
 
 ```text
-UCNSObject
-UCNSBridgeRecord
-UCNSFactorizationEvidence
-bridge_record
-stable_hash
+python -m pip install -e .[dev,ucns-experiments]
 ```
 
-Surface-name compatibility does not establish object-definition compatibility.
+Equivalent source-controlled runs should check out the pinned commit and install it locally, as the dedicated workflow does.
 
-## Historical adapter code
+Package availability alone attaches no evidence. Every report records the asserted UCNS commit, and the workflow supplies the exact checkout.
 
-`edcm.ucns_adapter` still records the former consumer contract and can be useful
-for schema archaeology, migration analysis, and test fixtures. It does not make
-the former producer current.
+## Current structural encoding candidates
 
-A code-level fail-closed change is still required so a separately installed
-archived `ucns` package cannot activate through automatic import. Until that
-change lands, environments running EDCM must not install a pre-reset UCNS
-package beside it.
+Each transcript turn becomes one candidate UCNS cell retaining:
 
-This incompletion is explicit rather than hidden behind a successful import.
+- turn ordinal;
+- raw text;
+- speaker tag;
+- transparent candidate signals;
+- case and support-policy provenance;
+- adjacency relation.
 
-## Embedded closed-token lineage
-
-`edcm/measurement/ucns/` contains historical edcmbone encoding machinery built
-on the pre-reset object model. Its deterministic token mappings may remain
-useful as an EDCM-owned legacy structural encoding, but they are not current
-UCNS geometry.
-
-Any continued use must distinguish:
+The initial support policies are:
 
 ```text
-legacy EDCM structural encoding
+unit-turn:     mu = 1
+token-turn:    mu = max(1, token count)
+pressure-turn: mu = 1 + constraint + refusal + resolution + repetition
 ```
 
-from:
+These are experiment candidates. None is canonical support assignment.
 
-```text
-current UCNS object or theorem evidence
-```
+Raw transcript, ordered turns, and case identity remain retained layers. Their existence does not silently extend cell-only `W` or validate `M` or `B`.
 
-A rename or versioned migration should remove the false authority implied by
-the package name.
+## Structural-policy test
 
-## Requirements for reactivation
+The joint program compares:
 
-EDCM may reactivate a UCNS adapter only after UCNS publishes a versioned producer
-contract that provides all of the following:
+- ordered sequence;
+- unordered multiset;
+- set.
 
-1. an object type that makes a twistless carrier unrepresentable;
-2. an intrinsic seam/zero that coordinates cannot select or move;
-3. explicit orientation state across 360-degree traversal and 720-degree return;
-4. recursive payloads that are complete twist-bearing UCNS objects;
-5. serialization and stable identity that preserve the seam invariant;
-6. bridge records whose schema states the new object epoch;
-7. status evidence that does not inherit claims from the archived system;
-8. migration rules for any recoverable pre-reset projections; and
-9. EDCM fixtures proving typed absence, schema rejection, and no proof transfer.
+When a policy declares two cases equivalent while a named EDCM readout materially differs, the report marks the policy incompatible **for preserving that readout on that case pair**.
 
-A new schema version is required. Reusing the former version identifiers would
-make incompatible objects appear identical.
+This is scoped falsification, not universal rejection of the policy.
+
+## Typed absence and scope failure
+
+`NA != 0` remains non-negotiable.
+
+A UCNS candidate that cannot lawfully evaluate an EDCM envelope must fail scope or return an explicit error. EDCM must not reinterpret that absence as a zero-valued measurement.
 
 ## Proof and measurement firewall
 
-Even after reactivation:
+The following remain false:
 
 ```text
-theorem_status_transfer = false
+ucns_proof_status_implies_edcm_validity = false
+edcm_empirical_fit_implies_ucns_proof = false
+candidate_registration_implies_canon = false
 measurement_validity_claim = false
 proof_status_transfers_to_measurement_validity = false
 ```
 
-UCNS geometry or factorization evidence cannot validate EDCM readouts, METAPAT
-ontology, external truth, diagnosis, intention, morality, or consciousness.
+UCNS candidate behavior cannot establish external truth, diagnosis, intention, morality, or consciousness.
+
+## Usage guidance
+
+```text
+python -m pip install -e .[dev,ucns-experiments]
+python -m pytest -q tests/test_ucns_edcm_experiments.py
+python -m edcm.ucns_edcm_experiments \
+  --output artifacts/ucns-edcm-report.json
+```
+
+See [`../CANON.md`](../CANON.md) and
+[`UCNS_EDCM_EXPERIMENT_PROGRAM.md`](UCNS_EDCM_EXPERIMENT_PROGRAM.md).
 
 ## hmmm
 
-The dependency pin and documentation authority error are removed here. Automatic
-runtime rejection of separately installed pre-reset UCNS packages, and renaming
-of the embedded legacy closed-token geometry, remain unfinished code changes.
+A production UCNS adapter requires experiment-supported selections for structural equivalence, support assignment, `M`, `B`, migration behavior, and authenticated producer identity. None has yet been selected.
