@@ -187,11 +187,18 @@ jobs:
           lines = workflow.read_text().splitlines()
           start = next(i for i, line in enumerate(lines) if line.strip() == "python - <<'PY'") + 1
           end = next(i for i in range(start, len(lines)) if lines[i].strip() == 'PY')
-          script_lines = [line[10:] if line.startswith('          ') else line for line in lines[start:end]]
+          script_lines = []
+          inside_triple = False
+          for line in lines[start:end]:
+              rendered = line if inside_triple else (line[10:] if line.startswith('          ') else line)
+              script_lines.append(rendered)
+              if line.count("'''") % 2 == 1:
+                  inside_triple = not inside_triple
           exec(compile('\n'.join(script_lines), str(workflow), 'exec'))
           PY
           rm -f experiments/results/2026-07-21-ucns-edcm-v0.4.0.json
           rm -f docs/experiments/.v0.4-repair-trigger
+          rm -f docs/experiments/v0.4-repair-validation-diagnostic.txt
           rm -f .github/workflows/repair-v0.4-review-once.yml
           rm -f .github/workflows/trigger-v0.4-review-repair.yml
           python - <<'PY'
@@ -228,6 +235,7 @@ jobs:
 
       - name: Commit repaired source and remove temporary machinery
         run: |
+          rm -rf ucns-source
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
