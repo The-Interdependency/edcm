@@ -1,53 +1,64 @@
 name: edcm
 description: |
-  Maintained Energy–Dissonance Circuit Model package. Load repo-local skills before editing, preserve source/semantic/geometry/policy/readout identity separation, and operate across the exact shared work graph rather than treating one repository as one AI boundary.
+  Energy–Dissonance Circuit Model research and measurement repository. Preserve the frozen maintained baseline as a candidate, run the exact UCNS–EDCM experiment graph, and never transfer proof, empirical validity, or canon status across repository boundaries.
 
 # === LLMS ===
 # id: edcm_agent_overview
-#   content: EDCM is the canonical maintained measurement package. It consumes canonical METAPAT semantic envelopes and canonical UCNS geometry/status evidence without transferring proof status into empirical validity. Use typed absence where evidence is unavailable, preserve NA != 0, compose ordered windows with SeqAppend, and run package, integrity, metadata, skill-drift, msdmd, and cross-repository identity gates before completion.
+#   content: EDCM now has a frozen maintained baseline and an experiment-first UCNS–EDCM research surface. The baseline is candidate edcm-measurement-v1, not automatic joint canon. Joint canon may be selected only through reproducible development and holdout experiments with exact EDCM/UCNS identities, declared structural and comparison policies, preserved falsifiers, information-loss records, and a separate decision packet. Preserve NA != 0 and all proof/measurement non-transfer boundaries.
 #
 # id: edcm_agent_usage
-#   content: Read CLAUDE.md, README.md, codex-handoff/2026-07-12-stack-repair/IMPLEMENTATION_STATUS.md, .agents/skills/the-interdependency/SKILL.md, .agents/skills/meta-module-build/SKILL.md, and docs/interconnectivity.md. Resolve work against the exact EDCM, METAPAT, UCNS, skill-lib, and evidence-source identities used by the task. Run python -m edcm.integrity, python -m pytest -q, python tools/check_metadata_contracts.py, and the canonical skill-lib drift/msdmd workflow.
+#   content: Read CANON.md, README.md, docs/UCNS_EDCM_EXPERIMENT_PROGRAM.md, CLAUDE.md, .agents/skills/the-interdependency/SKILL.md, and .agents/skills/meta-module-build/SKILL.md before editing. For joint experiments install the exact UCNS commit declared by edcm.ucns_edcm_experiments, run tests/test_ucns_edcm_experiments.py, run the experiment twice, require byte-identical reports, and retain supported, falsified, and errored hypotheses without appointing a winner.
 # === END LLMS ===
 
 # EDCM agent entrypoint
 
 ## Read first
 
-1. `CLAUDE.md`
+1. `CANON.md`
 2. `README.md`
-3. `codex-handoff/2026-07-12-stack-repair/IMPLEMENTATION_STATUS.md`
-4. `.agents/skills/the-interdependency/SKILL.md`
-5. `.agents/skills/meta-module-build/SKILL.md`
-6. `docs/integrity-gates.md`
-7. `docs/ucns-adapter.md`
-8. `docs/shared-stack-result.md`
-9. `docs/interconnectivity.md`
+3. `docs/UCNS_EDCM_EXPERIMENT_PROGRAM.md`
+4. `CLAUDE.md`
+5. `.agents/skills/the-interdependency/SKILL.md`
+6. `.agents/skills/meta-module-build/SKILL.md`
+7. `docs/integrity-gates.md`
+8. `docs/RETAINED_STRUCTURE.md` in the pinned UCNS checkout when working on joint structure
+9. the source module's `MODULE_BUILD` block and its named tests
 
-## Canonical source boundaries
-
-```text
-measurement implementation: The-Interdependency/edcm:edcm/measurement
-semantic authority:        The-Interdependency/metapat
-UCNS algebra/evidence:     The-Interdependency/ucns
-organization skills:       The-Interdependency/skill-lib
-dictionary evidence:       globalwordnet/english-wordnet at the declared run commit
-```
-
-Repo-local skill copies are consumers, never authorities.
-
-## Interconnected operating model
+## Authority boundaries
 
 ```text
-repository boundary != agent boundary
-repository boundary == authority and provenance boundary
+EDCM baseline implementation: The-Interdependency/edcm:edcm/measurement
+UCNS research instruments:    The-Interdependency/ucns at the experiment-pinned commit
+semantic authority:           The-Interdependency/metapat when explicitly attached
+organization skills:          The-Interdependency/skill-lib
+experiment evidence:          exact report, corpus, candidate, and workflow identities
 ```
 
-An EDCM task may depend on several repositories at once. Before implementation, resolve the exact commit for every participating authority and evidence source. Preserve those identities in a shared stack manifest or equivalent task record. One agent may coordinate the complete graph; no agent may silently flatten the graph into one repository's assumptions.
+Repository boundaries are authority and provenance boundaries, not isolated-agent boundaries.
 
-The current stack-manifest contract is `the-interdependency.stack-manifest` version `1.0.0`. It records participating repositories, their exact commits, their authority roles, their work relations, a deterministic work-graph digest, and explicit non-transfer boundaries.
+## Current status
 
-## Required validation
+- `edcm/measurement/` is the frozen maintained baseline candidate.
+- `edcm.ucns_edcm_experiments` is the first joint experiment runner.
+- UCNS structural policies, product-character candidates, and faithful-breadth candidates remain noncanonical.
+- EDCM axes, thresholds, marker lists, and circuit parameters remain candidates unless an explicit canon decision says otherwise.
+- A passing hypothesis is experiment-supported evidence, not canon.
+- A failed hypothesis remains evidence and must not be removed to make the report look successful.
+
+## Required joint experiment validation
+
+```bash
+python -m pip install -e .[dev,ucns-experiments]
+python tools/check_metadata_contracts.py
+python -m pytest -q tests/test_ucns_edcm_experiments.py
+python -m edcm.ucns_edcm_experiments --ucns-source-root /path/to/ucns-checkout --output artifacts/ucns-edcm-report.json
+python -m edcm.ucns_edcm_experiments --ucns-source-root /path/to/ucns-checkout --output artifacts/ucns-edcm-report-repeat.json
+diff -u artifacts/ucns-edcm-report.json artifacts/ucns-edcm-report-repeat.json
+```
+
+The dedicated workflow checks out the exact UCNS commit and uploads the report artifact.
+
+## Required baseline validation
 
 ```bash
 python -m pip install -e .[dev]
@@ -58,22 +69,19 @@ python -m build
 python -m twine check dist/*
 ```
 
-Skill and msdmd validation use canonical `skill-lib@d0036c6c3a449f5a1213e3289dceb1c43263cb52` through `.github/workflows/skill-compliance.yml`.
-
 ## Non-negotiable boundaries
 
 - `NA != 0`.
-- METAPAT labels are not EDCM values.
-- UCNS theorem/domain/certification evidence does not validate EDCM readouts.
-- Package availability alone attaches no evidence.
-- Ordered testimony-bearing windows use `SeqAppend`, never averaging.
-- Contact convergence, DA geometry correlation, cadence admission from text, and semantic-label-to-operating-state inference remain explicit non-implementations.
-- New EDCM-native modules begin with accurate `MODULE_BUILD` metadata and real test references.
-- Cross-repository coordination transfers neither authority, proof status, nor measurement validity.
-- Agents must preserve exact participating-repository identities rather than assuming each repository is an isolated AI workspace.
+- represented evidence != candidate-measured evidence != experiment-supported evidence != canonically measured evidence.
+- UCNS proof or theorem status does not validate EDCM readouts.
+- EDCM empirical fit does not prove UCNS mathematics.
+- METAPAT labels are authority constraints, not calculated EDCM values.
+- package availability alone attaches no evidence.
+- no structural policy, support assignment, comparison policy, EDCM axis, `M`, or `B` becomes canonical by registration, majority, convenience, or development-fixture success.
+- exact turn order, multiplicity, sidedness, source bytes, candidate identity, and information loss must remain recoverable.
+- transcript-derived claims may not be expanded into diagnosis, intention, morality, consciousness, or external truth.
+- new EDCM-native modules require accurate `MODULE_BUILD` metadata, usage guidance, and real test references.
 
 ## hmmm
 
-UCNS evidence records currently provide canonical content identity but not cryptographic producer signatures. Signed producer or transport authentication remains unresolved.
-
-Interconnectivity means one repository / one AI is not an adequate operating model. The shared work graph is implemented as an identity and coordination layer while authority remains distributed.
+External holdout custody, independent replication, human outcome-label authority, signed producer records, and the procedure for the first UCNS–EDCM canon decision remain unresolved.

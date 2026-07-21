@@ -1011,6 +1011,30 @@ export default defineMsdmdCollection({
       "id": "edcm_ucns_dependency"
     },
     {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_load_ucns, _verify_ucns_identity, _package_manifest, _split_turns, _turn_signals, _build_ucns_envelope, _structural_signatures, _flatten_structural_signatures, _evaluate_relation, _digest",
+        "module_kind": "instrument",
+        "module_name": "ucns_edcm_experiments",
+        "network_boundary": "none; UCNS must already be installed from the pinned commit",
+        "owner": "Erin Spencer",
+        "public_surface": "ExperimentPartition, RelationOperator, ExperimentCase, ExpectedRelation, CandidateReadout, RelationVerdict, PolicyPreservationFinding, StructuralSignatureRecord, ExperimentReport, build_default_program, contrastive_readout, baseline_readout, run_default_experiments, main",
+        "requires": "edcm_package, edcmbone_parser_turns_rounds, edcmbone_metrics_compute",
+        "rollback": "remove module and workflow; frozen edcm.measurement baseline remains unchanged",
+        "rollout": "explicit research runner; no default canon selection",
+        "since": "2026-07-21",
+        "storage_boundary": "writes only caller-selected report path",
+        "summary": "runs fixed contrastive EDCM cases through the maintained EDCM baseline, a transparent candidate, explicit event-to-UCNS encodings, and noncanonical UCNS equivalence/M/B candidates",
+        "tests": "tests/test_ucns_edcm_experiments.py",
+        "unresolved": "external holdout custody, independent replication, and first joint canon decision authority",
+        "user_data_boundary": "fixed synthetic transcripts only in the default program"
+      },
+      "file": "edcm/ucns_edcm_experiments.py",
+      "id": "edcm_ucns_edcm_experiments"
+    },
+    {
       "block": "BOUNDARIES",
       "fields": {
         "admin_only": "false",
@@ -1202,6 +1226,45 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_contrastive_order_multiplicity_resolution",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_ucns_edcm_experiments",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_ucns_edcm_experiments.py",
+      "id": "check_contrastive_order_multiplicity_resolution"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_joint_runner_preserves_no_canon",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_ucns_edcm_experiments",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_ucns_edcm_experiments.py",
+      "id": "check_joint_runner_preserves_no_canon"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_default_program_structure",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_ucns_edcm_experiments",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_ucns_edcm_experiments.py",
+      "id": "check_ucns_edcm_program_structure"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_binding_captures_exact_payload_topology",
         "cleanup": "none",
         "mutates": "none",
@@ -1325,6 +1388,27 @@ export default defineMsdmdCollection({
       "to": "user_data:semantic provenance only"
     },
     {
+      "from": "check_contrastive_order_multiplicity_resolution",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_contrastive_order_multiplicity_resolution",
+      "to": "self::test_contrastive_order_multiplicity_resolution"
+    },
+    {
+      "from": "check_contrastive_order_multiplicity_resolution",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_contrastive_order_multiplicity_resolution",
+      "to": "edcm_ucns_edcm_experiments"
+    },
+    {
+      "from": "check_contrastive_order_multiplicity_resolution",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_contrastive_order_multiplicity_resolution",
+      "to": "python3"
+    },
+    {
       "from": "check_edcm_fork_binding_exact",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -1435,6 +1519,48 @@ export default defineMsdmdCollection({
       "source_block": "CHECKS",
       "source_id": "check_edcm_fork_status_firewall",
       "to": "edcm_fork_lint_no_status_transfer"
+    },
+    {
+      "from": "check_joint_runner_preserves_no_canon",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_joint_runner_preserves_no_canon",
+      "to": "self::test_joint_runner_preserves_no_canon"
+    },
+    {
+      "from": "check_joint_runner_preserves_no_canon",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_joint_runner_preserves_no_canon",
+      "to": "edcm_ucns_edcm_experiments"
+    },
+    {
+      "from": "check_joint_runner_preserves_no_canon",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_joint_runner_preserves_no_canon",
+      "to": "python3"
+    },
+    {
+      "from": "check_ucns_edcm_program_structure",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_ucns_edcm_program_structure",
+      "to": "self::test_default_program_structure"
+    },
+    {
+      "from": "check_ucns_edcm_program_structure",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_ucns_edcm_program_structure",
+      "to": "edcm_ucns_edcm_experiments"
+    },
+    {
+      "from": "check_ucns_edcm_program_structure",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_ucns_edcm_program_structure",
+      "to": "python3"
     },
     {
       "from": "edcm_ucns_fork_lint_docs",
@@ -1953,6 +2079,34 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_ucns_dependency",
       "to": "edcm_ucns_adapter"
+    },
+    {
+      "from": "edcm_ucns_edcm_experiments",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_edcm_experiments",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_ucns_edcm_experiments",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_edcm_experiments",
+      "to": "edcm_package"
+    },
+    {
+      "from": "edcm_ucns_edcm_experiments",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_edcm_experiments",
+      "to": "edcmbone_metrics_compute"
+    },
+    {
+      "from": "edcm_ucns_edcm_experiments",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_ucns_edcm_experiments",
+      "to": "edcmbone_parser_turns_rounds"
     },
     {
       "from": "edcm_ucns_fork_lint",
