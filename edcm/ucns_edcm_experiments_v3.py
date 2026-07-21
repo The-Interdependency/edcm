@@ -19,7 +19,7 @@ falsifier, and structural projection and always leaves canon unselected.
 #   summary: tests assertion, negation, quotation, hypotheticals, attribution, retraction, and repair order through scope-bearing EDCM events and UCNS structural projections
 #   owner: Erin Spencer
 #   public_surface: ScopeEvent, ScopeSignatureRecord, ScopePairFinding, V3ExperimentReport, scope_assertion_readout, build_v3_program, run_v3_experiments, main
-#   internal_surface: _quote_spans, _mention_events, _repair_events, _extract_scope_events, _build_scope_envelope, _scope_signatures, _pair_findings
+#   internal_surface: _split_scope_turns, _quote_spans, _mention_events, _repair_events, _extract_scope_events, _build_scope_envelope, _scope_signatures, _pair_findings
 #   auth_boundary: none
 #   storage_boundary: writes only caller-selected report path
 #   network_boundary: none; exact UCNS checkout and installed package are verified locally
@@ -39,7 +39,7 @@ import argparse
 import json
 import os
 import re
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
@@ -222,6 +222,26 @@ class V3ExperimentReport:
         return json.dumps(payload, sort_keys=True, indent=2, ensure_ascii=False) + "\n"
 
 
+_SCOPE_TURN_RE = re.compile(
+    r"^(?P<speaker>[A-Za-z][A-Za-z0-9 _\-]{0,30})\s*:\s*(?P<text>.+)$"
+)
+
+
+def _split_scope_turns(text: str) -> tuple[tuple[str, str], ...]:
+    """Preserve explicit speaker labels even for a one-turn transcript."""
+
+    labelled: list[tuple[str, str]] = []
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        match = _SCOPE_TURN_RE.match(line)
+        if match is None:
+            return tuple(_split_turns(text))
+        labelled.append((match.group("speaker").strip(), match.group("text").strip()))
+    return tuple(labelled) if labelled else tuple(_split_turns(text))
+
+
 def _quote_spans(text: str) -> tuple[tuple[int, int], ...]:
     return tuple((match.start() + 1, match.end() - 1) for match in re.finditer(r'"[^"\n]*"', text))
 
@@ -321,10 +341,24 @@ def _repair_events(case: ExperimentCase, turn_index: int, speaker: str, text: st
 
 def _extract_scope_events(case: ExperimentCase) -> tuple[ScopeEvent, ...]:
     events: list[ScopeEvent] = []
-    for turn_index, (speaker, text) in enumerate(_split_turns(case.transcript)):
+    for turn_index, (speaker, text) in enumerate(_split_scope_turns(case.transcript)):
         mentions = _mention_events(case, turn_index, speaker, text)
         repairs = _repair_events(case, turn_index, speaker, text, len(mentions))
-        turn_events = sorted(mentions + repairs, key=lambda event: (event.span_start, event.event_index))
+        discovered = sorted(
+            mentions + repairs,
+            key=lambda event: (event.span_start, event.event_index),
+        )
+        turn_events = tuple(
+            replace(
+                event,
+                event_id=(
+                    f"{case.case_id}:t{turn_index}:e{source_index}:"
+                    f"{event.kind}:{event.family}"
+                ),
+                event_index=source_index,
+            )
+            for source_index, event in enumerate(discovered, start=1)
+        )
         events.extend(turn_events)
     return tuple(events)
 

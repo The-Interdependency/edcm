@@ -38,6 +38,7 @@ from edcm.ucns_edcm_experiments_v3 import (
     build_v3_program,
     main,
     run_v3_experiments,
+    _extract_scope_events,
     scope_assertion_readout,
 )
 
@@ -102,6 +103,23 @@ def test_scope_assertion_candidate_invariants() -> None:
     assert positive["owned_refusal_events"] == 1.0
     assert refusal_negated["owned_refusal_events"] == 0.0
     assert refusal_negated["negated_mentions"] == 1.0
+
+
+def test_scope_event_provenance_preserves_speaker_and_source_order() -> None:
+    single = _extract_scope_events(_case("refusal-owned"))
+    assert len(single) == 1
+    assert single[0].speaker == "B"
+    assert single[0].event_index == 1
+    assert ":e1:" in single[0].event_id
+
+    conditional = _extract_scope_events(_case("revocation-operative"))
+    assert tuple(event.phrase for event in conditional) == (
+        "refuse",
+        "access will be revoked",
+    )
+    assert tuple(event.event_index for event in conditional) == (1, 2)
+    assert tuple(":e1:" in conditional[0].event_id for _ in (0,)) == (True,)
+    assert ":e2:" in conditional[1].event_id
 
 
 def test_v3_joint_report_preserves_scope_and_no_canon(tmp_path) -> None:
