@@ -1,4 +1,5 @@
 name: UCNS-EDCM joint experiments
+# Final clean-head validation trigger; no experiment or metadata semantics change.
 
 on:
   pull_request:
