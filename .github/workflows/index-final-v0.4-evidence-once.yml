@@ -1,0 +1,114 @@
+name: index final UCNS-EDCM v0.4 evidence once
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  index:
+    if: github.head_ref == 'agent/ucns-edcm-v0-4-discourse-graphs'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/ucns-edcm-v0-4-discourse-graphs
+          fetch-depth: 0
+
+      - name: Derive compact evidence index
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report_path = Path('experiments/results/2026-07-21-ucns-edcm-v0.4.0.json')
+          report = json.loads(report_path.read_text())
+          readout_index = {}
+          for row in report['readouts']:
+              if row['error'] is None:
+                  for key, value in row['values']:
+                      readout_index[f"{row['case_id']}::{key}"] = value
+          signatures = {}
+          for row in report['structural_signatures']:
+              if row['interpretation_id'] == '__bundle__' and row['support_policy'] == 'node-edge':
+                  signatures[f"{row['resolution_id']}::{row['view_name']}"] = row['signature']
+
+          selected_keys = [
+              'explicit-r1::explicit-reference-v1::graph.active_count_min',
+              'explicit-r1::family-wide-v1::graph.active_count_min',
+              'explicit-r1::explicit-reference-v1::ucns.node-reference.W.min',
+              'explicit-r1::family-wide-v1::ucns.node-reference.W.min',
+              'explicit-r1::explicit-reference-v1::ucns.node-edge.W.min',
+              'explicit-r1::family-wide-v1::ucns.node-edge.W.min',
+              'speaker-ownership::same-speaker-nearest-v1::graph.gold_hits_min',
+              'speaker-ownership::nearest-compatible-v1::graph.gold_hits_min',
+              'speaker-ownership::same-speaker-nearest-v1::graph.speaker.A.active_min',
+              'speaker-ownership::nearest-compatible-v1::graph.speaker.A.active_min',
+              'anaphora-ambiguous::explicit-reference-v1::graph.unresolved_count_max',
+              'anaphora-ambiguous::nearest-compatible-v1::graph.unresolved_count_max',
+              'anaphora-ambiguous::ambiguity-preserving-v1::graph.alternative_count',
+              'anaphora-ambiguous::ambiguity-preserving-v1::graph.state_divergence',
+              'anaphora-ambiguous::explicit-reference-v1::ucns.node-reference.W.min',
+              'anaphora-ambiguous::nearest-compatible-v1::ucns.node-reference.W.min',
+              'repair-ambiguous::ambiguity-preserving-v1::graph.alternative_count',
+              'repair-ambiguous::ambiguity-preserving-v1::graph.state_divergence',
+              'nested-quotation::explicit-reference-v1::graph.node.C1.retracted',
+              'nested-quotation::family-wide-v1::graph.node.C1.retracted',
+              'suspend-only::explicit-reference-v1::graph.active_count_min',
+              'suspend-resumed::explicit-reference-v1::graph.active_count_min',
+              'condition-fail::explicit-reference-v1::graph.node.C1.active',
+              'condition-pass::explicit-reference-v1::graph.node.C1.active',
+              'contradiction-other::explicit-reference-v1::graph.active_count_min',
+              'retraction-self::explicit-reference-v1::graph.active_count_min',
+              'explicit-r1::edcm.baseline.kappa_final',
+              'explicit-r2::edcm.baseline.kappa_final',
+          ]
+          selected = {key: readout_index[key] for key in selected_keys}
+          selected_signatures = {
+              key: value
+              for key, value in signatures.items()
+              if key.startswith('repair-ambiguous::') or key.startswith('nested-quotation::')
+          }
+          verdicts = [
+              {
+                  'relation_id': item['relation_id'],
+                  'status': item['status'],
+                  'readout': item['readout'],
+                  'left_case': item['left_case'],
+                  'left_value': item['left_value'],
+                  'operator': item['operator'],
+                  'right_case': item['right_case'],
+                  'right_value': item['right_value'],
+              }
+              for item in report['relation_verdicts']
+          ]
+          index = {
+              'schema': 'edcm.ucns-edcm-experiment-summary/0.4.0',
+              'source_report': str(report_path),
+              'source_report_digest': report['report_digest'],
+              'edcm_commit': report['edcm_commit'],
+              'ucns_commit': report['ucns_commit'],
+              'ucns_source_manifest': report['ucns_source_manifest'],
+              'supported': sum(item['status'] == 'supported' for item in verdicts),
+              'falsified': sum(item['status'] == 'falsified' for item in verdicts),
+              'errors': sum(item['status'] == 'error' for item in verdicts),
+              'canon_selection': report['canon_selection'],
+              'verdicts': verdicts,
+              'selected_readouts': selected,
+              'selected_bundle_signatures': selected_signatures,
+          }
+          out = Path('experiments/results/2026-07-21-ucns-edcm-v0.4.0-summary.json')
+          out.write_text(json.dumps(index, indent=2, sort_keys=True) + '\n')
+          Path('.github/workflows/index-final-v0.4-evidence-once.yml').unlink()
+          PY
+
+      - name: Commit index and remove indexer
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add experiments/results/2026-07-21-ucns-edcm-v0.4.0-summary.json \
+            .github/workflows/index-final-v0.4-evidence-once.yml
+          git commit -m 'data: index final UCNS-EDCM v0.4 evidence'
+          git push origin HEAD:agent/ucns-edcm-v0-4-discourse-graphs
