@@ -12,7 +12,7 @@ Processing ./ucns-source
 Building wheels for collected packages: ucns
   Building wheel for ucns (pyproject.toml): started
   Building wheel for ucns (pyproject.toml): finished with status 'done'
-  Created wheel for ucns: filename=ucns-0.0.0.dev0-py3-none-any.whl size=40414 sha256=806cd99761209caa70aa5760b85604672346ccc1db28afb9187bb2283754ee8e
+  Created wheel for ucns: filename=ucns-0.0.0.dev0-py3-none-any.whl size=40414 sha256=338b4459304f62f2eadba22771f413564b86d683d13ab20456b410892e2e9de5
   Stored in directory: /home/runner/.cache/pip/wheels/48/07/fc/e7b3e9f6429351533073074cf45f3920b23a4e9924dc9d21e0
 Successfully built ucns
 Installing collected packages: ucns
@@ -98,15 +98,15 @@ Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
 Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
 Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
 Downloading pygments-2.20.0-py3-none-any.whl (1.2 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 136.7 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 23.5 MB/s  0:00:00
 Downloading twine-6.2.0-py3-none-any.whl (42 kB)
 Downloading keyring-25.7.0-py3-none-any.whl (39 kB)
 Downloading jeepney-0.9.0-py3-none-any.whl (49 kB)
 Downloading readme_renderer-45.0-py3-none-any.whl (14 kB)
 Downloading docutils-0.23-py3-none-any.whl (634 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 634.7/634.7 kB 95.1 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 634.7/634.7 kB 92.0 MB/s  0:00:00
 Downloading nh3-0.3.6-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (806 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 806.7/806.7 kB 132.5 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 806.7/806.7 kB 113.6 MB/s  0:00:00
 Downloading requests-2.34.2-py3-none-any.whl (73 kB)
 Downloading charset_normalizer-3.4.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (224 kB)
 Downloading idna-3.18-py3-none-any.whl (65 kB)
@@ -119,7 +119,7 @@ Downloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
 Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
 Downloading secretstorage-3.5.0-py3-none-any.whl (15 kB)
 Downloading cryptography-49.0.0-cp311-abi3-manylinux_2_34_x86_64.whl (4.7 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 324.3 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 123.3 MB/s  0:00:00
 Downloading cffi-2.1.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (221 kB)
 Downloading id-1.6.1-py3-none-any.whl (14 kB)
 Downloading jaraco.classes-3.4.0-py3-none-any.whl (6.8 kB)
@@ -131,8 +131,8 @@ Downloading pyproject_hooks-1.2.0-py3-none-any.whl (10 kB)
 Building wheels for collected packages: edcm
   Building editable for edcm (pyproject.toml): started
   Building editable for edcm (pyproject.toml): finished with status 'done'
-  Created wheel for edcm: filename=edcm-0.1.0-0.editable-py3-none-any.whl size=11030 sha256=d3f5a7c8b715b485076271c59dfdf1f3339e09874c3e9d6da85fddadb8f8fd8e
-  Stored in directory: /tmp/pip-ephem-wheel-cache-8u7_hrqa/wheels/1f/3e/2d/07e94e42fbb2af1bc7bc8637667a021f3886bc1a246df1ec98
+  Created wheel for edcm: filename=edcm-0.1.0-0.editable-py3-none-any.whl size=11030 sha256=814b34caf60f7d064d8f36be29b81ad4948b1a1691e7b54435f79eb4ed371b54
+  Stored in directory: /tmp/pip-ephem-wheel-cache-b_pswzbo/wheels/1f/3e/2d/07e94e42fbb2af1bc7bc8637667a021f3886bc1a246df1ec98
 Successfully built edcm
 Installing collected packages: urllib3, rfc3986, pyproject_hooks, pygments, pycparser, pluggy, packaging, nh3, more-itertools, mdurl, jeepney, jaraco.context, iniconfig, idna, edcm, docutils, charset_normalizer, certifi, requests, readme-renderer, pytest, markdown-it-py, jaraco.functools, jaraco.classes, id, cffi, build, rich, requests-toolbelt, cryptography, SecretStorage, keyring, twine
 
