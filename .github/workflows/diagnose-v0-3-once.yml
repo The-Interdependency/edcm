@@ -1,0 +1,52 @@
+name: diagnose UCNS-EDCM v0.3 once
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.event_name == 'workflow_dispatch' || github.head_ref == 'agent/ucns-edcm-v0-3-scope'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out EDCM
+        uses: actions/checkout@v4
+        with:
+          path: edcm
+      - name: Check out exact UCNS
+        uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/ucns
+          ref: 5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed
+          path: ucns
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install stack
+        run: |
+          python -m pip install ./ucns
+          python -m pip install -e ./edcm[dev]
+      - name: Capture witness output
+        working-directory: edcm
+        env:
+          UCNS_SOURCE_ROOT: ../ucns
+        run: |
+          set +e
+          python -m pytest -vv tests/test_ucns_edcm_experiments_v3.py > v0.3-test-output.txt 2>&1
+          status=$?
+          echo "$status" > v0.3-test-exit-code.txt
+          cat v0.3-test-output.txt
+          exit 0
+      - name: Upload diagnostic
+        uses: actions/upload-artifact@v4
+        with:
+          name: ucns-edcm-v0.3-diagnostic
+          path: |
+            edcm/v0.3-test-output.txt
+            edcm/v0.3-test-exit-code.txt
+          if-no-files-found: error
