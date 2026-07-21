@@ -1,1 +1,1 @@
-Trigger the repaired-tree semantic diagnostic after its launcher exists.
+Trigger the validated repair commit after the commit launcher exists.
