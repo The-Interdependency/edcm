@@ -445,7 +445,7 @@ def build_v4_program() -> tuple[tuple[GraphCase, ...], tuple[GraphExpectedRelati
         GraphExpectedRelation("anaphora-explicit-unresolved", "graph.unresolved_count_max", f"anaphora-ambiguous::{EXPLICIT_RESOLVER}", RelationOperator.GT, f"anaphora-ambiguous::{NEAREST_RESOLVER}", "explicit-only resolution must fail closed on an underspecified pronoun"),
         GraphExpectedRelation("anaphora-alternatives", "graph.alternative_count", f"anaphora-ambiguous::{AMBIGUITY_RESOLVER}", RelationOperator.GT, f"anaphora-ambiguous::{NEAREST_RESOLVER}", "ambiguity-preserving resolution must retain multiple alternatives"),
         GraphExpectedRelation("ownership-same-speaker", "graph.gold_hits_min", f"speaker-ownership::{SAME_SPEAKER_RESOLVER}", RelationOperator.GT, f"speaker-ownership::{NEAREST_RESOLVER}", "speaker-owned reference should outperform nearest-only target selection"),
-        GraphExpectedRelation("nested-inner-survives", "graph.node.C1.active", f"nested-quotation::{EXPLICIT_RESOLVER}", RelationOperator.GT, f"nested-quotation::{FAMILY_WIDE_RESOLVER}", "rescinding the outer notice must not automatically retract the inner quoted command"),
+        GraphExpectedRelation("nested-inner-survives", "graph.node.C1.retracted", f"nested-quotation::{EXPLICIT_RESOLVER}", RelationOperator.LT, f"nested-quotation::{FAMILY_WIDE_RESOLVER}", "rescinding the outer notice must not automatically retract the inner quoted command"),
         GraphExpectedRelation("resumption-reactivates", "graph.active_count_min", f"suspend-resumed::{EXPLICIT_RESOLVER}", RelationOperator.GT, f"suspend-only::{EXPLICIT_RESOLVER}", "resumption should restore the suspended requirement"),
         GraphExpectedRelation("condition-fail-activates", "graph.node.C1.active", f"condition-fail::{EXPLICIT_RESOLVER}", RelationOperator.GT, f"condition-pass::{EXPLICIT_RESOLVER}", "audit failure and success must produce different conditional states"),
         GraphExpectedRelation("contradiction-not-retraction", "graph.active_count_min", f"contradiction-other::{EXPLICIT_RESOLVER}", RelationOperator.GT, f"retraction-self::{EXPLICIT_RESOLVER}", "contradiction by another speaker must not silently retract the source event"),
@@ -602,6 +602,7 @@ def _resolution_values(case: GraphCase, resolution: GraphResolution) -> tuple[tu
     state_signatures = set()
     node_ids = sorted(node.node_id for node in case.nodes)
     per_node: dict[str, list[float]] = {node_id: [] for node_id in node_ids}
+    per_node_retracted: dict[str, list[float]] = {node_id: [] for node_id in node_ids}
     contradiction_counts = []
     for interpretation in interpretations:
         states = _state_map(interpretation)
@@ -616,6 +617,7 @@ def _resolution_values(case: GraphCase, resolution: GraphResolution) -> tuple[tu
         state_signatures.add(_digest(tuple((node_id, states[node_id].state, states[node_id].contradictions) for node_id in node_ids)))
         for node_id in node_ids:
             per_node[node_id].append(1.0 if states[node_id].state == _STATE_ACTIVE else 0.0)
+            per_node_retracted[node_id].append(1.0 if states[node_id].state == _STATE_RETRACTED else 0.0)
     values: list[tuple[str, Any]] = [
         ("graph.alternative_count", float(len(interpretations))),
         ("graph.state_divergence", float(max(0, len(state_signatures) - 1))),
@@ -632,6 +634,7 @@ def _resolution_values(case: GraphCase, resolution: GraphResolution) -> tuple[tu
     ]
     for node_id in node_ids:
         values.append((f"graph.node.{node_id}.active", float(min(per_node[node_id]))))
+        values.append((f"graph.node.{node_id}.retracted", float(max(per_node_retracted[node_id]))))
     return tuple(values)
 
 
