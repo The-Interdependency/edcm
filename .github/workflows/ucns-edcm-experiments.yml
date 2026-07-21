@@ -155,3 +155,82 @@ jobs:
             edcm/artifacts/ucns-edcm-v0.4.0.json
             edcm/artifacts/ucns-edcm-v0.4.0-repeat.json
           if-no-files-found: error
+
+  # BEGIN TEMP V0.4 REVIEW REPAIR
+  repair-v0-4-review:
+    if: github.event_name == 'pull_request' && github.head_ref == 'agent/ucns-edcm-v0-4-discourse-graphs'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/ucns-edcm-v0-4-discourse-graphs
+          fetch-depth: 0
+
+      - uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/ucns
+          ref: 5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed
+          path: ucns-source
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Execute complete review repair
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          workflow = Path('.github/workflows/repair-v0.4-review-once.yml')
+          lines = workflow.read_text().splitlines()
+          start = next(i for i, line in enumerate(lines) if line.strip() == "python - <<'PY'") + 1
+          end = next(i for i in range(start, len(lines)) if lines[i].strip() == 'PY')
+          script_lines = [line[10:] if line.startswith('          ') else line for line in lines[start:end]]
+          exec(compile('\n'.join(script_lines), str(workflow), 'exec'))
+          PY
+          rm -f experiments/results/2026-07-21-ucns-edcm-v0.4.0.json
+          rm -f docs/experiments/.v0.4-repair-trigger
+          rm -f .github/workflows/repair-v0.4-review-once.yml
+          rm -f .github/workflows/trigger-v0.4-review-repair.yml
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('.github/workflows/ucns-edcm-experiments.yml')
+          text = path.read_text()
+          start = text.index('  # BEGIN TEMP V0.4 REVIEW REPAIR\n')
+          end = text.index('  # END TEMP V0.4 REVIEW REPAIR\n') + len('  # END TEMP V0.4 REVIEW REPAIR\n')
+          path.write_text(text[:start].rstrip() + '\n')
+          PY
+
+      - name: Validate complete repaired graph evidence
+        env:
+          UCNS_SOURCE_ROOT: ucns-source
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ./ucns-source
+          python -m pip install -e .[dev]
+          python tools/check_metadata_contracts.py
+          python -m pytest -q \
+            tests/test_ucns_edcm_experiments.py \
+            tests/test_ucns_edcm_experiments_v2.py \
+            tests/test_ucns_edcm_experiments_v3.py \
+            tests/test_ucns_edcm_experiments_v4.py
+          python -m edcm.ucns_edcm_experiments_v4 \
+            --edcm-commit review-repair \
+            --ucns-source-root ucns-source \
+            --output /tmp/v0.4.json
+          python -m edcm.ucns_edcm_experiments_v4 \
+            --edcm-commit review-repair \
+            --ucns-source-root ucns-source \
+            --output /tmp/v0.4-repeat.json
+          diff -u /tmp/v0.4.json /tmp/v0.4-repeat.json
+
+      - name: Commit repaired source and remove temporary machinery
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: preserve complete v0.4 graph evidence'
+          git push origin HEAD:agent/ucns-edcm-v0-4-discourse-graphs
+  # END TEMP V0.4 REVIEW REPAIR
