@@ -1,0 +1,2965 @@
+{
+  "candidate_disagreements": [
+    [
+      "order-resolution-last",
+      [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.2887114363178709
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.3252364184279037
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.08125000000000002
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.23958333333333334
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.33913408331891026
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.523603333385781
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.bone_count",
+          9.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.2121719764400211
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.0
+        ],
+        [
+          "edcm.baseline.round_count",
+          2.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          20.0
+        ],
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.25
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.0
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.25
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.5
+        ],
+        [
+          "edcm.contrastive.token_count",
+          15.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          4.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          8.394449154672438
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          2.1972245773362196
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          9.19722457733622
+        ]
+      ]
+    ],
+    [
+      "order-refusal-last",
+      [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.2887114363178709
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.32940308509457034
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.10625000000000002
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.27083333333333337
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.33913408331891026
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.4375
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.bone_count",
+          9.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.2208029288209734
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.1570997173208404
+        ],
+        [
+          "edcm.baseline.round_count",
+          2.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          20.0
+        ],
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.25
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.602
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.25
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.5
+        ],
+        [
+          "edcm.contrastive.token_count",
+          15.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          4.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          8.394449154672438
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          2.1972245773362196
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          9.19722457733622
+        ]
+      ]
+    ],
+    [
+      "single-refusal",
+      [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.6
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.0375
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.3125
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.365
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          1.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          4.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.3307142857142858
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.12992857142857153
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          8.0
+        ],
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.5
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.602
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.5
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.0
+        ],
+        [
+          "edcm.contrastive.token_count",
+          6.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          4.197224577336219
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          1.6094379124341003
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          6.6094379124341005
+        ]
+      ]
+    ],
+    [
+      "repeated-refusal",
+      [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.6
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.17575757575757575
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.4318181818181818
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.511640507989648
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          1.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          5.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.38845946650934365
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.20499730646214678
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          11.0
+        ],
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.3333333333333333
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.9834400000000001
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.6666666666666666
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.3333333333333333
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.0
+        ],
+        [
+          "edcm.contrastive.token_count",
+          8.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          3.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          6.58351893845611
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          2.0794415416798357
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          8.079441541679836
+        ]
+      ]
+    ],
+    [
+      "low-constraint",
+      [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.075
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.375
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.4266014999711538
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          3.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.12522878571016482
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.0
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          12.0
+        ],
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.0
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.0
+        ],
+        [
+          "edcm.contrastive.token_count",
+          10.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    ],
+    [
+      "high-constraint",
+      [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.375
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.056249999999999994
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.34375
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.3693872187554087
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.625
+        ],
+        [
+          "edcm.baseline.bone_count",
+          9.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.25276960267934406
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.028600483483147282
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          16.0
+        ],
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.5
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.602
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.5
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.0
+        ],
+        [
+          "edcm.contrastive.token_count",
+          13.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          4.197224577336219
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          1.6094379124341003
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          6.6094379124341005
+        ]
+      ]
+    ],
+    [
+      "unresolved-pressure",
+      [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.6
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.0375
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.3125
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.365
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          1.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          4.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.3307142857142858
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.12992857142857153
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          8.0
+        ],
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.5
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.602
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.5
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.0
+        ],
+        [
+          "edcm.contrastive.token_count",
+          6.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          4.197224577336219
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          1.6094379124341003
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          6.6094379124341005
+        ]
+      ]
+    ],
+    [
+      "resolved-pressure",
+      [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.2887114363178709
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.3252364184279037
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.08125000000000002
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.23958333333333334
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.33913408331891026
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.523603333385781
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.bone_count",
+          9.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.2121719764400211
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.0
+        ],
+        [
+          "edcm.baseline.round_count",
+          2.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          20.0
+        ],
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.25
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.0
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.25
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.5
+        ],
+        [
+          "edcm.contrastive.token_count",
+          15.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          4.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          8.394449154672438
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          2.1972245773362196
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          9.19722457733622
+        ]
+      ]
+    ]
+  ],
+  "candidate_identities": [
+    [
+      "edcm-measurement-v1",
+      "The-Interdependency/edcm:edcm/measurement@0.1.0"
+    ],
+    [
+      "edcm-contrastive-v0",
+      "The-Interdependency/edcm:edcm.ucns_edcm_experiments"
+    ],
+    [
+      "ucns-candidate-pack",
+      "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed"
+    ],
+    [
+      "comparison-policy",
+      "ucns-edcm-combined/1(rel=1e-9,abs=1e-12)"
+    ]
+  ],
+  "canon_selection": null,
+  "cases": [
+    {
+      "case_id": "order-resolution-last",
+      "manipulation": "same turns, resolution occurs last",
+      "partition": "development",
+      "provenance": "synthetic contrast authored for UCNS-EDCM experiment v0",
+      "tags": [
+        "order",
+        "resolution"
+      ],
+      "transcript": "A: You must decide now.\nB: I refuse.\nA: Let me clarify the constraint.\nB: I agree; that works."
+    },
+    {
+      "case_id": "order-refusal-last",
+      "manipulation": "same turns, refusal occurs last",
+      "partition": "development",
+      "provenance": "synthetic contrast authored for UCNS-EDCM experiment v0",
+      "tags": [
+        "order",
+        "refusal"
+      ],
+      "transcript": "A: Let me clarify the constraint.\nB: I agree; that works.\nA: You must decide now.\nB: I refuse."
+    },
+    {
+      "case_id": "single-refusal",
+      "manipulation": "one refusal occurrence",
+      "partition": "development",
+      "provenance": "synthetic contrast authored for UCNS-EDCM experiment v0",
+      "tags": [
+        "multiplicity"
+      ],
+      "transcript": "A: You must decide now.\nB: I refuse."
+    },
+    {
+      "case_id": "repeated-refusal",
+      "manipulation": "same unique turns with refusal repeated",
+      "partition": "development",
+      "provenance": "synthetic contrast authored for UCNS-EDCM experiment v0",
+      "tags": [
+        "multiplicity",
+        "repetition"
+      ],
+      "transcript": "A: You must decide now.\nB: I refuse.\nB: I refuse."
+    },
+    {
+      "case_id": "low-constraint",
+      "manipulation": "ordinary choice request",
+      "partition": "holdout",
+      "provenance": "synthetic holdout authored for UCNS-EDCM experiment v0",
+      "tags": [
+        "constraint",
+        "holdout"
+      ],
+      "transcript": "A: Please choose tea or coffee when ready.\nB: I choose tea."
+    },
+    {
+      "case_id": "high-constraint",
+      "manipulation": "forced immediacy and removed alternatives",
+      "partition": "holdout",
+      "provenance": "synthetic holdout authored for UCNS-EDCM experiment v0",
+      "tags": [
+        "constraint",
+        "holdout"
+      ],
+      "transcript": "A: You must choose now. There is no choice and no alternative.\nB: I refuse."
+    },
+    {
+      "case_id": "unresolved-pressure",
+      "manipulation": "pressure without repair",
+      "partition": "holdout",
+      "provenance": "synthetic holdout authored for UCNS-EDCM experiment v0",
+      "tags": [
+        "resolution",
+        "holdout"
+      ],
+      "transcript": "A: You must decide now.\nB: I refuse."
+    },
+    {
+      "case_id": "resolved-pressure",
+      "manipulation": "same initial pressure followed by repair",
+      "partition": "holdout",
+      "provenance": "synthetic holdout authored for UCNS-EDCM experiment v0",
+      "tags": [
+        "resolution",
+        "holdout"
+      ],
+      "transcript": "A: You must decide now.\nB: I refuse.\nA: Let me clarify the constraint.\nB: I agree; that works."
+    }
+  ],
+  "edcm_commit": "5d15592d509a760ff9fbcdd346a2e749537bb2ba",
+  "notes": [
+    "Hypothesis failure remains evidence and does not fail the build.",
+    "No candidate, policy, axis, threshold, M, B, or equivalence relation is selected as canon."
+  ],
+  "policy_findings": [
+    {
+      "information_loss": [],
+      "pair_id": "order-pair",
+      "policy_name": "ordered-sequence",
+      "readout": "edcm.contrastive.final_tension",
+      "readout_equivalent": false,
+      "status": "preserves-observed-distinction",
+      "structures_equivalent": false
+    },
+    {
+      "information_loss": [],
+      "pair_id": "order-pair",
+      "policy_name": "ordered-sequence",
+      "readout": "edcm.baseline.kappa_final",
+      "readout_equivalent": false,
+      "status": "preserves-observed-distinction",
+      "structures_equivalent": false
+    },
+    {
+      "information_loss": [
+        "order"
+      ],
+      "pair_id": "order-pair",
+      "policy_name": "unordered-multiset",
+      "readout": "edcm.contrastive.final_tension",
+      "readout_equivalent": false,
+      "status": "incompatible-for-readout",
+      "structures_equivalent": true
+    },
+    {
+      "information_loss": [
+        "order"
+      ],
+      "pair_id": "order-pair",
+      "policy_name": "unordered-multiset",
+      "readout": "edcm.baseline.kappa_final",
+      "readout_equivalent": false,
+      "status": "incompatible-for-readout",
+      "structures_equivalent": true
+    },
+    {
+      "information_loss": [
+        "multiplicity",
+        "order"
+      ],
+      "pair_id": "order-pair",
+      "policy_name": "set",
+      "readout": "edcm.contrastive.final_tension",
+      "readout_equivalent": false,
+      "status": "incompatible-for-readout",
+      "structures_equivalent": true
+    },
+    {
+      "information_loss": [
+        "multiplicity",
+        "order"
+      ],
+      "pair_id": "order-pair",
+      "policy_name": "set",
+      "readout": "edcm.baseline.kappa_final",
+      "readout_equivalent": false,
+      "status": "incompatible-for-readout",
+      "structures_equivalent": true
+    },
+    {
+      "information_loss": [],
+      "pair_id": "multiplicity-pair",
+      "policy_name": "ordered-sequence",
+      "readout": "edcm.contrastive.refusal_pressure",
+      "readout_equivalent": false,
+      "status": "preserves-observed-distinction",
+      "structures_equivalent": false
+    },
+    {
+      "information_loss": [],
+      "pair_id": "multiplicity-pair",
+      "policy_name": "ordered-sequence",
+      "readout": "edcm.baseline.R_mean",
+      "readout_equivalent": true,
+      "status": "structurally-distinct-readout-invariant",
+      "structures_equivalent": false
+    },
+    {
+      "information_loss": [
+        "order"
+      ],
+      "pair_id": "multiplicity-pair",
+      "policy_name": "unordered-multiset",
+      "readout": "edcm.contrastive.refusal_pressure",
+      "readout_equivalent": false,
+      "status": "preserves-observed-distinction",
+      "structures_equivalent": false
+    },
+    {
+      "information_loss": [
+        "order"
+      ],
+      "pair_id": "multiplicity-pair",
+      "policy_name": "unordered-multiset",
+      "readout": "edcm.baseline.R_mean",
+      "readout_equivalent": true,
+      "status": "structurally-distinct-readout-invariant",
+      "structures_equivalent": false
+    },
+    {
+      "information_loss": [
+        "multiplicity",
+        "order"
+      ],
+      "pair_id": "multiplicity-pair",
+      "policy_name": "set",
+      "readout": "edcm.contrastive.refusal_pressure",
+      "readout_equivalent": false,
+      "status": "incompatible-for-readout",
+      "structures_equivalent": true
+    },
+    {
+      "information_loss": [
+        "multiplicity",
+        "order"
+      ],
+      "pair_id": "multiplicity-pair",
+      "policy_name": "set",
+      "readout": "edcm.baseline.R_mean",
+      "readout_equivalent": true,
+      "status": "compatible-on-this-pair",
+      "structures_equivalent": true
+    },
+    {
+      "information_loss": [],
+      "pair_id": "resolution-pair",
+      "policy_name": "ordered-sequence",
+      "readout": "edcm.contrastive.final_tension",
+      "readout_equivalent": false,
+      "status": "preserves-observed-distinction",
+      "structures_equivalent": false
+    },
+    {
+      "information_loss": [],
+      "pair_id": "resolution-pair",
+      "policy_name": "ordered-sequence",
+      "readout": "edcm.baseline.kappa_final",
+      "readout_equivalent": false,
+      "status": "preserves-observed-distinction",
+      "structures_equivalent": false
+    },
+    {
+      "information_loss": [
+        "order"
+      ],
+      "pair_id": "resolution-pair",
+      "policy_name": "unordered-multiset",
+      "readout": "edcm.contrastive.final_tension",
+      "readout_equivalent": false,
+      "status": "preserves-observed-distinction",
+      "structures_equivalent": false
+    },
+    {
+      "information_loss": [
+        "order"
+      ],
+      "pair_id": "resolution-pair",
+      "policy_name": "unordered-multiset",
+      "readout": "edcm.baseline.kappa_final",
+      "readout_equivalent": false,
+      "status": "preserves-observed-distinction",
+      "structures_equivalent": false
+    },
+    {
+      "information_loss": [
+        "multiplicity",
+        "order"
+      ],
+      "pair_id": "resolution-pair",
+      "policy_name": "set",
+      "readout": "edcm.contrastive.final_tension",
+      "readout_equivalent": false,
+      "status": "preserves-observed-distinction",
+      "structures_equivalent": false
+    },
+    {
+      "information_loss": [
+        "multiplicity",
+        "order"
+      ],
+      "pair_id": "resolution-pair",
+      "policy_name": "set",
+      "readout": "edcm.baseline.kappa_final",
+      "readout_equivalent": false,
+      "status": "preserves-observed-distinction",
+      "structures_equivalent": false
+    }
+  ],
+  "program_version": "0.1.0",
+  "readouts": [
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "order-resolution-last",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-measurement-v1",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.2887114363178709
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.3252364184279037
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.08125000000000002
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.23958333333333334
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.33913408331891026
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.523603333385781
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.bone_count",
+          9.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.2121719764400211
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.0
+        ],
+        [
+          "edcm.baseline.round_count",
+          2.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          20.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-contrastive-v0",
+      "case_id": "order-resolution-last",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-contrastive-v0",
+      "values": [
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.25
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.0
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.25
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.5
+        ],
+        [
+          "edcm.contrastive.token_count",
+          15.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          4.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack",
+      "case_id": "order-resolution-last",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          4.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.6094379124341003
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          6.772588722239782
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          8.6094379124341
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack",
+      "case_id": "order-resolution-last",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          15.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          3.5565588200778455
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          5.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.772588722239781
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          10.109247582764365
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          9.772588722239782
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-pressure-turn-candidate-pack",
+      "case_id": "order-resolution-last",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.pressure-turn.W.cell-support",
+          8.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-geometric-mean",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          2.1972245773362196
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          8.394449154672438
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          9.19722457733622
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "order-refusal-last",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-measurement-v1",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.2887114363178709
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.32940308509457034
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.10625000000000002
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.27083333333333337
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.33913408331891026
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.4375
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.bone_count",
+          9.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.2208029288209734
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.1570997173208404
+        ],
+        [
+          "edcm.baseline.round_count",
+          2.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          20.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-contrastive-v0",
+      "case_id": "order-refusal-last",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-contrastive-v0",
+      "values": [
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.25
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.602
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.25
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.5
+        ],
+        [
+          "edcm.contrastive.token_count",
+          15.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          4.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack",
+      "case_id": "order-refusal-last",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          4.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.6094379124341003
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          6.772588722239782
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          8.6094379124341
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack",
+      "case_id": "order-refusal-last",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          15.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          3.5565588200778455
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          5.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.772588722239781
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          10.109247582764365
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          9.772588722239782
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-pressure-turn-candidate-pack",
+      "case_id": "order-refusal-last",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.pressure-turn.W.cell-support",
+          8.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-geometric-mean",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          2.1972245773362196
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          8.394449154672438
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          9.19722457733622
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "single-refusal",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-measurement-v1",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.6
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.0375
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.3125
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.365
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          1.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          4.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.3307142857142858
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.12992857142857153
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          8.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-contrastive-v0",
+      "case_id": "single-refusal",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-contrastive-v0",
+      "values": [
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.5
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.602
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.5
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.0
+        ],
+        [
+          "edcm.contrastive.token_count",
+          6.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          2.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack",
+      "case_id": "single-refusal",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack",
+      "case_id": "single-refusal",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          6.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          2.82842712474619
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          1.9459101490553132
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          4.70805020110221
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          6.9459101490553135
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-pressure-turn-candidate-pack",
+      "case_id": "single-refusal",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.pressure-turn.W.cell-support",
+          4.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-geometric-mean",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          1.6094379124341003
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          4.197224577336219
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          6.6094379124341005
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "repeated-refusal",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-measurement-v1",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.6
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.17575757575757575
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.4318181818181818
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.511640507989648
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          1.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          5.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.38845946650934365
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.20499730646214678
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          11.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-contrastive-v0",
+      "case_id": "repeated-refusal",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-contrastive-v0",
+      "values": [
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.3333333333333333
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.9834400000000001
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.6666666666666666
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.3333333333333333
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.0
+        ],
+        [
+          "edcm.contrastive.token_count",
+          8.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          3.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack",
+      "case_id": "repeated-refusal",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          3.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.3862943611198906
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          5.079441541679836
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          7.386294361119891
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack",
+      "case_id": "repeated-refusal",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          8.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          2.519842099789746
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.1972245773362196
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          6.80666248977032
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          8.19722457733622
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-pressure-turn-candidate-pack",
+      "case_id": "repeated-refusal",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.pressure-turn.W.cell-support",
+          7.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-geometric-mean",
+          2.2894284851066637
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-maximum",
+          3.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          2.0794415416798357
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          6.58351893845611
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          8.079441541679836
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "low-constraint",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-measurement-v1",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.075
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.375
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.4266014999711538
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          3.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.12522878571016482
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.0
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          12.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-contrastive-v0",
+      "case_id": "low-constraint",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-contrastive-v0",
+      "values": [
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.0
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.0
+        ],
+        [
+          "edcm.contrastive.token_count",
+          10.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          2.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack",
+      "case_id": "low-constraint",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack",
+      "case_id": "low-constraint",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          10.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          4.58257569495584
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          7.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          3.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.3978952727983707
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          5.465735902799726
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          7.397895272798371
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-pressure-turn-candidate-pack",
+      "case_id": "low-constraint",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.pressure-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "high-constraint",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-measurement-v1",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.375
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.056249999999999994
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.34375
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.3693872187554087
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.625
+        ],
+        [
+          "edcm.baseline.bone_count",
+          9.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.25276960267934406
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.028600483483147282
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          16.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-contrastive-v0",
+      "case_id": "high-constraint",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-contrastive-v0",
+      "values": [
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.5
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.602
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.5
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.0
+        ],
+        [
+          "edcm.contrastive.token_count",
+          13.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          2.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack",
+      "case_id": "high-constraint",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack",
+      "case_id": "high-constraint",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          13.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          4.69041575982343
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          11.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.639057329615259
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          5.58351893845611
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          7.639057329615259
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-pressure-turn-candidate-pack",
+      "case_id": "high-constraint",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.pressure-turn.W.cell-support",
+          4.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-geometric-mean",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          1.6094379124341003
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          4.197224577336219
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          6.6094379124341005
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "unresolved-pressure",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-measurement-v1",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.6
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.0375
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.3125
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.365
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.R_mean",
+          1.0
+        ],
+        [
+          "edcm.baseline.bone_count",
+          4.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.3307142857142858
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.12992857142857153
+        ],
+        [
+          "edcm.baseline.round_count",
+          1.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          8.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-contrastive-v0",
+      "case_id": "unresolved-pressure",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-contrastive-v0",
+      "values": [
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.5
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.602
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.5
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.0
+        ],
+        [
+          "edcm.contrastive.token_count",
+          6.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          2.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack",
+      "case_id": "unresolved-pressure",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          2.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.0986122886681096
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          3.386294361119891
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          6.098612288668109
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack",
+      "case_id": "unresolved-pressure",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          6.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          2.82842712474619
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          4.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          1.9459101490553132
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          4.70805020110221
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          6.9459101490553135
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-pressure-turn-candidate-pack",
+      "case_id": "unresolved-pressure",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.pressure-turn.W.cell-support",
+          4.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-geometric-mean",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          1.6094379124341003
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          4.197224577336219
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          6.6094379124341005
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-measurement-v1",
+      "case_id": "resolved-pressure",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-measurement-v1",
+      "values": [
+        [
+          "edcm.baseline.C_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.D_mean",
+          0.2887114363178709
+        ],
+        [
+          "edcm.baseline.E_mean",
+          0.3252364184279037
+        ],
+        [
+          "edcm.baseline.F_mean",
+          0.08125000000000002
+        ],
+        [
+          "edcm.baseline.I_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.L_mean",
+          0.23958333333333334
+        ],
+        [
+          "edcm.baseline.N_mean",
+          0.33913408331891026
+        ],
+        [
+          "edcm.baseline.O_mean",
+          0.0
+        ],
+        [
+          "edcm.baseline.P_mean",
+          0.523603333385781
+        ],
+        [
+          "edcm.baseline.R_mean",
+          0.5
+        ],
+        [
+          "edcm.baseline.bone_count",
+          9.0
+        ],
+        [
+          "edcm.baseline.energy_mean",
+          0.2121719764400211
+        ],
+        [
+          "edcm.baseline.kappa_final",
+          0.0
+        ],
+        [
+          "edcm.baseline.round_count",
+          2.0
+        ],
+        [
+          "edcm.baseline.token_count",
+          20.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "edcm-contrastive-v0",
+      "case_id": "resolved-pressure",
+      "error": null,
+      "source_identity": "The-Interdependency/edcm:edcm-contrastive-v0",
+      "values": [
+        [
+          "edcm.contrastive.constraint_pressure",
+          0.25
+        ],
+        [
+          "edcm.contrastive.final_tension",
+          0.0
+        ],
+        [
+          "edcm.contrastive.refusal_pressure",
+          0.25
+        ],
+        [
+          "edcm.contrastive.repetition_pressure",
+          0.0
+        ],
+        [
+          "edcm.contrastive.resolution_signal",
+          0.5
+        ],
+        [
+          "edcm.contrastive.token_count",
+          15.0
+        ],
+        [
+          "edcm.contrastive.turn_count",
+          4.0
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-unit-turn-candidate-pack",
+      "case_id": "resolved-pressure",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.unit-turn.W.cell-support",
+          4.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-geometric-mean",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-maximum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.M.cell-support-minimum",
+          1.0
+        ],
+        [
+          "ucns.unit-turn.B.cell-log-support",
+          1.6094379124341003
+        ],
+        [
+          "ucns.unit-turn.B.cell-detail",
+          6.772588722239782
+        ],
+        [
+          "ucns.unit-turn.B.retained-presence",
+          8.6094379124341
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-token-turn-candidate-pack",
+      "case_id": "resolved-pressure",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.token-turn.W.cell-support",
+          15.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-geometric-mean",
+          3.5565588200778455
+        ],
+        [
+          "ucns.token-turn.M.cell-support-maximum",
+          5.0
+        ],
+        [
+          "ucns.token-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.token-turn.B.cell-log-support",
+          2.772588722239781
+        ],
+        [
+          "ucns.token-turn.B.cell-detail",
+          10.109247582764365
+        ],
+        [
+          "ucns.token-turn.B.retained-presence",
+          9.772588722239782
+        ]
+      ]
+    },
+    {
+      "candidate_id": "ucns-pressure-turn-candidate-pack",
+      "case_id": "resolved-pressure",
+      "error": null,
+      "source_identity": "The-Interdependency/ucns@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+      "values": [
+        [
+          "ucns.pressure-turn.W.cell-support",
+          8.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-geometric-mean",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-maximum",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.M.cell-support-minimum",
+          2.0
+        ],
+        [
+          "ucns.pressure-turn.B.cell-log-support",
+          2.1972245773362196
+        ],
+        [
+          "ucns.pressure-turn.B.cell-detail",
+          8.394449154672438
+        ],
+        [
+          "ucns.pressure-turn.B.retained-presence",
+          9.19722457733622
+        ]
+      ]
+    }
+  ],
+  "relation_verdicts": [
+    {
+      "detail": "resolution last should leave less stored tension than refusal last",
+      "left_case": "order-resolution-last",
+      "left_value": 0.0,
+      "operator": "lt",
+      "readout": "edcm.contrastive.final_tension",
+      "relation_id": "order-contrastive-tension",
+      "right_case": "order-refusal-last",
+      "right_value": 0.602,
+      "status": "supported"
+    },
+    {
+      "detail": "the maintained circuit candidate is tested for resolution timing sensitivity",
+      "left_case": "order-resolution-last",
+      "left_value": 0.0,
+      "operator": "lt",
+      "readout": "edcm.baseline.kappa_final",
+      "relation_id": "order-baseline-kappa",
+      "right_case": "order-refusal-last",
+      "right_value": 0.1570997173208404,
+      "status": "supported"
+    },
+    {
+      "detail": "exact refusal repetition should increase refusal pressure",
+      "left_case": "repeated-refusal",
+      "left_value": 0.6666666666666666,
+      "operator": "gt",
+      "readout": "edcm.contrastive.refusal_pressure",
+      "relation_id": "multiplicity-contrastive-refusal",
+      "right_case": "single-refusal",
+      "right_value": 0.5,
+      "status": "supported"
+    },
+    {
+      "detail": "the maintained refusal candidate is tested for occurrence sensitivity",
+      "left_case": "repeated-refusal",
+      "left_value": 1.0,
+      "operator": "gt",
+      "readout": "edcm.baseline.R_mean",
+      "relation_id": "multiplicity-baseline-refusal",
+      "right_case": "single-refusal",
+      "right_value": 1.0,
+      "status": "falsified"
+    },
+    {
+      "detail": "forced immediacy and removed alternatives should increase transparent constraint pressure",
+      "left_case": "high-constraint",
+      "left_value": 0.5,
+      "operator": "gt",
+      "readout": "edcm.contrastive.constraint_pressure",
+      "relation_id": "constraint-contrastive",
+      "right_case": "low-constraint",
+      "right_value": 0.0,
+      "status": "supported"
+    },
+    {
+      "detail": "the maintained marker canon is tested on the holdout phrasing",
+      "left_case": "high-constraint",
+      "left_value": 0.0,
+      "operator": "gt",
+      "readout": "edcm.baseline.C_mean",
+      "relation_id": "constraint-baseline",
+      "right_case": "low-constraint",
+      "right_value": 0.0,
+      "status": "falsified"
+    },
+    {
+      "detail": "repair after refusal should reduce final transparent tension",
+      "left_case": "resolved-pressure",
+      "left_value": 0.0,
+      "operator": "lt",
+      "readout": "edcm.contrastive.final_tension",
+      "relation_id": "resolution-contrastive",
+      "right_case": "unresolved-pressure",
+      "right_value": 0.602,
+      "status": "supported"
+    },
+    {
+      "detail": "the maintained circuit candidate is tested for repair sensitivity",
+      "left_case": "resolved-pressure",
+      "left_value": 0.0,
+      "operator": "lt",
+      "readout": "edcm.baseline.kappa_final",
+      "relation_id": "resolution-baseline",
+      "right_case": "unresolved-pressure",
+      "right_value": 0.12992857142857153,
+      "status": "supported"
+    },
+    {
+      "detail": "pressure-weighted cell detail should preserve the stronger declared signal",
+      "left_case": "high-constraint",
+      "left_value": 4.197224577336219,
+      "operator": "gt",
+      "readout": "ucns.pressure-turn.B.cell-detail",
+      "relation_id": "pressure-breadth-holdout",
+      "right_case": "low-constraint",
+      "right_value": 3.386294361119891,
+      "status": "supported"
+    },
+    {
+      "detail": "unit-turn cell detail should preserve occurrence multiplicity",
+      "left_case": "repeated-refusal",
+      "left_value": 5.079441541679836,
+      "operator": "gt",
+      "readout": "ucns.unit-turn.B.cell-detail",
+      "relation_id": "unit-breadth-multiplicity",
+      "right_case": "single-refusal",
+      "right_value": 3.386294361119891,
+      "status": "supported"
+    }
+  ],
+  "report_digest": "b89c4dec492b81a192b33bc0c232c3109e7fd92049f2f47c2d8d43978fafdc21",
+  "schema": "edcm.ucns-edcm-experiment-report/0.1.0",
+  "ucns_commit": "5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed"
+}
