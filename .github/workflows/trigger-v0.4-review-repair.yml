@@ -82,6 +82,7 @@ jobs:
               end = text.index(end_marker) + len(end_marker)
               path.write_text(text[:start].rstrip() + '\n')
           PY
+          rm -rf ucns-source
           rm -f .github/workflows/repair-v0.4-review-once.yml
           rm -f .github/workflows/trigger-v0.4-review-repair.yml
           rm -f docs/experiments/.v0.4-repair-trigger
