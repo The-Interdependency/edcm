@@ -1,0 +1,50 @@
+name: refine UCNS-EDCM v0.3 scope layers once
+
+on:
+  push:
+    branches: [agent/ucns-edcm-v0-3-scope]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ucns-edcm-v0-3-scope
+          fetch-depth: 0
+
+      - name: Refine lexical family and surface boundaries
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('edcm/ucns_edcm_experiments_v3.py')
+          text = path.read_text()
+          replacements = {
+              '("i refuse", "will not comply", "cannot comply", "i decline")': '("i refuse", "refuse", "will not comply", "cannot comply", "i decline")',
+              'return {"kind": self.kind, "family": self.family, "phrase": self.phrase}': 'return {"kind": self.kind, "family": self.family}',
+              '("scope", "order")),': '("scope", "surface", "order")),',
+              '("scope", "order", "multiplicity")),': '("scope", "surface", "order", "multiplicity")),',
+              'ExpectedRelation("refusal-negation-lexical-equal", "edcm.occurrence.refusal_occurrences",': 'ExpectedRelation("refusal-negation-lexical-equal", "edcm.scope.lexical_refusal_mentions",',
+              '("edcm.scope.owned_refusal_events", "edcm.occurrence.refusal_occurrences")),\n    )': '("edcm.scope.owned_refusal_events", "edcm.scope.lexical_refusal_mentions")),\n    )',
+          }
+          for old, new in replacements.items():
+              if old not in text:
+                  raise SystemExit(f'missing expected source fragment: {old!r}')
+              text = text.replace(old, new)
+          path.write_text(text)
+          PY
+          python -m py_compile edcm/ucns_edcm_experiments_v3.py
+          rm .github/workflows/patch-v0-3-scope-once.yml
+
+      - name: Commit refinement and remove workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add edcm/ucns_edcm_experiments_v3.py .github/workflows/patch-v0-3-scope-once.yml
+          git commit -m "fix: separate scope family from surface evidence"
+          git push origin HEAD:agent/ucns-edcm-v0-3-scope
