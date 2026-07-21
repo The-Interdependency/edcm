@@ -50,11 +50,11 @@ Design and interpretation:
 
 ```text
 program:       edcm.ucns-edcm-experiment-report/0.3.0
-EDCM evidence: a76c2e47564413fed504b891c5ec6d7d6b11d0b5
+EDCM evidence: 7900d1acc4b0725d55551ec037f9ffce6a5cb026
 UCNS source:   5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed
 prior v0.1:    4c8bd8496ec549c1073320bafc995c7c65eaf81c9385e4dc6fff7794ed3b1124
 prior v0.2:    85d6a9c7504a7e9b7fdb21e0dec5ff8e588d12e9d893f1a22854c1ae2ebbf0e4
-report digest: 618b66af6bfb236e4bee8b8df6eae9cfb80d0f889632beb4f80daacdaa9c07b7
+report digest: 5baf611b5930d271a0fa7dbc977a55c7748b0891196d619b4695e39308cff37b
 supported:     19
 falsified:     4
 errors:        0
