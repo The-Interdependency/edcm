@@ -1,1 +1,1 @@
-Trigger the branch-push repair after the launcher workflow exists.
+Trigger the branch-push diagnostic after the diagnostic workflow exists.
