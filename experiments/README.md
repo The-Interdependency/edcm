@@ -46,6 +46,31 @@ Design and interpretation:
 - [`../docs/experiments/2026-07-21-ucns-edcm-v0.2-design.md`](../docs/experiments/2026-07-21-ucns-edcm-v0.2-design.md)
 - [`../docs/experiments/2026-07-21-ucns-edcm-v0.2-findings.md`](../docs/experiments/2026-07-21-ucns-edcm-v0.2-findings.md)
 
+## UCNS–EDCM v0.3.0
+
+```text
+program:       edcm.ucns-edcm-experiment-report/0.3.0
+EDCM evidence: 7900d1acc4b0725d55551ec037f9ffce6a5cb026
+UCNS source:   5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed
+prior v0.1:    4c8bd8496ec549c1073320bafc995c7c65eaf81c9385e4dc6fff7794ed3b1124
+prior v0.2:    85d6a9c7504a7e9b7fdb21e0dec5ff8e588d12e9d893f1a22854c1ae2ebbf0e4
+report digest: 5baf611b5930d271a0fa7dbc977a55c7748b0891196d619b4695e39308cff37b
+supported:     19
+falsified:     4
+errors:        0
+canon:         not selected
+```
+
+Evidence file:
+
+- [`results/2026-07-21-ucns-edcm-v0.3.0.json`](results/2026-07-21-ucns-edcm-v0.3.0.json)
+
+Design and interpretation:
+
+- [`../docs/experiments/2026-07-21-ucns-edcm-v0.3-design.md`](../docs/experiments/2026-07-21-ucns-edcm-v0.3-design.md)
+- [`../docs/experiments/2026-07-21-ucns-edcm-v0.3-findings.md`](../docs/experiments/2026-07-21-ucns-edcm-v0.3-findings.md)
+- [`../docs/experiments/2026-07-21-v0.3-serialization-invariant.md`](../docs/experiments/2026-07-21-v0.3-serialization-invariant.md)
+
 The reports record verified UCNS Git and package-byte identities, all candidate readouts, every structural signature, supported/falsified/errored relations, and `canon_selection = null`.
 
 Do not edit a result file in place. A changed corpus, candidate, policy, expected relation, comparison rule, or report schema requires a new versioned result.
