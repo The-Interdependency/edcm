@@ -2,9 +2,10 @@
 
 Usage
 -----
-Run with the exact UCNS commit declared by :data:`EXPECTED_UCNS_COMMIT` installed:
+Run with the exact UCNS commit declared by :data:`EXPECTED_UCNS_COMMIT` installed from a matching checkout:
 
     python -m edcm.ucns_edcm_experiments \
+        --ucns-source-root /path/to/ucns-checkout \
         --output artifacts/ucns-edcm-report.json
 
 The generated report is research evidence. It never selects canon.
@@ -16,8 +17,8 @@ The generated report is research evidence. It never selects canon.
 #   module_kind: instrument
 #   summary: runs fixed contrastive EDCM cases through the maintained EDCM baseline, a transparent candidate, explicit event-to-UCNS encodings, and noncanonical UCNS equivalence/M/B candidates
 #   owner: Erin Spencer
-#   public_surface: ExperimentPartition, RelationOperator, ExperimentCase, ExpectedRelation, CandidateReadout, RelationVerdict, PolicyPreservationFinding, ExperimentReport, build_default_program, contrastive_readout, baseline_readout, run_default_experiments, main
-#   internal_surface: _load_ucns, _split_turns, _turn_signals, _build_ucns_envelope, _structural_signatures, _evaluate_relation, _digest
+#   public_surface: ExperimentPartition, RelationOperator, ExperimentCase, ExpectedRelation, CandidateReadout, RelationVerdict, PolicyPreservationFinding, StructuralSignatureRecord, ExperimentReport, build_default_program, contrastive_readout, baseline_readout, run_default_experiments, main
+#   internal_surface: _load_ucns, _verify_ucns_identity, _package_manifest, _split_turns, _turn_signals, _build_ucns_envelope, _structural_signatures, _flatten_structural_signatures, _evaluate_relation, _digest
 #   auth_boundary: none
 #   storage_boundary: writes only caller-selected report path
 #   network_boundary: none; UCNS must already be installed from the pinned commit
@@ -37,6 +38,7 @@ import argparse
 import json
 import os
 import re
+import subprocess
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from hashlib import sha256
@@ -158,14 +160,26 @@ class PolicyPreservationFinding:
 
 
 @dataclass(frozen=True, slots=True)
+class StructuralSignatureRecord:
+    case_id: str
+    support_policy: str
+    policy_name: str
+    signature: str
+    information_loss: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class ExperimentReport:
     schema: str
     program_version: str
     edcm_commit: str
     ucns_commit: str
+    ucns_source_manifest: str
+    ucns_identity_verified: bool
     cases: tuple[ExperimentCase, ...]
     candidate_identities: tuple[tuple[str, str], ...]
     readouts: tuple[CandidateReadout, ...]
+    structural_signatures: tuple[StructuralSignatureRecord, ...]
     relation_verdicts: tuple[RelationVerdict, ...]
     policy_findings: tuple[PolicyPreservationFinding, ...]
     candidate_disagreements: tuple[tuple[str, tuple[tuple[str, Any], ...]], ...]
@@ -492,6 +506,7 @@ def build_default_program() -> tuple[tuple[ExperimentCase, ...], tuple[ExpectedR
 
 def _load_ucns() -> dict[str, Any]:
     try:
+        import ucns as ucns_package
         from ucns import (
             RetainedLayer,
             StructurePolicy,
@@ -519,6 +534,58 @@ def _load_ucns() -> dict[str, Any]:
         ) from exc
 
     return locals()
+
+
+def _ucns_package_dir(root: Path) -> Path:
+    root = root.resolve()
+    for candidate in (root / "src" / "ucns", root / "ucns", root):
+        if (candidate / "__init__.py").is_file():
+            return candidate
+    raise ValueError(f"UCNS package directory not found under {root}")
+
+
+def _package_manifest(root: Path) -> str:
+    package_dir = _ucns_package_dir(root)
+    files = sorted(
+        file
+        for file in package_dir.rglob("*")
+        if file.is_file() and (file.suffix == ".py" or file.name == "py.typed")
+    )
+    if not files:
+        raise ValueError(f"UCNS package manifest is empty under {package_dir}")
+    digest = sha256()
+    for file in files:
+        relative = file.relative_to(package_dir).as_posix().encode("utf-8")
+        digest.update(relative)
+        digest.update(b"\0")
+        digest.update(file.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
+def _verify_ucns_identity(
+    source_root: Path, ucns_api: Mapping[str, Any]
+) -> tuple[str, str]:
+    source_root = source_root.resolve()
+    completed = subprocess.run(
+        ["git", "-C", str(source_root), "rev-parse", "HEAD"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    commit = completed.stdout.strip()
+    if commit != EXPECTED_UCNS_COMMIT:
+        raise ValueError(
+            f"UCNS checkout identity mismatch: expected {EXPECTED_UCNS_COMMIT}, got {commit}"
+        )
+    source_manifest = _package_manifest(source_root)
+    installed_root = Path(ucns_api["ucns_package"].__file__).resolve().parent
+    installed_manifest = _package_manifest(installed_root)
+    if installed_manifest != source_manifest:
+        raise ValueError(
+            "installed UCNS package bytes do not match the verified source checkout"
+        )
+    return commit, source_manifest
 
 
 def _build_ucns_envelope(
@@ -619,6 +686,23 @@ def _structural_signatures(envelope: Any, ucns_api: Mapping[str, Any]) -> dict[s
             "losses": tuple(loss.dimension for loss in projection.losses),
         }
     return result
+
+
+def _flatten_structural_signatures(
+    structural: Mapping[str, Mapping[str, Mapping[str, Any]]]
+) -> tuple[StructuralSignatureRecord, ...]:
+    return tuple(
+        StructuralSignatureRecord(
+            case_id,
+            support_policy,
+            policy_name,
+            str(payload["signature"]),
+            tuple(payload["losses"]),
+        )
+        for case_id in sorted(structural)
+        for support_policy in sorted(structural[case_id])
+        for policy_name, payload in sorted(structural[case_id][support_policy].items())
+    )
 
 
 def _candidate_values_for_case(
@@ -838,19 +922,30 @@ def _candidate_disagreements(
 
 
 def run_default_experiments(
-    *, edcm_commit: str | None = None, ucns_commit: str = EXPECTED_UCNS_COMMIT
+    *,
+    edcm_commit: str | None = None,
+    ucns_commit: str = EXPECTED_UCNS_COMMIT,
+    ucns_source_root: str | Path | None = None,
 ) -> ExperimentReport:
     """Run the fixed v0 joint experiment program.
 
-    The caller is responsible for installing UCNS from ``ucns_commit``. The
-    commit is recorded but cannot be inferred from package availability alone.
+    A matching UCNS Git checkout is required. The runner verifies both the
+    checkout commit and the installed package bytes before recording identity.
     """
 
     if ucns_commit != EXPECTED_UCNS_COMMIT:
         raise ValueError(
             f"this experiment version requires UCNS {EXPECTED_UCNS_COMMIT}, got {ucns_commit}"
         )
+    source_root_value = ucns_source_root or os.environ.get("UCNS_SOURCE_ROOT")
+    if source_root_value is None:
+        raise ValueError(
+            "ucns_source_root or UCNS_SOURCE_ROOT is required for verified joint evidence"
+        )
     ucns_api = _load_ucns()
+    verified_ucns_commit, ucns_source_manifest = _verify_ucns_identity(
+        Path(source_root_value), ucns_api
+    )
     comparison = ucns_api["combined_comparison_policy"](
         rel_tol=1e-9,
         abs_tol=1e-12,
@@ -871,17 +966,20 @@ def run_default_experiments(
     candidate_identities = (
         (BASELINE_CANDIDATE_ID, "The-Interdependency/edcm:edcm/measurement@0.1.0"),
         (CONTRASTIVE_CANDIDATE_ID, "The-Interdependency/edcm:edcm.ucns_edcm_experiments"),
-        ("ucns-candidate-pack", f"The-Interdependency/ucns@{ucns_commit}"),
+        ("ucns-candidate-pack", f"The-Interdependency/ucns@{verified_ucns_commit}"),
         ("comparison-policy", "ucns-edcm-combined/1(rel=1e-9,abs=1e-12)"),
     )
     return ExperimentReport(
         PROGRAM_SCHEMA,
         PROGRAM_VERSION,
         edcm_commit or os.environ.get("GITHUB_SHA", "unrecorded-edcm-commit"),
-        ucns_commit,
+        verified_ucns_commit,
+        ucns_source_manifest,
+        True,
         cases,
         candidate_identities,
         tuple(all_readouts),
+        _flatten_structural_signatures(structural),
         verdicts,
         findings,
         _candidate_disagreements(cases, index),
@@ -898,11 +996,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", type=Path, default=None)
     parser.add_argument("--edcm-commit", default=None)
     parser.add_argument("--ucns-commit", default=EXPECTED_UCNS_COMMIT)
+    parser.add_argument("--ucns-source-root", type=Path, default=None)
     args = parser.parse_args(argv)
 
     report = run_default_experiments(
         edcm_commit=args.edcm_commit,
         ucns_commit=args.ucns_commit,
+        ucns_source_root=args.ucns_source_root,
     )
     rendered = report.to_json()
     if args.output is None:

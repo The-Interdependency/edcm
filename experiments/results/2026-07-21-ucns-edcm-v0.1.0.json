@@ -2959,7 +2959,635 @@
       "status": "supported"
     }
   ],
-  "report_digest": "b89c4dec492b81a192b33bc0c232c3109e7fd92049f2f47c2d8d43978fafdc21",
+  "report_digest": "4c8bd8496ec549c1073320bafc995c7c65eaf81c9385e4dc6fff7794ed3b1124",
   "schema": "edcm.ucns-edcm-experiment-report/0.1.0",
-  "ucns_commit": "5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed"
+  "structural_signatures": [
+    {
+      "case_id": "high-constraint",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "72382b5e5584130ef1313619115e3095a3ba51e19a1ad39f543152d214bfb902",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "high-constraint",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "3763b98419c2a683687aa92aac71edf9226201ee92ce4186842e4914fcf7b6cc",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "high-constraint",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "4693d9c26236894dfc2fc233c78932d3086f6c30477dcfc3faecd3697bcaed7a",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "high-constraint",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "72382b5e5584130ef1313619115e3095a3ba51e19a1ad39f543152d214bfb902",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "high-constraint",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "3763b98419c2a683687aa92aac71edf9226201ee92ce4186842e4914fcf7b6cc",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "high-constraint",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "4693d9c26236894dfc2fc233c78932d3086f6c30477dcfc3faecd3697bcaed7a",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "high-constraint",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "72382b5e5584130ef1313619115e3095a3ba51e19a1ad39f543152d214bfb902",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "high-constraint",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "3763b98419c2a683687aa92aac71edf9226201ee92ce4186842e4914fcf7b6cc",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "high-constraint",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "4693d9c26236894dfc2fc233c78932d3086f6c30477dcfc3faecd3697bcaed7a",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "low-constraint",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "ad42fdadadea90ccfd20496e32bddb79d3cb14f2371a99231ab4911fde1e5a7f",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "low-constraint",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "71e391e6be798513d5b30246b6ccab9e2fe94aa0bb196adc7ac213776965fdf2",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "low-constraint",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "e7ba1ad08ddd667c6ba59c5c001c203d69818b3b88175863e1a3af853a893512",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "low-constraint",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "ad42fdadadea90ccfd20496e32bddb79d3cb14f2371a99231ab4911fde1e5a7f",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "low-constraint",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "71e391e6be798513d5b30246b6ccab9e2fe94aa0bb196adc7ac213776965fdf2",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "low-constraint",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "e7ba1ad08ddd667c6ba59c5c001c203d69818b3b88175863e1a3af853a893512",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "low-constraint",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "ad42fdadadea90ccfd20496e32bddb79d3cb14f2371a99231ab4911fde1e5a7f",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "low-constraint",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "71e391e6be798513d5b30246b6ccab9e2fe94aa0bb196adc7ac213776965fdf2",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "low-constraint",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "e7ba1ad08ddd667c6ba59c5c001c203d69818b3b88175863e1a3af853a893512",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "order-refusal-last",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "c3744048cfd5c0562cbc713401c340ef16f75b9e68c70aae97459061cb922059",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "order-refusal-last",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "8a24b65b4a7c00a328b61403b0ef1618cff0292520567a3bb3a14ab310ba8b3d",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "order-refusal-last",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "790d5ca359d36ce18e001cf4a13be2f9a28d06501259a4cea5f71126989edafe",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "order-refusal-last",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "c3744048cfd5c0562cbc713401c340ef16f75b9e68c70aae97459061cb922059",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "order-refusal-last",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "8a24b65b4a7c00a328b61403b0ef1618cff0292520567a3bb3a14ab310ba8b3d",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "order-refusal-last",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "790d5ca359d36ce18e001cf4a13be2f9a28d06501259a4cea5f71126989edafe",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "order-refusal-last",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "c3744048cfd5c0562cbc713401c340ef16f75b9e68c70aae97459061cb922059",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "order-refusal-last",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "8a24b65b4a7c00a328b61403b0ef1618cff0292520567a3bb3a14ab310ba8b3d",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "order-refusal-last",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "790d5ca359d36ce18e001cf4a13be2f9a28d06501259a4cea5f71126989edafe",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "order-resolution-last",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "2f75415bdf591eee9d1494e47f48c7a7131b6bd77db0d30ca58a56381e43a7bd",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "order-resolution-last",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "8a24b65b4a7c00a328b61403b0ef1618cff0292520567a3bb3a14ab310ba8b3d",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "order-resolution-last",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "790d5ca359d36ce18e001cf4a13be2f9a28d06501259a4cea5f71126989edafe",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "order-resolution-last",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "2f75415bdf591eee9d1494e47f48c7a7131b6bd77db0d30ca58a56381e43a7bd",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "order-resolution-last",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "8a24b65b4a7c00a328b61403b0ef1618cff0292520567a3bb3a14ab310ba8b3d",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "order-resolution-last",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "790d5ca359d36ce18e001cf4a13be2f9a28d06501259a4cea5f71126989edafe",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "order-resolution-last",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "2f75415bdf591eee9d1494e47f48c7a7131b6bd77db0d30ca58a56381e43a7bd",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "order-resolution-last",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "8a24b65b4a7c00a328b61403b0ef1618cff0292520567a3bb3a14ab310ba8b3d",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "order-resolution-last",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "790d5ca359d36ce18e001cf4a13be2f9a28d06501259a4cea5f71126989edafe",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "repeated-refusal",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "47763ace7bc00984a5a853d52f69f46692bd11dc20b8e7ab399345433ad461cb",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "repeated-refusal",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "42f5a96589762a676417273b6db12bed0fcef25fe18655991ed7333e58533b39",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "repeated-refusal",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "73b6d60a779593ac0a5fdb03a9a2991bc20113c23e711b8f27e9b67cd2005bfc",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "repeated-refusal",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "47763ace7bc00984a5a853d52f69f46692bd11dc20b8e7ab399345433ad461cb",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "repeated-refusal",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "42f5a96589762a676417273b6db12bed0fcef25fe18655991ed7333e58533b39",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "repeated-refusal",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "73b6d60a779593ac0a5fdb03a9a2991bc20113c23e711b8f27e9b67cd2005bfc",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "repeated-refusal",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "47763ace7bc00984a5a853d52f69f46692bd11dc20b8e7ab399345433ad461cb",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "repeated-refusal",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "42f5a96589762a676417273b6db12bed0fcef25fe18655991ed7333e58533b39",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "repeated-refusal",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "73b6d60a779593ac0a5fdb03a9a2991bc20113c23e711b8f27e9b67cd2005bfc",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolved-pressure",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "2f75415bdf591eee9d1494e47f48c7a7131b6bd77db0d30ca58a56381e43a7bd",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "resolved-pressure",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "8a24b65b4a7c00a328b61403b0ef1618cff0292520567a3bb3a14ab310ba8b3d",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "resolved-pressure",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "790d5ca359d36ce18e001cf4a13be2f9a28d06501259a4cea5f71126989edafe",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "resolved-pressure",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "2f75415bdf591eee9d1494e47f48c7a7131b6bd77db0d30ca58a56381e43a7bd",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolved-pressure",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "8a24b65b4a7c00a328b61403b0ef1618cff0292520567a3bb3a14ab310ba8b3d",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolved-pressure",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "790d5ca359d36ce18e001cf4a13be2f9a28d06501259a4cea5f71126989edafe",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "resolved-pressure",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "2f75415bdf591eee9d1494e47f48c7a7131b6bd77db0d30ca58a56381e43a7bd",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolved-pressure",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "8a24b65b4a7c00a328b61403b0ef1618cff0292520567a3bb3a14ab310ba8b3d",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "resolved-pressure",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "790d5ca359d36ce18e001cf4a13be2f9a28d06501259a4cea5f71126989edafe",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "single-refusal",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "9e4030f5fe2ac55627bb23b2cf0fb44660ec0442c5d7b341d887c66034bc53dc",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "single-refusal",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "42f5a96589762a676417273b6db12bed0fcef25fe18655991ed7333e58533b39",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "single-refusal",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "5b7627c36d5d3381a4bbaba98a7c23566fda82f7eab52950eb9b8e13a9eb1d8b",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "single-refusal",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "9e4030f5fe2ac55627bb23b2cf0fb44660ec0442c5d7b341d887c66034bc53dc",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "single-refusal",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "42f5a96589762a676417273b6db12bed0fcef25fe18655991ed7333e58533b39",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "single-refusal",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "5b7627c36d5d3381a4bbaba98a7c23566fda82f7eab52950eb9b8e13a9eb1d8b",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "single-refusal",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "9e4030f5fe2ac55627bb23b2cf0fb44660ec0442c5d7b341d887c66034bc53dc",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "single-refusal",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "42f5a96589762a676417273b6db12bed0fcef25fe18655991ed7333e58533b39",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "single-refusal",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "5b7627c36d5d3381a4bbaba98a7c23566fda82f7eab52950eb9b8e13a9eb1d8b",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "unresolved-pressure",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "9e4030f5fe2ac55627bb23b2cf0fb44660ec0442c5d7b341d887c66034bc53dc",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "unresolved-pressure",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "42f5a96589762a676417273b6db12bed0fcef25fe18655991ed7333e58533b39",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "unresolved-pressure",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "5b7627c36d5d3381a4bbaba98a7c23566fda82f7eab52950eb9b8e13a9eb1d8b",
+      "support_policy": "pressure-turn"
+    },
+    {
+      "case_id": "unresolved-pressure",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "9e4030f5fe2ac55627bb23b2cf0fb44660ec0442c5d7b341d887c66034bc53dc",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "unresolved-pressure",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "42f5a96589762a676417273b6db12bed0fcef25fe18655991ed7333e58533b39",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "unresolved-pressure",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "5b7627c36d5d3381a4bbaba98a7c23566fda82f7eab52950eb9b8e13a9eb1d8b",
+      "support_policy": "token-turn"
+    },
+    {
+      "case_id": "unresolved-pressure",
+      "information_loss": [],
+      "policy_name": "ordered-sequence",
+      "signature": "9e4030f5fe2ac55627bb23b2cf0fb44660ec0442c5d7b341d887c66034bc53dc",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "unresolved-pressure",
+      "information_loss": [
+        "order",
+        "multiplicity"
+      ],
+      "policy_name": "set",
+      "signature": "42f5a96589762a676417273b6db12bed0fcef25fe18655991ed7333e58533b39",
+      "support_policy": "unit-turn"
+    },
+    {
+      "case_id": "unresolved-pressure",
+      "information_loss": [
+        "order"
+      ],
+      "policy_name": "unordered-multiset",
+      "signature": "5b7627c36d5d3381a4bbaba98a7c23566fda82f7eab52950eb9b8e13a9eb1d8b",
+      "support_policy": "unit-turn"
+    }
+  ],
+  "ucns_commit": "5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+  "ucns_identity_verified": true,
+  "ucns_source_manifest": "48f3607869cd4f713fd0bc28d32eac9d96b9fbd13e70f20a21dff7dd6a012f30"
 }

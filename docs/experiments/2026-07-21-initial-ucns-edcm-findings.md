@@ -4,7 +4,7 @@
 **EDCM branch evidence commit:** `5d15592d509a760ff9fbcdd346a2e749537bb2ba`  
 **UCNS commit:** `5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed`  
 **Workflow run:** `UCNS-EDCM joint experiments #1` / run `29848564274`  
-**Report digest:** `d7da6a26fa0391c9d9dad40c3e78d5b19f40986cebf91537096e595b21185942`  
+**Report digest:** `4c8bd8496ec549c1073320bafc995c7c65eaf81c9385e4dc6fff7794ed3b1124`  
 **Reproducibility:** byte-identical repeat reports on Python 3.11 and 3.12.  
 **Canon selection:** none.
 

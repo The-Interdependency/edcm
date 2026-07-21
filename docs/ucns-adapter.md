@@ -119,6 +119,7 @@ UCNS candidate behavior cannot establish external truth, diagnosis, intention, m
 python -m pip install -e .[dev,ucns-experiments]
 python -m pytest -q tests/test_ucns_edcm_experiments.py
 python -m edcm.ucns_edcm_experiments \
+  --ucns-source-root /path/to/ucns-checkout \
   --output artifacts/ucns-edcm-report.json
 ```
 

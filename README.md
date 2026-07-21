@@ -60,6 +60,7 @@ The base package remains dependency-free. Joint experiments are opt-in and pin t
 python -m pip install -e .[dev,ucns-experiments]
 python -m pytest -q tests/test_ucns_edcm_experiments.py
 python -m edcm.ucns_edcm_experiments \
+  --ucns-source-root /path/to/ucns-checkout \
   --output artifacts/ucns-edcm-report.json
 ```
 

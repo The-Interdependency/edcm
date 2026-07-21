@@ -117,7 +117,7 @@ This phase may not promote:
 Run the joint program only in an environment containing the exact UCNS experiment commit declared by the runner:
 
 ```text
-python -m edcm.ucns_edcm_experiments --output ucns-edcm-report.json
+python -m edcm.ucns_edcm_experiments --ucns-source-root /path/to/ucns-checkout --output ucns-edcm-report.json
 ```
 
 The report is research evidence. It is not a canon file and must not be renamed or imported as one.

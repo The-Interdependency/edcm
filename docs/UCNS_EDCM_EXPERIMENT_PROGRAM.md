@@ -185,7 +185,7 @@ The machine-readable report includes:
 python -m pip install -e .[dev]
 python -m pip install /path/to/pinned/ucns
 python -m pytest -q tests/test_ucns_edcm_experiments.py
-python -m edcm.ucns_edcm_experiments --output artifacts/ucns-edcm-report.json
+python -m edcm.ucns_edcm_experiments --ucns-source-root /path/to/ucns-checkout --output artifacts/ucns-edcm-report.json
 ```
 
 The dedicated GitHub Actions workflow performs the exact UCNS checkout, runs the tests and experiment, and uploads the report artifact.

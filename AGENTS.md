@@ -51,8 +51,8 @@ Repository boundaries are authority and provenance boundaries, not isolated-agen
 python -m pip install -e .[dev,ucns-experiments]
 python tools/check_metadata_contracts.py
 python -m pytest -q tests/test_ucns_edcm_experiments.py
-python -m edcm.ucns_edcm_experiments --output artifacts/ucns-edcm-report.json
-python -m edcm.ucns_edcm_experiments --output artifacts/ucns-edcm-report-repeat.json
+python -m edcm.ucns_edcm_experiments --ucns-source-root /path/to/ucns-checkout --output artifacts/ucns-edcm-report.json
+python -m edcm.ucns_edcm_experiments --ucns-source-root /path/to/ucns-checkout --output artifacts/ucns-edcm-report-repeat.json
 diff -u artifacts/ucns-edcm-report.json artifacts/ucns-edcm-report-repeat.json
 ```
 
