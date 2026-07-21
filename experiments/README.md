@@ -6,7 +6,7 @@ This directory contains machine-readable outputs from reproducible EDCM research
 
 ```text
 program:       edcm.ucns-edcm-experiment-report/0.1.0
-EDCM evidence: 5d15592d509a760ff3c6c79c51c55dd4009
+EDCM evidence: 5d15592d509a760ff9fbcdd346a2e749537bb2ba
 UCNS source:   5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed
 report digest: 4c8bd8496ec549c1073320bafc995c7c65eaf81c9385e4dc6fff7794ed3b1124
 supported:     8
