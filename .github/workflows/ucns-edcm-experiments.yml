@@ -197,18 +197,6 @@ jobs:
           exec(compile('\n'.join(script_lines), str(workflow), 'exec'))
           PY
           rm -f experiments/results/2026-07-21-ucns-edcm-v0.4.0.json
-          rm -f docs/experiments/.v0.4-repair-trigger
-          rm -f docs/experiments/v0.4-repair-validation-diagnostic.txt
-          rm -f .github/workflows/repair-v0.4-review-once.yml
-          rm -f .github/workflows/trigger-v0.4-review-repair.yml
-          python - <<'PY'
-          from pathlib import Path
-          path = Path('.github/workflows/ucns-edcm-experiments.yml')
-          text = path.read_text()
-          start = text.index('  # BEGIN TEMP V0.4 REVIEW REPAIR\n')
-          end = text.index('  # END TEMP V0.4 REVIEW REPAIR\n') + len('  # END TEMP V0.4 REVIEW REPAIR\n')
-          path.write_text(text[:start].rstrip() + '\n')
-          PY
 
       - name: Validate complete repaired graph evidence
         env:
@@ -233,12 +221,15 @@ jobs:
             --output /tmp/v0.4-repeat.json
           diff -u /tmp/v0.4.json /tmp/v0.4-repeat.json
 
-      - name: Commit repaired source and remove temporary machinery
+      - name: Commit repaired evidence source
         run: |
           rm -rf ucns-source
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
+          git add edcm/ucns_edcm_experiments_v4.py \
+            tests/test_ucns_edcm_experiments_v4.py \
+            docs/experiments/2026-07-21-ucns-edcm-v0.4-design.md
+          git rm -f --ignore-unmatch experiments/results/2026-07-21-ucns-edcm-v0.4.0.json
           git commit -m 'fix: preserve complete v0.4 graph evidence'
           git push origin HEAD:agent/ucns-edcm-v0-4-discourse-graphs
   # END TEMP V0.4 REVIEW REPAIR
