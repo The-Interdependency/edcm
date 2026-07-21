@@ -510,7 +510,15 @@ def _build_scope_envelope(case: ExperimentCase, support_policy: str, ucns_api: M
 
 
 def _projection_signature(policy_name: str, projection: Any) -> str:
-    return _digest(_canonical_projection_view(policy_name, projection))
+    if policy_name.endswith("multiset"):
+        view = tuple(
+            sorted((str(group.key), int(group.count)) for group in projection.view)
+        )
+    elif policy_name.endswith("set"):
+        view = tuple(sorted(str(entry.key) for entry in projection.view))
+    else:
+        view = _jsonable(projection.view)
+    return _digest(view)
 
 
 def _scope_signatures(case: ExperimentCase, support_policy: str, ucns_api: Mapping[str, Any]) -> tuple[ScopeSignatureRecord, ...]:
