@@ -1,4 +1,4 @@
-name: diagnose v0.4 review repair
+name: trigger v0.4 review repair
 
 on:
   push:
@@ -8,7 +8,7 @@ permissions:
   contents: write
 
 jobs:
-  diagnose:
+  repair:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
@@ -27,70 +27,66 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Apply repair locally
+      - name: Apply complete review repair
         run: |
           python - <<'PY'
           from pathlib import Path
+
           workflow = Path('.github/workflows/repair-v0.4-review-once.yml')
           lines = workflow.read_text().splitlines()
           start = next(i for i, line in enumerate(lines) if line.strip() == "python - <<'PY'") + 1
           end = next(i for i in range(start, len(lines)) if lines[i].strip() == 'PY')
-          script_lines = [line[10:] if line.startswith('          ') else line for line in lines[start:end]]
+          script_lines = []
+          inside_triple = False
+          for line in lines[start:end]:
+              rendered = line if inside_triple else (line[10:] if line.startswith('          ') else line)
+              script_lines.append(rendered)
+              if line.count("'''") % 2 == 1:
+                  inside_triple = not inside_triple
           exec(compile('\n'.join(script_lines), str(workflow), 'exec'))
           PY
+          rm -f experiments/results/2026-07-21-ucns-edcm-v0.4.0.json
 
-      - name: Capture validation statuses
+      - name: Validate repaired evidence
         env:
           UCNS_SOURCE_ROOT: ucns-source
         run: |
-          set +e
-          mkdir -p /tmp/v04diag
-          {
-            echo '=== pip upgrade ==='
-            python -m pip install --upgrade pip
-            echo "status=$?"
-            echo '=== install ucns ==='
-            python -m pip install ./ucns-source
-            echo "status=$?"
-            echo '=== install edcm ==='
-            python -m pip install -e .[dev]
-            echo "status=$?"
-            echo '=== metadata ==='
-            python tools/check_metadata_contracts.py
-            echo "status=$?"
-            echo '=== pytest ==='
-            python -m pytest -q \
-              tests/test_ucns_edcm_experiments.py \
-              tests/test_ucns_edcm_experiments_v2.py \
-              tests/test_ucns_edcm_experiments_v3.py \
-              tests/test_ucns_edcm_experiments_v4.py
-            echo "status=$?"
-            echo '=== report first ==='
-            python -m edcm.ucns_edcm_experiments_v4 \
-              --edcm-commit review-repair \
-              --ucns-source-root ucns-source \
-              --output /tmp/v0.4.json
-            echo "status=$?"
-            echo '=== report repeat ==='
-            python -m edcm.ucns_edcm_experiments_v4 \
-              --edcm-commit review-repair \
-              --ucns-source-root ucns-source \
-              --output /tmp/v0.4-repeat.json
-            echo "status=$?"
-            echo '=== diff ==='
-            diff -u /tmp/v0.4.json /tmp/v0.4-repeat.json
-            echo "status=$?"
-          } > /tmp/v04diag/validation.txt 2>&1
+          python -m pip install --upgrade pip
+          python -m pip install ./ucns-source
+          python -m pip install -e .[dev]
+          python tools/check_metadata_contracts.py
+          python -m pytest -q \
+            tests/test_ucns_edcm_experiments.py \
+            tests/test_ucns_edcm_experiments_v2.py \
+            tests/test_ucns_edcm_experiments_v3.py \
+            tests/test_ucns_edcm_experiments_v4.py
+          python -m edcm.ucns_edcm_experiments_v4 \
+            --edcm-commit review-repair \
+            --ucns-source-root ucns-source \
+            --output /tmp/v0.4.json
+          python -m edcm.ucns_edcm_experiments_v4 \
+            --edcm-commit review-repair \
+            --ucns-source-root ucns-source \
+            --output /tmp/v0.4-repeat.json
+          diff -u /tmp/v0.4.json /tmp/v0.4-repeat.json
 
-      - name: Commit diagnostic only
+      - name: Commit repair and remove temporary machinery
         run: |
-          mkdir -p docs/experiments
-          cp /tmp/v04diag/validation.txt docs/experiments/v0.4-repair-validation-diagnostic.txt
-          git restore edcm/ucns_edcm_experiments_v4.py tests/test_ucns_edcm_experiments_v4.py || true
-          git restore docs/experiments/2026-07-21-ucns-edcm-v0.4-design.md || true
-          git restore experiments/results/2026-07-21-ucns-edcm-v0.4.0.json || true
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('.github/workflows/ucns-edcm-experiments.yml')
+          text = path.read_text()
+          if '  # BEGIN TEMP V0.4 REVIEW REPAIR\n' in text:
+              start = text.index('  # BEGIN TEMP V0.4 REVIEW REPAIR\n')
+              end = text.index('  # END TEMP V0.4 REVIEW REPAIR\n') + len('  # END TEMP V0.4 REVIEW REPAIR\n')
+              path.write_text(text[:start].rstrip() + '\n')
+          PY
+          rm -f .github/workflows/repair-v0.4-review-once.yml
+          rm -f .github/workflows/trigger-v0.4-review-repair.yml
+          rm -f docs/experiments/.v0.4-repair-trigger
+          rm -f docs/experiments/v0.4-repair-validation-diagnostic.txt
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/experiments/v0.4-repair-validation-diagnostic.txt
-          git commit -m 'diagnostic: record v0.4 repair validation'
+          git add -A
+          git commit -m 'fix: preserve complete v0.4 graph evidence'
           git push origin HEAD:agent/ucns-edcm-v0-4-discourse-graphs
