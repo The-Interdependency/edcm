@@ -17,7 +17,7 @@ interpretations, resolver disagreements, and all falsifiers.
 #   summary: tests cross-turn reference resolution, correction targets, anaphora, nested quotation, suspension, conditional activation, contradiction ownership, and competing discourse graphs
 #   owner: Erin Spencer
 #   public_surface: DiscourseNode, ReferenceExpression, GraphEdge, GraphInterpretation, GraphResolution, GraphSignatureRecord, GraphPairFinding, V4ExperimentReport, build_v4_program, resolve_case, run_v4_experiments, main
-#   internal_surface: _candidate_targets, _apply_edges, _graph_views, _build_ucns_graph_envelope, _resolution_readout, _pair_findings
+#   internal_surface: _candidate_targets, _apply_edges, _graph_view, _build_ucns_graph_envelope, _resolution_values, _pair_findings
 #   auth_boundary: none
 #   storage_boundary: writes only caller-selected report path
 #   network_boundary: none; exact UCNS checkout and installed package are verified locally
@@ -450,8 +450,16 @@ def build_v4_program() -> tuple[tuple[GraphCase, ...], tuple[GraphExpectedRelati
         GraphExpectedRelation("condition-fail-activates", "graph.node.C1.active", f"condition-fail::{EXPLICIT_RESOLVER}", RelationOperator.GT, f"condition-pass::{EXPLICIT_RESOLVER}", "audit failure and success must produce different conditional states"),
         GraphExpectedRelation("contradiction-not-retraction", "graph.active_count_min", f"contradiction-other::{EXPLICIT_RESOLVER}", RelationOperator.GT, f"retraction-self::{EXPLICIT_RESOLVER}", "contradiction by another speaker must not silently retract the source event"),
         GraphExpectedRelation("ambiguous-repair-divergence", "graph.state_divergence", f"repair-ambiguous::{AMBIGUITY_RESOLVER}", RelationOperator.GT, f"repair-ambiguous::{NEAREST_RESOLVER}", "ambiguous repair must expose divergent graph outcomes"),
+        GraphExpectedRelation("ownership-speaker-state", "graph.speaker.A.active_min", f"speaker-ownership::{SAME_SPEAKER_RESOLVER}", RelationOperator.LT, f"speaker-ownership::{NEAREST_RESOLVER}", "speaker-scoped state must preserve which speaker's requirement remains active"),
+        GraphExpectedRelation("nearest-ownership-hypothesis", "graph.gold_hits_min", f"speaker-ownership::{NEAREST_RESOLVER}", RelationOperator.EQ, f"speaker-ownership::{SAME_SPEAKER_RESOLVER}", "nearest-compatible is tested for ownership-sensitive target selection"),
+        GraphExpectedRelation("family-wide-specificity-hypothesis", "graph.active_count_min", f"explicit-r1::{FAMILY_WIDE_RESOLVER}", RelationOperator.EQ, f"explicit-r1::{EXPLICIT_RESOLVER}", "family-wide is tested for preserving explicit target specificity without over-retraction"),
+        GraphExpectedRelation("explicit-anaphora-hypothesis", "graph.unresolved_count_max", f"anaphora-ambiguous::{EXPLICIT_RESOLVER}", RelationOperator.EQ, f"anaphora-ambiguous::{NEAREST_RESOLVER}", "explicit-only resolution is tested for underspecified anaphora"),
+        GraphExpectedRelation("baseline-target-state-hypothesis", "edcm.baseline.kappa_final", "explicit-r1", RelationOperator.NE, "explicit-r2", "the frozen baseline is tested for which-target state sensitivity"),
+        GraphExpectedRelation("node-reference-target-state-hypothesis", "ucns.node-reference.W.min", f"explicit-r1::{EXPLICIT_RESOLVER}", RelationOperator.NE, f"explicit-r1::{FAMILY_WIDE_RESOLVER}", "node-reference scalar support is tested for resolver-edge sensitivity"),
+        GraphExpectedRelation("node-edge-target-state-control", "ucns.node-edge.W.min", f"explicit-r1::{EXPLICIT_RESOLVER}", RelationOperator.LT, f"explicit-r1::{FAMILY_WIDE_RESOLVER}", "node-edge support should retain the extra family-wide edge"),
         GraphExpectedRelation("local-scope-target-invariant", "edcm.scope.asserted_constraint_events", "explicit-r1", RelationOperator.EQ, "explicit-r2", "local scope event count should remain invariant when only the discourse target changes"),
     )
+
     return tuple(cases), relations
 
 
@@ -601,8 +609,11 @@ def _resolution_values(case: GraphCase, resolution: GraphResolution) -> tuple[tu
     gold_misses = []
     state_signatures = set()
     node_ids = sorted(node.node_id for node in case.nodes)
+    speaker_by_node = {node.node_id: node.speaker for node in case.nodes}
+    speaker_ids = sorted(set(speaker_by_node.values()))
     per_node: dict[str, list[float]] = {node_id: [] for node_id in node_ids}
     per_node_retracted: dict[str, list[float]] = {node_id: [] for node_id in node_ids}
+    per_speaker_active: dict[str, list[float]] = {speaker: [] for speaker in speaker_ids}
     contradiction_counts = []
     for interpretation in interpretations:
         states = _state_map(interpretation)
@@ -618,6 +629,10 @@ def _resolution_values(case: GraphCase, resolution: GraphResolution) -> tuple[tu
         for node_id in node_ids:
             per_node[node_id].append(1.0 if states[node_id].state == _STATE_ACTIVE else 0.0)
             per_node_retracted[node_id].append(1.0 if states[node_id].state == _STATE_RETRACTED else 0.0)
+        for speaker in speaker_ids:
+            per_speaker_active[speaker].append(
+                float(sum(states[node_id].state == _STATE_ACTIVE for node_id in node_ids if speaker_by_node[node_id] == speaker))
+            )
     values: list[tuple[str, Any]] = [
         ("graph.alternative_count", float(len(interpretations))),
         ("graph.state_divergence", float(max(0, len(state_signatures) - 1))),
@@ -635,19 +650,22 @@ def _resolution_values(case: GraphCase, resolution: GraphResolution) -> tuple[tu
     for node_id in node_ids:
         values.append((f"graph.node.{node_id}.active", float(min(per_node[node_id]))))
         values.append((f"graph.node.{node_id}.retracted", float(max(per_node_retracted[node_id]))))
+    for speaker in speaker_ids:
+        values.append((f"graph.speaker.{speaker}.active_min", float(min(per_speaker_active[speaker]))))
+        values.append((f"graph.speaker.{speaker}.active_max", float(max(per_speaker_active[speaker]))))
     return tuple(values)
-
 
 def _graph_view(case: GraphCase, interpretation: GraphInterpretation, view_name: str) -> tuple[Any, tuple[str, ...]]:
     nodes = sorted(case.nodes, key=lambda node: (node.turn_index, node.node_id))
     edges = sorted(interpretation.edges, key=lambda edge: (edge.source_turn, edge.reference_id, edge.target_node_id, edge.relation))
+    quote_edges = sorted((node.quoted_parent, node.node_id, "quotes") for node in nodes if node.quoted_parent is not None)
     states = _state_map(interpretation)
     if view_name == "exact-ordered-labeled":
         return (
             {
-                "nodes": [(node.node_id, node.turn_index, node.speaker, node.family, node.label, node.group, node.initial_state) for node in nodes],
+                "nodes": [(node.node_id, node.turn_index, node.speaker, node.family, node.label, node.group, node.quoted_parent, node.initial_state) for node in nodes],
                 "references": [(ref.reference_id, ref.turn_index, ref.speaker, ref.relation, ref.selector, ref.selector_value) for ref in sorted(case.references, key=lambda item: (item.turn_index, item.reference_id))],
-                "edges": [(edge.reference_id, edge.target_node_id, edge.relation) for edge in edges],
+                "edges": [(edge.reference_id, edge.target_node_id, edge.relation) for edge in edges] + quote_edges,
                 "states": [(node.node_id, states[node.node_id].state, states[node.node_id].contradictions) for node in nodes],
             },
             (),
@@ -655,8 +673,8 @@ def _graph_view(case: GraphCase, interpretation: GraphInterpretation, view_name:
     if view_name == "labeled-multigraph":
         return (
             {
-                "nodes": sorted((node.node_id, node.speaker, node.family, node.label, node.group, node.initial_state) for node in nodes),
-                "edges": sorted((edge.reference_id, edge.target_node_id, edge.relation) for edge in edges),
+                "nodes": sorted((node.node_id, node.speaker, node.family, node.label, node.group, node.quoted_parent, node.initial_state) for node in nodes),
+                "edges": sorted([(edge.reference_id, edge.target_node_id, edge.relation) for edge in edges] + quote_edges),
                 "states": sorted((node.node_id, states[node.node_id].state, states[node.node_id].contradictions) for node in nodes),
             },
             ("order",),
@@ -665,7 +683,7 @@ def _graph_view(case: GraphCase, interpretation: GraphInterpretation, view_name:
         return (
             {
                 "nodes": sorted((node.node_id, node.speaker, node.family) for node in nodes),
-                "edges": sorted((edge.reference_id, edge.target_node_id) for edge in edges),
+                "edges": sorted([(edge.reference_id, edge.target_node_id) for edge in edges] + [(parent, child) for parent, child, _ in quote_edges]),
                 "states": sorted((node.node_id, states[node.node_id].state) for node in nodes),
             },
             ("edge-labels", "order"),
@@ -682,7 +700,6 @@ def _graph_view(case: GraphCase, interpretation: GraphInterpretation, view_name:
         return (sorted(summary.items()), ("edge-direction", "edge-labels", "node-labels", "order", "reference-identity", "speaker-ownership"))
     raise KeyError(view_name)
 
-
 def _build_ucns_graph_envelope(case: GraphCase, interpretation: GraphInterpretation, support_policy: str, ucns_api: Mapping[str, Any]) -> Any:
     Cell = ucns_api["Cell"]
     RetainedLayer = ucns_api["RetainedLayer"]
@@ -691,9 +708,7 @@ def _build_ucns_graph_envelope(case: GraphCase, interpretation: GraphInterpretat
     states = _state_map(interpretation)
     cells = []
     for node in sorted(case.nodes, key=lambda item: (item.turn_index, item.node_id)):
-        if support_policy == "node-only":
-            mu = 1.0
-        elif support_policy == "node-edge":
+        if support_policy in {"node-reference", "node-edge"}:
             mu = 1.0
         elif support_policy == "state-detail":
             state = states[node.node_id]
@@ -701,9 +716,18 @@ def _build_ucns_graph_envelope(case: GraphCase, interpretation: GraphInterpretat
         else:
             raise KeyError(support_policy)
         cells.append(Cell(coordinate=("node", node.node_id), payload=asdict(node), type_tag="discourse-node", state=(states[node.node_id].state,), provenance=(case.source.case_id, interpretation.interpretation_id), relation=None, mu=mu))
+    unresolved = set(interpretation.unresolved_references)
+    for reference in sorted(case.references, key=lambda item: (item.turn_index, item.reference_id)):
+        reference_state = "unresolved" if reference.reference_id in unresolved else "resolved"
+        reference_mu = 1.0 + (1.0 if support_policy == "state-detail" and reference_state == "unresolved" else 0.0)
+        cells.append(Cell(coordinate=("reference", reference.reference_id), payload=asdict(reference), type_tag="discourse-reference", state=(reference_state,), provenance=(case.source.case_id, interpretation.interpretation_id), relation=None, mu=reference_mu))
     if support_policy in {"node-edge", "state-detail"}:
         for edge in interpretation.edges:
             cells.append(Cell(coordinate=("edge", edge.edge_id), payload=asdict(edge), type_tag="discourse-edge", state=(edge.relation,), provenance=(case.source.case_id, interpretation.interpretation_id), relation=(edge.reference_id, edge.target_node_id), mu=1.0))
+        for node in case.nodes:
+            if node.quoted_parent is not None:
+                payload = {"source": node.quoted_parent, "target": node.node_id, "relation": "quotes"}
+                cells.append(Cell(coordinate=("quote-edge", node.quoted_parent, node.node_id), payload=payload, type_tag="discourse-edge", state=("quotes",), provenance=(case.source.case_id, interpretation.interpretation_id), relation=(node.quoted_parent, node.node_id), mu=1.0))
     carrier = make_carrier(tuple(cells))
     layers = (
         RetainedLayer("references", tuple(asdict(ref) for ref in case.references)),
@@ -713,16 +737,15 @@ def _build_ucns_graph_envelope(case: GraphCase, interpretation: GraphInterpretat
     )
     return make_retained_structure(carrier, layers)
 
-
 def _resolution_readouts(case: GraphCase, resolution: GraphResolution, ucns_api: Mapping[str, Any]) -> list[CandidateReadout]:
     resolution_id = f"{case.source.case_id}::{resolution.resolver_id}"
     readouts = [CandidateReadout(resolution.resolver_id, resolution_id, _resolution_values(case, resolution), f"The-Interdependency/edcm:{resolution.resolver_id}")]
     cell_detail = ucns_api["cell_detail_breadth_candidate"]()
-    for support in ("node-only", "node-edge", "state-detail"):
+    for support in ("node-reference", "node-edge", "state-detail"):
         values = []
         for interpretation in resolution.interpretations:
-            envelope = _build_ucns_graph_envelope(case, interpretation, support, ucns_api)
-            values.append((float(ucns_api["cell_support_weight"](envelope)), float(cell_detail.evaluate(envelope))))
+            structure = _build_ucns_graph_envelope(case, interpretation, support, ucns_api)
+            values.append((float(ucns_api["cell_support_weight"](structure)), float(cell_detail.evaluate(structure))))
         readouts.append(
             CandidateReadout(
                 f"ucns-{support}-graph-pack",
@@ -738,17 +761,33 @@ def _resolution_readouts(case: GraphCase, resolution: GraphResolution, ucns_api:
         )
     return readouts
 
-
 def _signatures(case: GraphCase, resolution: GraphResolution, ucns_api: Mapping[str, Any]) -> tuple[GraphSignatureRecord, ...]:
     records = []
+    resolution_id = f"{case.source.case_id}::{resolution.resolver_id}"
     views = ("exact-ordered-labeled", "labeled-multigraph", "unlabeled-multigraph", "flat-node-multiset", "active-state-summary")
+    bundle_parts: dict[tuple[str, str], list[str]] = {}
+    bundle_losses: dict[tuple[str, str], set[str]] = {}
     for interpretation in resolution.interpretations:
-        for support in ("node-only", "node-edge", "state-detail"):
+        for support in ("node-reference", "node-edge", "state-detail"):
             for view_name in views:
                 view, losses = _graph_view(case, interpretation, view_name)
-                records.append(GraphSignatureRecord(f"{case.source.case_id}::{resolution.resolver_id}", interpretation.interpretation_id, support, view_name, _digest(view), tuple(sorted(losses))))
+                signature = _digest(view)
+                records.append(GraphSignatureRecord(resolution_id, interpretation.interpretation_id, support, view_name, signature, tuple(sorted(losses))))
+                key = (support, view_name)
+                bundle_parts.setdefault(key, []).append(signature)
+                bundle_losses.setdefault(key, set()).update(losses)
+    for (support, view_name), parts in sorted(bundle_parts.items()):
+        records.append(
+            GraphSignatureRecord(
+                resolution_id,
+                "__bundle__",
+                support,
+                view_name,
+                _digest(tuple(sorted(parts))),
+                tuple(sorted(bundle_losses[(support, view_name)])),
+            )
+        )
     return tuple(records)
-
 
 def _evaluate_graph_relation(relation: GraphExpectedRelation, index: Mapping[tuple[str, str], Any], comparison: Any) -> RelationVerdict:
     from .ucns_edcm_experiments import ExpectedRelation
@@ -775,13 +814,9 @@ def _pair_findings(
     )
     findings: list[GraphPairFinding] = []
     for pair_id, left_id, right_id, readout in specs:
-        left_resolution = resolutions[left_id]
-        right_resolution = resolutions[right_id]
-        left_interpretation = left_resolution.interpretations[0]
-        right_interpretation = right_resolution.interpretations[0]
         for view_name in ("exact-ordered-labeled", "labeled-multigraph", "unlabeled-multigraph", "flat-node-multiset", "active-state-summary"):
-            left_record = signature_index[(left_id, left_interpretation.interpretation_id, view_name)]
-            right_record = signature_index[(right_id, right_interpretation.interpretation_id, view_name)]
+            left_record = signature_index[(left_id, "__bundle__", view_name)]
+            right_record = signature_index[(right_id, "__bundle__", view_name)]
             structures_equal = left_record.signature == right_record.signature
             left_value = index.get((left_id, readout))
             right_value = index.get((right_id, readout))
@@ -796,7 +831,6 @@ def _pair_findings(
                 status = "structurally-distinct-readout-invariant"
             findings.append(GraphPairFinding(pair_id, view_name, readout, left_id, right_id, structures_equal, readout_equal, status, tuple(sorted(set(left_record.information_loss) | set(right_record.information_loss)))))
     return tuple(findings)
-
 
 def run_v4_experiments(
     *,

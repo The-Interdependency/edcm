@@ -24,6 +24,7 @@
 #   cleanup: pytest tmp_path
 # === END CHECKS ===
 
+from dataclasses import replace
 import json
 import os
 from pathlib import Path
@@ -39,6 +40,7 @@ from edcm.ucns_edcm_experiments_v4 import (
     PRIOR_V2_REPORT_DIGEST,
     PRIOR_V3_REPORT_DIGEST,
     SAME_SPEAKER_RESOLVER,
+    _graph_view,
     build_v4_program,
     main,
     resolve_case,
@@ -60,7 +62,7 @@ def test_v4_program_structure() -> None:
     cases, relations = build_v4_program()
     assert len(cases) == 14
     assert len({case.source.case_id for case in cases}) == len(cases)
-    assert len(relations) == 12
+    assert len(relations) == 19
     assert {case.source.partition.value for case in cases} == {"development", "holdout"}
     assert all(case.nodes for case in cases)
     assert all(case.references for case in cases)
@@ -96,8 +98,15 @@ def test_v4_resolver_contrasts() -> None:
     assert ownership_same.interpretations[0].gold_hits == 1
     assert ownership_nearest.interpretations[0].gold_hits == 0
 
-    nested_explicit = _states(resolve_case(_case("nested-quotation"), EXPLICIT_RESOLVER))
-    nested_wide = _states(resolve_case(_case("nested-quotation"), FAMILY_WIDE_RESOLVER))
+    nested_case = _case("nested-quotation")
+    nested_resolution = resolve_case(nested_case, EXPLICIT_RESOLVER)
+    nested_view, _ = _graph_view(nested_case, nested_resolution.interpretations[0], "exact-ordered-labeled")
+    stripped_case = replace(nested_case, nodes=tuple(replace(node, quoted_parent=None) for node in nested_case.nodes))
+    stripped_view, _ = _graph_view(stripped_case, nested_resolution.interpretations[0], "exact-ordered-labeled")
+    assert nested_view != stripped_view
+
+    nested_explicit = _states(nested_resolution)
+    nested_wide = _states(resolve_case(nested_case, FAMILY_WIDE_RESOLVER))
     assert nested_explicit["N1"].state == "retracted"
     assert nested_explicit["C1"].state == "quoted-only"
     assert nested_wide["C1"].state == "retracted"
@@ -129,10 +138,7 @@ def test_v4_joint_report_preserves_graphs_and_no_canon(tmp_path) -> None:
     if not source_root:
         pytest.skip("verified UCNS source checkout not supplied")
 
-    report = run_v4_experiments(
-        edcm_commit="test-v4-edcm",
-        ucns_source_root=source_root,
-    )
+    report = run_v4_experiments(edcm_commit="test-v4-edcm", ucns_source_root=source_root)
     assert report.canon_selection is None
     assert report.prior_v1_report_digest == PRIOR_V1_REPORT_DIGEST
     assert report.prior_v2_report_digest == PRIOR_V2_REPORT_DIGEST
@@ -157,29 +163,61 @@ def test_v4_joint_report_preserves_graphs_and_no_canon(tmp_path) -> None:
         "condition-fail-activates",
         "contradiction-not-retraction",
         "ambiguous-repair-divergence",
+        "ownership-speaker-state",
+        "node-edge-target-state-control",
+        "local-scope-target-invariant",
     ):
         assert verdicts[relation_id] == "supported"
+    for relation_id in (
+        "nearest-ownership-hypothesis",
+        "family-wide-specificity-hypothesis",
+        "explicit-anaphora-hypothesis",
+        "baseline-target-state-hypothesis",
+        "node-reference-target-state-hypothesis",
+    ):
+        assert verdicts[relation_id] == "falsified"
 
-    unresolved_resolution = next(
-        item
-        for item in report.resolutions
-        if item.case_id == "anaphora-ambiguous" and item.resolver_id == EXPLICIT_RESOLVER
+    def readout(case_id, name):
+        for row in report.readouts:
+            if row.case_id == case_id and row.error is None:
+                try:
+                    return row.value(name)
+                except KeyError:
+                    pass
+        raise AssertionError((case_id, name))
+
+    assert readout("anaphora-ambiguous::explicit-reference-v1", "ucns.node-reference.W.min") == readout(
+        "anaphora-ambiguous::nearest-compatible-v1", "ucns.node-reference.W.min"
     )
+    assert readout("speaker-ownership::same-speaker-nearest-v1", "graph.speaker.A.active_min") == 0.0
+    assert readout("speaker-ownership::nearest-compatible-v1", "graph.speaker.A.active_min") == 1.0
+
+    ambiguity_bundle = next(
+        item for item in report.structural_signatures
+        if item.resolution_id == "repair-ambiguous::ambiguity-preserving-v1"
+        and item.interpretation_id == "__bundle__"
+        and item.support_policy == "node-edge"
+        and item.view_name == "exact-ordered-labeled"
+    )
+    nearest_bundle = next(
+        item for item in report.structural_signatures
+        if item.resolution_id == "repair-ambiguous::nearest-compatible-v1"
+        and item.interpretation_id == "__bundle__"
+        and item.support_policy == "node-edge"
+        and item.view_name == "exact-ordered-labeled"
+    )
+    assert ambiguity_bundle.signature != nearest_bundle.signature
+    ambiguity_finding = next(item for item in report.pair_findings if item.pair_id == "ambiguity" and item.view_name == "exact-ordered-labeled")
+    assert ambiguity_finding.structures_equivalent is False
+    assert ambiguity_finding.status == "preserves-observed-distinction"
+
+    unresolved_resolution = next(item for item in report.resolutions if item.case_id == "anaphora-ambiguous" and item.resolver_id == EXPLICIT_RESOLVER)
     assert unresolved_resolution.interpretations[0].unresolved_references == ("X1",)
-
-    ambiguity_resolution = next(
-        item
-        for item in report.resolutions
-        if item.case_id == "anaphora-ambiguous" and item.resolver_id == AMBIGUITY_RESOLVER
-    )
+    ambiguity_resolution = next(item for item in report.resolutions if item.case_id == "anaphora-ambiguous" and item.resolver_id == AMBIGUITY_RESOLVER)
     assert len(ambiguity_resolution.interpretations) == 2
 
     output = tmp_path / "v0.4.json"
-    assert main([
-        "--output", str(output),
-        "--edcm-commit", "test-v4-edcm",
-        "--ucns-source-root", str(Path(source_root)),
-    ]) == 0
+    assert main(["--output", str(output), "--edcm-commit", "test-v4-edcm", "--ucns-source-root", str(Path(source_root))]) == 0
     payload = json.loads(output.read_text())
     assert payload["schema"] == "edcm.ucns-edcm-experiment-report/0.4.0"
     assert payload["canon_selection"] is None
