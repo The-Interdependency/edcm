@@ -94,7 +94,7 @@ _EVENT_FAMILIES: tuple[tuple[str, str, tuple[str, ...]], ...] = (
     (
         "refusal",
         "refusal",
-        ("i refuse", "will not comply", "cannot comply", "i decline"),
+        ("i refuse", "refuse", "will not comply", "cannot comply", "i decline"),
     ),
 )
 _REPAIR_MARKERS = (
@@ -164,7 +164,7 @@ class ScopeEvent:
         return view
 
     def lexical_view(self) -> dict[str, str]:
-        return {"kind": self.kind, "family": self.family, "phrase": self.phrase}
+        return {"kind": self.kind, "family": self.family}
 
 
 @dataclass(frozen=True, slots=True)
@@ -448,7 +448,7 @@ def build_v3_program() -> tuple[
         ExpectedRelation("retraction-lexical-equal", "edcm.occurrence.constraint_occurrences", "mandatory-active", RelationOperator.EQ, "mandatory-withdrawn", "same mandatory phrase appears in both cases"),
         ExpectedRelation("retraction-scope-active", "edcm.scope.asserted_constraint_events", "mandatory-active", RelationOperator.GT, "mandatory-withdrawn", "withdrawn statement should not remain active"),
         ExpectedRelation("retraction-active-support", "ucns.active-pressure.W.cell-support", "mandatory-active", RelationOperator.GT, "mandatory-withdrawn", "active support should distinguish active from withdrawn mention"),
-        ExpectedRelation("refusal-negation-lexical-equal", "edcm.occurrence.refusal_occurrences", "refusal-positive", RelationOperator.EQ, "refusal-negated", "same refusal phrase remains a lexical mention"),
+        ExpectedRelation("refusal-negation-lexical-equal", "edcm.scope.lexical_refusal_mentions", "refusal-positive", RelationOperator.EQ, "refusal-negated", "same refusal phrase remains a lexical mention"),
         ExpectedRelation("refusal-negation-scope", "edcm.scope.owned_refusal_events", "refusal-positive", RelationOperator.GT, "refusal-negated", "negated refusal should not count as active owned refusal"),
         ExpectedRelation("refusal-negation-baseline", "edcm.baseline.R_mean", "refusal-positive", RelationOperator.GT, "refusal-negated", "baseline R is tested for local negation"),
     )
@@ -460,7 +460,7 @@ def build_v3_program() -> tuple[
         ("ownership", "refusal-owned", "refusal-attributed", ("edcm.scope.owned_refusal_events", "edcm.occurrence.refusal_occurrences")),
         ("repair-order", "pressure-repaired", "pressure-renewed", ("edcm.scope.final_active_pressure", "edcm.baseline.kappa_final")),
         ("retraction", "mandatory-active", "mandatory-withdrawn", ("edcm.scope.asserted_constraint_events", "edcm.occurrence.constraint_occurrences")),
-        ("refusal-negation", "refusal-positive", "refusal-negated", ("edcm.scope.owned_refusal_events", "edcm.occurrence.refusal_occurrences")),
+        ("refusal-negation", "refusal-positive", "refusal-negated", ("edcm.scope.owned_refusal_events", "edcm.scope.lexical_refusal_mentions")),
     )
     return cases, relations, pair_specs
 
@@ -529,8 +529,8 @@ def _scope_signatures(case: ExperimentCase, support_policy: str, ucns_api: Mappi
         ("full-ordered", apply_policy(full_ordered_source, ordered_sequence_policy(name="full-ordered")), ()),
         ("full-multiset", apply_policy(full_ordered_source, unordered_multiset_policy(full_key, name="full-multiset")), ("order",)),
         ("full-set", apply_policy(full_ordered_source, set_policy(full_key, name="full-set")), ("order", "multiplicity")),
-        ("lexical-multiset", apply_policy(lexical_source, unordered_multiset_policy(lexical_key, name="lexical-multiset")), ("scope", "order")),
-        ("lexical-set", apply_policy(lexical_source, set_policy(lexical_key, name="lexical-set")), ("scope", "order", "multiplicity")),
+        ("lexical-multiset", apply_policy(lexical_source, unordered_multiset_policy(lexical_key, name="lexical-multiset")), ("scope", "surface", "order")),
+        ("lexical-set", apply_policy(lexical_source, set_policy(lexical_key, name="lexical-set")), ("scope", "surface", "order", "multiplicity")),
     )
     return tuple(
         ScopeSignatureRecord(case.case_id, support_policy, view_name, _projection_signature(projection.policy_name, projection), losses)
