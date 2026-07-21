@@ -1063,7 +1063,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_quote_spans, _mention_events, _repair_events, _extract_scope_events, _build_scope_envelope, _scope_signatures, _pair_findings",
+        "internal_surface": "_split_scope_turns, _quote_spans, _mention_events, _repair_events, _extract_scope_events, _build_scope_envelope, _scope_signatures, _pair_findings",
         "module_kind": "instrument",
         "module_name": "ucns_edcm_experiments_v3",
         "network_boundary": "none; exact UCNS checkout and installed package are verified locally",
