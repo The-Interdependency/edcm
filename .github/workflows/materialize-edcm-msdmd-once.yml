@@ -1,8 +1,8 @@
-name: materialize EDCM msdmd once
+name: materialize generated EDCM evidence once
 
 on:
-  push:
-    branches: [agent/ucns-edcm-experiment-first]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   materialize:
+    if: github.event_name == 'workflow_dispatch' || github.head_ref == 'agent/ucns-edcm-experiment-first'
     runs-on: ubuntu-latest
     steps:
       - name: Check out EDCM branch
@@ -25,21 +26,48 @@ jobs:
           ref: d0036c6c3a449f5a1213e3289dceb1c43263cb52
           path: /tmp/skill-lib
 
-      - name: Generate tracked collection
+      - name: Check out exact UCNS experiment authority
+        uses: actions/checkout@v4
+        with:
+          repository: The-Interdependency/ucns
+          ref: 5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed
+          path: /tmp/ucns
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate tracked metadata and reproducible report
         run: |
           PYTHONPATH=/tmp/skill-lib python /tmp/skill-lib/msdmd/collect.py \
             --root . \
             --repo The-Interdependency/edcm \
             --out edcm_msdmd.ts
+          python -m pip install --upgrade pip
+          python -m pip install /tmp/ucns
+          python -m pip install -e .[dev]
+          mkdir -p experiments/results
+          python -m edcm.ucns_edcm_experiments \
+            --edcm-commit 5d15592d509a760ff9fbcdd346a2e749537bb2ba \
+            --ucns-commit 5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed \
+            --output experiments/results/2026-07-21-ucns-edcm-v0.1.0.json
+          python -m edcm.ucns_edcm_experiments \
+            --edcm-commit 5d15592d509a760ff9fbcdd346a2e749537bb2ba \
+            --ucns-commit 5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed \
+            --output /tmp/ucns-edcm-repeat.json
+          diff -u experiments/results/2026-07-21-ucns-edcm-v0.1.0.json /tmp/ucns-edcm-repeat.json
           rm .github/workflows/materialize-edcm-msdmd-once.yml
 
-      - name: Commit exact generated result and remove materializer
+      - name: Commit exact generated results and remove materializer
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add edcm_msdmd.ts .github/workflows/materialize-edcm-msdmd-once.yml
+          git add edcm_msdmd.ts \
+            experiments/results/2026-07-21-ucns-edcm-v0.1.0.json \
+            .github/workflows/materialize-edcm-msdmd-once.yml
           if git diff --cached --quiet; then
             exit 0
           fi
-          git commit -m "chore: refresh EDCM msdmd collection"
+          git commit -m "data: record initial UCNS-EDCM experiment evidence"
           git push origin HEAD:agent/ucns-edcm-experiment-first
