@@ -44,12 +44,14 @@ dev = [
 metapat = [
   "metapat @ git+https://github.com/The-Interdependency/metapat.git@b30b1363706731d28867ef2e6366512f9254f5e8",
 ]
-# UCNS integration is intentionally absent while the producer repository is
-# reset at the intrinsic Möbius seam and has no current implementation.
-# Do not restore a pre-reset commit here. A future extra requires a new,
-# twist-bearing producer contract and an explicit migration.
+# Joint UCNS–EDCM experiments are opt-in and pinned to the exact reviewed
+# research-infrastructure commit. The base EDCM package remains dependency-free.
+ucns-experiments = [
+  "ucns @ git+https://github.com/The-Interdependency/ucns.git@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+]
 full-stack = [
   "metapat @ git+https://github.com/The-Interdependency/metapat.git@b30b1363706731d28867ef2e6366512f9254f5e8",
+  "ucns @ git+https://github.com/The-Interdependency/ucns.git@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
 ]
 
 [tool.setuptools]
