@@ -41,14 +41,14 @@ dev = [
   "pytest>=8.0",
   "twine>=5.0",
 ]
-ucns = [
-  "ucns @ git+https://github.com/The-Interdependency/ucns.git@c7849498bb5b14b87dbb4cffb6522fbc82639373",
-]
 metapat = [
   "metapat @ git+https://github.com/The-Interdependency/metapat.git@b30b1363706731d28867ef2e6366512f9254f5e8",
 ]
+# UCNS integration is intentionally absent while the producer repository is
+# reset at the intrinsic Möbius seam and has no current implementation.
+# Do not restore a pre-reset commit here. A future extra requires a new,
+# twist-bearing producer contract and an explicit migration.
 full-stack = [
-  "ucns @ git+https://github.com/The-Interdependency/ucns.git@c7849498bb5b14b87dbb4cffb6522fbc82639373",
   "metapat @ git+https://github.com/The-Interdependency/metapat.git@b30b1363706731d28867ef2e6366512f9254f5e8",
 ]
 
