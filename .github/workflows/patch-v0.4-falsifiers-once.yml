@@ -1,0 +1,65 @@
+name: add v0.4 graph falsifiers once
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.head_ref == 'agent/ucns-edcm-v0-4-discourse-graphs'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/ucns-edcm-v0-4-discourse-graphs
+          fetch-depth: 0
+      - name: Patch falsifier relations and witnesses
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('edcm/ucns_edcm_experiments_v4.py')
+          s = p.read_text()
+          needle = '''        GraphExpectedRelation("ambiguous-repair-divergence", "graph.state_divergence", f"repair-ambiguous::{AMBIGUITY_RESOLVER}", RelationOperator.GT, f"repair-ambiguous::{NEAREST_RESOLVER}", "ambiguous repair must expose divergent graph outcomes"),
+        GraphExpectedRelation("local-scope-target-invariant", "edcm.scope.asserted_constraint_events", "explicit-r1", RelationOperator.EQ, "explicit-r2", "local scope event count should remain invariant when only the discourse target changes"),'''
+          replacement = '''        GraphExpectedRelation("ambiguous-repair-divergence", "graph.state_divergence", f"repair-ambiguous::{AMBIGUITY_RESOLVER}", RelationOperator.GT, f"repair-ambiguous::{NEAREST_RESOLVER}", "ambiguous repair must expose divergent graph outcomes"),
+        GraphExpectedRelation("nearest-ownership-hypothesis", "graph.gold_hits_min", f"speaker-ownership::{NEAREST_RESOLVER}", RelationOperator.EQ, f"speaker-ownership::{SAME_SPEAKER_RESOLVER}", "nearest-compatible is tested for ownership-sensitive target selection"),
+        GraphExpectedRelation("family-wide-specificity-hypothesis", "graph.active_count_min", f"explicit-r1::{FAMILY_WIDE_RESOLVER}", RelationOperator.EQ, f"explicit-r1::{EXPLICIT_RESOLVER}", "family-wide is tested for preserving explicit target specificity without over-retraction"),
+        GraphExpectedRelation("explicit-anaphora-hypothesis", "graph.unresolved_count_max", f"anaphora-ambiguous::{EXPLICIT_RESOLVER}", RelationOperator.EQ, f"anaphora-ambiguous::{NEAREST_RESOLVER}", "explicit-only resolution is tested for underspecified anaphora"),
+        GraphExpectedRelation("baseline-target-state-hypothesis", "edcm.baseline.kappa_final", "explicit-r1", RelationOperator.NE, "explicit-r2", "the frozen baseline is tested for which-target state sensitivity"),
+        GraphExpectedRelation("node-only-target-state-hypothesis", "ucns.node-only.W.min", f"explicit-r1::{EXPLICIT_RESOLVER}", RelationOperator.NE, f"explicit-r1::{FAMILY_WIDE_RESOLVER}", "node-only scalar support is tested for resolver-edge sensitivity"),
+        GraphExpectedRelation("node-edge-target-state-control", "ucns.node-edge.W.min", f"explicit-r1::{EXPLICIT_RESOLVER}", RelationOperator.LT, f"explicit-r1::{FAMILY_WIDE_RESOLVER}", "node-edge support should retain the extra family-wide edge"),
+        GraphExpectedRelation("local-scope-target-invariant", "edcm.scope.asserted_constraint_events", "explicit-r1", RelationOperator.EQ, "explicit-r2", "local scope event count should remain invariant when only the discourse target changes"),'''
+          if needle not in s:
+              raise SystemExit('relation insertion point not found')
+          p.write_text(s.replace(needle, replacement))
+
+          t = Path('tests/test_ucns_edcm_experiments_v4.py')
+          x = t.read_text().replace('assert len(relations) == 12', 'assert len(relations) == 18')
+          marker = '''    unresolved_resolution = next(
+'''
+          addition = '''    for relation_id in (
+        "nearest-ownership-hypothesis",
+        "family-wide-specificity-hypothesis",
+        "explicit-anaphora-hypothesis",
+        "baseline-target-state-hypothesis",
+        "node-only-target-state-hypothesis",
+    ):
+        assert verdicts[relation_id] == "falsified"
+    assert verdicts["node-edge-target-state-control"] == "supported"
+
+'''
+          if marker not in x:
+              raise SystemExit('test insertion point not found')
+          t.write_text(x.replace(marker, addition + marker))
+          PY
+          rm .github/workflows/patch-v0.4-falsifiers-once.yml
+      - name: Commit falsifiers
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add edcm/ucns_edcm_experiments_v4.py tests/test_ucns_edcm_experiments_v4.py .github/workflows/patch-v0.4-falsifiers-once.yml
+          git commit -m 'test: add v0.4 resolver and scalar falsifiers'
+          git push origin HEAD:agent/ucns-edcm-v0-4-discourse-graphs
