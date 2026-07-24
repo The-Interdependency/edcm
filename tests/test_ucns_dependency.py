@@ -26,13 +26,16 @@ def test_ucns_dependency_report_separates_package_from_evidence():
     assert report["ucns_factorization_evidence_attached"] is False
     assert report["ucns_negative_certification_attached"] is False
     assert report["ucns_theorem_status_attached"] is False
+    assert report["install_hint"] is None
 
     if report["ucns_package_available"]:
         assert report["available"] is True
         assert report["dependency"] in {"available", "failed"}
+        if report["dependency"] == "available":
+            assert report["ucns_adapter_active"] is True
     else:
         assert report["dependency"] == "missing"
-        assert "The-Interdependency/ucns.git@27c004b" in report["install_hint"]
+        assert report["ucns_adapter_active"] is False
 
 
 def test_energy_report_does_not_convert_import_into_scope_attachment():
