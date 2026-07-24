@@ -10,16 +10,8 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = "MPL-2.0"
 license-files = ["LICENSE"]
-authors = [
-  { name = "Erin Spencer" },
-]
-keywords = [
-  "measurement",
-  "provenance",
-  "transcript-analysis",
-  "ucns",
-  "metapat",
-]
+authors = [{ name = "Erin Spencer" }]
+keywords = ["measurement", "provenance", "transcript-analysis", "ucns", "metapat"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Programming Language :: Python :: 3",
@@ -36,23 +28,21 @@ Repository = "https://github.com/The-Interdependency/edcm"
 Issues = "https://github.com/The-Interdependency/edcm/issues"
 
 [project.optional-dependencies]
-dev = [
-  "build>=1.2",
-  "pytest>=8.0",
-  "twine>=5.0",
-]
+dev = ["build>=1.2", "pytest>=8.0", "twine>=5.0"]
 metapat = [
-  "metapat @ git+https://github.com/The-Interdependency/metapat.git@b30b1363706731d28867ef2e6366512f9254f5e8",
+  "metapat @ git+https://github.com/The-Interdependency/metapat.git@54bd394746426b37d5ca2e996071ace526fbdc9a",
 ]
-# Joint UCNS–EDCM experiments are isolated behind their own opt-in extra and
-# pinned to the exact reviewed research-infrastructure commit. The historical
-# full-stack compatibility extra remains METAPAT-only so installing it cannot
-# activate the old EDCM UCNS adapter path by package availability.
-ucns-experiments = [
-  "ucns @ git+https://github.com/The-Interdependency/ucns.git@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
+ucns-profile = [
+  "ucns @ git+https://github.com/The-Interdependency/ucns.git@19f1afddb993f7d933ac8727627e7d5e1c3b88fc",
 ]
 full-stack = [
-  "metapat @ git+https://github.com/The-Interdependency/metapat.git@b30b1363706731d28867ef2e6366512f9254f5e8",
+  "metapat @ git+https://github.com/The-Interdependency/metapat.git@54bd394746426b37d5ca2e996071ace526fbdc9a",
+  "ucns @ git+https://github.com/The-Interdependency/ucns.git@19f1afddb993f7d933ac8727627e7d5e1c3b88fc",
+]
+# Historical joint experiment installation remains available but now resolves
+# the same exact post-reset UCNS producer used by the runtime bridge consumer.
+ucns-experiments = [
+  "ucns @ git+https://github.com/The-Interdependency/ucns.git@19f1afddb993f7d933ac8727627e7d5e1c3b88fc",
 ]
 
 [tool.setuptools]
@@ -63,10 +53,7 @@ where = ["."]
 include = ["edcm*"]
 
 [tool.setuptools.package-data]
-edcm = [
-  "py.typed",
-  "measurement/canon/data/*.json",
-]
+edcm = ["py.typed", "measurement/canon/data/*.json"]
 
 [tool.setuptools.dynamic]
 version = { attr = "edcm.__version__" }
