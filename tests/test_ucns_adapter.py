@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import sys
 from types import ModuleType, SimpleNamespace
 
 import pytest
@@ -91,8 +90,9 @@ def test_exact_profile_activates(monkeypatch):
 
 
 def test_exact_bridge_attaches_geometry_without_validity_transfer():
-    adapter = ActualUCNSAdapter(_exact_module())
-    result = adapter.normalize({"ucns_bridge_record": _exact_module().EdcmMetapatBridgeRecord()})
+    module = _exact_module()
+    adapter = ActualUCNSAdapter(module)
+    result = adapter.normalize({"ucns_bridge_record": module.EdcmMetapatBridgeRecord()})
     geometry = result["ucns_geometry"]
     status = result["ucns_integration"]
     assert geometry["stable_hash"] == "stable-object"
@@ -106,7 +106,8 @@ def test_exact_bridge_attaches_geometry_without_validity_transfer():
 
 
 def test_json_bridge_and_commit_mismatch():
-    adapter = ActualUCNSAdapter(_exact_module())
+    module = _exact_module()
+    adapter = ActualUCNSAdapter(module)
     result = adapter.normalize({"ucns_bridge_record_json": json.dumps({"source_commit": PINNED_UCNS_COMMIT})})
     assert result["ucns_geometry"]["stable_hash"] == "stable-object"
     with pytest.raises(UCNSAdapterConstructionError, match="source commit mismatch"):
