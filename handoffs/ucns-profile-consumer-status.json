@@ -1,27 +1,34 @@
 {
-  "supported_producer_epoch": null,
-  "supported_profile": null,
-  "supported_bridge_schema": null,
-  "pinned_ucns_commit": null,
-  "adapter_activation_status": "suspended-awaiting-reviewed-post-reset-producer-profile",
+  "supported_producer_epoch": "ucns.post-reset.v1",
+  "supported_profile": ["ucns.profile.edcm-metapat-ordered-occurrence", "1.0.0"],
+  "supported_bridge_schema": ["ucns.bridge.edcm-metapat-ordered-occurrence", "1.0.0"],
+  "pinned_ucns_commit": "19f1afddb993f7d933ac8727627e7d5e1c3b88fc",
+  "adapter_activation_status": "exact-profile-active-when-matching-package-is-installed",
   "rejected_legacy_schemas": [
     "ucns-canonical-json-v1",
     "ucns.bridge-record@1.0.0",
     "ucns.factorization-evidence@1.0.0"
   ],
   "tests_proving_fail_closed_behavior": [
-    "pending: select_ucns_adapter remains suspended with fake archived ucns package",
-    "pending: require_ucns fails at reset/profile boundary",
-    "pending: default transcript layers emit UCNS geometry and factorization as NA",
-    "pending: NA is distinct from zero"
+    "fake archived UCNS package cannot activate",
+    "live UCNSObject input is rejected",
+    "factorization evidence input is rejected",
+    "bridge source-commit mismatch is rejected",
+    "NA remains distinct from zero"
+  ],
+  "tests_proving_exact_profile_behavior": [
+    "exact producer/profile/bridge identities activate",
+    "object, JSON, and mapping bridge forms normalize through producer validation",
+    "ordered occurrence identities and retained layer digests survive",
+    "theorem and measurement validity transfer remain false",
+    "transcript-only operation remains available"
   ],
   "unresolved_constraints": [
-    "Reviewed UCNS handoff is unavailable.",
-    "Exact producer epoch, bounded profile ID/version, bridge schema ID/version, accepted package identity, complete option set, stable identity contract, and exact UCNS commit are not yet declared.",
-    "Cross-repository fixture and v0.1-v0.4 comparison reruns cannot become authoritative before exact pinning."
+    "Existing v0.1-v0.4 experiment reports remain historical evidence and have not been rewritten.",
+    "No factorization or universal multiplication consumer is authorized by this profile."
   ],
   "theorem_transfer": false,
   "measurement_validity": false,
   "metapat_validity": false,
-  "hmmm": "The consumer recognizes no lookalikes; exact identity or honest suspension."
+  "hmmm": "EDCM consumes one exact bridge and treats everything else as absent or incompatible."
 }
