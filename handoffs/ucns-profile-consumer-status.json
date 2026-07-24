@@ -1,0 +1,27 @@
+{
+  "supported_producer_epoch": null,
+  "supported_profile": null,
+  "supported_bridge_schema": null,
+  "pinned_ucns_commit": null,
+  "adapter_activation_status": "suspended-awaiting-reviewed-post-reset-producer-profile",
+  "rejected_legacy_schemas": [
+    "ucns-canonical-json-v1",
+    "ucns.bridge-record@1.0.0",
+    "ucns.factorization-evidence@1.0.0"
+  ],
+  "tests_proving_fail_closed_behavior": [
+    "pending: select_ucns_adapter remains suspended with fake archived ucns package",
+    "pending: require_ucns fails at reset/profile boundary",
+    "pending: default transcript layers emit UCNS geometry and factorization as NA",
+    "pending: NA is distinct from zero"
+  ],
+  "unresolved_constraints": [
+    "Reviewed UCNS handoff is unavailable.",
+    "Exact producer epoch, bounded profile ID/version, bridge schema ID/version, accepted package identity, complete option set, stable identity contract, and exact UCNS commit are not yet declared.",
+    "Cross-repository fixture and v0.1-v0.4 comparison reruns cannot become authoritative before exact pinning."
+  ],
+  "theorem_transfer": false,
+  "measurement_validity": false,
+  "metapat_validity": false,
+  "hmmm": "The consumer recognizes no lookalikes; exact identity or honest suspension."
+}
