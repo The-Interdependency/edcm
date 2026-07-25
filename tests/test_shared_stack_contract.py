@@ -99,6 +99,7 @@ def test_full_stack_fixture_uses_exact_profile_and_preserves_boundaries():
     assert observation["source_commit"] == "eb264fba18bd051c46b4853c81c8fb91ec6d5811"
     assert observation["token_alphabet_size"] == 157
     assert tuple(turn["speaker_id"] for turn in observation["turns"]) == ("A", "B")
+    assert result["layer_provenance"]["ucns_profile"]["canonical"] is False
     assert contract["ucns_geometry_identity"]["state"] == "NA"
     assert contract["ucns_factorization_evidence"]["state"] == "NA"
     assert contract["readouts"]["state"] == "measured"

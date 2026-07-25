@@ -272,7 +272,7 @@ class UCNSProfileLayer:
             source_repository=status.source_repository,
             role="ucns_profile",
             selection=status.selection,
-            canonical=True,
+            canonical=False,
             unresolved_constraints=status.unresolved_constraints,
             errors=status.errors,
         )
