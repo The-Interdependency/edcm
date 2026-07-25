@@ -1,4 +1,32 @@
-"""UCNS dependency diagnostics for the exact post-reset consumer profile."""
+"""UCNS dependency diagnostics for the exact EDCM word-gonol profile.
+
+Usage guidance
+--------------
+Use :func:`ucns_dependency_report` for non-throwing diagnostics and
+:func:`require_ucns` only where the exact optional profile is mandatory.
+Package presence alone never counts as profile recognition.
+"""
+
+# === MODULE_BUILD ===
+# id: edcm_ucns_dependency
+#   module_name: ucns_dependency
+#   module_kind: adapter
+#   summary: diagnostics and fail-closed loading for the optional exact EDCM UCNS word-gonol profile
+#   owner: Erin Spencer
+#   public_surface: INSTALL_HINT, require_ucns, ucns_available, ucns_dependency_report
+#   internal_surface: none
+#   auth_boundary: none
+#   storage_boundary: none
+#   network_boundary: none
+#   user_data_boundary: none
+#   admin_only: false
+#   tests: tests.test_ucns_dependency
+#   rollout: optional dependency diagnostic
+#   rollback: report typed dependency absence while base EDCM remains operational
+#   requires: edcm_ucns_adapter
+#   since: 2026-07-25
+#   unresolved: installed package provenance is enforced by the exact optional-dependency pin and profile invariants rather than a signed runtime attestation
+# === END MODULE_BUILD ===
 from __future__ import annotations
 
 import importlib

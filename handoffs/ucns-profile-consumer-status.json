@@ -1,34 +1,60 @@
 {
-  "supported_producer_epoch": "ucns.post-reset.v1",
-  "supported_profile": ["ucns.profile.edcm-metapat-ordered-occurrence", "1.0.0"],
-  "supported_bridge_schema": ["ucns.bridge.edcm-metapat-ordered-occurrence", "1.0.0"],
-  "pinned_ucns_commit": "19f1afddb993f7d933ac8727627e7d5e1c3b88fc",
+  "supported_profile": [
+    "ucns.profile.edcm-word-gonol",
+    "0.1.0"
+  ],
+  "profile_scope": "edcm-only",
+  "pinned_ucns_commit": "eb264fba18bd051c46b4853c81c8fb91ec6d5811",
   "adapter_activation_status": "exact-profile-active-when-matching-package-is-installed",
-  "rejected_legacy_schemas": [
-    "ucns-canonical-json-v1",
-    "ucns.bridge-record@1.0.0",
-    "ucns.factorization-evidence@1.0.0"
+  "input_contract": "full ordered corpus as exact (speaker_id, text) tuples",
+  "fixed_options": {
+    "carrier_requirement": "mobius-origin-hidden-zero",
+    "corpus_execution": "full-corpus",
+    "gonol_initiation": "mobius-twist",
+    "nesting_boundary": "superpositioned-space",
+    "normalization": "none-preserve-source",
+    "occurrence_operation": "ordered-concatenation",
+    "out_of_alphabet": "retain-and-report",
+    "profile_scope": "edcm-only",
+    "smallest_gonol": "word",
+    "support": "one-unit-per-speaker-turn",
+    "token_alphabet": "public-gonol-157",
+    "token_identity": "unicode-code-point"
+  },
+  "retired_current_inputs": [
+    "ucns_object",
+    "ucns_bridge_record",
+    "ucns_bridge_record_json",
+    "ucns_bridge_record_dict",
+    "ucns_factorization_evidence",
+    "ucns_factorization_evidence_json",
+    "ucns_factorization_evidence_dict"
   ],
   "tests_proving_fail_closed_behavior": [
-    "fake archived UCNS package cannot activate",
-    "live UCNSObject input is rejected",
-    "factorization evidence input is rejected",
-    "bridge source-commit mismatch is rejected",
+    "archived UCNS package cannot activate",
+    "profile option drift suspends activation",
+    "retired bridge, object, and factorization inputs are rejected",
+    "flattened transcript does not invent speaker-turn boundaries",
     "NA remains distinct from zero"
   ],
   "tests_proving_exact_profile_behavior": [
-    "exact producer/profile/bridge identities activate",
-    "object, JSON, and mapping bridge forms normalize through producer validation",
-    "ordered occurrence identities and retained layer digests survive",
-    "theorem and measurement validity transfer remain false",
-    "transcript-only operation remains available"
+    "all full-corpus turns preserve order and unit support",
+    "repeated SPACE occurrences remain explicit superpositioned boundaries",
+    "word gonols preserve ordered concatenation and Mobius initiation",
+    "out-of-alphabet Unicode remains exact evidence",
+    "profile observation identity is deterministic",
+    "geometry, factorization, theorem, and measurement-validity transfer remain absent"
   ],
+  "historical_experiment_ucns_commit": "5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
   "unresolved_constraints": [
-    "Existing v0.1-v0.4 experiment reports remain historical evidence and have not been rewritten.",
-    "No factorization or universal multiplication consumer is authorized by this profile."
+    "Formal Mobius carrier coordinates are not supplied.",
+    "Higher-gonol composition and the hyper-dimensional lattice relation law remain open.",
+    "Projection policy must deepen only with experimental evidence.",
+    "The 157-token alphabet and word/SPACE assumptions require full real-system corpus pressure.",
+    "Historical v0.1-v0.4 experiment reports remain historical evidence and are not rewritten."
   ],
   "theorem_transfer": false,
   "measurement_validity": false,
   "metapat_validity": false,
-  "hmmm": "EDCM consumes one exact bridge and treats everything else as absent or incompatible."
+  "hmmm": "The exact profile is an instrument for finding where current examples are incomplete; it is not permission to collapse missing geometry into a convenient bridge."
 }

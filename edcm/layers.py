@@ -3,11 +3,11 @@
 Usage guidance
 --------------
 Use :func:`build_default_layers` for the supported package bootstrap. The
-semantics stage is composite: canonical METAPAT semantic authority and actual
-UCNS geometry are selected independently, with typed absence when either
-optional package is unavailable. The maintained ``edcm.measurement`` surface
-always supplies measurement. Composition and delivery emit the deterministic
-shared-stack result contract.
+semantics stage is composite: canonical METAPAT semantic authority and the
+EDCM-only UCNS word-gonol observation profile are selected independently, with
+typed absence when either optional package is unavailable. The profile does
+not supply UCNS geometry. The maintained ``edcm.measurement`` surface always
+supplies measurement. Composition and delivery emit the deterministic result.
 
 Every result includes independent ``metapat_integration``, ``ucns_integration``,
 ``layer_provenance``, and ``edcm_result`` records. Missing integrations are
@@ -18,9 +18,9 @@ never represented only by a bare ``default`` label.
 # id: edcm_layers
 #   module_name: layers
 #   module_kind: engine
-#   summary: Provenance-bearing EDCM stack with independently selected METAPAT semantic authority, actual UCNS geometry or typed absence, canonical local measurement, shared-stack composition, and final result-contract delivery.
+#   summary: Provenance-bearing EDCM stack with independently selected METAPAT semantic authority, exact UCNS word-gonol observation profile or typed absence, canonical local measurement, shared-stack composition, and final result-contract delivery.
 #   owner: Erin Spencer
-#   public_surface: LayerProvenance, MeasurementLayer, SemanticsLayer, CompositionLayer, DeliveryLayer, DefaultMeasurementLayer, DefaultSemanticsLayer, DefaultCompositionLayer, DefaultDeliveryLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, CompositeSemanticsLayer, ConsolidatedMeasurementLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, EDCMLayers, build_default_layers
+#   public_surface: LayerProvenance, MeasurementLayer, SemanticsLayer, CompositionLayer, DeliveryLayer, DefaultMeasurementLayer, DefaultCompositionLayer, DefaultDeliveryLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, MissingUCNSProfileLayer, UCNSProfileLayer, CompositeSemanticsLayer, ConsolidatedMeasurementLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, EDCMLayers, build_default_layers
 #   internal_surface: _record_layer, _local_provenance
 #   auth_boundary: none
 #   storage_boundary: none
@@ -32,7 +32,7 @@ never represented only by a bare ``default`` label.
 #   rollback: restore prior layer assembly and remove shared-stack result delivery
 #   requires: edcm_metapat_adapter, edcm_ucns_adapter, edcm_measurement, edcm_shared_stack
 #   since: 2026-06-02
-#   unresolved: official negative-certification and theorem-status evidence envelopes remain unattached until validated schemas exist
+#   unresolved: formal Mobius coordinates and higher-gonol composition remain unattached; profile observations do not supply geometry, factorization, or theorem status
 # === END MODULE_BUILD ===
 
 from __future__ import annotations
@@ -236,36 +236,32 @@ class MetapatSemanticAuthorityLayer:
         return _record_layer(state, "semantic_authority", self.provenance)
 
 
-class TranscriptOnlySemanticsLayer:
-    """Explicit geometry absence used only when the optional UCNS package is absent."""
+class MissingUCNSProfileLayer:
+    """Typed profile absence when the optional exact UCNS profile is unavailable."""
 
     def __init__(self, status: UCNSIntegrationStatus | None = None) -> None:
         self._status = status or missing_ucns_status()
         self.provenance = _local_provenance(
-            "edcm.geometry.transcript_only",
-            "geometry",
-            "local_fallback",
+            "edcm.ucns_profile.unavailable",
+            "ucns_profile",
+            "unavailable",
             canonical=False,
             unresolved_constraints=(
-                "no actual UCNS geometry adapter ran",
+                "no exact UCNS word-gonol profile ran",
                 *self._status.unresolved_constraints,
             ),
         )
 
     def normalize(self, payload: dict[str, Any]) -> dict[str, Any]:
         state = dict(payload)
-        state["geometry"] = "edcm.transcript_only"
+        state["ucns_profile"] = "unavailable"
         state["ucns_integration"] = self._status.as_dict()
-        state.pop("ucns_geometry", None)
-        return _record_layer(state, "geometry", self.provenance)
+        state.pop("ucns_profile_observation", None)
+        return _record_layer(state, "ucns_profile", self.provenance)
 
 
-class DefaultSemanticsLayer(TranscriptOnlySemanticsLayer):
-    """Backward-compatible name for the explicit transcript-only geometry mode."""
-
-
-class UCNSSemanticsLayer:
-    """Geometry-stage wrapper around :class:`ActualUCNSAdapter`."""
+class UCNSProfileLayer:
+    """Observation-profile wrapper around :class:`ActualUCNSAdapter`."""
 
     def __init__(self, adapter: ActualUCNSAdapter) -> None:
         self._adapter = adapter
@@ -274,7 +270,7 @@ class UCNSSemanticsLayer:
             implementation_id=status.implementation_id,
             implementation_version=status.implementation_version,
             source_repository=status.source_repository,
-            role="geometry",
+            role="ucns_profile",
             selection=status.selection,
             canonical=True,
             unresolved_constraints=status.unresolved_constraints,
@@ -283,21 +279,21 @@ class UCNSSemanticsLayer:
 
     def normalize(self, payload: dict[str, Any]) -> dict[str, Any]:
         state = self._adapter.normalize(payload)
-        state["geometry"] = state.pop("semantics", "ucns.geometry_adapter")
-        return _record_layer(state, "geometry", self.provenance)
+        state["ucns_profile"] = "ucns.edcm_word_gonol_profile"
+        return _record_layer(state, "ucns_profile", self.provenance)
 
 
 class CompositeSemanticsLayer:
-    """Run semantic authority and geometry as independent sublayers."""
+    """Run semantic authority and the UCNS observation profile independently."""
 
-    def __init__(self, authority: SemanticsLayer, geometry: SemanticsLayer) -> None:
+    def __init__(self, authority: SemanticsLayer, profile: SemanticsLayer) -> None:
         self._authority = authority
-        self._geometry = geometry
+        self._profile = profile
         unresolved = tuple(
             dict.fromkeys(
                 (
                     *authority.provenance.unresolved_constraints,
-                    *geometry.provenance.unresolved_constraints,
+                    *profile.provenance.unresolved_constraints,
                 )
             )
         )
@@ -311,10 +307,10 @@ class CompositeSemanticsLayer:
 
     def normalize(self, payload: dict[str, Any]) -> dict[str, Any]:
         state = self._authority.normalize(payload)
-        state = self._geometry.normalize(state)
+        state = self._profile.normalize(state)
         state["semantics"] = {
             "semantic_authority": state.get("semantic_authority"),
-            "geometry": state.get("geometry"),
+            "ucns_profile": state.get("ucns_profile"),
         }
         return _record_layer(state, "semantics", self.provenance)
 
@@ -407,17 +403,17 @@ def build_default_layers(
 
     ucns_selection = select_ucns_adapter()
     if ucns_selection.adapter is None:
-        geometry: SemanticsLayer = TranscriptOnlySemanticsLayer(ucns_selection.status)
+        profile: SemanticsLayer = MissingUCNSProfileLayer(ucns_selection.status)
     else:
         if not isinstance(ucns_selection.adapter, ActualUCNSAdapter):
             raise TypeError(
                 "select_ucns_adapter returned an unsupported adapter implementation"
             )
-        geometry = UCNSSemanticsLayer(ucns_selection.adapter)
+        profile = UCNSProfileLayer(ucns_selection.adapter)
 
     manifest = policy_manifest or PolicyManifest()
     return EDCMLayers(
-        semantics=CompositeSemanticsLayer(authority, geometry),
+        semantics=CompositeSemanticsLayer(authority, profile),
         measurement=ConsolidatedMeasurementLayer(),
         composition=SharedStackCompositionLayer(),
         delivery=SharedStackDeliveryLayer(manifest),

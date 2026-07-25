@@ -303,6 +303,8 @@ def test_actual_full_stack_fixture_when_dependencies_are_installed(monkeypatch) 
     monkeypatch.undo()
     ucns = pytest.importorskip("ucns")
     metapat = pytest.importorskip("metapat")
+    if not hasattr(ucns, "UCNSObject"):
+        pytest.skip("historical fork fixture requires the retired UCNSObject surface")
     if not hasattr(metapat, "authorize_constitutive_fork"):
         pytest.skip("requires METAPAT Phi authorization producer")
 

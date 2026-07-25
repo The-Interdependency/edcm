@@ -71,6 +71,7 @@ jobs:
           contract = result["edcm_result"]
           assert status["ucns_package_available"] is False
           assert status["ucns_adapter_active"] is False
+          assert contract["ucns_profile_observation"]["state"] == "NA"
           assert contract["ucns_geometry_identity"]["state"] == "NA"
           assert contract["ucns_factorization_evidence"]["state"] == "NA"
           assert contract["readouts"]["state"] == "measured"
@@ -105,6 +106,7 @@ jobs:
           })
           assert result["metapat_semantics"]["canon_digest"] == envelope.canon_digest
           assert result["metapat_semantics"]["provenance_digest"] == envelope.provenance_digest
+          assert result["edcm_result"]["ucns_profile_observation"]["state"] == "NA"
           assert result["edcm_result"]["ucns_geometry_identity"]["state"] == "NA"
           assert result["edcm_result"]["readouts"]["state"] == "measured"
           PY
@@ -128,7 +130,7 @@ jobs:
             tests/test_ucns_dependency.py \
             tests/test_measurement.py \
             tests/test_shared_stack_contract.py
-      - name: Prove exact bridge survives the complete stack
+      - name: Prove exact word-gonol observations survive the complete stack
         run: |
           python - <<'PY'
           import edcm
@@ -137,26 +139,31 @@ jobs:
           from edcm.edcmucns import PolicyManifest
 
           envelope = metapat.root_spine_module_envelope()
-          adaptation = metapat.adapt_envelope_to_ucns(envelope)
-          bridge = ucns.EdcmMetapatBridgeRecord.from_json_bytes(
-              adaptation.record.ucns_bridge_json
-          )
+          assert ucns.EDCM_PROFILE_ID == "ucns.profile.edcm-word-gonol"
+          assert ucns.EDCM_PROFILE_VERSION == "0.1.0"
+          assert len(ucns.PUBLIC_GONOL_157) == 157
           result = edcm.build_default_layers().run({
-              "transcript": "A: Preserve the exact shared-stack boundary.",
+              "transcript": "A: Preserve the exact shared-stack boundary.\nB: Keep spaces  exact.",
               "source_ref": "ci://exact-stack",
               "metapat_envelope": envelope,
-              "ucns_bridge_record_json": adaptation.record.ucns_bridge_json,
+              "ucns_turns": (
+                  ("A", "Preserve the exact shared-stack boundary."),
+                  ("B", "Keep spaces  exact."),
+              ),
           })
           contract = result["edcm_result"]
-          geometry = contract["ucns_geometry_identity"]
-          assert geometry["stable_hash"] == bridge.stable_identity
-          assert geometry["bridge_schema_id"] == "ucns.bridge.edcm-metapat-ordered-occurrence"
-          assert geometry["source_commit"] == "19f1afddb993f7d933ac8727627e7d5e1c3b88fc"
+          observation = contract["ucns_profile_observation"]
+          assert observation["profile_id"] == "ucns.profile.edcm-word-gonol"
+          assert observation["source_commit"] == "eb264fba18bd051c46b4853c81c8fb91ec6d5811"
+          assert tuple(turn["speaker_id"] for turn in observation["turns"]) == ("A", "B")
+          assert observation["turns"][1]["nesting_boundary_count"] == 3
           assert contract["metapat_semantic_constraints"]["canon_digest"] == envelope.canon_digest
+          assert contract["ucns_geometry_identity"]["state"] == "NA"
           assert contract["ucns_factorization_evidence"]["state"] == "NA"
           assert contract["edcm_policy_manifest"]["manifest_hash"] == PolicyManifest().manifest_hash()
           assert contract["readouts"]["state"] == "measured"
-          assert contract["status_evidence"]["ucns_bridge_record_attached"] is True
+          assert contract["status_evidence"]["ucns_profile_observation_attached"] is True
+          assert contract["status_evidence"]["ucns_bridge_record_attached"] is False
           assert contract["status_evidence"]["ucns_factorization_evidence_attached"] is False
           assert contract["status_evidence"]["ucns_theorem_status_attached"] is False
           assert contract["status_evidence"]["proof_status_transfers_to_measurement_validity"] is False

@@ -61,7 +61,6 @@ def _load_ucns_public_gonol() -> ModuleType:
     required = (
         "PUBLIC_GONOL_157",
         "PUBLIC_GONOL_SHA256",
-        "PUBLIC_GONOL_SOURCE_COMMIT",
         "public_gonol_sha256",
     )
     missing = tuple(name for name in required if not hasattr(module, name))
@@ -70,13 +69,28 @@ def _load_ucns_public_gonol() -> ModuleType:
             "installed ucns is missing canonical public-gonol surfaces: "
             + ", ".join(missing)
         )
-    if module.PUBLIC_GONOL_SOURCE_COMMIT != _EXPECTED_A0_SOURCE_COMMIT:
+    try:
+        source_module = importlib.import_module("ucns.edcm")
+    except ModuleNotFoundError as exc:
+        raise UCNSPublicGonolContractError(
+            "installed ucns is missing the EDCM public-gonol source surface"
+        ) from exc
+    if (
+        getattr(source_module, "PUBLIC_GONOL_SOURCE_COMMIT", None)
+        != _EXPECTED_A0_SOURCE_COMMIT
+    ):
         raise UCNSPublicGonolContractError("UCNS public-gonol source commit mismatch")
     glyphs = tuple(module.PUBLIC_GONOL_157)
     if len(glyphs) != 157 or glyphs[0] != " ":
         raise UCNSPublicGonolContractError("UCNS public gonol lost its fixed SPACE/ZERO origin")
-    digest = module.public_gonol_sha256(glyphs)
-    if digest != PUBLIC_GLYPH_FLOOR_SHA256 or digest != module.PUBLIC_GONOL_SHA256:
+    producer_digest = module.public_gonol_sha256(glyphs)
+    compatibility_digest = hashlib.sha256(
+        ("\n".join(glyphs) + "\n").encode("utf-8")
+    ).hexdigest()
+    if (
+        producer_digest != module.PUBLIC_GONOL_SHA256
+        or compatibility_digest != PUBLIC_GLYPH_FLOOR_SHA256
+    ):
         raise UCNSPublicGonolContractError("UCNS public-gonol arrangement digest mismatch")
     return module
 

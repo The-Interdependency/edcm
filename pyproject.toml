@@ -33,16 +33,16 @@ metapat = [
   "metapat @ git+https://github.com/The-Interdependency/metapat.git@54bd394746426b37d5ca2e996071ace526fbdc9a",
 ]
 ucns-profile = [
-  "ucns @ git+https://github.com/The-Interdependency/ucns.git@19f1afddb993f7d933ac8727627e7d5e1c3b88fc",
+  "ucns @ git+https://github.com/The-Interdependency/ucns.git@eb264fba18bd051c46b4853c81c8fb91ec6d5811",
 ]
 full-stack = [
   "metapat @ git+https://github.com/The-Interdependency/metapat.git@54bd394746426b37d5ca2e996071ace526fbdc9a",
-  "ucns @ git+https://github.com/The-Interdependency/ucns.git@19f1afddb993f7d933ac8727627e7d5e1c3b88fc",
+  "ucns @ git+https://github.com/The-Interdependency/ucns.git@eb264fba18bd051c46b4853c81c8fb91ec6d5811",
 ]
-# Historical joint experiment installation remains available but now resolves
-# the same exact post-reset UCNS producer used by the runtime bridge consumer.
+# Historical v0.1-v0.4 joint experiments remain pinned to their evidence epoch.
+# They are not the current word-gonol profile runtime.
 ucns-experiments = [
-  "ucns @ git+https://github.com/The-Interdependency/ucns.git@19f1afddb993f7d933ac8727627e7d5e1c3b88fc",
+  "ucns @ git+https://github.com/The-Interdependency/ucns.git@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
 ]
 
 [tool.setuptools]

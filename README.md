@@ -2,10 +2,11 @@
 
 EDCM is the Energy–Dissonance Circuit Model research and measurement repository.
 
-The repository now has two deliberately separate surfaces:
+The repository has three deliberately separate surfaces:
 
 1. **Frozen maintained baseline:** `edcm/measurement/`, preserved as candidate `edcm-measurement-v1` with byte-checked canon and provenance.
 2. **Experiment-first joint program:** reproducible UCNS–EDCM experiments that determine which structural and measurement candidates deserve later canon review.
+3. **Exact corpus-observation profile:** the optional EDCM-only UCNS word-gonol configuration used to expose incomplete assumptions against full real-system corpora.
 
 The baseline is executable. It is not automatically the final UCNS–EDCM canon.
 
@@ -124,7 +125,13 @@ METAPAT integration remains optional:
 python -m pip install -e .[dev,metapat]
 ```
 
-The historical `full-stack` compatibility extra remains METAPAT-only. Use the separate `ucns-experiments` extra for the pinned joint research stack. This prevents package availability from activating the historical UCNS adapter path, and package availability alone still attaches no evidence.
+The exact word-gonol profile is also optional:
+
+```bash
+python -m pip install -e .[dev,ucns-profile]
+```
+
+`full-stack` installs both the exact METAPAT producer and the EDCM UCNS profile producer. Use `ucns-experiments` only for the historical v0.1–v0.4 experiment epoch. Package availability alone attaches no evidence; exact ordered `ucns_turns` are required.
 
 ## Integrity gate
 
@@ -139,16 +146,17 @@ A legitimate baseline-canon change requires a new versioned file and migration r
 
 ## Provenance-bearing pipeline
 
-The existing shared-stack pipeline remains available for compatibility and comparison. It separates:
+The shared-stack pipeline separates:
 
 - source evidence;
 - METAPAT semantic constraints;
-- UCNS attachment records;
+- exact UCNS word-gonol observations;
+- typed UCNS geometry and factorization absence;
 - EDCM policy and implementation provenance;
 - readouts;
 - status evidence.
 
-Its older UCNS adapter surfaces are historical compatibility machinery. The new joint experiment runner consumes the current UCNS research infrastructure directly from the pinned commit and does not treat pre-reset factorization or theorem surfaces as current authority.
+The retired ordered-occurrence bridge, `UCNSObject`, and factorization inputs fail closed on the current runtime path. Historical experiment reports keep their original UCNS commit and are not rewritten as current profile evidence.
 
 ## Typed absence
 
@@ -168,4 +176,4 @@ Historical implementation, source packets, repair handoffs, and prior adapter co
 
 ## hmmm
 
-The first joint canon decision still requires independent corpus review, sealed holdout custody, external replication, and an explicit authority procedure. The current experiment creates the mechanism and first evidence; it does not appoint the winner.
+Formal Möbius coordinates, higher-gonol composition, and lawful projection from exact observations into a higher-dimensional lattice remain open. Full real-system corpus runs should pressure the current word, SPACE-boundary, support, and 157-token assumptions before any further canon selection.
