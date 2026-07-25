@@ -4,22 +4,22 @@ Usage guidance
 --------------
 The supported layer pipeline calls :func:`build_result_contract` after semantic
 and measurement stages. The resulting ``edcm_result`` record keeps source
-evidence, METAPAT constraints, UCNS geometry identity, authoritative UCNS
-factorization evidence, EDCM policy identity, implementation selection,
+evidence, METAPAT constraints, exact UCNS profile observations, typed UCNS
+geometry/factorization absence, EDCM policy identity, implementation selection,
 measured readouts, typed absence, unresolved fields, and attachment states in
 separate compartments.
 
 ``epoch_identity`` changes when the METAPAT canon/provenance identity, UCNS
-geometry identity, EDCM policy manifest, or selected implementation changes.
-``result_identity`` additionally binds source evidence, readouts, and attached
-UCNS factorization evidence.
+profile configuration, EDCM policy manifest, or selected implementation
+changes. ``result_identity`` additionally binds source evidence, exact profile
+observations, readouts, and any independently attached evidence.
 """
 
 # === MODULE_BUILD ===
 # id: edcm_shared_stack
 #   module_name: shared_stack
 #   module_kind: schema
-#   summary: deterministic final EDCM result contract separating source evidence, METAPAT semantic authority, UCNS geometry, authoritative UCNS factorization evidence, EDCM policy identity, implementation provenance, readouts/NA, unresolved constraints, and attachment states.
+#   summary: deterministic final EDCM result contract separating source evidence, METAPAT semantic authority, exact UCNS word-gonol observations, typed UCNS geometry and factorization absence, EDCM policy identity, implementation provenance, readouts/NA, unresolved constraints, and attachment states.
 #   owner: Erin Spencer
 #   public_surface: RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, EDCMResultContract, build_result_contract
 #   internal_surface: _canonical_bytes, _digest, _source_evidence, _typed_absence, _readouts, _collect_unresolved
@@ -28,12 +28,12 @@ UCNS factorization evidence.
 #   network_boundary: none
 #   user_data_boundary: hashes caller transcript content and preserves caller source reference without external transmission
 #   admin_only: false
-#   tests: tests.test_shared_stack_contract, tests.test_ucns_evidence_consumer
+#   tests: tests.test_shared_stack_contract, tests.test_ucns_adapter
 #   rollout: default_enabled
-#   rollback: remove factorization-evidence compartment and restore prior result schema only with a versioned migration
+#   rollback: remove the profile-observation compartment and restore the prior result schema only with a versioned migration
 #   requires: edcmucns_manifest, edcm_metapat_adapter, edcm_ucns_adapter, edcm_measurement
 #   since: 2026-07-12
-#   unresolved: UCNS evidence digests provide content identity but not signed producer authentication
+#   unresolved: UCNS observation digests provide content identity but not signed producer authentication; profile observations do not supply formal geometry
 # === END MODULE_BUILD ===
 
 from __future__ import annotations
@@ -46,7 +46,7 @@ from typing import Any, Mapping
 from .edcmucns.manifest import PolicyManifest
 
 RESULT_SCHEMA_ID = "edcm.shared-stack-result"
-RESULT_SCHEMA_VERSION = "1.1.0"
+RESULT_SCHEMA_VERSION = "1.2.0"
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -141,6 +141,7 @@ class EDCMResultContract:
     result_identity: str
     source_evidence: dict[str, Any]
     metapat_semantic_constraints: dict[str, Any]
+    ucns_profile_observation: dict[str, Any]
     ucns_geometry_identity: dict[str, Any]
     ucns_factorization_evidence: dict[str, Any]
     edcm_policy_manifest: dict[str, Any]
@@ -172,14 +173,23 @@ def build_result_contract(
     else:
         metapat_record = {"state": "attached", **dict(metapat)}
 
-    ucns = payload.get("ucns_geometry")
-    if not isinstance(ucns, Mapping):
-        ucns_record = _typed_absence(
-            "ucns_geometry_identity",
-            "no actual UCNS object or validated bridge record was attached",
+    profile_observation = payload.get("ucns_profile_observation")
+    if not isinstance(profile_observation, Mapping):
+        profile_record = _typed_absence(
+            "ucns_profile_observation",
+            "no exact EDCM UCNS word-gonol observation was attached",
         )
     else:
-        ucns_record = {"state": "attached", **dict(ucns)}
+        profile_record = {"state": "attached", **dict(profile_observation)}
+
+    ucns_geometry = payload.get("ucns_geometry")
+    if not isinstance(ucns_geometry, Mapping):
+        geometry_record = _typed_absence(
+            "ucns_geometry_identity",
+            "the EDCM word-gonol observation profile does not supply UCNS geometry",
+        )
+    else:
+        geometry_record = {"state": "attached", **dict(ucns_geometry)}
 
     factorization = payload.get("ucns_factorization_evidence")
     if not isinstance(factorization, Mapping):
@@ -203,6 +213,9 @@ def build_result_contract(
     status_evidence = {
         "metapat": metapat_status,
         "ucns": ucns_status,
+        "ucns_profile_observation_attached": bool(
+            ucns_status.get("ucns_profile_observation_attached", False)
+        ),
         "ucns_bridge_record_attached": bool(
             ucns_status.get("ucns_bridge_record_attached", False)
         ),
@@ -230,12 +243,14 @@ def build_result_contract(
     epoch_fields = {
         "metapat_canon_digest": metapat_record.get("canon_digest"),
         "metapat_provenance_digest": metapat_record.get("provenance_digest"),
-        "ucns_stable_hash": ucns_record.get("stable_hash"),
-        "ucns_schema": ucns_record.get("ucns_serialization_version"),
-        "ucns_bridge_evidence_digest": ucns_record.get("bridge_evidence_digest"),
+        "ucns_profile_id": profile_record.get("profile_id"),
+        "ucns_profile_version": profile_record.get("profile_version"),
+        "ucns_profile_scope": profile_record.get("profile_scope"),
+        "ucns_profile_source_commit": profile_record.get("source_commit"),
+        "ucns_profile_options": profile_record.get("options"),
         "edcm_manifest_hash": manifest_record["manifest_hash"],
         "semantic_authority_implementation": implementation.get("semantic_authority"),
-        "geometry_implementation": implementation.get("geometry"),
+        "ucns_profile_implementation": implementation.get("ucns_profile"),
         "measurement_implementation": implementation.get("measurement"),
     }
     epoch_identity = _digest(epoch_fields)
@@ -243,6 +258,7 @@ def build_result_contract(
         {
             "epoch_identity": epoch_identity,
             "source_evidence": source,
+            "ucns_profile_observation": profile_record,
             "readouts": readouts,
             "ucns_factorization_evidence": factorization_record,
             "status_evidence": status_evidence,
@@ -256,7 +272,8 @@ def build_result_contract(
         result_identity=result_identity,
         source_evidence=source,
         metapat_semantic_constraints=metapat_record,
-        ucns_geometry_identity=ucns_record,
+        ucns_profile_observation=profile_record,
+        ucns_geometry_identity=geometry_record,
         ucns_factorization_evidence=factorization_record,
         edcm_policy_manifest=manifest_record,
         implementation_provenance=implementation,

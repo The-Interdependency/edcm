@@ -24,7 +24,7 @@ permissions:
 
 jobs:
   actual-full-stack:
-    name: METAPAT authority / UCNS reset boundary
+    name: Historical fork lint / current UCNS profile boundary
     runs-on: ubuntu-latest
     steps:
       - name: Check out EDCM
@@ -44,34 +44,35 @@ jobs:
       - name: Run fork-lint contracts
         run: python -m pytest -q tests/test_ucns_fork_lint.py
 
-      - name: Prove UCNS remains typed absence during reset
+      - name: Prove the current profile does not revive retired fork geometry
         run: |
           python - <<'PY'
-          import importlib.util
-
           import edcm
           import metapat
+          import ucns
 
-          assert importlib.util.find_spec("metapat") is not None
-          assert importlib.util.find_spec("ucns") is None
+          assert ucns.EDCM_PROFILE_ID == "ucns.profile.edcm-word-gonol"
 
           envelope = metapat.root_spine_module_envelope()
           result = edcm.build_default_layers().run({
               "transcript": "A: Preserve the reset boundary.",
               "metapat_envelope": envelope,
+              "ucns_turns": (("A", "Preserve the reset boundary."),),
           })
 
           status = result["ucns_integration"]
-          assert status["ucns_package_available"] is False
-          assert status["ucns_adapter_active"] is False
+          assert status["ucns_package_available"] is True
+          assert status["ucns_adapter_active"] is True
+          assert status["ucns_profile_observation_attached"] is True
           assert status["ucns_object_attached"] is False
           assert status["ucns_bridge_record_attached"] is False
-          assert status["ucns_scope_metadata_attached"] is False
+          assert status["ucns_scope_metadata_attached"] is True
           assert status["ucns_factorization_evidence_attached"] is False
           assert status["ucns_negative_certification_attached"] is False
           assert status["ucns_theorem_status_attached"] is False
 
           contract = result["edcm_result"]
+          assert contract["ucns_profile_observation"]["state"] == "attached"
           assert contract["ucns_geometry_identity"]["state"] == "NA"
           assert contract["ucns_factorization_evidence"]["state"] == "NA"
           assert contract["status_evidence"]["proof_status_transfers_to_measurement_validity"] is False

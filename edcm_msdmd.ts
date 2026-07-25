@@ -12,15 +12,15 @@ export default defineMsdmdCollection({
         "module_name": "edcm",
         "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "__version__, build_default_layers, EDCMLayers, LayerProvenance, ConsolidatedMeasurementLayer, CompositeSemanticsLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, ActualMetapatAdapter, MetapatIntegrationStatus, MetapatSemanticEvidence, select_metapat_adapter, inspect_metapat_adapter, ActualUCNSAdapter, UCNSIntegrationStatus, UCNSGeometryEvidence, UCNSFactorizationEvidenceRecord, select_ucns_adapter, inspect_ucns_adapter, AuthorizedUCNSFork, UCNSForkTopologyBinding, UCNSForkLintReport, ForkLintDependencyError, ForkTopologyError, build_fork_topology_binding, enumerate_payload_fork_paths, lint_fork_topology, lint_all_payload_forks, EDCMResultContract, build_result_contract, RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, IntegrityFinding, IntegrityReport, run_integrity_gate, verify_frozen_canon, verify_measurement_authority, verify_orthogonality_alias, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, MetricDefinition, ResolvedMetricUCNS, UCNSMetricDependencyError, UCNSMetricResolutionError, METRIC_DEFINITIONS, SYMBOL_TO_METRIC_ID, resolve_metric_axis, resolve_metric_value, resolve_metric_vector, resolve_round_metrics, resolved_metric_objects_payload, measurement, language, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts",
+        "public_surface": "__version__, build_default_layers, EDCMLayers, LayerProvenance, ConsolidatedMeasurementLayer, CompositeSemanticsLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, MissingUCNSProfileLayer, UCNSProfileLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, ActualMetapatAdapter, MetapatIntegrationStatus, MetapatSemanticEvidence, select_metapat_adapter, inspect_metapat_adapter, ActualUCNSAdapter, UCNSIntegrationStatus, UCNSProfileObservationEvidence, select_ucns_adapter, inspect_ucns_adapter, AuthorizedUCNSFork, UCNSForkTopologyBinding, UCNSForkLintReport, ForkLintDependencyError, ForkTopologyError, build_fork_topology_binding, enumerate_payload_fork_paths, lint_fork_topology, lint_all_payload_forks, EDCMResultContract, build_result_contract, RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, IntegrityFinding, IntegrityReport, run_integrity_gate, verify_frozen_canon, verify_measurement_authority, verify_orthogonality_alias, audit_energy_text, audit_energy_claim, extract_energy_claim_candidates, audit_falsifiability_preservation, EnergyAuditReport, AuditFlag, EnergyClaim, EDCMBONE_FAILURE_TAXONOMY, BOUNDARY_NOTE, AxisState, MetricAxis, MetricReadout, ConstraintField, FieldMotion, canonical_axes, field_motion_fixture, FIELD_MOTION_FIXTURE_MATRIX, SIGNED_TERNARY, GRAINS, CONTACT_SIGN, RESOLUTION_SIGN, MetricDefinition, ResolvedMetricUCNS, UCNSMetricDependencyError, UCNSMetricResolutionError, METRIC_DEFINITIONS, SYMBOL_TO_METRIC_ID, resolve_metric_axis, resolve_metric_value, resolve_metric_vector, resolve_round_metrics, resolved_metric_objects_payload, measurement, language, edcmucns, CanonLoader, parse_transcript, ParsedTranscript, compute_transcript, RoundMetrics, project_transcript, AgentMetrics, fire_alerts",
         "requires": "edcm_layers, edcm_metapat_adapter, edcm_ucns_adapter, edcm_ucns_fork_lint, edcm_shared_stack, edcm_integrity, edcm_energy_claims, edcm_falsifiability_bridge, edcm_ucns_objects, edcm_ucns_metrics, edcmucns_package, edcm_language_package",
         "rollback": "remove new exports and restore prior package root only with a result-schema migration",
         "rollout": "default_enabled",
         "since": "2026-06-02",
         "storage_boundary": "none",
-        "summary": "EDCM package root \u2014 declares package identity and re-exports provenance-bearing shared-stack layers, canonical METAPAT consumer surfaces, actual-UCNS bridge, factorization-evidence and metric-object consumer surfaces, fail-closed METAPAT-to-UCNS fork topology lint, final result contracts, frozen-canon/authority integrity gates, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.",
-        "tests": "tests.test_measurement, tests.test_ucns_adapter, tests.test_ucns_evidence_consumer, tests.test_metapat_adapter, tests.test_shared_stack_contract, tests.test_integrity, tests.test_ucns_objects, tests.test_ucns_fork_lint, tests.test_ucns_metrics, tests.test_energy_claims, tests.test_packaging",
-        "unresolved": "UCNS evidence digests, fork topology bindings, and metric-object hashes provide content identity but not cryptographic producer authentication; the first accepted production fork fixture remains unselected",
+        "summary": "EDCM package root \u2014 declares package identity and re-exports provenance-bearing shared-stack layers, canonical METAPAT consumer surfaces, the exact EDCM UCNS word-gonol observation profile consumer, historical metric-object and fork-topology research surfaces, result contracts, integrity gates, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.",
+        "tests": "tests.test_measurement, tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_metapat_adapter, tests.test_shared_stack_contract, tests.test_integrity, tests.test_ucns_objects, tests.test_ucns_fork_lint, tests.test_ucns_metrics, tests.test_energy_claims, tests.test_packaging",
+        "unresolved": "UCNS observation digests, historical fork topology bindings, and metric-object hashes provide content identity but not cryptographic producer authentication; formal Mobius coordinates and higher-gonol composition remain open",
         "user_data_boundary": "none"
       },
       "file": "edcm/__init__.py",
@@ -660,15 +660,15 @@ export default defineMsdmdCollection({
         "module_name": "layers",
         "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "LayerProvenance, MeasurementLayer, SemanticsLayer, CompositionLayer, DeliveryLayer, DefaultMeasurementLayer, DefaultSemanticsLayer, DefaultCompositionLayer, DefaultDeliveryLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, TranscriptOnlySemanticsLayer, UCNSSemanticsLayer, CompositeSemanticsLayer, ConsolidatedMeasurementLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, EDCMLayers, build_default_layers",
+        "public_surface": "LayerProvenance, MeasurementLayer, SemanticsLayer, CompositionLayer, DeliveryLayer, DefaultMeasurementLayer, DefaultCompositionLayer, DefaultDeliveryLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, MissingUCNSProfileLayer, UCNSProfileLayer, CompositeSemanticsLayer, ConsolidatedMeasurementLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, EDCMLayers, build_default_layers",
         "requires": "edcm_metapat_adapter, edcm_ucns_adapter, edcm_measurement, edcm_shared_stack",
         "rollback": "restore prior layer assembly and remove shared-stack result delivery",
         "rollout": "default_enabled",
         "since": "2026-06-02",
         "storage_boundary": "none",
-        "summary": "Provenance-bearing EDCM stack with independently selected METAPAT semantic authority, actual UCNS geometry or typed absence, canonical local measurement, shared-stack composition, and final result-contract delivery.",
+        "summary": "Provenance-bearing EDCM stack with independently selected METAPAT semantic authority, exact UCNS word-gonol observation profile or typed absence, canonical local measurement, shared-stack composition, and final result-contract delivery.",
         "tests": "tests.test_measurement, tests.test_ucns_adapter, tests.test_metapat_adapter, tests.test_shared_stack_contract",
-        "unresolved": "official negative-certification and theorem-status evidence envelopes remain unattached until validated schemas exist",
+        "unresolved": "formal Mobius coordinates and higher-gonol composition remain unattached; profile observations do not supply geometry, factorization, or theorem status",
         "user_data_boundary": "threads caller payloads through deterministic package-local layers; transcript content is hashed in final result identity"
       },
       "file": "edcm/layers.py",
@@ -950,38 +950,71 @@ export default defineMsdmdCollection({
         "owner": "Erin Spencer",
         "public_surface": "RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, EDCMResultContract, build_result_contract",
         "requires": "edcmucns_manifest, edcm_metapat_adapter, edcm_ucns_adapter, edcm_measurement",
-        "rollback": "remove factorization-evidence compartment and restore prior result schema only with a versioned migration",
+        "rollback": "remove the profile-observation compartment and restore the prior result schema only with a versioned migration",
         "rollout": "default_enabled",
         "since": "2026-07-12",
         "storage_boundary": "no persistence; emits deterministic JSON-compatible records",
-        "summary": "deterministic final EDCM result contract separating source evidence, METAPAT semantic authority, UCNS geometry, authoritative UCNS factorization evidence, EDCM policy identity, implementation provenance, readouts/NA, unresolved constraints, and attachment states.",
-        "tests": "tests.test_shared_stack_contract, tests.test_ucns_evidence_consumer",
-        "unresolved": "UCNS evidence digests provide content identity but not signed producer authentication",
+        "summary": "deterministic final EDCM result contract separating source evidence, METAPAT semantic authority, exact UCNS word-gonol observations, typed UCNS geometry and factorization absence, EDCM policy identity, implementation provenance, readouts/NA, unresolved constraints, and attachment states.",
+        "tests": "tests.test_shared_stack_contract, tests.test_ucns_adapter",
+        "unresolved": "UCNS observation digests provide content identity but not signed producer authentication; profile observations do not supply formal geometry",
         "user_data_boundary": "hashes caller transcript content and preserves caller source reference without external transmission"
       },
       "file": "edcm/shared_stack.py",
       "id": "edcm_shared_stack"
     },
     {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "an importable UCNS package is considered for activation",
+        "since": "2026-07-25",
+        "then": "every profile identity, option, public-alphabet invariant, and producer type matches the pinned EDCM word-gonol surface or the adapter remains suspended"
+      },
+      "file": "edcm/ucns_adapter.py",
+      "id": "edcm_ucns_exact_profile_only"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "ordered ucns_turns enter the active adapter",
+        "since": "2026-07-25",
+        "then": "all turns are observed in order with exact Unicode, one unit of support per speaker turn, explicit SPACE boundaries, and retained out-of-alphabet evidence"
+      },
+      "file": "edcm/ucns_adapter.py",
+      "id": "edcm_ucns_full_turn_observation"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "exact profile observations are attached",
+        "since": "2026-07-25",
+        "then": "geometry, factorization, theorem, certification, and measurement-validity attachment flags remain false"
+      },
+      "file": "edcm/ucns_adapter.py",
+      "id": "edcm_ucns_no_geometry_or_proof_transfer"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_module_version, _failed_status, _one_present, _geometry_from_record, _factorization_from_record",
+        "internal_surface": "_canonical_bytes, _digest, _package_present, _token_record, _segment_record, _turn_record",
         "module_kind": "adapter",
         "module_name": "ucns_adapter",
         "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "UCNSAdapter, ActualUCNSAdapter, UCNSAdapterSelection, UCNSIntegrationStatus, UCNSGeometryEvidence, UCNSFactorizationEvidenceRecord, UCNSAdapterConstructionError, UnsupportedUCNSSchemaError, select_ucns_adapter, inspect_ucns_adapter, missing_ucns_status",
-        "requires": "optional ucns package public surface including UCNSBridgeRecord and UCNSFactorizationEvidence",
-        "rollback": "restore live-object-only adapter and mark serialized evidence unavailable",
-        "rollout": "default_enabled",
-        "since": "2026-07-12",
+        "public_surface": "ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter",
+        "requires": "ucns.edcm at eb264fba18bd051c46b4853c81c8fb91ec6d5811",
+        "rollback": "suspend the optional adapter; base EDCM measurement remains operational",
+        "rollout": "optional exact-profile activation only when the pinned profile surface matches",
+        "since": "2026-07-25",
         "storage_boundary": "none",
-        "summary": "EDCM-owned consumer over actual UCNS objects, canonical bridge records, and authoritative factorization evidence with stable-hash binding and no proof-status transfer.",
-        "tests": "tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_ucns_evidence_consumer, tests.test_shared_stack_contract",
-        "unresolved": "evidence digests are content identities, not cryptographic producer signatures",
-        "user_data_boundary": "accepts caller-supplied UCNS objects or canonical producer records and returns deterministic evidence"
+        "summary": "fail-closed consumer for the exact EDCM-only UCNS word-gonol profile, preserving full-corpus speaker-turn observations without geometry or proof transfer",
+        "tests": "tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_shared_stack_contract",
+        "unresolved": "formal Mobius coordinates, higher-gonol composition, and projection policies remain outside this observation adapter",
+        "user_data_boundary": "exact source turns remain in caller-owned in-memory results and are not transmitted"
       },
       "file": "edcm/ucns_adapter.py",
       "id": "edcm_ucns_adapter"
@@ -996,15 +1029,15 @@ export default defineMsdmdCollection({
         "module_name": "ucns_dependency",
         "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "require_ucns, ucns_available, ucns_dependency_report, INSTALL_HINT",
+        "public_surface": "INSTALL_HINT, require_ucns, ucns_available, ucns_dependency_report",
         "requires": "edcm_ucns_adapter",
-        "rollback": "remove module and its references",
-        "rollout": "default_enabled",
-        "since": "2026-06-02",
+        "rollback": "report typed dependency absence while base EDCM remains operational",
+        "rollout": "optional dependency diagnostic",
+        "since": "2026-07-25",
         "storage_boundary": "none",
-        "summary": "Reports independent UCNS package, adapter, object, scope, certification, and theorem-evidence states without proof-status transfer.",
-        "tests": "tests.test_ucns_dependency, tests.test_ucns_adapter",
-        "unresolved": "none",
+        "summary": "diagnostics and fail-closed loading for the optional exact EDCM UCNS word-gonol profile",
+        "tests": "tests.test_ucns_dependency",
+        "unresolved": "installed package provenance is enforced by the exact optional-dependency pin and profile invariants rather than a signed runtime attestation",
         "user_data_boundary": "none"
       },
       "file": "edcm/ucns_dependency.py",
@@ -1294,6 +1327,39 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/ucns_objects.py",
       "id": "edcm_ucns_objects"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_exact_profile_activates_and_option_drift_suspends",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_ucns_exact_profile_only"
+      },
+      "file": "tests/test_ucns_adapter.py",
+      "id": "check_edcm_ucns_exact_profile_only"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_live_profile_preserves_full_turn_order_spaces_and_alphabet_failures",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_ucns_full_turn_observation"
+      },
+      "file": "tests/test_ucns_adapter.py",
+      "id": "check_edcm_ucns_full_turn_observation"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_live_profile_attaches_observation_without_geometry_or_proof_transfer",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_ucns_no_geometry_or_proof_transfer"
+      },
+      "file": "tests/test_ucns_adapter.py",
+      "id": "check_edcm_ucns_no_geometry_or_proof_transfer"
     },
     {
       "block": "CHECKS",
@@ -1708,6 +1774,48 @@ export default defineMsdmdCollection({
       "source_block": "CHECKS",
       "source_id": "check_edcm_fork_status_firewall",
       "to": "edcm_fork_lint_no_status_transfer"
+    },
+    {
+      "from": "check_edcm_ucns_exact_profile_only",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_ucns_exact_profile_only",
+      "to": "self::test_exact_profile_activates_and_option_drift_suspends"
+    },
+    {
+      "from": "check_edcm_ucns_exact_profile_only",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_ucns_exact_profile_only",
+      "to": "edcm_ucns_exact_profile_only"
+    },
+    {
+      "from": "check_edcm_ucns_full_turn_observation",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_ucns_full_turn_observation",
+      "to": "self::test_live_profile_preserves_full_turn_order_spaces_and_alphabet_failures"
+    },
+    {
+      "from": "check_edcm_ucns_full_turn_observation",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_ucns_full_turn_observation",
+      "to": "edcm_ucns_full_turn_observation"
+    },
+    {
+      "from": "check_edcm_ucns_no_geometry_or_proof_transfer",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_ucns_no_geometry_or_proof_transfer",
+      "to": "self::test_live_profile_attaches_observation_without_geometry_or_proof_transfer"
+    },
+    {
+      "from": "check_edcm_ucns_no_geometry_or_proof_transfer",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_edcm_ucns_no_geometry_or_proof_transfer",
+      "to": "edcm_ucns_no_geometry_or_proof_transfer"
     },
     {
       "from": "check_joint_runner_preserves_no_canon",
@@ -2442,7 +2550,7 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_ucns_adapter",
-      "to": "optional ucns package public surface including UCNSBridgeRecord and UCNSFactorizationEvidence"
+      "to": "ucns.edcm at eb264fba18bd051c46b4853c81c8fb91ec6d5811"
     },
     {
       "from": "edcm_ucns_dependency",
