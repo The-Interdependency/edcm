@@ -41,6 +41,7 @@ receipt files.
 
 ## hmmm
 
-Only MultiWOZ 2.1 has an admitted executable adapter in this tree. The remaining
-six sources require their own license/privacy review, immutable source identity,
-source-native adapter, and full-run reconciliation before admission.
+MultiWOZ 2.1 is complete. Molweni has an admitted executable adapter and awaits
+its sealed implementation-commit run. The remaining five sources require their
+own license/privacy review, immutable source identity, source-native adapter,
+and full-run reconciliation before admission.

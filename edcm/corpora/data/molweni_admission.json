@@ -1,0 +1,184 @@
+{
+  "admission_authority": "Erin Spencer",
+  "admission_date": "2026-07-28",
+  "corpus_id": "molweni",
+  "evidence_state": "represented-evidence",
+  "execution_policy": {
+    "corpus_execution": "full-corpus",
+    "dp_turn_measurement": "every DP EDU exactly once",
+    "failure_receipt_required": true,
+    "graph_repair": false,
+    "mrc_duplicate_turn_measurement": false,
+    "normalization": "none-preserve-source",
+    "raw_source_in_git": false,
+    "sampling": false,
+    "support": "one-unit-per-speaker-turn"
+  },
+  "expected": {
+    "cross_view": {
+      "relation_graph_disagreements": 2
+    },
+    "dp": {
+      "dialogues": 10000,
+      "partitions": {
+        "dev": {
+          "dialogues": 500,
+          "relations": 3880,
+          "turns": 4386
+        },
+        "test": {
+          "dialogues": 500,
+          "relations": 3911,
+          "turns": 4430
+        },
+        "train": {
+          "dialogues": 9000,
+          "relations": 70454,
+          "turns": 79487
+        }
+      },
+      "relations": 78245,
+      "turns": 88303
+    },
+    "mrc": {
+      "answerable_questions": 25779,
+      "dialogues": 9754,
+      "invalid_relation_endpoint_dialogues": 1,
+      "invalid_relation_endpoints": 2,
+      "partitions": {
+        "dev": {
+          "answerable_questions": 2346,
+          "dialogues": 883,
+          "plausible_answers": 167,
+          "questions": 2513,
+          "relations": 6917,
+          "turns": 7823,
+          "unanswerable_questions": 167
+        },
+        "test": {
+          "answerable_questions": 2560,
+          "dialogues": 100,
+          "plausible_answers": 311,
+          "questions": 2871,
+          "relations": 745,
+          "turns": 845,
+          "unanswerable_questions": 311
+        },
+        "train": {
+          "answerable_questions": 20873,
+          "dialogues": 8771,
+          "plausible_answers": 3809,
+          "questions": 24682,
+          "relations": 68570,
+          "turns": 77374,
+          "unanswerable_questions": 3809
+        }
+      },
+      "plausible_answers": 4287,
+      "questions": 30066,
+      "relations": 76232,
+      "turns": 86042,
+      "unanswerable_questions": 4287
+    }
+  },
+  "hmmm": [
+    "Molweni is a filtered and annotated derivative of Ubuntu chat; collection, filtering, transcription, and annotation effects cannot be separated from the released text.",
+    "The released DP files contain 176 empty speaker fields across train and dev; their upstream cause is unknown, so they remain malformed source evidence rather than inferred identities.",
+    "One released MRC dev dialogue has two relation endpoints beyond its 12-EDU sequence; both malformed edge objects remain retained evidence and are not repaired or dropped.",
+    "Two released MRC relation graphs disagree with the DP relation graph for an identical ordered EDU sequence; the runner retains the disagreement and does not choose or repair a graph.",
+    "Unanswerable MRC questions and plausible spans are positive source annotations, not proof that a discourse reference is formally unresolved under UCNS.",
+    "Exact profile observations and graph retention are represented evidence, not formal UCNS geometry, EDCM measurement validity, diagnosis, intention, morality, consciousness, or external truth."
+  ],
+  "information_boundaries": {
+    "annotation_layers": {
+      "dp": "source-native ordered EDUs plus directed labeled relation objects",
+      "mrc": "differently partitioned contexts, ordered EDUs, relation objects, questions, answerability flags, exact answer spans, and plausible spans"
+    },
+    "cross_view_policy": "match complete ordered EDU objects by digest; compare complete directed relation lists independently; retain ambiguous duplicate matches and disagreements",
+    "profile_input": "ordered DP edus only, as exact source-native (speaker, text) tuples",
+    "profile_noninputs_retained_by_source": [
+      "DP directed relation annotations",
+      "MRC context strings",
+      "MRC duplicate EDU and relation views",
+      "questions",
+      "answerability flags",
+      "answer spans",
+      "plausible-answer spans"
+    ],
+    "projection": "none",
+    "speaker_identity": "nonempty source-native edus[].speaker strings pass unchanged; empty strings remain source evidence and receive a collision-checked dialogue-and-turn ordinal sentinel only at the nonempty UCNS adapter boundary",
+    "source_text_normalization": "none"
+  },
+  "license": {
+    "name": "Apache License 2.0",
+    "spdx": "Apache-2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  "privacy_and_removal": {
+    "collection_context": "filtered and annotated multiparty dialogues derived by the Molweni authors from the Ubuntu Chat Corpus",
+    "committed_outputs": "aggregate counts, cryptographic identities, reconciliation, and receipts only; no dialogue, speaker, context, question, or answer text",
+    "removal_path": "remove the locally held checkout and invalidate or supersede aggregate receipts by repository commit and file SHA-256; no raw corpus object is committed",
+    "restricted_source": false,
+    "source_effects": "upstream chat collection and Molweni utterance-count, speaker-count, sentence-length, selection, discourse-annotation, and MRC-annotation effects remain inseparable provenance"
+  },
+  "schema_id": "edcm.corpus-admission",
+  "schema_version": "1.0.0",
+  "source": {
+    "commit": "2eb681d7e610ee3fda4ab3b4cc364554bd17ee67",
+    "dp_files": {
+      "dev": "DP/dev.json",
+      "test": "DP/test.json",
+      "train": "DP/train.json"
+    },
+    "files": [
+      {
+        "bytes": 1174508,
+        "path": "DP/dev.json",
+        "sha256": "472b23659fe390cf8bfd129902154b5e789cb95138a80f70e23f43dce838bbbb"
+      },
+      {
+        "bytes": 1184410,
+        "path": "DP/test.json",
+        "sha256": "8657ca02410f33a5fd8cd1423d86aeef774daa45642c37050b8bd456d76039a6"
+      },
+      {
+        "bytes": 21271582,
+        "path": "DP/train.json",
+        "sha256": "b204d9379dd3f00362152076e1bfe885a1c2a960d962902c8915071ea8724f2b"
+      },
+      {
+        "bytes": 4334213,
+        "path": "MRC(withDiscourse)/dev.json",
+        "sha256": "3868d8c468c0300a8b16ab972927fc56ae3516f9f1a74d6308b836398767dfe7"
+      },
+      {
+        "bytes": 1712923,
+        "path": "MRC(withDiscourse)/test.json",
+        "sha256": "ffed7ab48c2d3edd9f8ac4274bd609e66d39ab101c9e450cfb43064dc915d9b3"
+      },
+      {
+        "bytes": 42714929,
+        "path": "MRC(withDiscourse)/train.json",
+        "sha256": "dc9c374d85e1174188e13ea5dafc15ab7551ad7f234203996a5eb4683edbb8ac"
+      },
+      {
+        "bytes": 11497,
+        "path": "LICENSE",
+        "sha256": "58ab9ed8873493e68f68b803f3fe4c75381e3e7170b44d5cdbab70efde625766"
+      }
+    ],
+    "mrc_files": {
+      "dev": "MRC(withDiscourse)/dev.json",
+      "test": "MRC(withDiscourse)/test.json",
+      "train": "MRC(withDiscourse)/train.json"
+    },
+    "paper": {
+      "anthology_id": "2020.coling-main.238",
+      "doi": "10.18653/v1/2020.coling-main.238",
+      "url": "https://aclanthology.org/2020.coling-main.238/"
+    },
+    "repository": "https://github.com/HIT-SCIR/Molweni",
+    "tree": "f5cb852dbe183570c8a72d7ae0703b202d6be456"
+  },
+  "status": "admitted"
+}
