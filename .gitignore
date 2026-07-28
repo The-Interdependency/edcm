@@ -8,5 +8,10 @@ __pycache__/
 .ruff_cache/
 .mypy_cache/
 
+# Raw real-system corpora and resumable local checkpoints
+experiments/corpora/raw/
+experiments/corpora/checkpoints/
+*.corpus-checkpoint.json
+
 # OS / editor cruft
 .DS_Store

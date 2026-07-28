@@ -1,0 +1,54 @@
+{
+  "admission_digest": "aba3ebbac5e6f6ef0505cd9349361ba8bde7586fae21049e2d120fa362033ed6",
+  "corpus_id": "multiwoz-2.1",
+  "error": null,
+  "identities": {
+    "archive_sha256": "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e",
+    "edcm_commit": "fbee2ee57f765b47c362a6877521493cc1afe20a",
+    "ucns_commit": "c799b3547afc91a6039a5d3b15f997426eed138a"
+  },
+  "last_completed": {
+    "dialogue_id": "MUL0501.json",
+    "dialogue_index": 10437
+  },
+  "next_or_active": {
+    "dialogue_id": null,
+    "dialogue_index": null,
+    "turn_index": null
+  },
+  "processed": {
+    "adapter_turns": 143048,
+    "dialogues": 10438,
+    "source_turns": 143048
+  },
+  "receipt_digest": "6150c05c64ff6d07593775b9e83d8634e912d27668f872032460391afeb6e7b9",
+  "reconciliation": {
+    "checks": {
+      "adapter_turns_equal_source_turns": true,
+      "all_test_ids_seen": true,
+      "all_validation_ids_seen": true,
+      "dialogue_count_matches_manifest": true,
+      "partition_counts_match_manifest": true,
+      "stream_count_equals_processed_count": true,
+      "unit_support_equals_adapter_turns": true
+    },
+    "complete": true,
+    "expected_dialogues": 10438,
+    "expected_partitions": {
+      "test": 1000,
+      "train": 8438,
+      "validation": 1000
+    },
+    "observed_dialogues": 10438,
+    "observed_partitions": {
+      "test": 1000,
+      "train": 8438,
+      "validation": 1000
+    }
+  },
+  "report_digest": "3d3d1aaf81e052a569c29200689f75e684d7441952392f8fab04b990cd8bc5e8",
+  "report_sha256": "da98521a81ae7071266f797bacd20de1a12e8632732e82d53e4fd0423d15be9b",
+  "schema_id": "edcm.corpus-run-receipt",
+  "schema_version": "1.1.0",
+  "status": "complete"
+}
