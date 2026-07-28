@@ -1,10 +1,10 @@
 {
   "supported_profile": [
     "ucns.profile.edcm-word-gonol",
-    "0.1.0"
+    "0.2.0"
   ],
   "profile_scope": "edcm-only",
-  "pinned_ucns_commit": "eb264fba18bd051c46b4853c81c8fb91ec6d5811",
+  "pinned_ucns_commit": "c799b3547afc91a6039a5d3b15f997426eed138a",
   "adapter_activation_status": "exact-profile-active-when-matching-package-is-installed",
   "input_contract": "full ordered corpus as exact (speaker_id, text) tuples",
   "fixed_options": {
@@ -17,6 +17,8 @@
     "out_of_alphabet": "retain-and-report",
     "profile_scope": "edcm-only",
     "smallest_gonol": "word",
+    "source_domain": "unicode-scalar-values",
+    "space_assignment": "unicode-white-space-origin-v1",
     "support": "one-unit-per-speaker-turn",
     "token_alphabet": "public-gonol-157",
     "token_identity": "unicode-code-point"
@@ -33,15 +35,16 @@
   "tests_proving_fail_closed_behavior": [
     "archived UCNS package cannot activate",
     "profile option drift suspends activation",
+    "SPACE code-point pin and Unicode-scalar source-domain drift suspend activation",
     "retired bridge, object, and factorization inputs are rejected",
     "flattened transcript does not invent speaker-turn boundaries",
     "NA remains distinct from zero"
   ],
   "tests_proving_exact_profile_behavior": [
     "all full-corpus turns preserve order and unit support",
-    "repeated SPACE occurrences remain explicit superpositioned boundaries",
+    "all pinned SPACE manifestations map to carrier position zero while retaining exact source witnesses",
     "word gonols preserve ordered concatenation and Mobius initiation",
-    "out-of-alphabet Unicode remains exact evidence",
+    "true non-SPACE out-of-alphabet Unicode remains exact evidence",
     "profile observation identity is deterministic",
     "geometry, factorization, theorem, and measurement-validity transfer remain absent"
   ],
@@ -50,11 +53,12 @@
     "Formal Mobius carrier coordinates are not supplied.",
     "Higher-gonol composition and the hyper-dimensional lattice relation law remain open.",
     "Projection policy must deepen only with experimental evidence.",
-    "The 157-token alphabet and word/SPACE assumptions require full real-system corpus pressure.",
+    "True non-SPACE coverage outside the 157-token carrier alphabet requires full real-system corpus pressure.",
+    "The corrected MultiWOZ aggregate requires a sealed profile-0.2 rerun.",
     "Historical v0.1-v0.4 experiment reports remain historical evidence and are not rewritten."
   ],
   "theorem_transfer": false,
   "measurement_validity": false,
   "metapat_validity": false,
-  "hmmm": "The exact profile is an instrument for finding where current examples are incomplete; it is not permission to collapse missing geometry into a convenient bridge."
+  "hmmm": "The exact profile resolves pinned SPACE manifestations to the origin carrier without supplying formal coordinates; it is not permission to collapse missing geometry or true non-SPACE coverage into a convenient bridge."
 }

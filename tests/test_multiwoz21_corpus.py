@@ -52,6 +52,39 @@ from edcm.corpora.multiwoz21 import (
 from edcm.ucns_adapter import ActualUCNSAdapter, PINNED_UCNS_COMMIT
 
 
+SPACE_MANIFESTATIONS = frozenset(
+    {
+        *(chr(value) for value in range(0x0009, 0x000E)),
+        "\u0020",
+        "\u0085",
+        "\u00a0",
+        "\u1680",
+        *(chr(value) for value in range(0x2000, 0x200B)),
+        "\u2028",
+        "\u2029",
+        "\u202f",
+        "\u205f",
+        "\u3000",
+    }
+)
+SPACE_CODE_POINT_LABELS = tuple(
+    f"U+{ord(value):04X}"
+    for value in (
+        *(chr(code_point) for code_point in range(0x0009, 0x000E)),
+        "\u0020",
+        "\u0085",
+        "\u00a0",
+        "\u1680",
+        *(chr(code_point) for code_point in range(0x2000, 0x200B)),
+        "\u2028",
+        "\u2029",
+        "\u202f",
+        "\u205f",
+        "\u3000",
+    )
+)
+
+
 class FixtureAdapter:
     """Small exact-shape adapter used only to exercise corpus accounting."""
 
@@ -74,18 +107,40 @@ class FixtureAdapter:
 
             out_of_alphabet = []
             for offset, value in enumerate(text):
+                is_space = value in SPACE_MANIFESTATIONS
+                alphabet_position = (
+                    0
+                    if is_space
+                    else ord(value)
+                    if value.isascii()
+                    else None
+                )
                 token = {
-                    "alphabet_position": (
-                        ord(value) if value == " " or value.isascii() else None
+                    "alphabet_position": alphabet_position,
+                    "carrier_position": alphabet_position,
+                    "carrier_token": (
+                        " "
+                        if is_space
+                        else value
+                        if alphabet_position is not None
+                        else None
                     ),
                     "code_point": f"U+{ord(value):04X}",
                     "codepoint_offset": offset,
-                    "in_alphabet": value == " " or value.isascii(),
+                    "in_alphabet": alphabet_position is not None,
+                    "has_carrier_assignment": alphabet_position is not None,
+                    "is_space_manifestation": is_space,
+                    "is_public_gonol_token": (
+                        value == " "
+                        or (value.isascii() and not is_space)
+                    ),
+                    "source_code_point": f"U+{ord(value):04X}",
+                    "source_value": value,
                     "value": value,
                 }
                 if not token["in_alphabet"]:
                     out_of_alphabet.append(token)
-                if value == " ":
+                if is_space:
                     close_word()
                     segments.append(
                         {
@@ -96,10 +151,24 @@ class FixtureAdapter:
                 else:
                     word.append(token)
             close_word()
+            for segment in segments:
+                if segment["kind"] != "word-gonol":
+                    continue
+                unassigned = tuple(
+                    token
+                    for token in segment["tokens"]
+                    if not token["has_carrier_assignment"]
+                )
+                segment["carrier_unassigned"] = unassigned
+                segment["out_of_alphabet"] = unassigned
             records.append(
                 {
+                    "carrier_unassigned": tuple(out_of_alphabet),
+                    "has_complete_carrier_assignment": not out_of_alphabet,
                     "has_complete_alphabet_coverage": not out_of_alphabet,
-                    "nesting_boundary_count": text.count(" "),
+                    "nesting_boundary_count": sum(
+                        value in SPACE_MANIFESTATIONS for value in text
+                    ),
                     "out_of_alphabet": tuple(out_of_alphabet),
                     "raw_text": text,
                     "segments": tuple(segments),
@@ -127,6 +196,12 @@ class FixtureAdapter:
             "profile_version": "test",
             "projection_status": "not-projected",
             "smallest_gonol": "word",
+            "source_domain": "unicode-scalar-values",
+            "space_assignment_policy": "unicode-white-space-origin-v1",
+            "space_code_point_labels": SPACE_CODE_POINT_LABELS,
+            "space_code_points_sha256": (
+                "a5dc5ec34775d511a02b17911aa385c5d92908ee58749ea16d721cd53d19b944"
+            ),
             "source_commit": "fixture-ucns",
             "source_repository": "fixture",
             "support_policy": "one-unit-per-speaker-turn",
@@ -164,8 +239,8 @@ def _fixture_archive(
                 "hotel": {"fail_book": {"stay": "3"}, "fail_info": {}}
             },
             "log": [
-                {"text": "  exact café", "metadata": {}},
-                {"text": "line\nbreak", "metadata": {"hotel": {}}},
+                {"text": " \texact café", "metadata": {}},
+                {"text": "line\nbreak\u00a0", "metadata": {"hotel": {}}},
             ],
         },
         "B.json": {
@@ -173,7 +248,14 @@ def _fixture_archive(
                 "train": {"fail_book": {}, "fail_info": {"day": "monday"}}
             },
             "log": [
-                {"text": 7 if invalid_turn else "final", "metadata": {}},
+                {
+                    "text": (
+                        7
+                        if invalid_turn
+                        else "ZXQ_SOURCE_SENTINEL_49"
+                    ),
+                    "metadata": {},
+                },
             ],
         },
     }
@@ -230,6 +312,33 @@ def test_streaming_top_level_object_keeps_order_and_exact_value_digest() -> None
     assert entries[0][2] == sha256('{"text": "é"}'.encode("utf-8")).hexdigest()
 
 
+def test_historical_report_is_superseded_without_fabricating_a_rerun() -> None:
+    root = Path(__file__).resolve().parents[1]
+    record = json.loads(
+        (
+            root
+            / "experiments/corpora/supersessions/"
+            "2026-07-28-multiwoz-2.1-space-origin.json"
+        ).read_text(encoding="utf-8")
+    )
+    historical = json.loads(
+        (
+            root
+            / "experiments/corpora/results/"
+            "2026-07-28-multiwoz-2.1-full.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert record["status"] == "superseded-pending-rerun"
+    assert record["superseded"]["report_digest"] == historical["report_digest"]
+    assert record["replacement"]["report_path"] is None
+    assert record["replacement"]["receipt_path"] is None
+    assert record["information_boundaries"]["corrected_aggregate_claimed"] is False
+    assert sum(
+        item["historical_occurrences"]
+        for item in record["reason"]["affected_source_code_points"]
+    ) == 4094
+
+
 def test_full_fixture_run_preserves_order_exact_text_and_profile_counts(
     tmp_path: Path,
 ) -> None:
@@ -254,11 +363,25 @@ def test_full_fixture_run_preserves_order_exact_text_and_profile_counts(
         "validation": 0,
     }
     observations = report["failure_seeking_observations"]
-    assert observations["space_boundaries"] == 3
+    assert report["schema_version"] == "1.1.0"
+    assert receipt["schema_version"] == "1.1.0"
+    assert report["profile"]["space_assignment_policy"] == (
+        "unicode-white-space-origin-v1"
+    )
+    assert report["profile"]["source_domain"] == "unicode-scalar-values"
+    assert report["profile"]["space_code_point_labels"] == list(
+        SPACE_CODE_POINT_LABELS
+    )
+    assert report["profile"]["space_code_points_sha256"] == (
+        "a5dc5ec34775d511a02b17911aa385c5d92908ee58749ea16d721cd53d19b944"
+    )
+    assert observations["space_boundaries"] == 5
     assert observations["repeated_space_excess"] == 1
     assert observations["leading_space_turns"] == 1
+    assert observations["trailing_space_turns"] == 1
     assert observations["newline_turns"] == 1
     assert observations["out_of_alphabet"]["occurrences"] == 1
+    assert observations["carrier_unassigned"] == observations["out_of_alphabet"]
     assert observations["source_declared_failure_dialogues"] == 2
     assert report["reconciliation"]["complete"] is True
     assert report["canon_selection"] is None
@@ -333,7 +456,7 @@ def test_report_and_checkpoint_exclude_source_turn_text(tmp_path: Path) -> None:
     serialized += checkpoint.read_text(encoding="utf-8")
     assert "exact café" not in serialized
     assert "line\\nbreak" not in serialized
-    assert "final" not in serialized
+    assert "ZXQ_SOURCE_SENTINEL_49" not in serialized
 
     repeated_report, repeated_receipt = run_archive(
         archive,

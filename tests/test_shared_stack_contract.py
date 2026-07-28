@@ -96,7 +96,11 @@ def test_full_stack_fixture_uses_exact_profile_and_preserves_boundaries():
     assert contract["metapat_semantic_constraints"]["source_statements"] == envelope.source_statements
     observation = contract["ucns_profile_observation"]
     assert observation["profile_id"] == "ucns.profile.edcm-word-gonol"
-    assert observation["source_commit"] == "eb264fba18bd051c46b4853c81c8fb91ec6d5811"
+    assert observation["source_commit"] == "c799b3547afc91a6039a5d3b15f997426eed138a"
+    assert (
+        observation["space_assignment_policy"]
+        == "unicode-white-space-origin-v1"
+    )
     assert observation["token_alphabet_size"] == 157
     assert tuple(turn["speaker_id"] for turn in observation["turns"]) == ("A", "B")
     assert result["layer_provenance"]["ucns_profile"]["canonical"] is False

@@ -85,16 +85,27 @@ Direct absence of `metapat` is typed unavailability. Transitive import errors, m
 ## Exact EDCM UCNS observation profile
 
 EDCM owns the consumer adapter. UCNS owns the exact EDCM-only word-gonol
-profile at `eb264fba18bd051c46b4853c81c8fb91ec6d5811`.
+profile at `c799b3547afc91a6039a5d3b15f997426eed138a`.
 
-The adapter activates only for `ucns.profile.edcm-word-gonol/0.1.0` with all
-twelve fixed options and the exact 157-token public gonol digest. Consume
+The adapter activates only for `ucns.profile.edcm-word-gonol/0.2.0` with all
+fourteen fixed options, `source_domain=unicode-scalar-values`, the exact
+157-token public gonol digest, and the exact ordered 25-value pin behind
+`space_assignment=unicode-white-space-origin-v1`. Consume
 ordered `ucns_turns` as exact `(speaker_id, text)` tuples. Never infer speaker
 turns from a flattened transcript, sample a corpus, or normalize source text.
 
-Every word is a maximal non-SPACE sequence, each SPACE is an explicit
-superpositioned nesting boundary, and each complete speaker turn has support
-one. Out-of-alphabet code points remain ordered positive evidence.
+Every word is a maximal sequence not assigned to carrier position zero. Each
+pinned Unicode SPACE manifestation is assigned to the public SPACE carrier at
+position zero and emitted as an explicit superpositioned nesting boundary.
+Source value/code point and carrier token/position are serialized separately,
+so tab, newline, and non-breaking space remain exact source witnesses. Each
+complete speaker turn has support one. True non-SPACE out-of-alphabet code
+points remain ordered positive evidence.
+
+Prefer `has_carrier_assignment`, `is_public_gonol_token`,
+`carrier_unassigned`, and `has_complete_carrier_assignment`. The older
+`in_alphabet`, `out_of_alphabet`, and `has_complete_alphabet_coverage` names
+remain compatibility aliases only.
 
 The retired inputs fail closed:
 
@@ -212,9 +223,11 @@ Base tests pass without UCNS or METAPAT installed. Integration tests use actual 
 The UCNS profile suite must prove:
 
 - exact profile and option drift fail closed;
-- all supplied turns remain ordered and retain exact Unicode and repeated spaces;
+- all supplied turns remain ordered and retain exact Unicode source witnesses;
+- every pinned SPACE manifestation has carrier position zero without source normalization;
+- the exact 25-value SPACE pin and Unicode-scalar source domain drift fail closed;
 - each speaker turn has support one;
-- out-of-alphabet evidence is retained;
+- true non-SPACE out-of-alphabet evidence is retained;
 - a flattened transcript does not invent speaker-turn boundaries;
 - package availability alone attaches no observation;
 - profile evidence never becomes geometry, factorization, theorem, or measurement validity.

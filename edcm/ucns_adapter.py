@@ -5,6 +5,9 @@ Usage guidance
 Install the ``ucns-profile`` extra and pass ``ucns_turns`` as an ordered
 sequence of exact ``(speaker_id, text)`` tuples. The adapter observes every
 turn; it does not parse speaker boundaries from a flattened transcript.
+Pinned Unicode SPACE manifestations share the public carrier at position zero,
+while explicit source and carrier fields keep every original code point
+recoverable without normalization.
 
 The resulting ``ucns_profile_observation`` is exact corpus evidence. It is not
 UCNS geometry, factorization evidence, theorem status, or an EDCM measurement
@@ -27,7 +30,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 #   tests: tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_shared_stack_contract
 #   rollout: optional exact-profile activation only when the pinned profile surface matches
 #   rollback: suspend the optional adapter; base EDCM measurement remains operational
-#   requires: ucns.edcm at eb264fba18bd051c46b4853c81c8fb91ec6d5811
+#   requires: ucns.edcm at c799b3547afc91a6039a5d3b15f997426eed138a
 #   since: 2026-07-25
 #   unresolved: formal Mobius coordinates, higher-gonol composition, and projection policies remain outside this observation adapter
 # === END MODULE_BUILD ===
@@ -35,13 +38,13 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 # === CONTRACTS ===
 # id: edcm_ucns_exact_profile_only
 #   given: an importable UCNS package is considered for activation
-#   then: every profile identity, option, public-alphabet invariant, and producer type matches the pinned EDCM word-gonol surface or the adapter remains suspended
+#   then: every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type matches the pinned EDCM word-gonol surface or the adapter remains suspended
 #   class: safety
 #   since: 2026-07-25
 #
 # id: edcm_ucns_full_turn_observation
 #   given: ordered ucns_turns enter the active adapter
-#   then: all turns are observed in order with exact Unicode, one unit of support per speaker turn, explicit SPACE boundaries, and retained out-of-alphabet evidence
+#   then: all turns are observed in order with exact Unicode source witnesses, one unit of support per speaker turn, explicit origin-assigned SPACE boundaries, and retained non-SPACE out-of-alphabet evidence
 #   class: evidence
 #   since: 2026-07-25
 #
@@ -63,11 +66,43 @@ from types import ModuleType
 from typing import Any, Mapping, Protocol, Sequence
 
 UCNS_SOURCE_REPOSITORY = "https://github.com/The-Interdependency/ucns"
-SUPPORTED_PROFILE = ("ucns.profile.edcm-word-gonol", "0.1.0")
+SUPPORTED_PROFILE = ("ucns.profile.edcm-word-gonol", "0.2.0")
 SUPPORTED_PROFILE_SCOPE = "edcm-only"
-PINNED_UCNS_COMMIT = "eb264fba18bd051c46b4853c81c8fb91ec6d5811"
+PINNED_UCNS_COMMIT = "c799b3547afc91a6039a5d3b15f997426eed138a"
 EXPECTED_PUBLIC_GONOL_SHA256 = (
     "55d10c84529a4d7bc7714786357e977b68d9df2ac3f73d20e229580b552c2ef5"
+)
+EXPECTED_SOURCE_DOMAIN = "unicode-scalar-values"
+EXPECTED_SPACE_ASSIGNMENT_POLICY = "unicode-white-space-origin-v1"
+EXPECTED_SPACE_CODE_POINT_LABELS = (
+    "U+0009",
+    "U+000A",
+    "U+000B",
+    "U+000C",
+    "U+000D",
+    "U+0020",
+    "U+0085",
+    "U+00A0",
+    "U+1680",
+    "U+2000",
+    "U+2001",
+    "U+2002",
+    "U+2003",
+    "U+2004",
+    "U+2005",
+    "U+2006",
+    "U+2007",
+    "U+2008",
+    "U+2009",
+    "U+200A",
+    "U+2028",
+    "U+2029",
+    "U+202F",
+    "U+205F",
+    "U+3000",
+)
+EXPECTED_SPACE_CODE_POINTS_SHA256 = (
+    "a5dc5ec34775d511a02b17911aa385c5d92908ee58749ea16d721cd53d19b944"
 )
 EXPECTED_PROFILE_OPTIONS = tuple(
     sorted(
@@ -81,6 +116,8 @@ EXPECTED_PROFILE_OPTIONS = tuple(
             "out_of_alphabet": "retain-and-report",
             "profile_scope": "edcm-only",
             "smallest_gonol": "word",
+            "source_domain": EXPECTED_SOURCE_DOMAIN,
+            "space_assignment": EXPECTED_SPACE_ASSIGNMENT_POLICY,
             "support": "one-unit-per-speaker-turn",
             "token_alphabet": "public-gonol-157",
             "token_identity": "unicode-code-point",
@@ -132,7 +169,7 @@ class UCNSIntegrationStatus:
     ucns_negative_certification_attached: bool = False
     ucns_theorem_status_attached: bool = False
     implementation_id: str = "edcm.ucns_adapter.word_gonol_profile"
-    implementation_version: str | None = "0.1.0"
+    implementation_version: str | None = "0.2.0"
     source_repository: str = UCNS_SOURCE_REPOSITORY
     selection: str = "suspended"
     unresolved_constraints: tuple[str, ...] = ()
@@ -169,6 +206,10 @@ class UCNSProfileObservationEvidence:
     corpus_execution: str
     smallest_gonol: str
     gonol_initiation: str
+    source_domain: str
+    space_assignment_policy: str
+    space_code_point_labels: tuple[str, ...]
+    space_code_points_sha256: str
     token_alphabet_size: int
     token_alphabet_sha256: str
     turns: tuple[dict[str, Any], ...]
@@ -204,17 +245,49 @@ def _digest(value: Any) -> str:
 
 
 def _token_record(token: Any) -> dict[str, Any]:
+    source_value = token.value
+    source_code_point = token.code_point
+    carrier_position = token.alphabet_position
+    carrier_token = token.carrier_token
+    is_space_manifestation = token.is_space
+    has_carrier_assignment = token.has_carrier_assignment
+    is_public_gonol_token = token.is_public_gonol_token
+    if token.in_alphabet != has_carrier_assignment:
+        raise ValueError(
+            "UCNS token in_alphabet alias disagrees with carrier assignment"
+        )
     return {
-        "value": token.value,
-        "code_point": token.code_point,
+        # ``value`` and ``code_point`` remain for consumers of the 0.1 record.
+        # Their meaning has always been the exact source witness.
+        "value": source_value,
+        "code_point": source_code_point,
         "codepoint_offset": token.codepoint_offset,
-        "alphabet_position": token.alphabet_position,
+        "alphabet_position": carrier_position,
         "in_alphabet": token.in_alphabet,
+        # The explicit names prevent carrier equivalence from looking like
+        # Unicode normalization. Source bytes/code points remain recoverable.
+        "source_value": source_value,
+        "source_code_point": source_code_point,
+        "carrier_token": carrier_token,
+        "carrier_position": carrier_position,
+        "is_space_manifestation": is_space_manifestation,
+        "has_carrier_assignment": has_carrier_assignment,
+        "is_public_gonol_token": is_public_gonol_token,
     }
 
 
 def _segment_record(module: ModuleType, segment: Any) -> dict[str, Any]:
     if isinstance(segment, module.EdcmWordGonol):
+        carrier_unassigned = tuple(
+            _token_record(token) for token in segment.carrier_unassigned
+        )
+        out_of_alphabet = tuple(
+            _token_record(token) for token in segment.out_of_alphabet
+        )
+        if carrier_unassigned != out_of_alphabet:
+            raise ValueError(
+                "UCNS word out_of_alphabet alias disagrees with carrier_unassigned"
+            )
         return {
             "kind": "word-gonol",
             "word_index": segment.word_index,
@@ -223,6 +296,8 @@ def _segment_record(module: ModuleType, segment: Any) -> dict[str, Any]:
             "source_end": segment.source_end,
             "initiation_event": segment.initiation_event,
             "tokens": tuple(_token_record(token) for token in segment.tokens),
+            "carrier_unassigned": carrier_unassigned,
+            "out_of_alphabet": out_of_alphabet,
         }
     if isinstance(segment, module.SuperpositionedSpaceBoundary):
         return {
@@ -235,6 +310,23 @@ def _segment_record(module: ModuleType, segment: Any) -> dict[str, Any]:
 
 
 def _turn_record(module: ModuleType, observation: Any) -> dict[str, Any]:
+    carrier_unassigned = tuple(
+        _token_record(token) for token in observation.carrier_unassigned
+    )
+    out_of_alphabet = tuple(
+        _token_record(token) for token in observation.out_of_alphabet
+    )
+    if carrier_unassigned != out_of_alphabet:
+        raise ValueError(
+            "UCNS turn out_of_alphabet alias disagrees with carrier_unassigned"
+        )
+    if (
+        observation.has_complete_carrier_assignment
+        != observation.has_complete_alphabet_coverage
+    ):
+        raise ValueError(
+            "UCNS turn alphabet-coverage alias disagrees with carrier assignment"
+        )
     return {
         "speaker_id": observation.speaker_id,
         "turn_index": observation.turn_index,
@@ -246,8 +338,10 @@ def _turn_record(module: ModuleType, observation: Any) -> dict[str, Any]:
         ),
         "word_count": len(observation.word_gonols),
         "nesting_boundary_count": len(observation.nesting_boundaries),
-        "out_of_alphabet": tuple(
-            _token_record(token) for token in observation.out_of_alphabet
+        "carrier_unassigned": carrier_unassigned,
+        "out_of_alphabet": out_of_alphabet,
+        "has_complete_carrier_assignment": (
+            observation.has_complete_carrier_assignment
         ),
         "has_complete_alphabet_coverage": (
             observation.has_complete_alphabet_coverage
@@ -284,6 +378,9 @@ class ActualUCNSAdapter:
             "EDCM_CORPUS_EXECUTION",
             "EDCM_SMALLEST_GONOL",
             "EDCM_GONOL_INITIATION",
+            "EDCM_SOURCE_DOMAIN",
+            "EDCM_SPACE_ASSIGNMENT_POLICY",
+            "EDCM_SPACE_CODE_POINTS",
             "PUBLIC_GONOL_157",
             "PUBLIC_GONOL_SHA256",
             "EdcmWordGonolProfile",
@@ -305,6 +402,41 @@ class ActualUCNSAdapter:
             raise UnsupportedUCNSSchemaError("UCNS EDCM profile scope mismatch")
         if tuple(module.EDCM_PROFILE_OPTIONS) != EXPECTED_PROFILE_OPTIONS:
             raise UnsupportedUCNSSchemaError("UCNS EDCM profile options mismatch")
+        if (
+            str(module.EDCM_SPACE_ASSIGNMENT_POLICY)
+            != EXPECTED_SPACE_ASSIGNMENT_POLICY
+        ):
+            raise UnsupportedUCNSSchemaError(
+                "UCNS EDCM SPACE-assignment policy mismatch"
+            )
+        if str(module.EDCM_SOURCE_DOMAIN) != EXPECTED_SOURCE_DOMAIN:
+            raise UnsupportedUCNSSchemaError(
+                "UCNS EDCM source domain mismatch"
+            )
+        space_code_points = tuple(module.EDCM_SPACE_CODE_POINTS)
+        if (
+            len(space_code_points) != len(EXPECTED_SPACE_CODE_POINT_LABELS)
+            or not all(
+                isinstance(value, str)
+                and len(value) == 1
+                and not 0xD800 <= ord(value) <= 0xDFFF
+                for value in space_code_points
+            )
+        ):
+            raise UnsupportedUCNSSchemaError(
+                "UCNS EDCM SPACE code-point pin shape mismatch"
+            )
+        space_code_point_labels = tuple(
+            f"U+{ord(value):04X}" for value in space_code_points
+        )
+        if space_code_point_labels != EXPECTED_SPACE_CODE_POINT_LABELS:
+            raise UnsupportedUCNSSchemaError(
+                "UCNS EDCM SPACE code-point pin mismatch"
+            )
+        if _digest(space_code_point_labels) != EXPECTED_SPACE_CODE_POINTS_SHA256:
+            raise UnsupportedUCNSSchemaError(
+                "EDCM-owned SPACE code-point identity mismatch"
+            )
         alphabet = tuple(module.PUBLIC_GONOL_157)
         if (
             len(alphabet) != 157
@@ -320,6 +452,8 @@ class ActualUCNSAdapter:
             "corpus_execution": str(module.EDCM_CORPUS_EXECUTION),
             "smallest_gonol": str(module.EDCM_SMALLEST_GONOL),
             "gonol_initiation": str(module.EDCM_GONOL_INITIATION),
+            "space_assignment": str(module.EDCM_SPACE_ASSIGNMENT_POLICY),
+            "source_domain": str(module.EDCM_SOURCE_DOMAIN),
         }
         expected_behavior = {
             "normalization": "none-preserve-source",
@@ -327,6 +461,8 @@ class ActualUCNSAdapter:
             "corpus_execution": "full-corpus",
             "smallest_gonol": "word",
             "gonol_initiation": "mobius-twist",
+            "space_assignment": EXPECTED_SPACE_ASSIGNMENT_POLICY,
+            "source_domain": EXPECTED_SOURCE_DOMAIN,
         }
         if behavior != expected_behavior:
             raise UnsupportedUCNSSchemaError("UCNS EDCM profile behavior mismatch")
@@ -336,6 +472,7 @@ class ActualUCNSAdapter:
         ):
             raise UnsupportedUCNSSchemaError("UCNS public gonol digest mismatch")
         self._module = module
+        self._space_code_point_labels = space_code_point_labels
         try:
             self._profile = module.EdcmWordGonolProfile()
         except (TypeError, ValueError) as exc:
@@ -403,6 +540,12 @@ class ActualUCNSAdapter:
             "corpus_execution": self._module.EDCM_CORPUS_EXECUTION,
             "smallest_gonol": self._module.EDCM_SMALLEST_GONOL,
             "gonol_initiation": self._module.EDCM_GONOL_INITIATION,
+            "source_domain": self._module.EDCM_SOURCE_DOMAIN,
+            "space_assignment_policy": (
+                self._module.EDCM_SPACE_ASSIGNMENT_POLICY
+            ),
+            "space_code_point_labels": self._space_code_point_labels,
+            "space_code_points_sha256": EXPECTED_SPACE_CODE_POINTS_SHA256,
             "token_alphabet_size": len(self._module.PUBLIC_GONOL_157),
             "token_alphabet_sha256": self._module.PUBLIC_GONOL_SHA256,
             "turns": turn_records,
@@ -481,6 +624,10 @@ __all__ = [
     "ActualUCNSAdapter",
     "EXPECTED_PROFILE_OPTIONS",
     "EXPECTED_PUBLIC_GONOL_SHA256",
+    "EXPECTED_SOURCE_DOMAIN",
+    "EXPECTED_SPACE_ASSIGNMENT_POLICY",
+    "EXPECTED_SPACE_CODE_POINT_LABELS",
+    "EXPECTED_SPACE_CODE_POINTS_SHA256",
     "INSTALL_HINT",
     "PINNED_UCNS_COMMIT",
     "REJECTED_LEGACY_INPUTS",

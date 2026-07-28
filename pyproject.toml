@@ -33,11 +33,11 @@ metapat = [
   "metapat @ git+https://github.com/The-Interdependency/metapat.git@54bd394746426b37d5ca2e996071ace526fbdc9a",
 ]
 ucns-profile = [
-  "ucns @ git+https://github.com/The-Interdependency/ucns.git@eb264fba18bd051c46b4853c81c8fb91ec6d5811",
+  "ucns @ git+https://github.com/The-Interdependency/ucns.git@c799b3547afc91a6039a5d3b15f997426eed138a",
 ]
 full-stack = [
   "metapat @ git+https://github.com/The-Interdependency/metapat.git@54bd394746426b37d5ca2e996071ace526fbdc9a",
-  "ucns @ git+https://github.com/The-Interdependency/ucns.git@eb264fba18bd051c46b4853c81c8fb91ec6d5811",
+  "ucns @ git+https://github.com/The-Interdependency/ucns.git@c799b3547afc91a6039a5d3b15f997426eed138a",
 ]
 # Historical v0.1-v0.4 joint experiments remain pinned to their evidence epoch.
 # They are not the current word-gonol profile runtime.

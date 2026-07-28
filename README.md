@@ -140,19 +140,24 @@ exact University of Cambridge archive and every logical member, streams all
 `10,438` dialogues in source order, observes every exact speaker turn through
 the pinned EDCM UCNS word-gonol profile, and emits only aggregate evidence and
 completion or incompletion receipts. Raw corpus bytes remain outside Git.
+Carrier SPACE metrics are derived from profile assignment at alphabet position
+zero; the exact source code point remains independently serialized.
 
 ```bash
 python -m edcm.corpora.multiwoz21 \
   --archive /path/to/MULTIWOZ2.1.zip \
-  --ucns-source-root /path/to/ucns-at-eb264fba18bd051c46b4853c81c8fb91ec6d5811 \
-  --output experiments/corpora/results/2026-07-28-multiwoz-2.1-full.json \
-  --receipt experiments/corpora/receipts/2026-07-28-multiwoz-2.1-complete.json \
-  --checkpoint /tmp/multiwoz-2.1.checkpoint.json
+  --ucns-source-root /path/to/ucns-at-c799b3547afc91a6039a5d3b15f997426eed138a \
+  --output experiments/corpora/results/2026-07-28-multiwoz-2.1-space-origin-rerun.json \
+  --receipt experiments/corpora/receipts/2026-07-28-multiwoz-2.1-space-origin-complete.json \
+  --checkpoint /tmp/multiwoz-2.1-space-origin.checkpoint.json
 ```
 
 See [`docs/corpora/multiwoz-2.1.md`](docs/corpora/multiwoz-2.1.md). This is
 represented evidence, not an EDCM candidate measurement, formal UCNS geometry,
-or a canon selection.
+or a canon selection. The original profile-0.1 report remains immutable but is
+explicitly superseded because tabs, newlines, and non-breaking spaces were
+misclassified as out-of-alphabet instead of SPACE manifestations. No corrected
+aggregate is claimed until the sealed full-corpus rerun completes.
 
 ## Integrity gate
 
@@ -197,4 +202,4 @@ Historical implementation, source packets, repair handoffs, and prior adapter co
 
 ## hmmm
 
-Formal Möbius coordinates, higher-gonol composition, and lawful projection from exact observations into a higher-dimensional lattice remain open. Full real-system corpus runs should pressure the current word, SPACE-boundary, support, and 157-token assumptions before any further canon selection.
+Formal Möbius coordinates, higher-gonol composition, and lawful projection from exact observations into a higher-dimensional lattice remain open. The corrected MultiWOZ 2.1 rerun must be sealed before its SPACE-origin aggregate replaces the superseded profile-0.1 interpretation; true non-SPACE carrier coverage remains a separate hmmm.

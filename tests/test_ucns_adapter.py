@@ -31,6 +31,10 @@ from edcm.ucns_adapter import (
     ActualUCNSAdapter,
     EXPECTED_PROFILE_OPTIONS,
     EXPECTED_PUBLIC_GONOL_SHA256,
+    EXPECTED_SOURCE_DOMAIN,
+    EXPECTED_SPACE_ASSIGNMENT_POLICY,
+    EXPECTED_SPACE_CODE_POINT_LABELS,
+    EXPECTED_SPACE_CODE_POINTS_SHA256,
     PINNED_UCNS_COMMIT,
     REJECTED_LEGACY_SCHEMAS,
     UCNSAdapterConstructionError,
@@ -51,6 +55,11 @@ def _exact_identity_module() -> ModuleType:
     module.EDCM_CORPUS_EXECUTION = "full-corpus"
     module.EDCM_SMALLEST_GONOL = "word"
     module.EDCM_GONOL_INITIATION = "mobius-twist"
+    module.EDCM_SOURCE_DOMAIN = EXPECTED_SOURCE_DOMAIN
+    module.EDCM_SPACE_ASSIGNMENT_POLICY = EXPECTED_SPACE_ASSIGNMENT_POLICY
+    module.EDCM_SPACE_CODE_POINTS = tuple(
+        chr(int(label[2:], 16)) for label in EXPECTED_SPACE_CODE_POINT_LABELS
+    )
     module.PUBLIC_GONOL_157 = (" ", "0", *(chr(0x1000 + i) for i in range(155)))
     module.PUBLIC_GONOL_SHA256 = EXPECTED_PUBLIC_GONOL_SHA256
     module.public_gonol_sha256 = lambda: EXPECTED_PUBLIC_GONOL_SHA256
@@ -97,6 +106,12 @@ def test_archived_lookalike_cannot_activate(monkeypatch):
 
 def test_exact_profile_activates_and_option_drift_suspends(monkeypatch):
     module = _exact_identity_module()
+    assert len(EXPECTED_PROFILE_OPTIONS) == 14
+    assert ("source_domain", EXPECTED_SOURCE_DOMAIN) in EXPECTED_PROFILE_OPTIONS
+    assert (
+        "space_assignment",
+        EXPECTED_SPACE_ASSIGNMENT_POLICY,
+    ) in EXPECTED_PROFILE_OPTIONS
     monkeypatch.setattr(adapter_module.importlib, "import_module", lambda name: module)
     selection = select_ucns_adapter()
     assert selection.adapter is not None
@@ -109,6 +124,25 @@ def test_exact_profile_activates_and_option_drift_suspends(monkeypatch):
     assert selection.adapter is None
     assert selection.status.adapter_active is False
     assert "options mismatch" in selection.status.errors[0]
+
+    module.EDCM_PROFILE_OPTIONS = EXPECTED_PROFILE_OPTIONS
+    module.EDCM_SPACE_CODE_POINTS = (
+        *module.EDCM_SPACE_CODE_POINTS[:-1],
+        "\u3001",
+    )
+    selection = select_ucns_adapter()
+    assert selection.adapter is None
+    assert selection.status.adapter_active is False
+    assert "code-point pin mismatch" in selection.status.errors[0]
+
+    module.EDCM_SPACE_CODE_POINTS = tuple(
+        chr(int(label[2:], 16)) for label in EXPECTED_SPACE_CODE_POINT_LABELS
+    )
+    module.EDCM_SOURCE_DOMAIN = "all-unicode-code-points"
+    selection = select_ucns_adapter()
+    assert selection.adapter is None
+    assert selection.status.adapter_active is False
+    assert "source domain mismatch" in selection.status.errors[0]
 
 
 def test_retired_bridge_object_and_factorization_inputs_fail_closed():
@@ -139,7 +173,7 @@ def test_live_profile_preserves_full_turn_order_spaces_and_alphabet_failures():
         {
             "source_ref": "fixture://exact-turns",
             "ucns_turns": (
-                ("A", "word  gonol"),
+                ("A", "word\tgonol\n\u00a0"),
                 ("B", "é"),
             ),
         }
@@ -150,17 +184,57 @@ def test_live_profile_preserves_full_turn_order_spaces_and_alphabet_failures():
     assert evidence["token_alphabet_size"] == 157
     assert tuple(turn["speaker_id"] for turn in evidence["turns"]) == ("A", "B")
     first = evidence["turns"][0]
-    assert first["raw_text"] == "word  gonol"
+    assert first["raw_text"] == "word\tgonol\n\u00a0"
     assert first["unit_support"] == 1.0
     assert first["word_count"] == 2
-    assert first["nesting_boundary_count"] == 2
+    assert first["nesting_boundary_count"] == 3
     assert tuple(segment["kind"] for segment in first["segments"]) == (
         "word-gonol",
         "superpositioned-space-boundary",
-        "superpositioned-space-boundary",
         "word-gonol",
+        "superpositioned-space-boundary",
+        "superpositioned-space-boundary",
     )
+    boundaries = tuple(
+        segment["token"]
+        for segment in first["segments"]
+        if segment["kind"] == "superpositioned-space-boundary"
+    )
+    assert tuple(token["source_value"] for token in boundaries) == (
+        "\t",
+        "\n",
+        "\u00a0",
+    )
+    assert all(token["carrier_token"] == " " for token in boundaries)
+    assert all(token["carrier_position"] == 0 for token in boundaries)
+    assert all(token["alphabet_position"] == 0 for token in boundaries)
+    assert all(token["is_space_manifestation"] is True for token in boundaries)
+    assert all(token["has_carrier_assignment"] is True for token in boundaries)
+    assert all(token["in_alphabet"] is True for token in boundaries)
+    assert all(
+        token["is_public_gonol_token"] is False for token in boundaries
+    )
+    assert first["carrier_unassigned"] == ()
+    assert first["out_of_alphabet"] == ()
+    assert first["has_complete_carrier_assignment"] is True
+    assert first["has_complete_alphabet_coverage"] is True
+    assert evidence["source_domain"] == EXPECTED_SOURCE_DOMAIN
+    assert evidence["space_assignment_policy"] == EXPECTED_SPACE_ASSIGNMENT_POLICY
+    assert evidence["space_code_point_labels"] == EXPECTED_SPACE_CODE_POINT_LABELS
+    assert (
+        evidence["space_code_points_sha256"]
+        == EXPECTED_SPACE_CODE_POINTS_SHA256
+    )
+    assert evidence["turns"][1]["carrier_unassigned"][0]["value"] == "é"
     assert evidence["turns"][1]["out_of_alphabet"][0]["value"] == "é"
+    assert (
+        evidence["turns"][1]["out_of_alphabet"][0]["source_value"]
+        == "é"
+    )
+    assert (
+        evidence["turns"][1]["out_of_alphabet"][0]["carrier_token"]
+        is None
+    )
     assert evidence["turns"][1]["has_complete_alphabet_coverage"] is False
 
 

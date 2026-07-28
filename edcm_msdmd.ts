@@ -110,13 +110,13 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_archive_identity, _load_partition_ids, _load_pinned_adapter, _new_state, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic",
+        "internal_surface": "_archive_identity, _load_partition_ids, _load_pinned_adapter, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic",
         "module_kind": "adapter",
         "module_name": "multiwoz21",
         "network_boundary": "none; source acquisition is separate and the runner requires local pinned bytes",
         "owner": "Erin Spencer",
         "public_surface": "AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive, main",
-        "requires": "edcm_ucns_adapter, ucns.edcm at eb264fba18bd051c46b4853c81c8fb91ec6d5811",
+        "requires": "edcm_ucns_adapter, ucns.edcm at c799b3547afc91a6039a5d3b15f997426eed138a",
         "rollback": "remove the adapter and supersede its aggregate receipts by identity; raw source remains outside Git",
         "rollout": "explicit admitted full-corpus command; no sampling and no default measurement or canon selection",
         "since": "2026-07-28",
@@ -1071,7 +1071,7 @@ export default defineMsdmdCollection({
         "class": "safety",
         "given": "an importable UCNS package is considered for activation",
         "since": "2026-07-25",
-        "then": "every profile identity, option, public-alphabet invariant, and producer type matches the pinned EDCM word-gonol surface or the adapter remains suspended"
+        "then": "every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type matches the pinned EDCM word-gonol surface or the adapter remains suspended"
       },
       "file": "edcm/ucns_adapter.py",
       "id": "edcm_ucns_exact_profile_only"
@@ -1082,7 +1082,7 @@ export default defineMsdmdCollection({
         "class": "evidence",
         "given": "ordered ucns_turns enter the active adapter",
         "since": "2026-07-25",
-        "then": "all turns are observed in order with exact Unicode, one unit of support per speaker turn, explicit SPACE boundaries, and retained out-of-alphabet evidence"
+        "then": "all turns are observed in order with exact Unicode source witnesses, one unit of support per speaker turn, explicit origin-assigned SPACE boundaries, and retained non-SPACE out-of-alphabet evidence"
       },
       "file": "edcm/ucns_adapter.py",
       "id": "edcm_ucns_full_turn_observation"
@@ -1109,7 +1109,7 @@ export default defineMsdmdCollection({
         "network_boundary": "none",
         "owner": "Erin Spencer",
         "public_surface": "ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter",
-        "requires": "ucns.edcm at eb264fba18bd051c46b4853c81c8fb91ec6d5811",
+        "requires": "ucns.edcm at c799b3547afc91a6039a5d3b15f997426eed138a",
         "rollback": "suspend the optional adapter; base EDCM measurement remains operational",
         "rollout": "optional exact-profile activation only when the pinned profile surface matches",
         "since": "2026-07-25",
@@ -2673,7 +2673,7 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_multiwoz21_corpus",
-      "to": "ucns.edcm at eb264fba18bd051c46b4853c81c8fb91ec6d5811"
+      "to": "ucns.edcm at c799b3547afc91a6039a5d3b15f997426eed138a"
     },
     {
       "from": "edcm_package",
@@ -2813,7 +2813,7 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_ucns_adapter",
-      "to": "ucns.edcm at eb264fba18bd051c46b4853c81c8fb91ec6d5811"
+      "to": "ucns.edcm at c799b3547afc91a6039a5d3b15f997426eed138a"
     },
     {
       "from": "edcm_ucns_dependency",

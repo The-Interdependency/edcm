@@ -140,7 +140,10 @@ jobs:
 
           envelope = metapat.root_spine_module_envelope()
           assert ucns.EDCM_PROFILE_ID == "ucns.profile.edcm-word-gonol"
-          assert ucns.EDCM_PROFILE_VERSION == "0.1.0"
+          assert ucns.EDCM_PROFILE_VERSION == "0.2.0"
+          assert ucns.EDCM_SOURCE_DOMAIN == "unicode-scalar-values"
+          assert ucns.EDCM_SPACE_ASSIGNMENT_POLICY == "unicode-white-space-origin-v1"
+          assert len(ucns.EDCM_SPACE_CODE_POINTS) == 25
           assert len(ucns.PUBLIC_GONOL_157) == 157
           result = edcm.build_default_layers().run({
               "transcript": "A: Preserve the exact shared-stack boundary.\nB: Keep spaces  exact.",
@@ -154,7 +157,10 @@ jobs:
           contract = result["edcm_result"]
           observation = contract["ucns_profile_observation"]
           assert observation["profile_id"] == "ucns.profile.edcm-word-gonol"
-          assert observation["source_commit"] == "eb264fba18bd051c46b4853c81c8fb91ec6d5811"
+          assert observation["source_commit"] == "c799b3547afc91a6039a5d3b15f997426eed138a"
+          assert observation["source_domain"] == "unicode-scalar-values"
+          assert observation["space_assignment_policy"] == "unicode-white-space-origin-v1"
+          assert observation["space_code_points_sha256"] == "a5dc5ec34775d511a02b17911aa385c5d92908ee58749ea16d721cd53d19b944"
           assert tuple(turn["speaker_id"] for turn in observation["turns"]) == ("A", "B")
           assert observation["turns"][1]["nesting_boundary_count"] == 3
           assert contract["metapat_semantic_constraints"]["canon_digest"] == envelope.canon_digest

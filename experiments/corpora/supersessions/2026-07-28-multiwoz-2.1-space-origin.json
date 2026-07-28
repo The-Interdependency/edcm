@@ -1,0 +1,50 @@
+{
+  "corpus_id": "multiwoz-2.1",
+  "information_boundaries": {
+    "corrected_aggregate_claimed": false,
+    "historical_execution_reconciliation_preserved": true,
+    "raw_source_committed": false
+  },
+  "reason": {
+    "affected_source_code_points": [
+      {
+        "code_point": "U+0009",
+        "corrected_carrier_position": 0,
+        "historical_occurrences": 1976
+      },
+      {
+        "code_point": "U+000A",
+        "corrected_carrier_position": 0,
+        "historical_occurrences": 2115
+      },
+      {
+        "code_point": "U+00A0",
+        "corrected_carrier_position": 0,
+        "historical_occurrences": 3
+      }
+    ],
+    "class": "space-carrier-assignment",
+    "historical_out_of_alphabet_occurrences": 4094,
+    "summary": "The profile-0.1 run treated tab, newline, and non-breaking space as out-of-alphabet. The corrected profile preserves each exact source witness while assigning every pinned SPACE manifestation to carrier position zero."
+  },
+  "replacement": {
+    "receipt_path": null,
+    "report_path": null,
+    "runner_schema_version": "1.1.0",
+    "status": "pending-sealed-full-corpus-rerun",
+    "ucns_commit": "c799b3547afc91a6039a5d3b15f997426eed138a",
+    "ucns_profile": "ucns.profile.edcm-word-gonol/0.2.0"
+  },
+  "schema_id": "edcm.corpus-report-supersession",
+  "schema_version": "1.0.0",
+  "status": "superseded-pending-rerun",
+  "superseded": {
+    "receipt_digest": "b8645a09ec860f362a24cb40bda14e550fcf282a2ea46dd6f829c904234824ee",
+    "receipt_path": "experiments/corpora/receipts/2026-07-28-multiwoz-2.1-complete.json",
+    "report_digest": "0bf4eb5c9ddf67fd6f48c766ce874435f63be10a32335882a0170be95eb98b21",
+    "report_path": "experiments/corpora/results/2026-07-28-multiwoz-2.1-full.json",
+    "runner_schema_version": "1.0.0",
+    "ucns_commit": "eb264fba18bd051c46b4853c81c8fb91ec6d5811",
+    "ucns_profile": "ucns.profile.edcm-word-gonol/0.1.0"
+  }
+}

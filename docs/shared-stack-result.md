@@ -17,7 +17,9 @@ geometry and factorization independently typed.
 - `metapat_semantic_constraints` contains only validated METAPAT authority and
   provenance; semantic labels are not metric values.
 - `ucns_profile_observation` contains exact full-corpus word-gonol evidence
-  when ordered `ucns_turns` were supplied.
+  when ordered `ucns_turns` were supplied. Source code-point witnesses remain
+  separate from carrier assignment; pinned Unicode SPACE manifestations share
+  carrier position zero without normalization.
 - `ucns_geometry_identity` remains typed `NA`; the current profile does not
   supply formal UCNS geometry.
 - `ucns_factorization_evidence` remains typed `NA`; no factorization producer
@@ -35,6 +37,8 @@ geometry and factorization independently typed.
 
 - METAPAT canon and provenance;
 - UCNS profile id, version, scope, exact options, and pinned source commit;
+- the Unicode-scalar source domain and exact ordered 25-value SPACE pin,
+  including its canonical digest, through the observation record;
 - EDCM policy-manifest identity;
 - selected semantic-authority, UCNS-profile, and measurement implementations.
 

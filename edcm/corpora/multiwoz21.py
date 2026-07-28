@@ -18,6 +18,10 @@ through EDCM's pinned UCNS word-gonol consumer. It emits aggregate counts,
 cryptographic identities, reconciliation, and a completion or incompletion
 receipt. It never emits raw dialogue text.
 
+SPACE-boundary, leading, trailing, and repeated-run metrics come from the
+profile carrier assignment ``alphabet_position == 0``. The serialized token
+records independently reconstruct each exact source value and code point.
+
 The zero-based even=user, odd=system speaker label is an explicit adapter
 convention because ``data.json`` has no speaker field. It is not promoted into
 source truth. Goal, metadata, dialogue-act, ontology, and database evidence
@@ -31,7 +35,7 @@ remain source-native noninputs to this profile run.
 #   summary: verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile without committing raw text
 #   owner: Erin Spencer
 #   public_surface: AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive, main
-#   internal_surface: _archive_identity, _load_partition_ids, _load_pinned_adapter, _new_state, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic
+#   internal_surface: _archive_identity, _load_partition_ids, _load_pinned_adapter, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic
 #   auth_boundary: none
 #   storage_boundary: reads a caller-held archive and writes only caller-selected aggregate report, receipt, and resumable checkpoint paths
 #   network_boundary: none; source acquisition is separate and the runner requires local pinned bytes
@@ -40,7 +44,7 @@ remain source-native noninputs to this profile run.
 #   tests: tests.test_multiwoz21_corpus
 #   rollout: explicit admitted full-corpus command; no sampling and no default measurement or canon selection
 #   rollback: remove the adapter and supersede its aggregate receipts by identity; raw source remains outside Git
-#   requires: edcm_ucns_adapter, ucns.edcm at eb264fba18bd051c46b4853c81c8fb91ec6d5811
+#   requires: edcm_ucns_adapter, ucns.edcm at c799b3547afc91a6039a5d3b15f997426eed138a
 #   since: 2026-07-28
 #   unresolved: source-native semantic labels for correction, retraction, and unresolved reference; formal UCNS geometry and lawful EDCM projection
 # === END MODULE_BUILD ===
@@ -98,11 +102,11 @@ from edcm.ucns_adapter import ActualUCNSAdapter, PINNED_UCNS_COMMIT
 
 
 RUNNER_SCHEMA_ID = "edcm.multiwoz21-full-corpus"
-RUNNER_SCHEMA_VERSION = "1.0.0"
+RUNNER_SCHEMA_VERSION = "1.1.0"
 RECEIPT_SCHEMA_ID = "edcm.corpus-run-receipt"
-RECEIPT_SCHEMA_VERSION = "1.0.0"
+RECEIPT_SCHEMA_VERSION = "1.1.0"
 CHECKPOINT_SCHEMA_ID = "edcm.multiwoz21-checkpoint"
-CHECKPOINT_SCHEMA_VERSION = "1.0.0"
+CHECKPOINT_SCHEMA_VERSION = "1.1.0"
 EMPTY_CHAIN_DIGEST = sha256(b"").hexdigest()
 CHUNK_SIZE = 1024 * 1024
 
@@ -518,6 +522,10 @@ def _profile_identity(evidence: Mapping[str, Any]) -> dict[str, Any]:
         "profile_version": evidence["profile_version"],
         "projection_status": evidence["projection_status"],
         "smallest_gonol": evidence["smallest_gonol"],
+        "source_domain": evidence["source_domain"],
+        "space_assignment_policy": evidence["space_assignment_policy"],
+        "space_code_point_labels": evidence["space_code_point_labels"],
+        "space_code_points_sha256": evidence["space_code_points_sha256"],
         "source_commit": evidence["source_commit"],
         "source_repository": evidence["source_repository"],
         "support_policy": evidence["support_policy"],
@@ -534,17 +542,91 @@ def _speaker_id(turn_index: int) -> str:
     return "user" if turn_index % 2 == 0 else "system"
 
 
-def _space_shape(text: str) -> tuple[int, bool, bool]:
+def _ordered_token_records(
+    observed: Mapping[str, Any],
+    *,
+    state: Mapping[str, Any],
+) -> tuple[Mapping[str, Any], ...]:
+    segments = observed.get("segments")
+    if not isinstance(segments, (tuple, list)):
+        raise CorpusRunError(
+            "UCNS profile segment evidence has an invalid shape",
+            code="UCNS_SEGMENT_EVIDENCE",
+            state=state,
+        )
+    ordered: list[Mapping[str, Any]] = []
+    for segment in segments:
+        if not isinstance(segment, Mapping):
+            raise CorpusRunError(
+                "UCNS profile segment evidence has an invalid shape",
+                code="UCNS_SEGMENT_EVIDENCE",
+                state=state,
+            )
+        kind = segment.get("kind")
+        if kind == "word-gonol":
+            tokens = segment.get("tokens")
+            if not isinstance(tokens, (tuple, list)):
+                raise CorpusRunError(
+                    "UCNS word-gonol token evidence has an invalid shape",
+                    code="UCNS_TOKEN_EVIDENCE",
+                    state=state,
+                )
+        elif kind == "superpositioned-space-boundary":
+            tokens = (segment.get("token"),)
+        else:
+            raise CorpusRunError(
+                "UCNS profile emitted an unknown segment kind",
+                code="UCNS_SEGMENT_EVIDENCE",
+                state=state,
+            )
+        for token in tokens:
+            if not isinstance(token, Mapping):
+                raise CorpusRunError(
+                    "UCNS token evidence has an invalid shape",
+                    code="UCNS_TOKEN_EVIDENCE",
+                    state=state,
+                )
+            ordered.append(token)
+        if kind == "word-gonol":
+            carrier_unassigned = segment.get("carrier_unassigned")
+            out_of_alphabet = segment.get("out_of_alphabet")
+            expected_unassigned = tuple(
+                token
+                for token in tokens
+                if not token.get("has_carrier_assignment")
+            )
+            if (
+                not isinstance(carrier_unassigned, (tuple, list))
+                or not isinstance(out_of_alphabet, (tuple, list))
+                or tuple(carrier_unassigned) != expected_unassigned
+                or tuple(out_of_alphabet) != expected_unassigned
+            ):
+                raise CorpusRunError(
+                    "UCNS word carrier-unassigned evidence is inconsistent",
+                    code="UCNS_TOKEN_EVIDENCE",
+                    state=state,
+                )
+    return tuple(ordered)
+
+
+def _space_shape(
+    tokens: tuple[Mapping[str, Any], ...],
+) -> tuple[int, bool, bool]:
+    assignments = tuple(token.get("alphabet_position") == 0 for token in tokens)
     repeated_excess = 0
     previous_space = False
-    for value in text:
-        if value == " ":
+    for is_space in assignments:
+        if is_space:
             if previous_space:
                 repeated_excess += 1
             previous_space = True
         else:
             previous_space = False
-    return repeated_excess, text.startswith(" "), text.endswith(" ")
+    return (
+        repeated_excess,
+        bool(assignments and assignments[0]),
+        bool(assignments and assignments[-1]),
+    )
 
 
 def _source_failure_flags(dialogue: Mapping[str, Any]) -> tuple[int, int]:
@@ -721,22 +803,87 @@ def _observe_dialogue(
         state["empty_turns"] += int(text == "")
         state["newline_turns"] += int("\n" in text or "\r" in text)
         state["non_ascii_turns"] += int(any(ord(value) > 127 for value in text))
-        repeated, leading, trailing = _space_shape(text)
+
+        token_records = _ordered_token_records(observed, state=state)
+        source_values: list[str] = []
+        for offset, token in enumerate(token_records):
+            source_value = token.get("source_value")
+            source_code_point = token.get("source_code_point")
+            carrier_position = token.get("carrier_position")
+            alphabet_position = token.get("alphabet_position")
+            if (
+                not isinstance(source_value, str)
+                or len(source_value) != 1
+                or token.get("value") != source_value
+                or source_code_point != f"U+{ord(source_value):04X}"
+                or token.get("code_point") != source_code_point
+                or token.get("codepoint_offset") != offset
+                or carrier_position != alphabet_position
+                or token.get("is_space_manifestation")
+                != (alphabet_position == 0)
+                or token.get("has_carrier_assignment")
+                != (alphabet_position is not None)
+                or token.get("in_alphabet")
+                != token.get("has_carrier_assignment")
+                or not isinstance(token.get("is_public_gonol_token"), bool)
+            ):
+                raise CorpusRunError(
+                    "UCNS token source/carrier witness is inconsistent",
+                    code="UCNS_TOKEN_EVIDENCE",
+                    state=state,
+                )
+            if alphabet_position == 0 and token.get("carrier_token") != " ":
+                raise CorpusRunError(
+                    "UCNS origin-assigned SPACE witness has the wrong carrier token",
+                    code="UCNS_TOKEN_EVIDENCE",
+                    state=state,
+                )
+            source_values.append(source_value)
+        if "".join(source_values) != text:
+            raise CorpusRunError(
+                "UCNS token evidence does not reconstruct the exact source turn",
+                code="TURN_EXACTNESS",
+                state=state,
+            )
+
+        carrier_unassigned = observed.get("carrier_unassigned")
+        out_of_alphabet = observed.get("out_of_alphabet")
+        expected_unassigned = tuple(
+            token
+            for token in token_records
+            if not token["has_carrier_assignment"]
+        )
+        if (
+            not isinstance(carrier_unassigned, (tuple, list))
+            or not isinstance(out_of_alphabet, (tuple, list))
+            or tuple(carrier_unassigned) != expected_unassigned
+            or tuple(out_of_alphabet) != expected_unassigned
+            or observed.get("has_complete_carrier_assignment")
+            != (not expected_unassigned)
+            or observed.get("has_complete_alphabet_coverage")
+            != observed.get("has_complete_carrier_assignment")
+        ):
+            raise CorpusRunError(
+                "UCNS turn carrier-unassigned evidence is inconsistent",
+                code="UCNS_TOKEN_EVIDENCE",
+                state=state,
+            )
+
+        repeated, leading, trailing = _space_shape(token_records)
         state["repeated_space_excess"] += repeated
         state["leading_space_turns"] += int(leading)
         state["trailing_space_turns"] += int(trailing)
 
-        out_of_alphabet = observed["out_of_alphabet"]
-        state["out_of_alphabet_occurrences"] += len(out_of_alphabet)
-        state["out_of_alphabet_affected_turns"] += int(bool(out_of_alphabet))
-        for token in out_of_alphabet:
-            code_point = token["code_point"]
+        state["out_of_alphabet_occurrences"] += len(carrier_unassigned)
+        state["out_of_alphabet_affected_turns"] += int(bool(carrier_unassigned))
+        for token in carrier_unassigned:
+            code_point = token["source_code_point"]
             histogram = state["out_of_alphabet_by_code_point"]
             histogram[code_point] = histogram.get(code_point, 0) + 1
         for segment in observed["segments"]:
             if segment["kind"] != "word-gonol":
                 continue
-            if any(not token["in_alphabet"] for token in segment["tokens"]):
+            if segment["carrier_unassigned"]:
                 state["out_of_alphabet_affected_word_gonols"] += 1
 
     state["dialogues"] += 1
@@ -860,6 +1007,15 @@ def _build_report(
             state["out_of_alphabet_by_code_point"].items()
         )
     ]
+    carrier_unassigned_summary = {
+        "affected_turns": state["out_of_alphabet_affected_turns"],
+        "affected_word_gonols": state[
+            "out_of_alphabet_affected_word_gonols"
+        ],
+        "by_code_point": histogram,
+        "occurrences": state["out_of_alphabet_occurrences"],
+        "unique_code_points": len(histogram),
+    }
     report: dict[str, Any] = {
         "admission": {
             "admission_digest": manifest.digest,
@@ -882,9 +1038,13 @@ def _build_report(
         },
         "failure_seeking_observations": {
             "definitions": {
-                "repeated_space_excess": "SPACE code points after the first SPACE in each contiguous SPACE run",
+                "carrier_unassigned": "exact non-SPACE source code points without a pinned public-gonol carrier assignment; out_of_alphabet is the compatibility alias",
+                "leading_space_turns": "turns whose first exact source code point is assigned to carrier position zero by the pinned SPACE policy",
+                "repeated_space_excess": "origin-assigned SPACE manifestations after the first in each contiguous carrier-SPACE run",
+                "space_boundaries": "exact source code points assigned to carrier position zero and emitted as superpositioned SPACE boundaries",
                 "source_declared_fail_book": "nonempty goal.<domain>.fail_book mappings; source annotation, not EDCM inference",
                 "source_declared_fail_info": "nonempty goal.<domain>.fail_info mappings; source annotation, not EDCM inference",
+                "trailing_space_turns": "turns whose final exact source code point is assigned to carrier position zero by the pinned SPACE policy",
             },
             "dialogues_with_odd_turn_count": state[
                 "dialogues_with_odd_turn_count"
@@ -893,15 +1053,8 @@ def _build_report(
             "leading_space_turns": state["leading_space_turns"],
             "newline_turns": state["newline_turns"],
             "non_ascii_turns": state["non_ascii_turns"],
-            "out_of_alphabet": {
-                "affected_turns": state["out_of_alphabet_affected_turns"],
-                "affected_word_gonols": state[
-                    "out_of_alphabet_affected_word_gonols"
-                ],
-                "by_code_point": histogram,
-                "occurrences": state["out_of_alphabet_occurrences"],
-                "unique_code_points": len(histogram),
-            },
+            "carrier_unassigned": carrier_unassigned_summary,
+            "out_of_alphabet": carrier_unassigned_summary,
             "repeated_space_excess": state["repeated_space_excess"],
             "source_declared_fail_book_dialogues": state[
                 "source_declared_fail_book_dialogues"
