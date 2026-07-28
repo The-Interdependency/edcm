@@ -1,6 +1,6 @@
 # Molweni full-corpus run
 
-**Status:** admitted source-native adapter; full evidence is aggregate-only.
+**Status:** complete sealed full-corpus run; evidence is aggregate-only.
 
 **Source:** [`HIT-SCIR/Molweni`](https://github.com/HIT-SCIR/Molweni) at
 `2eb681d7e610ee3fda4ab3b4cc364554bd17ee67`.
@@ -66,6 +66,20 @@ The command verifies the Git commit and every admitted file hash before
 observing source text. Checkpoints resume the DP profile phase. If the MRC phase
 is interrupted, it restarts from the beginning so annotation counts cannot be
 skipped or doubled.
+
+## Sealed result
+
+The complete run used
+`edcm@750e2155d5e63fe38e308b1f6964b3dc8d1a6235` and
+`ucns@eb264fba18bd051c46b4853c81c8fb91ec6d5811`. It reconciled all 10,000 DP
+dialogues, 88,303 exact EDU texts, 78,245 directed relations, 9,754 MRC
+annotation records, and 30,066 questions. The report digest is
+`a9af423d62629df6cf4a8c413372b9559120316099c0b0f4b235c44202c2cd7a`.
+
+The Git-safe aggregate [report](../../experiments/corpora/results/2026-07-28-molweni-full.json)
+and [completion receipt](../../experiments/corpora/receipts/2026-07-28-molweni-complete.json)
+contain no raw source text. A completed-checkpoint rerun reproduced both files
+byte-for-byte.
 
 Run its focused checks with:
 

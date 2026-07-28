@@ -1,0 +1,412 @@
+{
+  "admission": {
+    "admission_digest": "ae75ea21383fc44d8f32c969bfb2224616a9e5e361362064a9dae9f926ac79b0",
+    "corpus_id": "molweni",
+    "evidence_state": "represented-evidence",
+    "license": {
+      "name": "Apache License 2.0",
+      "spdx": "Apache-2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "status": "admitted"
+  },
+  "canon_selection": null,
+  "cross_view_evidence": {
+    "definition": "MRC exact-EDU sequences are matched against DP; relation equality is evaluated independently and disagreement is retained",
+    "mrc_dialogues_with_ambiguous_dp_edu_match": 20,
+    "mrc_dialogues_with_exact_dp_edus": 9754,
+    "mrc_dialogues_without_exact_dp_edus": 0,
+    "relation_graph_disagreements": 2,
+    "relation_graph_matches": 9752
+  },
+  "discourse_parsing_execution": {
+    "adapter_turns": 88303,
+    "code_points": 4565521,
+    "dialogues": 10000,
+    "first_dialogue_id": "185",
+    "last_dialogue_id": "7003",
+    "partitions": {
+      "dev": {
+        "dialogues": 500,
+        "relations": 3880,
+        "turns": 4386
+      },
+      "test": {
+        "dialogues": 500,
+        "relations": 3911,
+        "turns": 4430
+      },
+      "train": {
+        "dialogues": 9000,
+        "relations": 70454,
+        "turns": 79487
+      }
+    },
+    "profile_unit_support_total": 88303.0,
+    "relations": 78245,
+    "source_turns": 88303,
+    "utf8_bytes": 4565521
+  },
+  "discourse_relation_evidence": {
+    "direction": {
+      "same_node": 3,
+      "source_follows_target": 5,
+      "source_precedes_target": 78237
+    },
+    "label_counts": [
+      {
+        "label": "Acknowledgement",
+        "relations": 2528
+      },
+      {
+        "label": "Alternation",
+        "relations": 187
+      },
+      {
+        "label": "Background",
+        "relations": 287
+      },
+      {
+        "label": "Clarification_question",
+        "relations": 18751
+      },
+      {
+        "label": "Comment",
+        "relations": 24797
+      },
+      {
+        "label": "Conditional",
+        "relations": 795
+      },
+      {
+        "label": "Continuation",
+        "relations": 5274
+      },
+      {
+        "label": "Contrast",
+        "relations": 966
+      },
+      {
+        "label": "Correction",
+        "relations": 1013
+      },
+      {
+        "label": "Elaboration",
+        "relations": 1740
+      },
+      {
+        "label": "Explanation",
+        "relations": 1273
+      },
+      {
+        "label": "Narration",
+        "relations": 272
+      },
+      {
+        "label": "Parallel",
+        "relations": 189
+      },
+      {
+        "label": "Q-Elab",
+        "relations": 2383
+      },
+      {
+        "label": "QAP",
+        "relations": 15766
+      },
+      {
+        "label": "Result",
+        "relations": 2024
+      }
+    ],
+    "relation_digest_chain": "b4f2609935d74d9176dec89a0e65ddd327b0a916011f4b0561ef3746966080a2"
+  },
+  "failure_seeking_observations": {
+    "answer_span_mismatches": 0,
+    "definitions": {
+      "relation_graph_disagreement": "identical ordered EDU objects occur in DP and MRC while the complete directed labeled relation list differs",
+      "repeated_space_excess": "SPACE code points after the first SPACE in each contiguous SPACE run"
+    },
+    "dialogues_with_multiple_speakers": 9999,
+    "empty_turns": 0,
+    "leading_space_turns": 0,
+    "mrc_invalid_relation_endpoint_dialogues": 1,
+    "mrc_invalid_relation_endpoints": 2,
+    "newline_turns": 0,
+    "non_ascii_turns": 0,
+    "out_of_alphabet": {
+      "affected_turns": 1,
+      "affected_word_gonols": 1,
+      "by_code_point": [
+        {
+          "code_point": "U+0009",
+          "occurrences": 1
+        }
+      ],
+      "occurrences": 1,
+      "unique_code_points": 1
+    },
+    "repeated_space_excess": 0,
+    "source_empty_speaker_dialogues": 72,
+    "source_empty_speaker_turns": 176,
+    "space_boundaries": 868325,
+    "speaker_count_per_dialogue": [
+      {
+        "dialogues": 1,
+        "speakers": 1
+      },
+      {
+        "dialogues": 2132,
+        "speakers": 2
+      },
+      {
+        "dialogues": 3295,
+        "speakers": 3
+      },
+      {
+        "dialogues": 2623,
+        "speakers": 4
+      },
+      {
+        "dialogues": 1346,
+        "speakers": 5
+      },
+      {
+        "dialogues": 465,
+        "speakers": 6
+      },
+      {
+        "dialogues": 128,
+        "speakers": 7
+      },
+      {
+        "dialogues": 9,
+        "speakers": 8
+      },
+      {
+        "dialogues": 1,
+        "speakers": 9
+      }
+    ],
+    "trailing_space_turns": 0,
+    "word_gonols": 956628
+  },
+  "hmmm": [
+    "Molweni is a filtered and annotated derivative of Ubuntu chat; collection, filtering, transcription, and annotation effects cannot be separated from the released text.",
+    "The released DP files contain 176 empty speaker fields across train and dev; their upstream cause is unknown, so they remain malformed source evidence rather than inferred identities.",
+    "One released MRC dev dialogue has two relation endpoints beyond its 12-EDU sequence; both malformed edge objects remain retained evidence and are not repaired or dropped.",
+    "Two released MRC relation graphs disagree with the DP relation graph for an identical ordered EDU sequence; the runner retains the disagreement and does not choose or repair a graph.",
+    "Unanswerable MRC questions and plausible spans are positive source annotations, not proof that a discourse reference is formally unresolved under UCNS.",
+    "Exact profile observations and graph retention are represented evidence, not formal UCNS geometry, EDCM measurement validity, diagnosis, intention, morality, consciousness, or external truth."
+  ],
+  "identity_chains": {
+    "mrc_annotation_digest_chain": "a94cd0e8b82bb8aa0967e8a1ed59a5a3ac7cddaa42205b44927b4aa6f893f13c",
+    "profile_observation_digest_chain": "945b5e56000c7b5f5b89ca7d21419f937b16f9b61fc1d0050e51f837ba3afb8e",
+    "source_dialogue_digest_chain": "b616011ab292e0d48f6a8915abc20b8cddaf7eb2ff18d24aaa2b864f211564e4",
+    "turn_evidence_digest_chain": "7681fb56282a2e6b850aec430dffafff6a296d9c7ee45b643a629f907cb18a6d"
+  },
+  "information_boundaries": {
+    "annotation_layers": {
+      "dp": "source-native ordered EDUs plus directed labeled relation objects",
+      "mrc": "differently partitioned contexts, ordered EDUs, relation objects, questions, answerability flags, exact answer spans, and plausible spans"
+    },
+    "cross_view_policy": "match complete ordered EDU objects by digest; compare complete directed relation lists independently; retain ambiguous duplicate matches and disagreements",
+    "profile_input": "ordered DP edus only, as exact source-native (speaker, text) tuples",
+    "profile_noninputs_retained_by_source": [
+      "DP directed relation annotations",
+      "MRC context strings",
+      "MRC duplicate EDU and relation views",
+      "questions",
+      "answerability flags",
+      "answer spans",
+      "plausible-answer spans"
+    ],
+    "projection": "none",
+    "source_text_normalization": "none",
+    "speaker_identity": "nonempty source-native edus[].speaker strings pass unchanged; empty strings remain source evidence and receive a collision-checked dialogue-and-turn ordinal sentinel only at the nonempty UCNS adapter boundary"
+  },
+  "mrc_annotation_execution": {
+    "answerable_questions": 25779,
+    "dialogues": 9754,
+    "partitions": {
+      "dev": {
+        "answerable_questions": 2346,
+        "dialogues": 883,
+        "plausible_answers": 167,
+        "questions": 2513,
+        "relations": 6917,
+        "turns": 7823,
+        "unanswerable_questions": 167
+      },
+      "test": {
+        "answerable_questions": 2560,
+        "dialogues": 100,
+        "plausible_answers": 311,
+        "questions": 2871,
+        "relations": 745,
+        "turns": 845,
+        "unanswerable_questions": 311
+      },
+      "train": {
+        "answerable_questions": 20873,
+        "dialogues": 8771,
+        "plausible_answers": 3809,
+        "questions": 24682,
+        "relations": 68570,
+        "turns": 77374,
+        "unanswerable_questions": 3809
+      }
+    },
+    "plausible_answers": 4287,
+    "questions": 30066,
+    "relations": 76232,
+    "turns_reconciled_not_remeasured": 86042,
+    "unanswerable_questions": 4287
+  },
+  "privacy_and_removal": {
+    "collection_context": "filtered and annotated multiparty dialogues derived by the Molweni authors from the Ubuntu Chat Corpus",
+    "committed_outputs": "aggregate counts, cryptographic identities, reconciliation, and receipts only; no dialogue, speaker, context, question, or answer text",
+    "removal_path": "remove the locally held checkout and invalidate or supersede aggregate receipts by repository commit and file SHA-256; no raw corpus object is committed",
+    "restricted_source": false,
+    "source_effects": "upstream chat collection and Molweni utterance-count, speaker-count, sentence-length, selection, discourse-annotation, and MRC-annotation effects remain inseparable provenance"
+  },
+  "profile": {
+    "corpus_execution": "full-corpus",
+    "evidence_mode": "exact-observation",
+    "gonol_initiation": "mobius-twist",
+    "measurement_validity_claim": false,
+    "normalization_policy": "none-preserve-source",
+    "options": [
+      [
+        "carrier_requirement",
+        "mobius-origin-hidden-zero"
+      ],
+      [
+        "corpus_execution",
+        "full-corpus"
+      ],
+      [
+        "gonol_initiation",
+        "mobius-twist"
+      ],
+      [
+        "nesting_boundary",
+        "superpositioned-space"
+      ],
+      [
+        "normalization",
+        "none-preserve-source"
+      ],
+      [
+        "occurrence_operation",
+        "ordered-concatenation"
+      ],
+      [
+        "out_of_alphabet",
+        "retain-and-report"
+      ],
+      [
+        "profile_scope",
+        "edcm-only"
+      ],
+      [
+        "smallest_gonol",
+        "word"
+      ],
+      [
+        "support",
+        "one-unit-per-speaker-turn"
+      ],
+      [
+        "token_alphabet",
+        "public-gonol-157"
+      ],
+      [
+        "token_identity",
+        "unicode-code-point"
+      ]
+    ],
+    "profile_id": "ucns.profile.edcm-word-gonol",
+    "profile_scope": "edcm-only",
+    "profile_version": "0.1.0",
+    "projection_status": "not-projected",
+    "smallest_gonol": "word",
+    "source_commit": "eb264fba18bd051c46b4853c81c8fb91ec6d5811",
+    "source_repository": "https://github.com/The-Interdependency/ucns",
+    "support_policy": "one-unit-per-speaker-turn",
+    "theorem_status_transfer": false,
+    "token_alphabet_sha256": "55d10c84529a4d7bc7714786357e977b68d9df2ac3f73d20e229580b552c2ef5",
+    "token_alphabet_size": 157
+  },
+  "provenance": {
+    "edcm_commit": "750e2155d5e63fe38e308b1f6964b3dc8d1a6235",
+    "source": {
+      "commit": "2eb681d7e610ee3fda4ab3b4cc364554bd17ee67",
+      "files": [
+        {
+          "bytes": 1174508,
+          "path": "DP/dev.json",
+          "sha256": "472b23659fe390cf8bfd129902154b5e789cb95138a80f70e23f43dce838bbbb"
+        },
+        {
+          "bytes": 1184410,
+          "path": "DP/test.json",
+          "sha256": "8657ca02410f33a5fd8cd1423d86aeef774daa45642c37050b8bd456d76039a6"
+        },
+        {
+          "bytes": 21271582,
+          "path": "DP/train.json",
+          "sha256": "b204d9379dd3f00362152076e1bfe885a1c2a960d962902c8915071ea8724f2b"
+        },
+        {
+          "bytes": 4334213,
+          "path": "MRC(withDiscourse)/dev.json",
+          "sha256": "3868d8c468c0300a8b16ab972927fc56ae3516f9f1a74d6308b836398767dfe7"
+        },
+        {
+          "bytes": 1712923,
+          "path": "MRC(withDiscourse)/test.json",
+          "sha256": "ffed7ab48c2d3edd9f8ac4274bd609e66d39ab101c9e450cfb43064dc915d9b3"
+        },
+        {
+          "bytes": 42714929,
+          "path": "MRC(withDiscourse)/train.json",
+          "sha256": "dc9c374d85e1174188e13ea5dafc15ab7551ad7f234203996a5eb4683edbb8ac"
+        },
+        {
+          "bytes": 11497,
+          "path": "LICENSE",
+          "sha256": "58ab9ed8873493e68f68b803f3fe4c75381e3e7170b44d5cdbab70efde625766"
+        }
+      ],
+      "repository": "https://github.com/HIT-SCIR/Molweni",
+      "tree": "f5cb852dbe183570c8a72d7ae0703b202d6be456"
+    },
+    "ucns_commit": "eb264fba18bd051c46b4853c81c8fb91ec6d5811"
+  },
+  "reconciliation": {
+    "checks": {
+      "adapter_turns_equal_dp_source_turns": true,
+      "dp_dialogues_match_manifest": true,
+      "dp_partitions_match_manifest": true,
+      "dp_relations_match_manifest": true,
+      "dp_turns_match_manifest": true,
+      "mrc_answerable_match_manifest": true,
+      "mrc_dialogues_match_manifest": true,
+      "mrc_edus_all_match_dp": true,
+      "mrc_invalid_relation_endpoints_match_manifest": true,
+      "mrc_partitions_match_manifest": true,
+      "mrc_plausible_answers_match_manifest": true,
+      "mrc_questions_match_manifest": true,
+      "mrc_relation_disagreements_match_manifest": true,
+      "mrc_relations_match_manifest": true,
+      "mrc_turns_match_manifest": true,
+      "mrc_unanswerable_match_manifest": true,
+      "unit_support_equals_adapter_turns": true
+    },
+    "complete": true
+  },
+  "report_digest": "a9af423d62629df6cf4a8c413372b9559120316099c0b0f4b235c44202c2cd7a",
+  "schema_id": "edcm.molweni-full-corpus",
+  "schema_version": "1.0.0"
+}

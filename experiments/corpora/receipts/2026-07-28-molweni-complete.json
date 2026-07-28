@@ -1,0 +1,56 @@
+{
+  "corpus_id": "molweni",
+  "identities": {
+    "admission_digest": "ae75ea21383fc44d8f32c969bfb2224616a9e5e361362064a9dae9f926ac79b0",
+    "edcm_commit": "750e2155d5e63fe38e308b1f6964b3dc8d1a6235",
+    "source_commit": "2eb681d7e610ee3fda4ab3b4cc364554bd17ee67",
+    "ucns_commit": "eb264fba18bd051c46b4853c81c8fb91ec6d5811"
+  },
+  "progress": {
+    "active_dialogue_id": null,
+    "active_dialogue_index": null,
+    "active_question_index": null,
+    "active_relation_index": null,
+    "active_split": null,
+    "active_turn_index": null,
+    "active_variant": null,
+    "adapter_turns": 88303,
+    "dp_dialogues": 10000,
+    "dp_relations": 78245,
+    "dp_source_turns": 88303,
+    "last_completed_dialogue_id": "7003",
+    "last_completed_dialogue_index": 9999,
+    "last_completed_split": "test",
+    "mrc_dialogues": 9754,
+    "mrc_questions": 30066
+  },
+  "raw_source_in_git": false,
+  "receipt_digest": "b7259c8d8f55d4f5ec43fbd54d04385f8b98dc78901282cfffa1d1f55da67863",
+  "reconciliation": {
+    "checks": {
+      "adapter_turns_equal_dp_source_turns": true,
+      "dp_dialogues_match_manifest": true,
+      "dp_partitions_match_manifest": true,
+      "dp_relations_match_manifest": true,
+      "dp_turns_match_manifest": true,
+      "mrc_answerable_match_manifest": true,
+      "mrc_dialogues_match_manifest": true,
+      "mrc_edus_all_match_dp": true,
+      "mrc_invalid_relation_endpoints_match_manifest": true,
+      "mrc_partitions_match_manifest": true,
+      "mrc_plausible_answers_match_manifest": true,
+      "mrc_questions_match_manifest": true,
+      "mrc_relation_disagreements_match_manifest": true,
+      "mrc_relations_match_manifest": true,
+      "mrc_turns_match_manifest": true,
+      "mrc_unanswerable_match_manifest": true,
+      "unit_support_equals_adapter_turns": true
+    },
+    "complete": true
+  },
+  "report_digest": "a9af423d62629df6cf4a8c413372b9559120316099c0b0f4b235c44202c2cd7a",
+  "report_sha256": "463aa009b4132dfa30ec15d0e991b7ef3e3c39144c5ee066e1cb484f44afdd20",
+  "schema_id": "edcm.corpus-run-receipt",
+  "schema_version": "1.0.0",
+  "status": "complete"
+}
