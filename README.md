@@ -156,8 +156,10 @@ See [`docs/corpora/multiwoz-2.1.md`](docs/corpora/multiwoz-2.1.md). This is
 represented evidence, not an EDCM candidate measurement, formal UCNS geometry,
 or a canon selection. The original profile-0.1 report remains immutable but is
 explicitly superseded because tabs, newlines, and non-breaking spaces were
-misclassified as out-of-alphabet instead of SPACE manifestations. No corrected
-aggregate is claimed until the sealed full-corpus rerun completes.
+misclassified as out-of-alphabet instead of SPACE manifestations. The sealed
+profile-0.2 replacement assigns all `4,094` occurrences to carrier position
+zero, reports `1,783,679` SPACE boundaries and no carrier-unassigned source
+code points, and preserves the original source and turn digest chains.
 
 ## Integrity gate
 
@@ -202,4 +204,4 @@ Historical implementation, source packets, repair handoffs, and prior adapter co
 
 ## hmmm
 
-Formal Möbius coordinates, higher-gonol composition, and lawful projection from exact observations into a higher-dimensional lattice remain open. The corrected MultiWOZ 2.1 rerun must be sealed before its SPACE-origin aggregate replaces the superseded profile-0.1 interpretation; true non-SPACE carrier coverage remains a separate hmmm.
+Formal Möbius coordinates, higher-gonol composition, and lawful projection from exact observations into a higher-dimensional lattice remain open. The corrected MultiWOZ 2.1 SPACE-origin aggregate is sealed represented evidence, not measurement validity; true non-SPACE carrier coverage remains a separate hmmm.

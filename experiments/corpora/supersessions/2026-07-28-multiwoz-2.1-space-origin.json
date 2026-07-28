@@ -1,7 +1,7 @@
 {
   "corpus_id": "multiwoz-2.1",
   "information_boundaries": {
-    "corrected_aggregate_claimed": false,
+    "corrected_aggregate_claimed": true,
     "historical_execution_reconciliation_preserved": true,
     "raw_source_committed": false
   },
@@ -28,16 +28,21 @@
     "summary": "The profile-0.1 run treated tab, newline, and non-breaking space as out-of-alphabet. The corrected profile preserves each exact source witness while assigning every pinned SPACE manifestation to carrier position zero."
   },
   "replacement": {
-    "receipt_path": null,
-    "report_path": null,
+    "edcm_commit": "fbee2ee57f765b47c362a6877521493cc1afe20a",
+    "receipt_digest": "6150c05c64ff6d07593775b9e83d8634e912d27668f872032460391afeb6e7b9",
+    "receipt_path": "experiments/corpora/receipts/2026-07-28-multiwoz-2.1-space-origin-complete.json",
+    "receipt_sha256": "e1bfbd7616fc87421fda3db30cfdbb329b3d288e9c5d7a1d69f197e70b510992",
+    "report_digest": "3d3d1aaf81e052a569c29200689f75e684d7441952392f8fab04b990cd8bc5e8",
+    "report_path": "experiments/corpora/results/2026-07-28-multiwoz-2.1-space-origin-rerun.json",
+    "report_sha256": "da98521a81ae7071266f797bacd20de1a12e8632732e82d53e4fd0423d15be9b",
     "runner_schema_version": "1.1.0",
-    "status": "pending-sealed-full-corpus-rerun",
+    "status": "sealed-full-corpus-complete",
     "ucns_commit": "c799b3547afc91a6039a5d3b15f997426eed138a",
     "ucns_profile": "ucns.profile.edcm-word-gonol/0.2.0"
   },
   "schema_id": "edcm.corpus-report-supersession",
   "schema_version": "1.0.0",
-  "status": "superseded-pending-rerun",
+  "status": "superseded-by-sealed-rerun",
   "superseded": {
     "receipt_digest": "b8645a09ec860f362a24cb40bda14e550fcf282a2ea46dd6f829c904234824ee",
     "receipt_path": "experiments/corpora/receipts/2026-07-28-multiwoz-2.1-complete.json",

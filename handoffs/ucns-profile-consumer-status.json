@@ -6,6 +6,16 @@
   "profile_scope": "edcm-only",
   "pinned_ucns_commit": "c799b3547afc91a6039a5d3b15f997426eed138a",
   "adapter_activation_status": "exact-profile-active-when-matching-package-is-installed",
+  "sealed_corpus_evidence": {
+    "corpus_id": "multiwoz-2.1",
+    "edcm_commit": "fbee2ee57f765b47c362a6877521493cc1afe20a",
+    "receipt_digest": "6150c05c64ff6d07593775b9e83d8634e912d27668f872032460391afeb6e7b9",
+    "receipt_path": "experiments/corpora/receipts/2026-07-28-multiwoz-2.1-space-origin-complete.json",
+    "report_digest": "3d3d1aaf81e052a569c29200689f75e684d7441952392f8fab04b990cd8bc5e8",
+    "report_path": "experiments/corpora/results/2026-07-28-multiwoz-2.1-space-origin-rerun.json",
+    "status": "complete",
+    "ucns_commit": "c799b3547afc91a6039a5d3b15f997426eed138a"
+  },
   "input_contract": "full ordered corpus as exact (speaker_id, text) tuples",
   "fixed_options": {
     "carrier_requirement": "mobius-origin-hidden-zero",
@@ -53,12 +63,11 @@
     "Formal Mobius carrier coordinates are not supplied.",
     "Higher-gonol composition and the hyper-dimensional lattice relation law remain open.",
     "Projection policy must deepen only with experimental evidence.",
-    "True non-SPACE coverage outside the 157-token carrier alphabet requires full real-system corpus pressure.",
-    "The corrected MultiWOZ aggregate requires a sealed profile-0.2 rerun.",
+    "True non-SPACE coverage outside the 157-token carrier alphabet requires further real-system corpus pressure.",
     "Historical v0.1-v0.4 experiment reports remain historical evidence and are not rewritten."
   ],
   "theorem_transfer": false,
   "measurement_validity": false,
   "metapat_validity": false,
-  "hmmm": "The exact profile resolves pinned SPACE manifestations to the origin carrier without supplying formal coordinates; it is not permission to collapse missing geometry or true non-SPACE coverage into a convenient bridge."
+  "hmmm": "The sealed MultiWOZ rerun verifies source-preserved SPACE-origin assignment as represented evidence without supplying formal coordinates or measurement validity; it is not permission to collapse missing geometry or true non-SPACE coverage into a convenient bridge."
 }

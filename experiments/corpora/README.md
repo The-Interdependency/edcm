@@ -30,6 +30,7 @@ Current queue:
 
 | Corpus | Dialogues | Turns | Status | Report | Receipt |
 |---|---:|---:|---|---|---|
+| MultiWOZ 2.1 | 10,438 | 143,048 | complete; current profile-0.2 evidence | [`2026-07-28-multiwoz-2.1-space-origin-rerun.json`](results/2026-07-28-multiwoz-2.1-space-origin-rerun.json) | [`2026-07-28-multiwoz-2.1-space-origin-complete.json`](receipts/2026-07-28-multiwoz-2.1-space-origin-complete.json) |
 | MultiWOZ 2.1 | 10,438 | 143,048 | execution complete; profile interpretation superseded | [`2026-07-28-multiwoz-2.1-full.json`](results/2026-07-28-multiwoz-2.1-full.json) | [`2026-07-28-multiwoz-2.1-complete.json`](receipts/2026-07-28-multiwoz-2.1-complete.json) |
 
 The MultiWOZ report was produced by
@@ -44,14 +45,16 @@ They are not current profile evidence: `4,094` tab, newline, and non-breaking
 space occurrences were reported as out-of-alphabet even though they are SPACE
 manifestations assigned to carrier position zero. The machine-readable
 [supersession record](supersessions/2026-07-28-multiwoz-2.1-space-origin.json)
-preserves the exact old identities and keeps replacement report/receipt paths
-null until a clean profile-0.2 full-corpus rerun is sealed. Do not infer or
-publish corrected aggregates from the historical report alone.
+preserves the exact old identities and links the clean profile-0.2 replacement.
+The replacement assigns all `4,094` affected source occurrences to SPACE:
+carrier-unassigned occurrences fall from `4,094` to `0`, SPACE boundaries rise
+from `1,779,585` to `1,783,679`, and the source-dialogue and exact-turn digest
+chains remain unchanged.
 
 ## hmmm
 
-The corrected MultiWOZ 2.1 aggregates remain hmmm until the sealed profile-0.2
-rerun completes. Only MultiWOZ 2.1 has an admitted executable adapter in this
-tree. The remaining six sources require their own license/privacy review,
-immutable source identity, source-native adapter, and full-run reconciliation
-before admission.
+The SPACE-origin classification is now sealed represented evidence, not an EDCM
+measurement-validity or formal-geometry claim. Only MultiWOZ 2.1 has an admitted
+executable adapter in this tree. The remaining six sources require their own
+license/privacy review, immutable source identity, source-native adapter, and
+full-run reconciliation before admission.

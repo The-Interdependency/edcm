@@ -312,7 +312,7 @@ def test_streaming_top_level_object_keeps_order_and_exact_value_digest() -> None
     assert entries[0][2] == sha256('{"text": "é"}'.encode("utf-8")).hexdigest()
 
 
-def test_historical_report_is_superseded_without_fabricating_a_rerun() -> None:
+def test_historical_report_is_superseded_by_exact_sealed_rerun() -> None:
     root = Path(__file__).resolve().parents[1]
     record = json.loads(
         (
@@ -328,15 +328,54 @@ def test_historical_report_is_superseded_without_fabricating_a_rerun() -> None:
             "2026-07-28-multiwoz-2.1-full.json"
         ).read_text(encoding="utf-8")
     )
-    assert record["status"] == "superseded-pending-rerun"
+    replacement_report_path = root / record["replacement"]["report_path"]
+    replacement_receipt_path = root / record["replacement"]["receipt_path"]
+    replacement = json.loads(replacement_report_path.read_text(encoding="utf-8"))
+    replacement_receipt = json.loads(
+        replacement_receipt_path.read_text(encoding="utf-8")
+    )
+    assert record["status"] == "superseded-by-sealed-rerun"
     assert record["superseded"]["report_digest"] == historical["report_digest"]
-    assert record["replacement"]["report_path"] is None
-    assert record["replacement"]["receipt_path"] is None
-    assert record["information_boundaries"]["corrected_aggregate_claimed"] is False
+    assert record["replacement"]["status"] == "sealed-full-corpus-complete"
+    assert record["replacement"]["report_digest"] == replacement["report_digest"]
+    assert (
+        record["replacement"]["receipt_digest"]
+        == replacement_receipt["receipt_digest"]
+    )
+    assert record["replacement"]["report_sha256"] == sha256(
+        replacement_report_path.read_bytes()
+    ).hexdigest()
+    assert record["replacement"]["receipt_sha256"] == sha256(
+        replacement_receipt_path.read_bytes()
+    ).hexdigest()
+    assert replacement_receipt["status"] == "complete"
+    assert replacement_receipt["identities"] == {
+        "archive_sha256": "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e",
+        "edcm_commit": "fbee2ee57f765b47c362a6877521493cc1afe20a",
+        "ucns_commit": "c799b3547afc91a6039a5d3b15f997426eed138a",
+    }
+    assert record["information_boundaries"]["corrected_aggregate_claimed"] is True
     assert sum(
         item["historical_occurrences"]
         for item in record["reason"]["affected_source_code_points"]
     ) == 4094
+    historical_observations = historical["failure_seeking_observations"]
+    replacement_observations = replacement["failure_seeking_observations"]
+    assert replacement_observations["carrier_unassigned"]["occurrences"] == 0
+    assert replacement_observations["out_of_alphabet"]["occurrences"] == 0
+    assert (
+        replacement_observations["space_boundaries"]
+        - historical_observations["space_boundaries"]
+        == 4094
+    )
+    assert (
+        replacement["identities"]["source_dialogue_digest_chain"]
+        == historical["identities"]["source_dialogue_digest_chain"]
+    )
+    assert (
+        replacement["identities"]["turn_evidence_digest_chain"]
+        == historical["identities"]["turn_evidence_digest_chain"]
+    )
 
 
 def test_full_fixture_run_preserves_order_exact_text_and_profile_counts(
