@@ -133,6 +133,27 @@ python -m pip install -e .[dev,ucns-profile]
 
 `full-stack` installs both the exact METAPAT producer and the EDCM UCNS profile producer. Use `ucns-experiments` only for the historical v0.1–v0.4 experiment epoch. Package availability alone attaches no evidence; exact ordered `ucns_turns` are required.
 
+## First real-system corpus runner
+
+MultiWOZ 2.1 is the first admitted real-system source. Its runner verifies the
+exact University of Cambridge archive and every logical member, streams all
+`10,438` dialogues in source order, observes every exact speaker turn through
+the pinned EDCM UCNS word-gonol profile, and emits only aggregate evidence and
+completion or incompletion receipts. Raw corpus bytes remain outside Git.
+
+```bash
+python -m edcm.corpora.multiwoz21 \
+  --archive /path/to/MULTIWOZ2.1.zip \
+  --ucns-source-root /path/to/ucns-at-eb264fba18bd051c46b4853c81c8fb91ec6d5811 \
+  --output experiments/corpora/results/2026-07-28-multiwoz-2.1-full.json \
+  --receipt experiments/corpora/receipts/2026-07-28-multiwoz-2.1-complete.json \
+  --checkpoint /tmp/multiwoz-2.1.checkpoint.json
+```
+
+See [`docs/corpora/multiwoz-2.1.md`](docs/corpora/multiwoz-2.1.md). This is
+represented evidence, not an EDCM candidate measurement, formal UCNS geometry,
+or a canon selection.
+
 ## Integrity gate
 
 `python -m edcm.integrity` checks the frozen baseline:

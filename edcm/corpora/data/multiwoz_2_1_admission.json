@@ -1,0 +1,137 @@
+{
+  "admission_authority": "Erin Spencer",
+  "admission_date": "2026-07-28",
+  "corpus_id": "multiwoz-2.1",
+  "evidence_state": "represented-evidence",
+  "expected": {
+    "dialogue_count": 10438,
+    "partition_counts": {
+      "test": 1000,
+      "train": 8438,
+      "validation": 1000
+    }
+  },
+  "execution_policy": {
+    "corpus_execution": "full-corpus",
+    "failure_receipt_required": true,
+    "normalization": "none-preserve-source",
+    "raw_source_in_git": false,
+    "sampling": false,
+    "support": "one-unit-per-speaker-turn"
+  },
+  "hmmm": [
+    "Source-native correction, retraction, and unresolved-reference labels are not available for every dialogue; no semantic heuristic is substituted.",
+    "The even-user/odd-system speaker convention is an adapter inference from documented alternating exchanges, not an explicit speaker field in data.json.",
+    "Exact profile observations are represented evidence, not formal UCNS geometry, EDCM measurement validity, diagnosis, intention, morality, consciousness, or external truth."
+  ],
+  "information_boundaries": {
+    "profile_input": "ordered data.json dialogue log text only",
+    "profile_noninputs_retained_by_source": [
+      "dialogue goal",
+      "turn metadata",
+      "dialogue acts",
+      "ontology",
+      "domain databases",
+      "validation and test membership lists"
+    ],
+    "projection": "none",
+    "speaker_identity": "adapter-inferred from zero-based log ordinal: even=user, odd=system",
+    "source_text_normalization": "none"
+  },
+  "license": {
+    "name": "Creative Commons Attribution 4.0 International",
+    "spdx": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "privacy_and_removal": {
+    "collection_context": "human-human written Wizard-of-Oz task dialogues collected through Amazon Mechanical Turk",
+    "committed_outputs": "aggregate counts, cryptographic identities, reconciliation, and receipts only; no raw dialogue text",
+    "removal_path": "remove the locally held archive and invalidate or supersede aggregate receipts by archive SHA-256; no raw corpus object is committed",
+    "restricted_source": false
+  },
+  "schema_id": "edcm.corpus-admission",
+  "schema_version": "1.0.0",
+  "source": {
+    "archive": {
+      "bytes": 13794372,
+      "filename": "MULTIWOZ2.1.zip",
+      "logical_members": [
+        {
+          "bytes": 35731,
+          "path": "MULTIWOZ2.1/attraction_db.json",
+          "sha256": "2aacc620af4025f1eada5ec83057a866f8e8b72b529f71d2f8bf93bcdd8f8751"
+        },
+        {
+          "bytes": 276553203,
+          "path": "MULTIWOZ2.1/data.json",
+          "sha256": "cb88bd0070bf11b04974cee54c84ad16cfee723c86b096bea04d2cebad098d58"
+        },
+        {
+          "bytes": 24349109,
+          "path": "MULTIWOZ2.1/dialogue_acts.json",
+          "sha256": "54d02ef40aed0e00e5aa84b62ccf7f23df901d07f54c2376d5e8130909c2546f"
+        },
+        {
+          "bytes": 7291,
+          "path": "MULTIWOZ2.1/hospital_db.json",
+          "sha256": "51282ab30346d4e826fbdf6a668d346f4b1e72425190d62048a7c471ffba5020"
+        },
+        {
+          "bytes": 18229,
+          "path": "MULTIWOZ2.1/hotel_db.json",
+          "sha256": "972bbd65beada7c64f0b87322c694fd9173b46cf8e61ca3bbe951717ac1d1662"
+        },
+        {
+          "bytes": 44532,
+          "path": "MULTIWOZ2.1/ontology.json",
+          "sha256": "2281d078084004a8c1e888e96cb1cb069f53f10d4680911090da4462907395ca"
+        },
+        {
+          "bytes": 149,
+          "path": "MULTIWOZ2.1/police_db.json",
+          "sha256": "d9c2b200fa2dd61b04ce2fe520b0b79dfa68d8b895806cfec6e8a8d3cffa9193"
+        },
+        {
+          "bytes": 2612,
+          "path": "MULTIWOZ2.1/README.json",
+          "sha256": "51ac55884008bdafa659359edafc2fc7f392e4d287732147e16ed3bbc1909534"
+        },
+        {
+          "bytes": 56391,
+          "path": "MULTIWOZ2.1/restaurant_db.json",
+          "sha256": "7864b4e36027af0907d6afe9ed962fecd6c6966cd626b8ae9341708a04ea201a"
+        },
+        {
+          "bytes": 203,
+          "path": "MULTIWOZ2.1/taxi_db.json",
+          "sha256": "8717d723f267e50e112a800d863ef0e3aa38a7c3a7af1756138b0da47112f5fa"
+        },
+        {
+          "bytes": 13497,
+          "path": "MULTIWOZ2.1/testListFile.json",
+          "sha256": "56fff5bf8c7b0a64fba8672241a7bdd947c3a58986bf06f46d37f33288f73ce0"
+        },
+        {
+          "bytes": 748675,
+          "path": "MULTIWOZ2.1/train_db.json",
+          "sha256": "4818e735bae20690f6d0d06bb2ae8eec1981c0b680258a970dc01c9073f3fec9"
+        },
+        {
+          "bytes": 13507,
+          "path": "MULTIWOZ2.1/valListFile.json",
+          "sha256": "8e19240b90576c3ed83a0d44ef5e7ca8916e47356662ed4621e6b39d8c327d80"
+        }
+      ],
+      "sha256": "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e"
+    },
+    "artifact_url": "https://www.repository.cam.ac.uk/bitstreams/da767767-af2a-449b-a0f0-716a7b1ebab1/download",
+    "data_member": "MULTIWOZ2.1/data.json",
+    "doi": "10.17863/CAM.41572",
+    "institution": "University of Cambridge",
+    "landing_page": "https://www.repository.cam.ac.uk/items/74e8d468-9442-424a-bb3b-1bb88dcb8673/full",
+    "test_member": "MULTIWOZ2.1/testListFile.json",
+    "title": "Research data supporting MultiWOZ - A Large-Scale Multi-Domain Wizard-of-Oz Dataset for Task-Oriented Dialogue Modelling",
+    "validation_member": "MULTIWOZ2.1/valListFile.json"
+  },
+  "status": "admitted"
+}

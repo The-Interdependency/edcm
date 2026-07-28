@@ -80,6 +80,7 @@ class Report:
 def native_modules(root: Path) -> tuple[Path, ...]:
     paths = list((root / "edcm").glob("*.py"))
     paths.extend((root / "edcm" / "edcmucns").rglob("*.py"))
+    paths.extend((root / "edcm" / "corpora").rglob("*.py"))
     return tuple(sorted(path for path in paths if path.is_file()))
 
 

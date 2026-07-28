@@ -32,6 +32,109 @@ export default defineMsdmdCollection({
         "admin_only": "false",
         "auth_boundary": "none",
         "internal_surface": "none",
+        "module_kind": "adapter",
+        "module_name": "corpora",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "load_multiwoz21_admission, run_multiwoz21_archive",
+        "requires": "edcm_ucns_adapter",
+        "rollback": "remove the corpus package and generated aggregate evidence; frozen measurement and historical experiments remain unchanged",
+        "rollout": "explicit per-corpus command after admission-manifest verification",
+        "since": "2026-07-28",
+        "storage_boundary": "caller-selected aggregate reports, receipts, and checkpoints only; raw corpora remain external",
+        "summary": "source-native full-corpus execution surfaces with admission, reconciliation, and completion or incompletion receipts",
+        "tests": "tests.test_multiwoz21_corpus",
+        "unresolved": "admission and adapter design for the six queued corpora after MultiWOZ 2.1",
+        "user_data_boundary": "source evidence is read locally and only non-text aggregates and cryptographic identities are emitted"
+      },
+      "file": "edcm/corpora/__init__.py",
+      "id": "edcm_corpora_package"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "provenance",
+        "given": "a caller supplies a local MultiWOZ 2.1 archive",
+        "since": "2026-07-28",
+        "then": "archive bytes and every logical member match the committed Cambridge admission manifest before any dialogue is observed"
+      },
+      "file": "edcm/corpora/multiwoz21.py",
+      "id": "multiwoz21_admission_precedes_execution"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "source streaming reaches valid EOF",
+        "since": "2026-07-28",
+        "then": "completion is emitted only when dialogue, partition, source-turn, adapter-turn, and unit-support counts reconcile exactly"
+      },
+      "file": "edcm/corpora/multiwoz21.py",
+      "id": "multiwoz21_completion_requires_reconciliation"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "an admitted archive contains the complete top-level dialogue object",
+        "since": "2026-07-28",
+        "then": "every log text is processed once in source dialogue and turn order with no normalization, sampling, sorting, or deduplication"
+      },
+      "file": "edcm/corpora/multiwoz21.py",
+      "id": "multiwoz21_every_turn_is_observed_exactly_once"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "archive, schema, adapter, checkpoint, or reconciliation processing fails",
+        "since": "2026-07-28",
+        "then": "the command emits an incomplete receipt with the last completed and active source position and the exact failure class and reason"
+      },
+      "file": "edcm/corpora/multiwoz21.py",
+      "id": "multiwoz21_failure_is_receipted"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "privacy",
+        "given": "a run succeeds or fails",
+        "since": "2026-07-28",
+        "then": "written reports, receipts, and checkpoints contain aggregates and identities but no source turn text"
+      },
+      "file": "edcm/corpora/multiwoz21.py",
+      "id": "multiwoz21_written_outputs_exclude_raw_text"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_archive_identity, _load_partition_ids, _load_pinned_adapter, _new_state, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic",
+        "module_kind": "adapter",
+        "module_name": "multiwoz21",
+        "network_boundary": "none; source acquisition is separate and the runner requires local pinned bytes",
+        "owner": "Erin Spencer",
+        "public_surface": "AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive, main",
+        "requires": "edcm_ucns_adapter, ucns.edcm at eb264fba18bd051c46b4853c81c8fb91ec6d5811",
+        "rollback": "remove the adapter and supersede its aggregate receipts by identity; raw source remains outside Git",
+        "rollout": "explicit admitted full-corpus command; no sampling and no default measurement or canon selection",
+        "since": "2026-07-28",
+        "storage_boundary": "reads a caller-held archive and writes only caller-selected aggregate report, receipt, and resumable checkpoint paths",
+        "summary": "verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile without committing raw text",
+        "tests": "tests.test_multiwoz21_corpus",
+        "unresolved": "source-native semantic labels for correction, retraction, and unresolved reference; formal UCNS geometry and lawful EDCM projection",
+        "user_data_boundary": "exact dialogue text is processed in memory and represented only by counts and cryptographic identities in written outputs"
+      },
+      "file": "edcm/corpora/multiwoz21.py",
+      "id": "edcm_multiwoz21_corpus"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "none",
         "module_kind": "engine",
         "module_name": "edcmucns",
         "network_boundary": "none",
@@ -1331,6 +1434,61 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_archive_mutation_fails_before_dialogue_observation",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "multiwoz21_admission_precedes_execution"
+      },
+      "file": "tests/test_multiwoz21_corpus.py",
+      "id": "check_multiwoz21_admission_precedes_execution"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_manifest_count_mismatch_refuses_completion",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "multiwoz21_completion_requires_reconciliation"
+      },
+      "file": "tests/test_multiwoz21_corpus.py",
+      "id": "check_multiwoz21_completion_requires_reconciliation"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_full_fixture_run_preserves_order_exact_text_and_profile_counts",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "multiwoz21_every_turn_is_observed_exactly_once"
+      },
+      "file": "tests/test_multiwoz21_corpus.py",
+      "id": "check_multiwoz21_every_turn_is_observed_exactly_once"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_invalid_turn_reports_exact_active_source_position",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "multiwoz21_failure_is_receipted"
+      },
+      "file": "tests/test_multiwoz21_corpus.py",
+      "id": "check_multiwoz21_failure_is_receipted"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_report_and_checkpoint_exclude_source_turn_text",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "multiwoz21_written_outputs_exclude_raw_text"
+      },
+      "file": "tests/test_multiwoz21_corpus.py",
+      "id": "check_multiwoz21_written_outputs_exclude_raw_text"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_exact_profile_activates_and_option_drift_suspends",
         "cleanup": "none",
         "mutates": "none",
@@ -1839,6 +1997,76 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
+      "from": "check_multiwoz21_admission_precedes_execution",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_admission_precedes_execution",
+      "to": "self::test_archive_mutation_fails_before_dialogue_observation"
+    },
+    {
+      "from": "check_multiwoz21_admission_precedes_execution",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_admission_precedes_execution",
+      "to": "multiwoz21_admission_precedes_execution"
+    },
+    {
+      "from": "check_multiwoz21_completion_requires_reconciliation",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_completion_requires_reconciliation",
+      "to": "self::test_manifest_count_mismatch_refuses_completion"
+    },
+    {
+      "from": "check_multiwoz21_completion_requires_reconciliation",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_completion_requires_reconciliation",
+      "to": "multiwoz21_completion_requires_reconciliation"
+    },
+    {
+      "from": "check_multiwoz21_every_turn_is_observed_exactly_once",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_every_turn_is_observed_exactly_once",
+      "to": "self::test_full_fixture_run_preserves_order_exact_text_and_profile_counts"
+    },
+    {
+      "from": "check_multiwoz21_every_turn_is_observed_exactly_once",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_every_turn_is_observed_exactly_once",
+      "to": "multiwoz21_every_turn_is_observed_exactly_once"
+    },
+    {
+      "from": "check_multiwoz21_failure_is_receipted",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_failure_is_receipted",
+      "to": "self::test_invalid_turn_reports_exact_active_source_position"
+    },
+    {
+      "from": "check_multiwoz21_failure_is_receipted",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_failure_is_receipted",
+      "to": "multiwoz21_failure_is_receipted"
+    },
+    {
+      "from": "check_multiwoz21_written_outputs_exclude_raw_text",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_written_outputs_exclude_raw_text",
+      "to": "self::test_report_and_checkpoint_exclude_source_turn_text"
+    },
+    {
+      "from": "check_multiwoz21_written_outputs_exclude_raw_text",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_written_outputs_exclude_raw_text",
+      "to": "multiwoz21_written_outputs_exclude_raw_text"
+    },
+    {
       "from": "check_occurrence_coverage_candidate",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -2075,6 +2303,20 @@ export default defineMsdmdCollection({
       "source_block": "DOCS",
       "source_id": "edcm_ucns_fork_lint_docs",
       "to": "lint_fork_topology"
+    },
+    {
+      "from": "edcm_corpora_package",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_corpora_package",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_corpora_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_corpora_package",
+      "to": "edcm_ucns_adapter"
     },
     {
       "from": "edcm_energy_claims",
@@ -2411,6 +2653,27 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_metapat_adapter",
       "to": "optional metapat package"
+    },
+    {
+      "from": "edcm_multiwoz21_corpus",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_corpus",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_multiwoz21_corpus",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_corpus",
+      "to": "edcm_ucns_adapter"
+    },
+    {
+      "from": "edcm_multiwoz21_corpus",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_corpus",
+      "to": "ucns.edcm at eb264fba18bd051c46b4853c81c8fb91ec6d5811"
     },
     {
       "from": "edcm_package",

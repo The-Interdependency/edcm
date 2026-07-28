@@ -53,7 +53,7 @@ where = ["."]
 include = ["edcm*"]
 
 [tool.setuptools.package-data]
-edcm = ["py.typed", "measurement/canon/data/*.json"]
+edcm = ["py.typed", "measurement/canon/data/*.json", "corpora/data/*.json"]
 
 [tool.setuptools.dynamic]
 version = { attr = "edcm.__version__" }
