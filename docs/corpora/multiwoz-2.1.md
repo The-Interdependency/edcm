@@ -1,6 +1,6 @@
 # MultiWOZ 2.1 full-corpus evidence run
 
-**Status:** admitted source and executable full-corpus adapter.
+**Status:** admitted, executed in full, and reconciled complete on 2026-07-28.
 **Evidence state:** represented evidence; no EDCM candidate measurement or
 joint-canon selection.
 
@@ -71,6 +71,20 @@ source-declared nonempty `fail_book` and `fail_info` goal mappings.
 Those source annotations are not EDCM inferences. No correction, retraction,
 refusal, unresolved-reference, diagnosis, intention, morality, consciousness,
 or external-truth classifier is introduced by this runner.
+
+The sealed run processed `10,438` dialogues and `143,048` turns. Source turns,
+adapter turns, and profile unit support reconciled exactly; train, validation,
+and test counts reconciled at `8,438 / 1,000 / 1,000`. The aggregate
+[report](../../experiments/corpora/results/2026-07-28-multiwoz-2.1-full.json)
+and
+[completion receipt](../../experiments/corpora/receipts/2026-07-28-multiwoz-2.1-complete.json)
+were reproduced byte-for-byte from the completed checkpoint.
+
+The run surfaced `4,094` out-of-alphabet occurrences across three exact code
+points (`U+0009`, `U+000A`, `U+00A0`), `19,109` repeated-SPACE excess
+occurrences, and `4,378` dialogues with at least one source-declared nonempty
+`fail_book` or `fail_info` mapping. These are structural or source-annotation
+counts, not semantic diagnoses.
 
 ```text
 exact profile observation != formal UCNS geometry

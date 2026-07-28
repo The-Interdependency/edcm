@@ -26,6 +26,19 @@ Current queue:
 6. WildChat-1M
 7. LMSYS-Chat-1M
 
+## Completed runs
+
+| Corpus | Dialogues | Turns | Status | Report | Receipt |
+|---|---:|---:|---|---|---|
+| MultiWOZ 2.1 | 10,438 | 143,048 | complete | [`2026-07-28-multiwoz-2.1-full.json`](results/2026-07-28-multiwoz-2.1-full.json) | [`2026-07-28-multiwoz-2.1-complete.json`](receipts/2026-07-28-multiwoz-2.1-complete.json) |
+
+The MultiWOZ report was produced by
+`edcm@6279d2236256f11866250011d15bf7080e4d9025` with
+`ucns@eb264fba18bd051c46b4853c81c8fb91ec6d5811`. Its report digest is
+`0bf4eb5c9ddf67fd6f48c766ce874435f63be10a32335882a0170be95eb98b21`.
+An immediate completed-checkpoint rerun produced byte-identical report and
+receipt files.
+
 ## hmmm
 
 Only MultiWOZ 2.1 has an admitted executable adapter in this tree. The remaining
