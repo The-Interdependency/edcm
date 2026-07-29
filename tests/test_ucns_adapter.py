@@ -22,10 +22,12 @@ from __future__ import annotations
 #   cleanup: none
 # === END CHECKS ===
 
+import importlib.util
 from types import ModuleType
 
 import pytest
 
+import edcm
 import edcm.ucns_adapter as adapter_module
 from edcm.ucns_adapter import (
     ActualUCNSAdapter,
@@ -90,6 +92,24 @@ def test_absent_package_is_typed_suspension(monkeypatch):
     assert selection.status.adapter_active is False
     assert selection.status.selection == "suspended"
     assert selection.status.ucns_profile_observation_attached is False
+
+
+def test_pre_reset_metric_resolver_is_removed_from_public_surface():
+    assert importlib.util.find_spec("edcm.ucns_metrics") is None
+    for name in (
+        "MetricDefinition",
+        "ResolvedMetricUCNS",
+        "UCNSMetricDependencyError",
+        "UCNSMetricResolutionError",
+        "METRIC_DEFINITIONS",
+        "SYMBOL_TO_METRIC_ID",
+        "resolve_metric_axis",
+        "resolve_metric_value",
+        "resolve_metric_vector",
+        "resolve_round_metrics",
+        "resolved_metric_objects_payload",
+    ):
+        assert not hasattr(edcm, name)
 
 
 def test_archived_lookalike_cannot_activate(monkeypatch):
