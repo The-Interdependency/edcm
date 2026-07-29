@@ -1,111 +1,70 @@
-# UCNS-resolved EDCM metric objects
+# Retired pre-reset UCNS metric-object resolver
 
-## Purpose
+**Status:** removed from the live EDCM package.  
+**Current integration:** [exact EDCM UCNS observation profile](ucns-adapter.md).
 
-`edcm.ucns_metrics` gives every supported EDCM metric axis and scalar observation a canonical UCNS audit identity. Existing EDCM formulas and scalar outputs remain unchanged.
+## Why this surface was removed
 
-No UCNS-A theorem/proof status is transferred to EDCM, edcmbone, or UCNS-G by this change.
+The former `edcm.ucns_metrics` module converted completed scalar EDCM values
+into content-addressed objects by requiring these archived UCNS surfaces:
 
-The resolver produces two object kinds:
+```text
+UCNSObject
+recursive_encode
+stable_hash
+```
 
-- `metric_axis`: stable identity for a namespaced EDCM metric definition;
-- `metric_value`: one rationalized observation at a declared grain, source, context, and formula version.
+Those names belong to the pre-reset producer lineage. They do not implement or
+validate the exact EDCM-only word-gonol profile, Möbius initiation, completion
+motion, higher-gonol composition, or a lawful projection from retained
+trajectory evidence into scalar readouts. Keeping the resolver importable
+allowed an unrelated package named `ucns` to reactivate the retired path.
 
-## Install
+The module, its top-level `edcm` exports, and its fake-producer tests have
+therefore been removed. Git history preserves the implementation as historical
+evidence; it is not a compatibility surface.
 
-The base EDCM package remains dependency-free. Install the optional UCNS integration before resolving objects:
+## Current usage guidance
+
+Install the exact profile producer and pass every exact speaker turn separately:
 
 ```bash
-python -m pip install -e ".[ucns]"
+python -m pip install -e .[dev,ucns-profile]
 ```
-
-Direct absence of `ucns` raises `UCNSMetricDependencyError`. Transitive import failures and incomplete UCNS public surfaces remain visible errors rather than being treated as optional absence.
-
-## Resolve one value
 
 ```python
-from edcm.ucns_metrics import resolve_metric_value
+import edcm
 
-resolved = resolve_metric_value(
-    "behavioral:O",
-    -0.25,
-    grain="round",
-    source="RoundMetrics",
-    context_id="round:12",
-    formula_version="edcm.measurement.metrics.compute/1",
-)
+result = edcm.build_default_layers().run({
+    "transcript": "A: Preserve the boundary.\nB: Keep spaces  exact.",
+    "ucns_turns": (
+        ("A", "Preserve the boundary."),
+        ("B", "Keep spaces  exact."),
+    ),
+})
 
-assert resolved.sign == -1
-assert (resolved.magnitude_num, resolved.magnitude_den) == (1, 4)
-print(resolved.ucns_hash)
-print(resolved.record_list())
+observation = result["edcm_result"]["ucns_profile_observation"]
+assert observation["state"] == "attached"
+assert result["edcm_result"]["ucns_geometry_identity"]["state"] == "NA"
 ```
 
-Floats are converted through their decimal string and limited to a rational denominator of at most 1,000,000. Binary floating-point artifacts therefore do not become part of the UCNS identity.
+Use `ucns_profile_observation` as exact represented evidence. Do not reconstruct
+speaker units from `transcript`, treat an observation digest as formal geometry,
+or turn an existing scalar into a UCNS object merely to give it an identity.
 
-## Resolve a complete `RoundMetrics` vector
+A future scalar projection must be versioned, name its assignment and transition
+law, link to the complete completion-motion trajectory, and declare every lost
+distinction. Until then, absence of such a projection is `NA`, not zero.
 
-```python
-from edcm.ucns_metrics import (
-    resolve_round_metrics,
-    resolved_metric_objects_payload,
-)
+## Compatibility effect
 
-resolved = resolve_round_metrics(round_metrics)
-audit_payload = resolved_metric_objects_payload(resolved)
-
-output = {
-    "metrics": round_metrics.as_dict(),
-    "resolved_metric_objects": audit_payload,
-}
-```
-
-`resolved_metric_objects` is adjacent, non-scoring audit data. The resolver does not mutate `round_metrics`, replace `RoundMetrics.as_dict()`, or feed UCNS hashes back into metric formulas.
-
-## Namespace discipline
-
-Canonical ids are:
-
-```text
-behavioral:C
-behavioral:R
-behavioral:F
-behavioral:E
-behavioral:D
-behavioral:N
-behavioral:I
-behavioral:O
-behavioral:L
-round:P_progress
-state:kappa
-```
-
-`round:P_progress` is not UCNS-G Operator `P`. `state:kappa` also has no UCNS-G primitive assignment. Both records therefore carry an empty `ucns_g_axis` field.
-
-## Canonical record
-
-A value object is encoded as an ordered list of pairs using `ucns.recursive_encode`, then addressed with `ucns.stable_hash`. Its record includes:
-
-```text
-schema and object kind
-metric id, symbol, and name
-source, grain, context id, and formula version
-rational value numerator and denominator
-sign and rational magnitude
-range and optional UCNS-G axis
-EXPERIMENTAL status
-ucns_theorem_transfer = false
-```
-
-The live `UCNSObject` remains available on `ResolvedMetricUCNS.ucns_object`; JSON-facing output should use `to_payload()` or `resolved_metric_objects_payload()`, which emit the stable hash and canonical record without trying to serialize the live object.
-
-## Limits
-
-- The resolver does not establish metric correctness or empirical validity.
-- It does not construct the formal UCNS-A ↔ UCNS-G theorem bridge.
-- It does not assign a prime to Progress or κ.
-- UCNS hashes provide canonical content identity, not cryptographic producer signatures or transport authentication.
+Importing `edcm.ucns_metrics` or importing its former resolver names from
+`edcm` is intentionally unsupported. Consumers must migrate to the exact
+profile observation contract above. No alias or silent fallback is provided.
 
 ## hmmm
 
-The correct attachment point for automatically emitted resolved objects across every delivery surface remains a versioned result-contract decision. Until that schema migration is made, callers attach the payload explicitly beside scalar metrics.
+Formal Möbius coordinates, the exact assignment and transition law,
+higher-gonol composition, and lawful readout-specific scalar projections remain
+open. Removing an invalid resolver preserves that incompletion instead of
+encoding a convenient answer into the wrong object model.
