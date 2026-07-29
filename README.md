@@ -186,6 +186,8 @@ The shared-stack pipeline separates:
 
 The retired ordered-occurrence bridge, `UCNSObject`, and factorization inputs fail closed on the current runtime path. Historical experiment reports keep their original UCNS commit and are not rewritten as current profile evidence.
 
+The pre-reset `edcm.ucns_metrics` resolver and its top-level exports are removed. They depended on archived `UCNSObject`, `recursive_encode`, and `stable_hash` surfaces rather than the exact current profile. Use `ucns_profile_observation` for represented evidence; any future scalar projection must remain linked to its complete trajectory and declare information loss. See [`docs/ucns-metric-objects.md`](docs/ucns-metric-objects.md) for migration guidance.
+
 ## Typed absence
 
 `NA != 0` remains non-negotiable.

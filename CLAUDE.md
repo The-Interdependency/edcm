@@ -119,6 +119,8 @@ ucns_factorization_evidence_json
 ucns_factorization_evidence_dict
 ```
 
+The live package must not expose `edcm.ucns_metrics` or its former scalar-to-object resolver names. That path required archived `UCNSObject`, `recursive_encode`, and `stable_hash` surfaces and was removed after the reset. Current callers use exact `ucns_profile_observation`; a scalar projection requires a separately versioned, trajectory-linked, declared-loss contract.
+
 Independent status fields are:
 
 ```text
