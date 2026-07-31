@@ -12,7 +12,7 @@
     "declared_turn_count": 143048,
     "runner_schema": "edcm.multiwoz21-full-corpus/1.2.0",
     "schema": "ucns.edcm.full-corpus-execution/0.14.1",
-    "sealed_edcm_commit": "2e667f648bfcfa9f067997eb7e56d2346a4ba30c",
+    "sealed_edcm_commit": "dc385d8990e8a9b812a1e477180b2ae4867a3e23",
     "sealed_receipt_id": "921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c",
     "status": "sealed-complete"
   },
@@ -39,6 +39,20 @@
     "report_sha256": "f2044a4c1555b7fa52f9f05a562136f24b8960902630dc32cfce7fcdb0af7fde",
     "status": "complete",
     "ucns_commit": "868d80878c9ecd93ff30e91ca289122ded805a49"
+  },
+  "sealed_ucns_v019_corpus_evidence": {
+    "corpus_id": "multiwoz-2.1",
+    "edcm_commit": "dc385d8990e8a9b812a1e477180b2ae4867a3e23",
+    "exact_stream_sha256": "e94ba2e5e1e9d52b23fd5b9c33303be009dae32f4c3bc6a1d5186a353acb40b5",
+    "receipt_digest": "aa2f7c9d31efe727fba169b72ca51c8ff0496d192e8c80275e78e5a13e9b3703",
+    "receipt_id": "921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c",
+    "receipt_path": "experiments/corpora/receipts/2026-07-31-multiwoz-2.1-ucns-v0.19-complete.json",
+    "receipt_sha256": "5c9e14723130d23dea15f82b736d3536318733179893e3b712afbe622ad1efc1",
+    "report_digest": "d85a0fd5f2847b311b0f796f15cc291f4d3a8523fbc0255ad2b11ad2c9099690",
+    "report_path": "experiments/corpora/results/2026-07-31-multiwoz-2.1-ucns-v0.19-full.json",
+    "report_sha256": "dbe9f95a93d1780299ee51036349e7afd062357abbddfedc3308e4e7dfedd81f",
+    "status": "complete",
+    "ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
   },
   "input_contract": "full ordered corpus as exact (speaker_id, text) tuples",
   "fixed_options": {
@@ -84,7 +98,7 @@
   ],
   "historical_experiment_ucns_commit": "5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
   "unresolved_constraints": [
-    "UCNS v0.19 supplies a nonselected ordered source-coordinate candidate for exact initiated outcome evidence, but this observation adapter does not attach or consume it.",
+    "UCNS v0.19 supplies a nonselected ordered source-coordinate candidate over its fixed full producer demonstration, but this observation adapter does not attach or consume it.",
     "Higher-gonol composition and the hyper-dimensional lattice relation law remain open.",
     "Projection policy must deepen only with experimental evidence.",
     "True non-SPACE coverage outside the 157-token carrier alphabet requires further real-system corpus pressure.",
@@ -94,5 +108,5 @@
   "theorem_transfer": false,
   "measurement_validity": false,
   "metapat_validity": false,
-  "hmmm": "The sealed historical MultiWOZ rerun and UCNS v0.14.1 receipt verify source-preserved SPACE-origin assignment plus bounded complete execution. The reviewed v0.19 producer adds a nonselected trace-local coordinate candidate, but EDCM does not yet attach that evidence or acquire measurement validity; neither result permits missing higher geometry or true non-SPACE coverage to collapse into a convenient bridge."
+  "hmmm": "The sealed v0.19-producer MultiWOZ rerun verifies source-preserved SPACE-origin assignment plus bounded complete execution and preserves the historical exact stream and gate receipt. The reviewed v0.19 producer's coordinate candidate is limited to its fixed full demonstration, and EDCM does not attach that evidence or acquire measurement validity; neither result permits missing higher geometry or true non-SPACE coverage to collapse into a convenient bridge."
 }

@@ -620,6 +620,107 @@ def test_historical_report_is_superseded_by_exact_sealed_rerun() -> None:
         "ucns_commit": expected_identities["ucns_commit"],
     }
 
+    v019_report_path = (
+        root
+        / "experiments/corpora/results/"
+        "2026-07-31-multiwoz-2.1-ucns-v0.19-full.json"
+    )
+    v019_receipt_path = (
+        root
+        / "experiments/corpora/receipts/"
+        "2026-07-31-multiwoz-2.1-ucns-v0.19-complete.json"
+    )
+    v019 = json.loads(v019_report_path.read_text(encoding="utf-8"))
+    v019_receipt = json.loads(v019_receipt_path.read_text(encoding="utf-8"))
+    v019_handoff = json.loads(
+        (root / "handoffs/ucns-profile-consumer-status.json").read_text(
+            encoding="utf-8"
+        )
+    )["sealed_ucns_v019_corpus_evidence"]
+
+    assert v019["report_digest"] == (
+        "d85a0fd5f2847b311b0f796f15cc291f4d3a8523fbc0255ad2b11ad2c9099690"
+    )
+    assert v019_receipt["receipt_digest"] == (
+        "aa2f7c9d31efe727fba169b72ca51c8ff0496d192e8c80275e78e5a13e9b3703"
+    )
+    assert v019["report_digest"] == _canonical_digest_without(
+        v019, "report_digest"
+    )
+    assert v019_receipt["receipt_digest"] == _canonical_digest_without(
+        v019_receipt, "receipt_digest"
+    )
+    assert sha256(v019_report_path.read_bytes()).hexdigest() == (
+        "dbe9f95a93d1780299ee51036349e7afd062357abbddfedc3308e4e7dfedd81f"
+    )
+    assert sha256(v019_receipt_path.read_bytes()).hexdigest() == (
+        "5c9e14723130d23dea15f82b736d3536318733179893e3b712afbe622ad1efc1"
+    )
+    v019_identities = {
+        "archive_sha256": (
+            "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e"
+        ),
+        "edcm_commit": "dc385d8990e8a9b812a1e477180b2ae4867a3e23",
+        "ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
+    }
+    assert v019_receipt["identities"] == v019_identities
+    assert v019["identities"]["edcm_commit"] == v019_identities["edcm_commit"]
+    assert v019["identities"]["ucns_commit"] == v019_identities["ucns_commit"]
+    assert v019["profile"]["source_commit"] == v019_identities["ucns_commit"]
+    assert v019_receipt["report_digest"] == v019["report_digest"]
+    assert v019_receipt["report_sha256"] == sha256(
+        v019_report_path.read_bytes()
+    ).hexdigest()
+
+    assert v019["execution"] == current["execution"]
+    assert (
+        v019["failure_seeking_observations"]
+        == current["failure_seeking_observations"]
+    )
+    assert v019["identities"]["source_dialogue_digest_chain"] == (
+        current["identities"]["source_dialogue_digest_chain"]
+    )
+    assert v019["identities"]["turn_evidence_digest_chain"] == (
+        current["identities"]["turn_evidence_digest_chain"]
+    )
+    v019_gate = v019["ucns_full_corpus_gate"]
+    assert v019_gate["schema_version"] == "0.14.1"
+    assert v019_gate["status"] == "complete"
+    assert v019_gate["processed_turn_count"] == 143048
+    assert v019_gate["exact_source_stream_sha256"] == (
+        "e94ba2e5e1e9d52b23fd5b9c33303be009dae32f4c3bc6a1d5186a353acb40b5"
+    )
+    assert (
+        v019_gate["exact_observation_stream_sha256"]
+        == v019_gate["exact_source_stream_sha256"]
+    )
+    assert v019_gate["receipt"]["receipt_id"] == receipt_id
+    assert v019_receipt["ucns_full_corpus"]["receipt_id"] == receipt_id
+    assert v019_gate["activations"] == {
+        "edcm": "inactive",
+        "metapat": "inactive",
+        "selection_effect": "none",
+    }
+    assert v019["canon_selection"] is None
+    assert v019["information_boundaries"]["candidate_measurement"] == "not-run"
+    assert v019["information_boundaries"]["formal_ucns_geometry"] == "NA"
+    assert v019["information_boundaries"]["raw_source_committed"] is False
+
+    assert v019_handoff == {
+        "corpus_id": "multiwoz-2.1",
+        "edcm_commit": v019_identities["edcm_commit"],
+        "exact_stream_sha256": v019_gate["exact_source_stream_sha256"],
+        "receipt_digest": v019_receipt["receipt_digest"],
+        "receipt_id": receipt_id,
+        "receipt_path": str(v019_receipt_path.relative_to(root)),
+        "receipt_sha256": sha256(v019_receipt_path.read_bytes()).hexdigest(),
+        "report_digest": v019["report_digest"],
+        "report_path": str(v019_report_path.relative_to(root)),
+        "report_sha256": sha256(v019_report_path.read_bytes()).hexdigest(),
+        "status": "complete",
+        "ucns_commit": v019_identities["ucns_commit"],
+    }
+
 
 def test_full_fixture_run_preserves_order_exact_text_and_profile_counts(
     tmp_path: Path,

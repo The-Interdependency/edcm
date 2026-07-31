@@ -172,6 +172,16 @@ and [completion receipt](experiments/corpora/receipts/2026-07-31-multiwoz-2.1-uc
 It consumed all `143,048` turns, reconciled the repeated source-native chain,
 and left EDCM and METAPAT activation inactive.
 
+The exact reviewed UCNS v0.19 producer was then repinned and rerun without
+changing the consumed profile or gate schema. Its sealed
+[report](experiments/corpora/results/2026-07-31-multiwoz-2.1-ucns-v0.19-full.json)
+and [completion receipt](experiments/corpora/receipts/2026-07-31-multiwoz-2.1-ucns-v0.19-complete.json)
+cover all `10,438` dialogues and `143,048` turns. A completed-checkpoint repeat
+was byte-identical. The exact stream hash and UCNS v0.14.1 receipt id remain
+unchanged; the report and receipt identities bind the new EDCM and UCNS commits.
+Measurement remains `not-run`, canon selection is null, and EDCM/METAPAT stay
+inactive.
+
 ## Integrity gate
 
 `python -m edcm.integrity` checks the frozen baseline:
@@ -217,9 +227,9 @@ Historical implementation, source packets, repair handoffs, and prior adapter co
 
 ## hmmm
 
-UCNS v0.19 supplies a nonselected trace-local source-coordinate candidate for
-exact initiated outcome evidence. This EDCM observation path does not attach or
-consume that candidate, and higher-gonol composition plus lawful projection
+UCNS v0.19 supplies a nonselected trace-local source-coordinate candidate over
+its fixed full producer demonstration. This EDCM observation path does not
+attach or consume that candidate, and higher-gonol composition plus lawful projection
 into EDCM readouts remain open. The corrected MultiWOZ 2.1 SPACE-origin
 aggregate is sealed represented evidence, not measurement validity; true
 non-SPACE carrier coverage remains a separate hmmm.

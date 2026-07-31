@@ -2,7 +2,7 @@
 
 **Status:** admitted; profile-0.2 sealed full-corpus rerun complete on
 2026-07-28; profile-0.1 SPACE interpretation superseded; UCNS v0.14.1
-completion-receipt rerun sealed on 2026-07-31.
+completion-receipt rerun and exact v0.19-producer rerun sealed on 2026-07-31.
 **Evidence state:** current and historical represented evidence; no EDCM
 candidate measurement or joint-canon selection.
 
@@ -164,6 +164,31 @@ candidate-measured evidence != canonically measured evidence
 NA != 0
 ```
 
+## UCNS v0.19 producer seal
+
+After the v0.19 source-coordinate boundary reached clean review, EDCM repinned
+the unchanged profile `0.2.0` and full-corpus gate `0.14.1` to exact UCNS commit
+`872f53571d5dc2f133ff1813b7bdffd3a9c309f8`. A clean EDCM commit
+`dc385d8990e8a9b812a1e477180b2ae4867a3e23` reran the admitted archive. A
+completed-checkpoint repeat produced byte-identical artifacts.
+
+- [aggregate report](../../experiments/corpora/results/2026-07-31-multiwoz-2.1-ucns-v0.19-full.json)
+- [completion receipt](../../experiments/corpora/receipts/2026-07-31-multiwoz-2.1-ucns-v0.19-complete.json)
+- dialogues: `10,438`
+- source, adapter, UCNS-gate, and unit-support turns: `143,048`
+- exact UCNS source/observation stream SHA-256: `e94ba2e5e1e9d52b23fd5b9c33303be009dae32f4c3bc6a1d5186a353acb40b5`
+- UCNS receipt id: `921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c`
+- EDCM report digest: `d85a0fd5f2847b311b0f796f15cc291f4d3a8523fbc0255ad2b11ad2c9099690`
+- EDCM receipt digest: `aa2f7c9d31efe727fba169b72ca51c8ff0496d192e8c80275e78e5a13e9b3703`
+
+The source dialogue chain, turn-evidence chain, execution counts, failure-seeking
+aggregates, exact stream hash, and v0.14.1 gate receipt remain identical to the
+prior sealed rerun. The EDCM report and receipt identities change because they
+correctly bind the new EDCM and UCNS producer commits. UCNS v0.19's coordinate
+candidate is evidenced only over its fixed full producer demonstration; this
+corpus runner neither attaches nor consumes it. `canon_selection` remains null,
+candidate measurement remains `not-run`, and EDCM/METAPAT remain inactive.
+
 ## File plan
 
 | Path | Change | Purpose | Risk | Required test |
@@ -185,6 +210,6 @@ measurement-validity claim. Source-native
 labels for correction, retraction, refusal, and unresolved reference are not
 complete in MultiWOZ 2.1 and remain unresolved rather than being guessed from
 text. UCNS v0.19 supplies a nonselected trace-local source-coordinate candidate
-for exact initiated outcome evidence, but this corpus runner does not attach or
-consume it. Higher-gonol composition and lawful projection from exact
+over its fixed full producer demonstration, but this corpus runner does not
+attach or consume it. Higher-gonol composition and lawful projection from exact
 observations into EDCM scalar readouts remain open.

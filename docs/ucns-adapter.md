@@ -160,8 +160,8 @@ view candidates remain scoped to their recorded epoch.
 The executable profile establishes exact corpus observations and now resolves
 the admitted SPACE manifestations to the Möbius origin. Coverage of true
 non-SPACE code points outside the 157-token carrier alphabet remains open.
-UCNS v0.19 supplies a nonselected trace-local source-coordinate candidate for
-exact initiated outcome evidence, but this adapter does not attach or consume
-that evidence. Higher-gonol composition and any projection from observations
+UCNS v0.19 supplies a nonselected trace-local source-coordinate candidate over
+its fixed full producer demonstration, but this adapter does not attach or
+consume that evidence. Higher-gonol composition and any projection from observations
 into geometry or scalar claims remain open and must be learned from full
 real-system corpus runs rather than collapsed early.

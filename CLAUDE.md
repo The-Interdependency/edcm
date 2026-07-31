@@ -105,8 +105,8 @@ complete speaker turn has support one. True non-SPACE out-of-alphabet code
 points remain ordered positive evidence.
 
 UCNS v0.19 also exposes a nonselected trace-local source-coordinate candidate
-for exact initiated outcome evidence. This adapter does not attach or consume
-that candidate, so profile observation remains distinct from coordinate
+over its fixed full producer demonstration. This adapter does not attach or
+consume that candidate, so profile observation remains distinct from coordinate
 assignment, formal higher geometry, and EDCM measurement validity.
 
 Prefer `has_carrier_assignment`, `is_public_gonol_token`,
