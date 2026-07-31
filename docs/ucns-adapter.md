@@ -29,6 +29,9 @@ stream, requires iterator exhaustion and the declared turn count, and binds the
 execution-generated receipt to the source archive, admission decision, adapter,
 privacy treatment, and redaction policy. That receipt opens only
 failure-seeking analysis; it does not activate EDCM or METAPAT.
+The first admitted seal is recorded by the 2026-07-31 MultiWOZ 2.1
+[aggregate report](../experiments/corpora/results/2026-07-31-multiwoz-2.1-ucns-v0.14.1-full.json)
+and [completion receipt](../experiments/corpora/receipts/2026-07-31-multiwoz-2.1-ucns-v0.14.1-complete.json).
 
 ## Input contract
 

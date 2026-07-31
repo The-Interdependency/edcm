@@ -164,8 +164,12 @@ profile-0.2 replacement assigns all `4,094` occurrences to carrier position
 zero, reports `1,783,679` SPACE boundaries and no carrier-unassigned source
 code points, and preserves the original source and turn digest chains.
 That historical receipt remains immutable; it is not a UCNS v0.14.1
-completion receipt. A new sealed receipt requires rerunning the authenticated
-archive through the current command.
+completion receipt. The authenticated v0.14.1 rerun is now independently
+sealed in its own aggregate
+[report](experiments/corpora/results/2026-07-31-multiwoz-2.1-ucns-v0.14.1-full.json)
+and [completion receipt](experiments/corpora/receipts/2026-07-31-multiwoz-2.1-ucns-v0.14.1-complete.json).
+It consumed all `143,048` turns, reconciled the repeated source-native chain,
+and left EDCM and METAPAT activation inactive.
 
 ## Integrity gate
 
