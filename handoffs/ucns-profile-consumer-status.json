@@ -4,7 +4,7 @@
     "0.2.0"
   ],
   "profile_scope": "edcm-only",
-  "pinned_ucns_commit": "868d80878c9ecd93ff30e91ca289122ded805a49",
+  "pinned_ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
   "pinned_skill_lib_commit": "2b24be24947223b86440f59f1bd9766130f9cc11",
   "adapter_activation_status": "exact-profile-active-when-matching-package-is-installed",
   "ucns_full_corpus_gate": {
@@ -84,7 +84,7 @@
   ],
   "historical_experiment_ucns_commit": "5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
   "unresolved_constraints": [
-    "Formal Mobius carrier coordinates are not supplied.",
+    "UCNS v0.19 supplies a nonselected ordered source-coordinate candidate for exact initiated outcome evidence, but this observation adapter does not attach or consume it.",
     "Higher-gonol composition and the hyper-dimensional lattice relation law remain open.",
     "Projection policy must deepen only with experimental evidence.",
     "True non-SPACE coverage outside the 157-token carrier alphabet requires further real-system corpus pressure.",
@@ -94,5 +94,5 @@
   "theorem_transfer": false,
   "measurement_validity": false,
   "metapat_validity": false,
-  "hmmm": "The sealed MultiWOZ rerun and UCNS v0.14.1 receipt verify source-preserved SPACE-origin assignment plus bounded complete execution without supplying formal coordinates or measurement validity; neither result permits missing geometry or true non-SPACE coverage to collapse into a convenient bridge."
+  "hmmm": "The sealed historical MultiWOZ rerun and UCNS v0.14.1 receipt verify source-preserved SPACE-origin assignment plus bounded complete execution. The reviewed v0.19 producer adds a nonselected trace-local coordinate candidate, but EDCM does not yet attach that evidence or acquire measurement validity; neither result permits missing higher geometry or true non-SPACE coverage to collapse into a convenient bridge."
 }

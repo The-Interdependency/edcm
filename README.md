@@ -139,8 +139,9 @@ MultiWOZ 2.1 is the first admitted real-system source. Its runner verifies the
 exact University of Cambridge archive and every logical member, streams all
 `10,438` dialogues in source order, observes every exact speaker turn through
 the pinned EDCM UCNS word-gonol profile, and independently repeats the exact
-turn stream through the UCNS v0.14.1 full-corpus completion gate. Completion
-requires both passes and their source-native turn chains to reconcile. Only
+turn stream through the UCNS v0.14.1 full-corpus completion gate from the
+exact v0.19 producer commit. Completion requires both passes and their
+source-native turn chains to reconcile. Only
 aggregate evidence and completion or incompletion receipts are emitted. Raw
 corpus bytes remain outside Git.
 Carrier SPACE metrics are derived from profile assignment at alphabet position
@@ -149,10 +150,10 @@ zero; the exact source code point remains independently serialized.
 ```bash
 python -m edcm.corpora.multiwoz21 \
   --archive /path/to/MULTIWOZ2.1.zip \
-  --ucns-source-root /path/to/ucns-at-868d80878c9ecd93ff30e91ca289122ded805a49 \
-  --output /tmp/multiwoz-2.1-ucns-v0141.json \
-  --receipt /tmp/multiwoz-2.1-ucns-v0141-receipt.json \
-  --checkpoint /tmp/multiwoz-2.1-ucns-v0141.checkpoint.json
+  --ucns-source-root /path/to/ucns-at-872f53571d5dc2f133ff1813b7bdffd3a9c309f8 \
+  --output /tmp/multiwoz-2.1-ucns-v019.json \
+  --receipt /tmp/multiwoz-2.1-ucns-v019-receipt.json \
+  --checkpoint /tmp/multiwoz-2.1-ucns-v019.checkpoint.json
 ```
 
 See [`docs/corpora/multiwoz-2.1.md`](docs/corpora/multiwoz-2.1.md). This is
@@ -216,4 +217,9 @@ Historical implementation, source packets, repair handoffs, and prior adapter co
 
 ## hmmm
 
-Formal Möbius coordinates, higher-gonol composition, and lawful projection from exact observations into a higher-dimensional lattice remain open. The corrected MultiWOZ 2.1 SPACE-origin aggregate is sealed represented evidence, not measurement validity; true non-SPACE carrier coverage remains a separate hmmm.
+UCNS v0.19 supplies a nonselected trace-local source-coordinate candidate for
+exact initiated outcome evidence. This EDCM observation path does not attach or
+consume that candidate, and higher-gonol composition plus lawful projection
+into EDCM readouts remain open. The corrected MultiWOZ 2.1 SPACE-origin
+aggregate is sealed represented evidence, not measurement validity; true
+non-SPACE carrier coverage remains a separate hmmm.

@@ -127,12 +127,12 @@ export default defineMsdmdCollection({
         "network_boundary": "none; source acquisition is separate and the runner requires local pinned bytes",
         "owner": "Erin Spencer",
         "public_surface": "AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive, main",
-        "requires": "edcm_ucns_adapter, ucns.edcm and ucns.full_corpus at 868d80878c9ecd93ff30e91ca289122ded805a49",
+        "requires": "edcm_ucns_adapter, ucns.edcm and ucns.full_corpus at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
         "rollback": "remove the adapter and supersede its aggregate receipts by identity; raw source remains outside Git",
         "rollout": "explicit admitted full-corpus command; no sampling and no default measurement or canon selection",
         "since": "2026-07-28",
         "storage_boundary": "reads a caller-held archive and writes only caller-selected aggregate report, receipt, and resumable checkpoint paths",
-        "summary": "verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate without committing raw text",
+        "summary": "verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate from the reviewed v0.19 producer without committing raw text",
         "tests": "tests.test_multiwoz21_corpus",
         "unresolved": "source-native semantic labels for correction, retraction, and unresolved reference; formal UCNS geometry and lawful EDCM projection",
         "user_data_boundary": "exact dialogue text is processed in memory and represented only by counts and cryptographic identities in written outputs"
@@ -1120,14 +1120,14 @@ export default defineMsdmdCollection({
         "network_boundary": "none",
         "owner": "Erin Spencer",
         "public_surface": "ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter",
-        "requires": "ucns.edcm at 868d80878c9ecd93ff30e91ca289122ded805a49",
+        "requires": "ucns.edcm at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
         "rollback": "suspend the optional adapter; base EDCM measurement remains operational",
         "rollout": "optional exact-profile activation only when the pinned profile surface matches",
         "since": "2026-07-25",
         "storage_boundary": "none",
-        "summary": "fail-closed consumer for the exact EDCM-only UCNS word-gonol profile, preserving full-corpus speaker-turn observations without geometry or proof transfer",
+        "summary": "fail-closed consumer for the exact EDCM-only UCNS word-gonol profile from the reviewed v0.19 producer, preserving full-corpus speaker-turn observations without coordinate, geometry, or proof transfer",
         "tests": "tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_shared_stack_contract",
-        "unresolved": "formal Mobius coordinates, higher-gonol composition, and projection policies remain outside this observation adapter",
+        "unresolved": "consumption of the upstream nonselected ordered source-coordinate candidate, higher-gonol composition, and projection policies remain outside this observation adapter",
         "user_data_boundary": "exact source turns remain in caller-owned in-memory results and are not transmitted"
       },
       "file": "edcm/ucns_adapter.py",
@@ -2773,7 +2773,7 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_multiwoz21_corpus",
-      "to": "ucns.edcm and ucns.full_corpus at 868d80878c9ecd93ff30e91ca289122ded805a49"
+      "to": "ucns.edcm and ucns.full_corpus at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
     },
     {
       "from": "edcm_package",
@@ -2906,7 +2906,7 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_ucns_adapter",
-      "to": "ucns.edcm at 868d80878c9ecd93ff30e91ca289122ded805a49"
+      "to": "ucns.edcm at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
     },
     {
       "from": "edcm_ucns_dependency",

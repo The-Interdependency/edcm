@@ -85,8 +85,9 @@ Direct absence of `metapat` is typed unavailability. Transitive import errors, m
 ## Exact EDCM UCNS observation profile
 
 EDCM owns the consumer adapter. UCNS owns the exact EDCM-only word-gonol
-profile and v0.14.1 full-corpus gate at
-`868d80878c9ecd93ff30e91ca289122ded805a49`.
+profile and v0.14.1 full-corpus gate. EDCM consumes those unchanged surfaces
+from exact UCNS v0.19 producer
+`872f53571d5dc2f133ff1813b7bdffd3a9c309f8`.
 
 The adapter activates only for `ucns.profile.edcm-word-gonol/0.2.0` with all
 fourteen fixed options, `source_domain=unicode-scalar-values`, the exact
@@ -102,6 +103,11 @@ Source value/code point and carrier token/position are serialized separately,
 so tab, newline, and non-breaking space remain exact source witnesses. Each
 complete speaker turn has support one. True non-SPACE out-of-alphabet code
 points remain ordered positive evidence.
+
+UCNS v0.19 also exposes a nonselected trace-local source-coordinate candidate
+for exact initiated outcome evidence. This adapter does not attach or consume
+that candidate, so profile observation remains distinct from coordinate
+assignment, formal higher geometry, and EDCM measurement validity.
 
 Prefer `has_carrier_assignment`, `is_public_gonol_token`,
 `carrier_unassigned`, and `has_complete_carrier_assignment`. The older

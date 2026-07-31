@@ -18,7 +18,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 # id: edcm_ucns_adapter
 #   module_name: ucns_adapter
 #   module_kind: adapter
-#   summary: fail-closed consumer for the exact EDCM-only UCNS word-gonol profile, preserving full-corpus speaker-turn observations without geometry or proof transfer
+#   summary: fail-closed consumer for the exact EDCM-only UCNS word-gonol profile from the reviewed v0.19 producer, preserving full-corpus speaker-turn observations without coordinate, geometry, or proof transfer
 #   owner: Erin Spencer
 #   public_surface: ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter
 #   internal_surface: _canonical_bytes, _digest, _package_present, _token_record, _segment_record, _turn_record
@@ -30,9 +30,9 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 #   tests: tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_shared_stack_contract
 #   rollout: optional exact-profile activation only when the pinned profile surface matches
 #   rollback: suspend the optional adapter; base EDCM measurement remains operational
-#   requires: ucns.edcm at 868d80878c9ecd93ff30e91ca289122ded805a49
+#   requires: ucns.edcm at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8
 #   since: 2026-07-25
-#   unresolved: formal Mobius coordinates, higher-gonol composition, and projection policies remain outside this observation adapter
+#   unresolved: consumption of the upstream nonselected ordered source-coordinate candidate, higher-gonol composition, and projection policies remain outside this observation adapter
 # === END MODULE_BUILD ===
 
 # === CONTRACTS ===
@@ -68,7 +68,7 @@ from typing import Any, Mapping, Protocol, Sequence
 UCNS_SOURCE_REPOSITORY = "https://github.com/The-Interdependency/ucns"
 SUPPORTED_PROFILE = ("ucns.profile.edcm-word-gonol", "0.2.0")
 SUPPORTED_PROFILE_SCOPE = "edcm-only"
-PINNED_UCNS_COMMIT = "868d80878c9ecd93ff30e91ca289122ded805a49"
+PINNED_UCNS_COMMIT = "872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
 EXPECTED_PUBLIC_GONOL_SHA256 = (
     "55d10c84529a4d7bc7714786357e977b68d9df2ac3f73d20e229580b552c2ef5"
 )

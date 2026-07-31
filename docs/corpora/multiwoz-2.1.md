@@ -40,15 +40,16 @@ source-native evidence and do not silently enter the word-gonol observation.
 ## Usage guidance
 
 Keep the archive outside the repository and use a clean checkout of the exact
-UCNS profile commit:
+UCNS v0.19 producer commit. The consumed profile remains version 0.2.0 and the
+full-corpus completion schema remains version 0.14.1:
 
 ```bash
 python -m edcm.corpora.multiwoz21 \
   --archive /path/to/MULTIWOZ2.1.zip \
-  --ucns-source-root /path/to/ucns-at-868d80878c9ecd93ff30e91ca289122ded805a49 \
-  --output /tmp/multiwoz-2.1-ucns-v0141.json \
-  --receipt /tmp/multiwoz-2.1-ucns-v0141-receipt.json \
-  --checkpoint /tmp/multiwoz-2.1-ucns-v0141.checkpoint.json
+  --ucns-source-root /path/to/ucns-at-872f53571d5dc2f133ff1813b7bdffd3a9c309f8 \
+  --output /tmp/multiwoz-2.1-ucns-v019.json \
+  --receipt /tmp/multiwoz-2.1-ucns-v019-receipt.json \
+  --checkpoint /tmp/multiwoz-2.1-ucns-v019.checkpoint.json
 ```
 
 The runner refuses a dirty EDCM or UCNS tracked tree for a sealed run. A
@@ -183,5 +184,7 @@ inferred from the prior report. They are not formal Möbius geometry or an EDCM
 measurement-validity claim. Source-native
 labels for correction, retraction, refusal, and unresolved reference are not
 complete in MultiWOZ 2.1 and remain unresolved rather than being guessed from
-text. Formal Möbius coordinates, higher-gonol composition, and lawful projection
-from exact observations into EDCM scalar readouts also remain open.
+text. UCNS v0.19 supplies a nonselected trace-local source-coordinate candidate
+for exact initiated outcome evidence, but this corpus runner does not attach or
+consume it. Higher-gonol composition and lawful projection from exact
+observations into EDCM scalar readouts remain open.

@@ -5,7 +5,7 @@
 EDCM optionally consumes the exact EDCM-only observation profile at:
 
 ```text
-The-Interdependency/ucns@868d80878c9ecd93ff30e91ca289122ded805a49
+The-Interdependency/ucns@872f53571d5dc2f133ff1813b7bdffd3a9c309f8
 profile: ucns.profile.edcm-word-gonol/0.2.0
 full-corpus gate: ucns.edcm.full-corpus-execution/0.14.1
 ```
@@ -159,7 +159,9 @@ view candidates remain scoped to their recorded epoch.
 
 The executable profile establishes exact corpus observations and now resolves
 the admitted SPACE manifestations to the Möbius origin. Coverage of true
-non-SPACE code points outside the 157-token carrier alphabet, formal Möbius
-coordinates, higher-gonol composition, and any projection from observations
+non-SPACE code points outside the 157-token carrier alphabet remains open.
+UCNS v0.19 supplies a nonselected trace-local source-coordinate candidate for
+exact initiated outcome evidence, but this adapter does not attach or consume
+that evidence. Higher-gonol composition and any projection from observations
 into geometry or scalar claims remain open and must be learned from full
 real-system corpus runs rather than collapsed early.
