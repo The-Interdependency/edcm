@@ -2,7 +2,7 @@
 
 **Status:** admitted; profile-0.2 sealed full-corpus rerun complete on
 2026-07-28; profile-0.1 SPACE interpretation superseded; UCNS v0.14.1
-completion-receipt rerun implemented but not yet sealed.
+completion-receipt rerun sealed on 2026-07-31.
 **Evidence state:** current and historical represented evidence; no EDCM
 candidate measurement or joint-canon selection.
 
@@ -130,7 +130,31 @@ identity.
 The historical replacement predates the UCNS v0.14.1 execution gate. Its
 completion receipt remains valid for the EDCM v1.1 runner contract but cannot
 be promoted into a v0.14.1 receipt. |∆|Only a fresh execution over the admitted
-archive can create that receipt.|∆|
+archive could create that receipt; the independently sealed execution below is
+that new evidence.|∆|
+
+## UCNS v0.14.1 sealed execution
+
+The fresh run used clean EDCM merge commit
+`2e667f648bfcfa9f067997eb7e56d2346a4ba30c` and exact UCNS commit
+`868d80878c9ecd93ff30e91ca289122ded805a49`. It authenticated the admitted
+archive and all 13 members, completed the EDCM pass, then independently replayed
+all turns through the UCNS full-corpus executor. A checkpoint repeat produced
+byte-identical artifacts.
+
+- [aggregate report](../../experiments/corpora/results/2026-07-31-multiwoz-2.1-ucns-v0.14.1-full.json)
+- [completion receipt](../../experiments/corpora/receipts/2026-07-31-multiwoz-2.1-ucns-v0.14.1-complete.json)
+- dialogues: `10,438`
+- source, adapter, UCNS-gate, and unit-support turns: `143,048`
+- exact UCNS source/observation stream SHA-256: `e94ba2e5e1e9d52b23fd5b9c33303be009dae32f4c3bc6a1d5186a353acb40b5`
+- UCNS receipt id: `921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c`
+- EDCM report digest: `ff4718ba80d40028cc18fc222eae53295d8ab9efebe4a5da6b0e7c47e6088b77`
+- EDCM receipt digest: `4ebbb9a69be3690c01271e6a041de227e91615c073ad9e8601bdb9096fe41783`
+
+The repeated UCNS-pass turn-evidence chain equals the source-native EDCM pass,
+and the current failure-seeking aggregates equal the corrected 2026-07-28
+profile-0.2 evidence. `canon_selection` remains null; EDCM and METAPAT
+activation remain inactive.
 
 ```text
 exact profile observation != formal UCNS geometry
@@ -147,16 +171,16 @@ NA != 0
 | `edcm/corpora/data/multiwoz_2_1_admission.json` | versioned | live source, license, privacy, and v0.14.1 execution contract | source/version ambiguity | archive mutation, historical-manifest identity, and receipt checks |
 | `edcm/corpora/data/multiwoz_2_1_admission_v1_0_0.json` | preserved | reconstruct historical report admission identity | accidental historical rewrite | canonical manifest digest |
 | `tests/test_multiwoz21_corpus.py` | modified | source-owned dual-gate contract witnesses | fixture/real-profile drift | full suite plus pinned UCNS test |
-| `experiments/corpora/` | created after sealed run | aggregate report and receipt only | accidental raw inclusion | tracked-file inspection and digest reconciliation |
+| `experiments/corpora/` | sealed evidence added | aggregate report and receipt only | accidental raw inclusion | tracked-file inspection, digest reconciliation, and byte-identical checkpoint repeat |
 | `experiments/corpora/supersessions/2026-07-28-multiwoz-2.1-space-origin.json` | created | preserve the old evidence identity and bind the sealed replacement | replacement mismatch or historical rewrite | supersession identity, file digest, and source-chain reconciliation |
 | `edcm_msdmd.ts` | regenerated | skill-lib metadata collection | stale contract graph | pinned skill-lib diff |
 
 ## hmmm
 
-The corrected SPACE-origin totals are sealed represented evidence. A UCNS
-v0.14.1 receipt remains unsealed until the admitted Cambridge archive re-enters
-execution custody; it is not inferred from the prior report. They are not formal
-Möbius geometry or an EDCM measurement-validity claim. Source-native
+The corrected SPACE-origin totals and UCNS v0.14.1 execution receipt are sealed
+represented evidence. The new receipt was earned by fresh execution rather than
+inferred from the prior report. They are not formal Möbius geometry or an EDCM
+measurement-validity claim. Source-native
 labels for correction, retraction, refusal, and unresolved reference are not
 complete in MultiWOZ 2.1 and remain unresolved rather than being guessed from
 text. Formal Möbius coordinates, higher-gonol composition, and lawful projection

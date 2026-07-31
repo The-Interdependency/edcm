@@ -112,6 +112,17 @@ SPACE_CODE_POINT_LABELS = tuple(
 )
 
 
+def _canonical_digest_without(payload: dict[str, Any], field: str) -> str:
+    return sha256(
+        json.dumps(
+            {key: value for key, value in payload.items() if key != field},
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+
+
 class FixtureAdapter:
     """Small exact-shape adapter used only to exercise corpus accounting."""
 
@@ -505,6 +516,109 @@ def test_historical_report_is_superseded_by_exact_sealed_rerun() -> None:
         replacement["identities"]["turn_evidence_digest_chain"]
         == historical["identities"]["turn_evidence_digest_chain"]
     )
+
+    current_report_path = (
+        root
+        / "experiments/corpora/results/"
+        "2026-07-31-multiwoz-2.1-ucns-v0.14.1-full.json"
+    )
+    current_receipt_path = (
+        root
+        / "experiments/corpora/receipts/"
+        "2026-07-31-multiwoz-2.1-ucns-v0.14.1-complete.json"
+    )
+    current = json.loads(current_report_path.read_text(encoding="utf-8"))
+    current_receipt = json.loads(current_receipt_path.read_text(encoding="utf-8"))
+    handoff = json.loads(
+        (root / "handoffs/ucns-profile-consumer-status.json").read_text(
+            encoding="utf-8"
+        )
+    )["sealed_ucns_v0141_corpus_evidence"]
+
+    assert current["report_digest"] == (
+        "ff4718ba80d40028cc18fc222eae53295d8ab9efebe4a5da6b0e7c47e6088b77"
+    )
+    assert current_receipt["receipt_digest"] == (
+        "4ebbb9a69be3690c01271e6a041de227e91615c073ad9e8601bdb9096fe41783"
+    )
+    assert current["report_digest"] == _canonical_digest_without(
+        current, "report_digest"
+    )
+    assert current_receipt["receipt_digest"] == _canonical_digest_without(
+        current_receipt, "receipt_digest"
+    )
+    assert sha256(current_report_path.read_bytes()).hexdigest() == (
+        "f2044a4c1555b7fa52f9f05a562136f24b8960902630dc32cfce7fcdb0af7fde"
+    )
+    assert sha256(current_receipt_path.read_bytes()).hexdigest() == (
+        "2730dd5413187fc7c2c33092c83cce8cb93d2606f9df8c4e0bf148085fccfb79"
+    )
+    assert current_receipt["report_digest"] == current["report_digest"]
+    assert current_receipt["report_sha256"] == handoff["report_sha256"]
+    assert current["execution"] == replacement["execution"]
+    assert (
+        current["failure_seeking_observations"]
+        == replacement["failure_seeking_observations"]
+    )
+    assert current["identities"]["source_dialogue_digest_chain"] == (
+        replacement["identities"]["source_dialogue_digest_chain"]
+    )
+    assert current["identities"]["turn_evidence_digest_chain"] == (
+        replacement["identities"]["turn_evidence_digest_chain"]
+    )
+
+    expected_identities = {
+        "archive_sha256": (
+            "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e"
+        ),
+        "edcm_commit": "2e667f648bfcfa9f067997eb7e56d2346a4ba30c",
+        "ucns_commit": "868d80878c9ecd93ff30e91ca289122ded805a49",
+    }
+    assert current_receipt["identities"] == expected_identities
+    assert current["identities"]["archive"]["sha256"] == (
+        expected_identities["archive_sha256"]
+    )
+    assert current["identities"]["edcm_commit"] == expected_identities["edcm_commit"]
+    assert current["identities"]["ucns_commit"] == expected_identities["ucns_commit"]
+
+    gate = current["ucns_full_corpus_gate"]
+    source_native = gate["source_native_reconciliation"]
+    receipt_id = "921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c"
+    assert gate["schema_version"] == "0.14.1"
+    assert gate["status"] == "complete"
+    assert gate["iterator_exhausted"] is True
+    assert gate["processed_turn_count"] == 143048
+    assert gate["exact_source_stream_sha256"] == (
+        gate["exact_observation_stream_sha256"]
+    )
+    assert source_native["complete"] is True
+    assert all(source_native["checks"].values())
+    assert gate["receipt"]["receipt_id"] == receipt_id
+    assert current_receipt["ucns_full_corpus"]["receipt_id"] == receipt_id
+    assert gate["activations"] == {
+        "edcm": "inactive",
+        "metapat": "inactive",
+        "selection_effect": "none",
+    }
+    assert current["canon_selection"] is None
+    assert current["information_boundaries"]["candidate_measurement"] == "not-run"
+    assert current["information_boundaries"]["formal_ucns_geometry"] == "NA"
+    assert current["information_boundaries"]["raw_source_committed"] is False
+
+    assert handoff == {
+        "corpus_id": "multiwoz-2.1",
+        "edcm_commit": expected_identities["edcm_commit"],
+        "exact_stream_sha256": gate["exact_source_stream_sha256"],
+        "receipt_digest": current_receipt["receipt_digest"],
+        "receipt_id": receipt_id,
+        "receipt_path": str(current_receipt_path.relative_to(root)),
+        "receipt_sha256": sha256(current_receipt_path.read_bytes()).hexdigest(),
+        "report_digest": current["report_digest"],
+        "report_path": str(current_report_path.relative_to(root)),
+        "report_sha256": sha256(current_report_path.read_bytes()).hexdigest(),
+        "status": "complete",
+        "ucns_commit": expected_identities["ucns_commit"],
+    }
 
 
 def test_full_fixture_run_preserves_order_exact_text_and_profile_counts(
