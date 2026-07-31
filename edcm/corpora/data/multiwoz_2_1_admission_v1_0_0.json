@@ -9,8 +9,7 @@
       "test": 1000,
       "train": 8438,
       "validation": 1000
-    },
-    "turn_count": 143048
+    }
   },
   "execution_policy": {
     "corpus_execution": "full-corpus",
@@ -25,10 +24,6 @@
     "The even-user/odd-system speaker convention is an adapter inference from documented alternating exchanges, not an explicit speaker field in data.json.",
     "Exact profile observations are represented evidence, not formal UCNS geometry, EDCM measurement validity, diagnosis, intention, morality, consciousness, or external truth."
   ],
-  "historical_manifest": {
-    "path": "edcm/corpora/data/multiwoz_2_1_admission_v1_0_0.json",
-    "sha256": "aba3ebbac5e6f6ef0505cd9349361ba8bde7586fae21049e2d120fa362033ed6"
-  },
   "information_boundaries": {
     "profile_input": "ordered data.json dialogue log text only",
     "profile_noninputs_retained_by_source": [
@@ -55,7 +50,7 @@
     "restricted_source": false
   },
   "schema_id": "edcm.corpus-admission",
-  "schema_version": "1.1.0",
+  "schema_version": "1.0.0",
   "source": {
     "archive": {
       "bytes": 13794372,
@@ -138,16 +133,5 @@
     "title": "Research data supporting MultiWOZ - A Large-Scale Multi-Domain Wizard-of-Oz Dataset for Task-Oriented Dialogue Modelling",
     "validation_member": "MULTIWOZ2.1/valListFile.json"
   },
-  "status": "admitted",
-  "ucns_full_corpus": {
-    "adapter": {
-      "adapter_id": "edcm.corpora.multiwoz21",
-      "adapter_version": "1.2.0",
-      "code_reference": "edcm.corpora.multiwoz21:_iter_ucns_full_corpus_turns"
-    },
-    "admission_decision_id": "sha256:aba3ebbac5e6f6ef0505cd9349361ba8bde7586fae21049e2d120fa362033ed6",
-    "corpus_version": "2.1",
-    "privacy_treatment": "aggregate-only; raw dialogue text remains in caller-held source custody and outside Git",
-    "redaction_policy": "none-preserve-source; no transformed or redacted substitute is used for exact execution"
-  }
+  "status": "admitted"
 }

@@ -19,10 +19,14 @@ description: |
 3. `docs/UCNS_EDCM_EXPERIMENT_PROGRAM.md`
 4. `CLAUDE.md`
 5. `.agents/skills/the-interdependency/SKILL.md`
-6. `.agents/skills/meta-module-build/SKILL.md`
-7. `docs/integrity-gates.md`
-8. `docs/RETAINED_STRUCTURE.md` in the pinned UCNS checkout when working on joint structure
-9. the source module's `MODULE_BUILD` block and its named tests
+6. `.agents/skills/msdmd/SKILL.md`
+7. `.agents/skills/meta-module-build/SKILL.md`
+8. `.agents/skills/test-build/SKILL.md`
+9. `.agents/skills/canon/SKILL.md`
+10. `.agents/skills/interdependent-work-graph/SKILL.md` for cross-repository work
+11. `docs/integrity-gates.md`
+12. `docs/RETAINED_STRUCTURE.md` in the pinned UCNS checkout when working on joint structure
+13. the source module's `MODULE_BUILD` block and its named tests
 
 ## Authority boundaries
 

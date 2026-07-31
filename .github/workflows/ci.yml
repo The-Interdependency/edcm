@@ -127,6 +127,7 @@ jobs:
           python -m pytest -q \
             tests/test_metapat_adapter.py \
             tests/test_ucns_adapter.py \
+            tests/test_multiwoz21_corpus.py \
             tests/test_ucns_dependency.py \
             tests/test_measurement.py \
             tests/test_shared_stack_contract.py
@@ -143,6 +144,8 @@ jobs:
           assert ucns.EDCM_PROFILE_VERSION == "0.2.0"
           assert ucns.EDCM_SOURCE_DOMAIN == "unicode-scalar-values"
           assert ucns.EDCM_SPACE_ASSIGNMENT_POLICY == "unicode-white-space-origin-v1"
+          assert ucns.V014_FULL_CORPUS_SCHEMA_ID == "ucns.edcm.full-corpus-execution"
+          assert ucns.V014_FULL_CORPUS_SCHEMA_VERSION == "0.14.1"
           assert len(ucns.EDCM_SPACE_CODE_POINTS) == 25
           assert len(ucns.PUBLIC_GONOL_157) == 157
           result = edcm.build_default_layers().run({
@@ -157,7 +160,7 @@ jobs:
           contract = result["edcm_result"]
           observation = contract["ucns_profile_observation"]
           assert observation["profile_id"] == "ucns.profile.edcm-word-gonol"
-          assert observation["source_commit"] == "c799b3547afc91a6039a5d3b15f997426eed138a"
+          assert observation["source_commit"] == "868d80878c9ecd93ff30e91ca289122ded805a49"
           assert observation["source_domain"] == "unicode-scalar-values"
           assert observation["space_assignment_policy"] == "unicode-white-space-origin-v1"
           assert observation["space_code_points_sha256"] == "a5dc5ec34775d511a02b17911aa385c5d92908ee58749ea16d721cd53d19b944"
@@ -208,6 +211,9 @@ jobs:
           assert callable(edcm.build_result_contract)
           assert edcm.run_integrity_gate().passed is True
           assert files("edcm.measurement.canon").joinpath("data", "markers_v1.json").is_file()
+          corpus_data = files("edcm.corpora").joinpath("data")
+          assert corpus_data.joinpath("multiwoz_2_1_admission.json").is_file()
+          assert corpus_data.joinpath("multiwoz_2_1_admission_v1_0_0.json").is_file()
           result = edcm.build_default_layers().run({"input": "wheel smoke"})
           assert result["ucns_integration"]["ucns_package_available"] is False
           assert result["metapat_integration"]["metapat_package_available"] is False

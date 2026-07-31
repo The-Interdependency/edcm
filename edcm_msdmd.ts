@@ -97,6 +97,17 @@ export default defineMsdmdCollection({
     {
       "block": "CONTRACTS",
       "fields": {
+        "class": "evidence",
+        "given": "the source-native EDCM pass reconciles the admitted archive",
+        "since": "2026-07-31",
+        "then": "completion also requires a UCNS v0.14.1 execution-generated receipt whose exhausted turn count and independently repeated exact-turn chain match the source-native pass"
+      },
+      "file": "edcm/corpora/multiwoz21.py",
+      "id": "multiwoz21_ucns_v0141_receipt_requires_matching_source_native_run"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
         "class": "privacy",
         "given": "a run succeeds or fails",
         "since": "2026-07-28",
@@ -110,18 +121,18 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_archive_identity, _load_partition_ids, _load_pinned_adapter, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic",
+        "internal_surface": "UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic",
         "module_kind": "adapter",
         "module_name": "multiwoz21",
         "network_boundary": "none; source acquisition is separate and the runner requires local pinned bytes",
         "owner": "Erin Spencer",
         "public_surface": "AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive, main",
-        "requires": "edcm_ucns_adapter, ucns.edcm at c799b3547afc91a6039a5d3b15f997426eed138a",
+        "requires": "edcm_ucns_adapter, ucns.edcm and ucns.full_corpus at 868d80878c9ecd93ff30e91ca289122ded805a49",
         "rollback": "remove the adapter and supersede its aggregate receipts by identity; raw source remains outside Git",
         "rollout": "explicit admitted full-corpus command; no sampling and no default measurement or canon selection",
         "since": "2026-07-28",
         "storage_boundary": "reads a caller-held archive and writes only caller-selected aggregate report, receipt, and resumable checkpoint paths",
-        "summary": "verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile without committing raw text",
+        "summary": "verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate without committing raw text",
         "tests": "tests.test_multiwoz21_corpus",
         "unresolved": "source-native semantic labels for correction, retraction, and unresolved reference; formal UCNS geometry and lawful EDCM projection",
         "user_data_boundary": "exact dialogue text is processed in memory and represented only by counts and cryptographic identities in written outputs"
@@ -1109,7 +1120,7 @@ export default defineMsdmdCollection({
         "network_boundary": "none",
         "owner": "Erin Spencer",
         "public_surface": "ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter",
-        "requires": "ucns.edcm at c799b3547afc91a6039a5d3b15f997426eed138a",
+        "requires": "ucns.edcm at 868d80878c9ecd93ff30e91ca289122ded805a49",
         "rollback": "suspend the optional adapter; base EDCM measurement remains operational",
         "rollout": "optional exact-profile activation only when the pinned profile surface matches",
         "since": "2026-07-25",
@@ -1413,7 +1424,9 @@ export default defineMsdmdCollection({
         "call": "self::test_archive_mutation_fails_before_dialogue_observation",
         "cleanup": "tempdir_teardown",
         "mutates": "filesystem",
-        "proves": "multiwoz21_admission_precedes_execution"
+        "proves": "multiwoz21_admission_precedes_execution",
+        "requires": "python3",
+        "timeout": "30"
       },
       "file": "tests/test_multiwoz21_corpus.py",
       "id": "check_multiwoz21_admission_precedes_execution"
@@ -1424,7 +1437,9 @@ export default defineMsdmdCollection({
         "call": "self::test_manifest_count_mismatch_refuses_completion",
         "cleanup": "tempdir_teardown",
         "mutates": "filesystem",
-        "proves": "multiwoz21_completion_requires_reconciliation"
+        "proves": "multiwoz21_completion_requires_reconciliation",
+        "requires": "python3",
+        "timeout": "30"
       },
       "file": "tests/test_multiwoz21_corpus.py",
       "id": "check_multiwoz21_completion_requires_reconciliation"
@@ -1435,7 +1450,9 @@ export default defineMsdmdCollection({
         "call": "self::test_full_fixture_run_preserves_order_exact_text_and_profile_counts",
         "cleanup": "tempdir_teardown",
         "mutates": "filesystem",
-        "proves": "multiwoz21_every_turn_is_observed_exactly_once"
+        "proves": "multiwoz21_every_turn_is_observed_exactly_once",
+        "requires": "python3",
+        "timeout": "30"
       },
       "file": "tests/test_multiwoz21_corpus.py",
       "id": "check_multiwoz21_every_turn_is_observed_exactly_once"
@@ -1446,7 +1463,9 @@ export default defineMsdmdCollection({
         "call": "self::test_invalid_turn_reports_exact_active_source_position",
         "cleanup": "tempdir_teardown",
         "mutates": "filesystem",
-        "proves": "multiwoz21_failure_is_receipted"
+        "proves": "multiwoz21_failure_is_receipted",
+        "requires": "python3",
+        "timeout": "30"
       },
       "file": "tests/test_multiwoz21_corpus.py",
       "id": "check_multiwoz21_failure_is_receipted"
@@ -1454,10 +1473,38 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_claimed_gate_without_source_exhaustion_cannot_complete",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "multiwoz21_ucns_v0141_receipt_requires_matching_source_native_run",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_corpus.py",
+      "id": "check_multiwoz21_ucns_v0141_false_receipt_rejected"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_full_fixture_run_preserves_order_exact_text_and_profile_counts",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "multiwoz21_ucns_v0141_receipt_requires_matching_source_native_run",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_corpus.py",
+      "id": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_report_and_checkpoint_exclude_source_turn_text",
         "cleanup": "tempdir_teardown",
         "mutates": "filesystem",
-        "proves": "multiwoz21_written_outputs_exclude_raw_text"
+        "proves": "multiwoz21_written_outputs_exclude_raw_text",
+        "requires": "python3",
+        "timeout": "30"
       },
       "file": "tests/test_multiwoz21_corpus.py",
       "id": "check_multiwoz21_written_outputs_exclude_raw_text"
@@ -1987,6 +2034,13 @@ export default defineMsdmdCollection({
       "to": "multiwoz21_admission_precedes_execution"
     },
     {
+      "from": "check_multiwoz21_admission_precedes_execution",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_admission_precedes_execution",
+      "to": "python3"
+    },
+    {
       "from": "check_multiwoz21_completion_requires_reconciliation",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -1999,6 +2053,13 @@ export default defineMsdmdCollection({
       "source_block": "CHECKS",
       "source_id": "check_multiwoz21_completion_requires_reconciliation",
       "to": "multiwoz21_completion_requires_reconciliation"
+    },
+    {
+      "from": "check_multiwoz21_completion_requires_reconciliation",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_completion_requires_reconciliation",
+      "to": "python3"
     },
     {
       "from": "check_multiwoz21_every_turn_is_observed_exactly_once",
@@ -2015,6 +2076,13 @@ export default defineMsdmdCollection({
       "to": "multiwoz21_every_turn_is_observed_exactly_once"
     },
     {
+      "from": "check_multiwoz21_every_turn_is_observed_exactly_once",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_every_turn_is_observed_exactly_once",
+      "to": "python3"
+    },
+    {
       "from": "check_multiwoz21_failure_is_receipted",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -2029,6 +2097,55 @@ export default defineMsdmdCollection({
       "to": "multiwoz21_failure_is_receipted"
     },
     {
+      "from": "check_multiwoz21_failure_is_receipted",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_failure_is_receipted",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
+      "to": "self::test_claimed_gate_without_source_exhaustion_cannot_complete"
+    },
+    {
+      "from": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
+      "to": "multiwoz21_ucns_v0141_receipt_requires_matching_source_native_run"
+    },
+    {
+      "from": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
+      "to": "self::test_full_fixture_run_preserves_order_exact_text_and_profile_counts"
+    },
+    {
+      "from": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
+      "to": "multiwoz21_ucns_v0141_receipt_requires_matching_source_native_run"
+    },
+    {
+      "from": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
+      "to": "python3"
+    },
+    {
       "from": "check_multiwoz21_written_outputs_exclude_raw_text",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -2041,6 +2158,13 @@ export default defineMsdmdCollection({
       "source_block": "CHECKS",
       "source_id": "check_multiwoz21_written_outputs_exclude_raw_text",
       "to": "multiwoz21_written_outputs_exclude_raw_text"
+    },
+    {
+      "from": "check_multiwoz21_written_outputs_exclude_raw_text",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_written_outputs_exclude_raw_text",
+      "to": "python3"
     },
     {
       "from": "check_occurrence_coverage_candidate",
@@ -2649,7 +2773,7 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_multiwoz21_corpus",
-      "to": "ucns.edcm at c799b3547afc91a6039a5d3b15f997426eed138a"
+      "to": "ucns.edcm and ucns.full_corpus at 868d80878c9ecd93ff30e91ca289122ded805a49"
     },
     {
       "from": "edcm_package",
@@ -2782,7 +2906,7 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_ucns_adapter",
-      "to": "ucns.edcm at c799b3547afc91a6039a5d3b15f997426eed138a"
+      "to": "ucns.edcm at 868d80878c9ecd93ff30e91ca289122ded805a49"
     },
     {
       "from": "edcm_ucns_dependency",

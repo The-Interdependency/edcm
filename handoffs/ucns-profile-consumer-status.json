@@ -4,8 +4,16 @@
     "0.2.0"
   ],
   "profile_scope": "edcm-only",
-  "pinned_ucns_commit": "c799b3547afc91a6039a5d3b15f997426eed138a",
+  "pinned_ucns_commit": "868d80878c9ecd93ff30e91ca289122ded805a49",
+  "pinned_skill_lib_commit": "2b24be24947223b86440f59f1bd9766130f9cc11",
   "adapter_activation_status": "exact-profile-active-when-matching-package-is-installed",
+  "ucns_full_corpus_gate": {
+    "admitted_archive_sha256": "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e",
+    "declared_turn_count": 143048,
+    "runner_schema": "edcm.multiwoz21-full-corpus/1.2.0",
+    "schema": "ucns.edcm.full-corpus-execution/0.14.1",
+    "status": "implemented-and-fixture-verified; admitted-archive receipt not yet sealed"
+  },
   "sealed_corpus_evidence": {
     "corpus_id": "multiwoz-2.1",
     "edcm_commit": "fbee2ee57f765b47c362a6877521493cc1afe20a",
@@ -64,10 +72,11 @@
     "Higher-gonol composition and the hyper-dimensional lattice relation law remain open.",
     "Projection policy must deepen only with experimental evidence.",
     "True non-SPACE coverage outside the 157-token carrier alphabet requires further real-system corpus pressure.",
-    "Historical v0.1-v0.4 experiment reports remain historical evidence and are not rewritten."
+    "Historical v0.1-v0.4 experiment reports remain historical evidence and are not rewritten.",
+    "The UCNS v0.14.1 completion receipt requires a fresh authenticated MultiWOZ 2.1 archive execution; it cannot be inferred from the 2026-07-28 aggregate report."
   ],
   "theorem_transfer": false,
   "measurement_validity": false,
   "metapat_validity": false,
-  "hmmm": "The sealed MultiWOZ rerun verifies source-preserved SPACE-origin assignment as represented evidence without supplying formal coordinates or measurement validity; it is not permission to collapse missing geometry or true non-SPACE coverage into a convenient bridge."
+  "hmmm": "The sealed MultiWOZ rerun verifies source-preserved SPACE-origin assignment as represented evidence without supplying formal coordinates or measurement validity. The admitted archive is not in current execution custody, so no UCNS v0.14.1 receipt is claimed; neither gap permits missing geometry or true non-SPACE coverage to collapse into a convenient bridge."
 }

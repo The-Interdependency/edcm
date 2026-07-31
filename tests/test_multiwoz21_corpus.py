@@ -6,30 +6,56 @@ from __future__ import annotations
 # id: check_multiwoz21_admission_precedes_execution
 #   proves: multiwoz21_admission_precedes_execution
 #   call: self::test_archive_mutation_fails_before_dialogue_observation
+#   requires: python3
+#   timeout: 30
 #   mutates: filesystem
 #   cleanup: tempdir_teardown
 #
 # id: check_multiwoz21_every_turn_is_observed_exactly_once
 #   proves: multiwoz21_every_turn_is_observed_exactly_once
 #   call: self::test_full_fixture_run_preserves_order_exact_text_and_profile_counts
+#   requires: python3
+#   timeout: 30
 #   mutates: filesystem
 #   cleanup: tempdir_teardown
 #
 # id: check_multiwoz21_completion_requires_reconciliation
 #   proves: multiwoz21_completion_requires_reconciliation
 #   call: self::test_manifest_count_mismatch_refuses_completion
+#   requires: python3
+#   timeout: 30
 #   mutates: filesystem
 #   cleanup: tempdir_teardown
 #
 # id: check_multiwoz21_failure_is_receipted
 #   proves: multiwoz21_failure_is_receipted
 #   call: self::test_invalid_turn_reports_exact_active_source_position
+#   requires: python3
+#   timeout: 30
 #   mutates: filesystem
 #   cleanup: tempdir_teardown
 #
 # id: check_multiwoz21_written_outputs_exclude_raw_text
 #   proves: multiwoz21_written_outputs_exclude_raw_text
 #   call: self::test_report_and_checkpoint_exclude_source_turn_text
+#   requires: python3
+#   timeout: 30
+#   mutates: filesystem
+#   cleanup: tempdir_teardown
+#
+# id: check_multiwoz21_ucns_v0141_receipt_matches_source_native_run
+#   proves: multiwoz21_ucns_v0141_receipt_requires_matching_source_native_run
+#   call: self::test_full_fixture_run_preserves_order_exact_text_and_profile_counts
+#   requires: python3
+#   timeout: 30
+#   mutates: filesystem
+#   cleanup: tempdir_teardown
+#
+# id: check_multiwoz21_ucns_v0141_false_receipt_rejected
+#   proves: multiwoz21_ucns_v0141_receipt_requires_matching_source_native_run
+#   call: self::test_claimed_gate_without_source_exhaustion_cannot_complete
+#   requires: python3
+#   timeout: 30
 #   mutates: filesystem
 #   cleanup: tempdir_teardown
 # === END CHECKS ===
@@ -46,6 +72,7 @@ import pytest
 from edcm.corpora.multiwoz21 import (
     AdmissionManifest,
     CorpusRunError,
+    UCNSFullCorpusGate,
     iter_top_level_object,
     run_archive,
 )
@@ -213,6 +240,68 @@ class FixtureAdapter:
         return {"ucns_profile_observation": evidence}
 
 
+class FixtureFullCorpusGate:
+    """Dependency-free stand-in that consumes the complete exact turn iterator."""
+
+    def execute(
+        self,
+        manifest: AdmissionManifest,
+        turns,
+    ) -> dict[str, Any]:
+        digest = sha256(b"fixture-full-corpus-v1")
+        processed = 0
+        for speaker_id, text in turns:
+            speaker_bytes = speaker_id.encode("utf-8")
+            text_bytes = text.encode("utf-8")
+            digest.update(len(speaker_bytes).to_bytes(8, "big"))
+            digest.update(speaker_bytes)
+            digest.update(len(text_bytes).to_bytes(8, "big"))
+            digest.update(text_bytes)
+            processed += 1
+        complete = processed == int(manifest.expected["turn_count"])
+        stream_digest = digest.hexdigest()
+        return {
+            "exact_observation_stream_sha256": stream_digest,
+            "exact_source_stream_sha256": stream_digest,
+            "failure": None,
+            "gate_effect": (
+                "open-for-failure-seeking-analysis-only"
+                if complete
+                else "closed-incomplete-corpus-execution"
+            ),
+            "iterator_exhausted": True,
+            "processed_turn_count": processed,
+            "receipt": (
+                {
+                    "receipt_id": sha256(
+                        f"fixture:{stream_digest}".encode("utf-8")
+                    ).hexdigest()
+                }
+                if complete
+                else None
+            ),
+            "schema_id": "ucns.edcm.full-corpus-execution",
+            "schema_version": "0.14.1",
+            "status": "complete" if complete else "incomplete",
+        }
+
+
+class NonConsumingFullCorpusGate:
+    """Adversarial gate that claims completion without reading the source."""
+
+    def execute(
+        self,
+        manifest: AdmissionManifest,
+        turns,
+    ) -> dict[str, Any]:
+        return {
+            "gate_effect": "open-for-failure-seeking-analysis-only",
+            "processed_turn_count": int(manifest.expected["turn_count"]),
+            "receipt": {"receipt_id": "f" * 64},
+            "status": "complete",
+        }
+
+
 def _member_records(path: Path) -> list[dict[str, Any]]:
     records = []
     with ZipFile(path) as archive:
@@ -279,6 +368,7 @@ def _fixture_archive(
         "expected": {
             "dialogue_count": 2,
             "partition_counts": {"test": 1, "train": 1, "validation": 0},
+            "turn_count": 3,
         },
         "hmmm": ["fixture semantic labels remain unresolved"],
         "information_boundaries": {
@@ -287,7 +377,7 @@ def _fixture_archive(
         },
         "license": {"spdx": "CC-BY-4.0"},
         "schema_id": "edcm.corpus-admission",
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "source": {
             "archive": {
                 "bytes": len(archive_bytes),
@@ -300,6 +390,17 @@ def _fixture_archive(
             "validation_member": "MULTIWOZ2.1/valListFile.json",
         },
         "status": "admitted",
+        "ucns_full_corpus": {
+            "adapter": {
+                "adapter_id": "fixture.multiwoz21",
+                "adapter_version": "test",
+                "code_reference": "tests.test_multiwoz21_corpus:_fixture_archive",
+            },
+            "admission_decision_id": "fixture-admission/1",
+            "corpus_version": "fixture",
+            "privacy_treatment": "synthetic-no-personal-data",
+            "redaction_policy": "none-synthetic-source",
+        },
     }
     return path, AdmissionManifest(payload)
 
@@ -314,6 +415,34 @@ def test_streaming_top_level_object_keeps_order_and_exact_value_digest() -> None
 
 def test_historical_report_is_superseded_by_exact_sealed_rerun() -> None:
     root = Path(__file__).resolve().parents[1]
+    current_manifest = json.loads(
+        (
+            root / "edcm/corpora/data/multiwoz_2_1_admission.json"
+        ).read_text(encoding="utf-8")
+    )
+    historical_manifest = json.loads(
+        (
+            root
+            / "edcm/corpora/data/multiwoz_2_1_admission_v1_0_0.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert sha256(
+        json.dumps(
+            historical_manifest,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest() == (
+        "aba3ebbac5e6f6ef0505cd9349361ba8bde7586fae21049e2d120fa362033ed6"
+    )
+    assert current_manifest["historical_manifest"] == {
+        "path": "edcm/corpora/data/multiwoz_2_1_admission_v1_0_0.json",
+        "sha256": (
+            "aba3ebbac5e6f6ef0505cd9349361ba8bde7586fae21049e2d120fa362033ed6"
+        ),
+    }
+    assert current_manifest["expected"]["turn_count"] == 143048
     record = json.loads(
         (
             root
@@ -385,6 +514,7 @@ def test_full_fixture_run_preserves_order_exact_text_and_profile_counts(
     report, receipt = run_archive(
         archive,
         adapter=FixtureAdapter(),
+        full_corpus_gate=FixtureFullCorpusGate(),
         edcm_commit="fixture-edcm",
         ucns_commit="fixture-ucns",
         manifest=manifest,
@@ -402,8 +532,8 @@ def test_full_fixture_run_preserves_order_exact_text_and_profile_counts(
         "validation": 0,
     }
     observations = report["failure_seeking_observations"]
-    assert report["schema_version"] == "1.1.0"
-    assert receipt["schema_version"] == "1.1.0"
+    assert report["schema_version"] == "1.2.0"
+    assert receipt["schema_version"] == "1.2.0"
     assert report["profile"]["space_assignment_policy"] == (
         "unicode-white-space-origin-v1"
     )
@@ -424,6 +554,18 @@ def test_full_fixture_run_preserves_order_exact_text_and_profile_counts(
     assert observations["source_declared_failure_dialogues"] == 2
     assert report["reconciliation"]["complete"] is True
     assert report["canon_selection"] is None
+    gate = report["ucns_full_corpus_gate"]
+    assert gate["status"] == "complete"
+    assert gate["processed_turn_count"] == 3
+    assert gate["receipt"]["receipt_id"] == (
+        receipt["ucns_full_corpus"]["receipt_id"]
+    )
+    assert gate["source_native_reconciliation"]["complete"] is True
+    assert gate["source_native_reconciliation"]["checks"] == {
+        "dialogue_count_matches_source_native_pass": True,
+        "turn_count_matches_source_native_pass": True,
+        "turn_evidence_chain_matches_source_native_pass": True,
+    }
 
 
 def test_archive_mutation_fails_before_dialogue_observation(tmp_path: Path) -> None:
@@ -433,12 +575,34 @@ def test_archive_mutation_fails_before_dialogue_observation(tmp_path: Path) -> N
         run_archive(
             archive,
             adapter=FixtureAdapter(),
+            full_corpus_gate=FixtureFullCorpusGate(),
             edcm_commit="fixture-edcm",
             ucns_commit="fixture-ucns",
             manifest=manifest,
         )
     assert caught.value.code == "ARCHIVE_BYTES"
     assert caught.value.state == {}
+
+
+def test_claimed_gate_without_source_exhaustion_cannot_complete(
+    tmp_path: Path,
+) -> None:
+    archive, manifest = _fixture_archive(tmp_path)
+    with pytest.raises(CorpusRunError) as caught:
+        run_archive(
+            archive,
+            adapter=FixtureAdapter(),
+            full_corpus_gate=NonConsumingFullCorpusGate(),
+            edcm_commit="fixture-edcm",
+            ucns_commit="fixture-ucns",
+            manifest=manifest,
+        )
+    error = caught.value
+    assert error.code == "UCNS_FULL_CORPUS_INCOMPLETE"
+    gate = error.state["ucns_full_corpus_gate"]
+    assert gate["status"] == "complete"
+    assert gate["source_native_reconciliation"]["complete"] is False
+    assert gate["source_native_reconciliation"]["turns"] == 0
 
 
 def test_manifest_count_mismatch_refuses_completion(tmp_path: Path) -> None:
@@ -452,6 +616,7 @@ def test_manifest_count_mismatch_refuses_completion(tmp_path: Path) -> None:
         run_archive(
             archive,
             adapter=FixtureAdapter(),
+            full_corpus_gate=FixtureFullCorpusGate(),
             edcm_commit="fixture-edcm",
             ucns_commit="fixture-ucns",
             manifest=AdmissionManifest(payload),
@@ -466,6 +631,7 @@ def test_invalid_turn_reports_exact_active_source_position(tmp_path: Path) -> No
         run_archive(
             archive,
             adapter=FixtureAdapter(),
+            full_corpus_gate=FixtureFullCorpusGate(),
             edcm_commit="fixture-edcm",
             ucns_commit="fixture-ucns",
             manifest=manifest,
@@ -485,6 +651,7 @@ def test_report_and_checkpoint_exclude_source_turn_text(tmp_path: Path) -> None:
     report, receipt = run_archive(
         archive,
         adapter=FixtureAdapter(),
+        full_corpus_gate=FixtureFullCorpusGate(),
         edcm_commit="fixture-edcm",
         ucns_commit="fixture-ucns",
         manifest=manifest,
@@ -500,6 +667,7 @@ def test_report_and_checkpoint_exclude_source_turn_text(tmp_path: Path) -> None:
     repeated_report, repeated_receipt = run_archive(
         archive,
         adapter=FixtureAdapter(),
+        full_corpus_gate=FixtureFullCorpusGate(),
         edcm_commit="fixture-edcm",
         ucns_commit="fixture-ucns",
         manifest=manifest,
@@ -518,6 +686,7 @@ def test_actual_pinned_ucns_profile_can_drive_fixture_when_installed(
     report, receipt = run_archive(
         archive,
         adapter=ActualUCNSAdapter(ucns),
+        full_corpus_gate=UCNSFullCorpusGate(ucns),
         edcm_commit="fixture-edcm",
         ucns_commit=PINNED_UCNS_COMMIT,
         manifest=manifest,
@@ -525,3 +694,21 @@ def test_actual_pinned_ucns_profile_can_drive_fixture_when_installed(
     assert receipt["status"] == "complete"
     assert report["profile"]["profile_id"] == "ucns.profile.edcm-word-gonol"
     assert report["profile"]["source_commit"] == PINNED_UCNS_COMMIT
+    gate = report["ucns_full_corpus_gate"]
+    assert gate["schema_id"] == "ucns.edcm.full-corpus-execution"
+    assert gate["schema_version"] == "0.14.1"
+    assert gate["status"] == "complete"
+    assert gate["iterator_exhausted"] is True
+    assert gate["processed_turn_count"] == 3
+    assert (
+        gate["exact_source_stream_sha256"]
+        == gate["exact_observation_stream_sha256"]
+    )
+    assert gate["manifest"]["source_artifact_sha256"] == (
+        manifest.archive["sha256"]
+    )
+    assert gate["manifest"]["expected_turn_count"] == 3
+    assert gate["receipt"]["selection_effect"] == "none"
+    assert gate["receipt"]["edcm_activation"] == "inactive"
+    assert gate["receipt"]["metapat_activation"] == "inactive"
+    assert gate["source_native_reconciliation"]["complete"] is True
