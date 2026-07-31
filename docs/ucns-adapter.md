@@ -5,8 +5,9 @@
 EDCM optionally consumes the exact EDCM-only observation profile at:
 
 ```text
-The-Interdependency/ucns@c799b3547afc91a6039a5d3b15f997426eed138a
+The-Interdependency/ucns@868d80878c9ecd93ff30e91ca289122ded805a49
 profile: ucns.profile.edcm-word-gonol/0.2.0
+full-corpus gate: ucns.edcm.full-corpus-execution/0.14.1
 ```
 
 Install it with:
@@ -21,6 +22,13 @@ invariants and digest, the source domain, the pinned
 `unicode-white-space-origin-v1` assignment policy, all 25 exact SPACE source
 code points, and the required producer types. A mismatch produces typed
 suspension.
+
+The admitted MultiWOZ runner additionally requires the exact v0.14.1
+full-corpus producer surface. It repeats the authenticated source-native turn
+stream, requires iterator exhaustion and the declared turn count, and binds the
+execution-generated receipt to the source archive, admission decision, adapter,
+privacy treatment, and redaction policy. That receipt opens only
+failure-seeking analysis; it does not activate EDCM or METAPAT.
 
 ## Input contract
 

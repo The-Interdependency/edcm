@@ -14,7 +14,9 @@ commit, and run:
 
 The runner verifies the admission manifest before reading dialogue evidence,
 streams the top-level JSON object in source order, and sends every exact turn
-through EDCM's pinned UCNS word-gonol consumer. It emits aggregate counts,
+through EDCM's pinned UCNS word-gonol consumer. A second authenticated pass
+must also earn the pinned UCNS v0.14.1 full-corpus completion receipt over the
+same source-native turn chain. The runner emits aggregate counts,
 cryptographic identities, reconciliation, and a completion or incompletion
 receipt. It never emits raw dialogue text.
 
@@ -32,10 +34,10 @@ remain source-native noninputs to this profile run.
 # id: edcm_multiwoz21_corpus
 #   module_name: multiwoz21
 #   module_kind: adapter
-#   summary: verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile without committing raw text
+#   summary: verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate without committing raw text
 #   owner: Erin Spencer
 #   public_surface: AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive, main
-#   internal_surface: _archive_identity, _load_partition_ids, _load_pinned_adapter, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic
+#   internal_surface: UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic
 #   auth_boundary: none
 #   storage_boundary: reads a caller-held archive and writes only caller-selected aggregate report, receipt, and resumable checkpoint paths
 #   network_boundary: none; source acquisition is separate and the runner requires local pinned bytes
@@ -44,7 +46,7 @@ remain source-native noninputs to this profile run.
 #   tests: tests.test_multiwoz21_corpus
 #   rollout: explicit admitted full-corpus command; no sampling and no default measurement or canon selection
 #   rollback: remove the adapter and supersede its aggregate receipts by identity; raw source remains outside Git
-#   requires: edcm_ucns_adapter, ucns.edcm at c799b3547afc91a6039a5d3b15f997426eed138a
+#   requires: edcm_ucns_adapter, ucns.edcm and ucns.full_corpus at 868d80878c9ecd93ff30e91ca289122ded805a49
 #   since: 2026-07-28
 #   unresolved: source-native semantic labels for correction, retraction, and unresolved reference; formal UCNS geometry and lawful EDCM projection
 # === END MODULE_BUILD ===
@@ -79,6 +81,12 @@ remain source-native noninputs to this profile run.
 #   then: written reports, receipts, and checkpoints contain aggregates and identities but no source turn text
 #   class: privacy
 #   since: 2026-07-28
+#
+# id: multiwoz21_ucns_v0141_receipt_requires_matching_source_native_run
+#   given: the source-native EDCM pass reconciles the admitted archive
+#   then: completion also requires a UCNS v0.14.1 execution-generated receipt whose exhausted turn count and independently repeated exact-turn chain match the source-native pass
+#   class: evidence
+#   since: 2026-07-31
 # === END CONTRACTS ===
 
 from __future__ import annotations
@@ -90,7 +98,7 @@ import io
 import json
 import subprocess
 import sys
-from collections.abc import Iterator, Mapping
+from collections.abc import Iterable, Iterator, Mapping
 from dataclasses import dataclass
 from hashlib import sha256
 from pathlib import Path, PurePosixPath
@@ -102,11 +110,13 @@ from edcm.ucns_adapter import ActualUCNSAdapter, PINNED_UCNS_COMMIT
 
 
 RUNNER_SCHEMA_ID = "edcm.multiwoz21-full-corpus"
-RUNNER_SCHEMA_VERSION = "1.1.0"
+RUNNER_SCHEMA_VERSION = "1.2.0"
 RECEIPT_SCHEMA_ID = "edcm.corpus-run-receipt"
-RECEIPT_SCHEMA_VERSION = "1.1.0"
+RECEIPT_SCHEMA_VERSION = "1.2.0"
 CHECKPOINT_SCHEMA_ID = "edcm.multiwoz21-checkpoint"
-CHECKPOINT_SCHEMA_VERSION = "1.1.0"
+CHECKPOINT_SCHEMA_VERSION = "1.2.0"
+UCNS_FULL_CORPUS_SCHEMA_ID = "ucns.edcm.full-corpus-execution"
+UCNS_FULL_CORPUS_SCHEMA_VERSION = "0.14.1"
 EMPTY_CHAIN_DIGEST = sha256(b"").hexdigest()
 CHUNK_SIZE = 1024 * 1024
 
@@ -161,6 +171,10 @@ class AdmissionManifest:
         return self.payload["expected"]
 
     @property
+    def ucns_full_corpus(self) -> Mapping[str, Any]:
+        return self.payload["ucns_full_corpus"]
+
+    @property
     def digest(self) -> str:
         return _digest(self.payload)
 
@@ -197,6 +211,7 @@ def load_admission_manifest() -> AdmissionManifest:
         "execution_policy",
         "information_boundaries",
         "hmmm",
+        "ucns_full_corpus",
     }
     missing = sorted(required.difference(payload))
     if missing:
@@ -206,7 +221,7 @@ def load_admission_manifest() -> AdmissionManifest:
         )
     if (
         payload["schema_id"] != "edcm.corpus-admission"
-        or payload["schema_version"] != "1.0.0"
+        or payload["schema_version"] != "1.1.0"
         or payload["corpus_id"] != "multiwoz-2.1"
         or payload["status"] != "admitted"
     ):
@@ -215,6 +230,145 @@ def load_admission_manifest() -> AdmissionManifest:
             code="ADMISSION_IDENTITY",
         )
     return AdmissionManifest(payload)
+
+
+class UCNSFullCorpusGate:
+    """Consume the exact public UCNS v0.14.1 execution/receipt surface."""
+
+    _REQUIRED_SURFACES = (
+        "AdmittedCorpusManifest",
+        "CorpusAdapterIdentity",
+        "execute_admitted_corpus",
+        "issue_full_corpus_completion_receipt",
+    )
+
+    def __init__(self, module: ModuleType) -> None:
+        self.module = module
+        missing = tuple(
+            name for name in self._REQUIRED_SURFACES if not hasattr(module, name)
+        )
+        if missing:
+            raise CorpusRunError(
+                "UCNS full-corpus surface missing: " + ", ".join(missing),
+                code="UCNS_FULL_CORPUS_SURFACE",
+            )
+        if (
+            getattr(module, "V014_FULL_CORPUS_SCHEMA_ID", None)
+            != UCNS_FULL_CORPUS_SCHEMA_ID
+            or getattr(module, "V014_FULL_CORPUS_SCHEMA_VERSION", None)
+            != UCNS_FULL_CORPUS_SCHEMA_VERSION
+        ):
+            raise CorpusRunError(
+                "UCNS full-corpus schema identity mismatch",
+                code="UCNS_FULL_CORPUS_SCHEMA",
+            )
+
+    def execute(
+        self,
+        manifest: AdmissionManifest,
+        turns: Iterable[tuple[str, str]],
+    ) -> dict[str, Any]:
+        """Execute the public gate and serialize only bounded aggregate evidence."""
+
+        contract = manifest.ucns_full_corpus
+        adapter_contract = contract["adapter"]
+        native_manifest = self.module.AdmittedCorpusManifest(
+            corpus_id=manifest.corpus_id,
+            corpus_version=str(contract["corpus_version"]),
+            source_artifact_sha256=str(manifest.archive["sha256"]),
+            expected_turn_count=int(manifest.expected["turn_count"]),
+            license_id=str(manifest.payload["license"]["spdx"]),
+            privacy_treatment=str(contract["privacy_treatment"]),
+            redaction_policy=str(contract["redaction_policy"]),
+            admission_decision_id=str(contract["admission_decision_id"]),
+            adapter=self.module.CorpusAdapterIdentity(
+                adapter_id=str(adapter_contract["adapter_id"]),
+                adapter_version=str(adapter_contract["adapter_version"]),
+                code_reference=str(adapter_contract["code_reference"]),
+            ),
+        )
+        native_report = self.module.execute_admitted_corpus(
+            native_manifest,
+            turns,
+        )
+        status = native_report.status.value
+        receipt = (
+            self.module.issue_full_corpus_completion_receipt(native_report)
+            if status == "complete"
+            else None
+        )
+        failure = native_report.failure
+        return {
+            "activations": {
+                "edcm": native_report.edcm_activation,
+                "metapat": native_report.metapat_activation,
+                "selection_effect": native_report.selection_effect,
+            },
+            "exact_observation_stream_sha256": (
+                native_report.exact_observation_stream_sha256
+            ),
+            "exact_source_stream_sha256": (
+                native_report.exact_source_stream_sha256
+            ),
+            "failure": (
+                None
+                if failure is None
+                else {
+                    "detail": failure.detail,
+                    "exception_type": failure.exception_type,
+                    "kind": failure.kind.value,
+                    "stopping_turn_index": failure.stopping_turn_index,
+                }
+            ),
+            "gate_effect": native_report.post_run_gate,
+            "iterator_exhausted": native_report.iterator_exhausted,
+            "manifest": {
+                "adapter": {
+                    "adapter_id": native_manifest.adapter.adapter_id,
+                    "adapter_version": native_manifest.adapter.adapter_version,
+                    "code_reference": native_manifest.adapter.code_reference,
+                },
+                "admission_decision_id": (
+                    native_manifest.admission_decision_id
+                ),
+                "corpus_id": native_manifest.corpus_id,
+                "corpus_version": native_manifest.corpus_version,
+                "expected_turn_count": native_manifest.expected_turn_count,
+                "license_id": native_manifest.license_id,
+                "privacy_treatment": native_manifest.privacy_treatment,
+                "redaction_policy": native_manifest.redaction_policy,
+                "source_artifact_sha256": (
+                    native_manifest.source_artifact_sha256
+                ),
+            },
+            "observations": {
+                "carrier_unassigned_count": (
+                    native_report.carrier_unassigned_count
+                ),
+                "space_boundary_count": native_report.space_boundary_count,
+                "word_gonol_count": native_report.word_gonol_count,
+            },
+            "processed_turn_count": native_report.processed_turn_count,
+            "profile": {
+                "profile_id": native_report.profile_id,
+                "profile_scope": native_report.profile_scope,
+                "profile_version": native_report.profile_version,
+            },
+            "receipt": (
+                None
+                if receipt is None
+                else {
+                    "edcm_activation": receipt.edcm_activation,
+                    "gate_effect": receipt.gate_effect,
+                    "metapat_activation": receipt.metapat_activation,
+                    "receipt_id": receipt.receipt_id,
+                    "selection_effect": receipt.selection_effect,
+                }
+            ),
+            "schema_id": native_report.schema_id,
+            "schema_version": native_report.schema_version,
+            "status": status,
+        }
 
 
 class _StreamingObjectReader:
@@ -503,10 +657,87 @@ def _new_state(
         "trailing_space_turns": 0,
         "turn_evidence_digest_chain": EMPTY_CHAIN_DIGEST,
         "ucns_commit": ucns_commit,
+        "ucns_full_corpus_gate": None,
         "unit_support_total": 0,
         "utf8_bytes": 0,
         "word_gonols": 0,
     }
+
+
+def _iter_ucns_full_corpus_turns(
+    archive: ZipFile,
+    manifest: AdmissionManifest,
+    tracker: dict[str, Any],
+) -> Iterator[tuple[str, str]]:
+    """Repeat the authenticated source-native turn stream for UCNS v0.14.1."""
+
+    data_member = str(manifest.source["data_member"])
+    try:
+        binary = archive.open(data_member, "r")
+    except KeyError as exc:
+        raise CorpusRunError(
+            f"data member missing during UCNS pass: {data_member}",
+            code="DATA_MEMBER_MISSING",
+        ) from exc
+
+    seen_ids: set[str] = set()
+    with binary, io.TextIOWrapper(
+        binary,
+        encoding="utf-8",
+        errors="strict",
+        newline="",
+    ) as text:
+        for dialogue_index, (
+            dialogue_id,
+            dialogue,
+            _raw_value_sha256,
+        ) in enumerate(iter_top_level_object(text)):
+            if dialogue_id in seen_ids:
+                raise CorpusRunError(
+                    f"duplicate dialogue identifier: {dialogue_id}",
+                    code="DIALOGUE_DUPLICATE",
+                )
+            seen_ids.add(dialogue_id)
+            if not isinstance(dialogue, Mapping):
+                raise CorpusRunError(
+                    "dialogue value is not an object during UCNS pass",
+                    code="DIALOGUE_SHAPE",
+                )
+            log = dialogue.get("log")
+            if not isinstance(log, list):
+                raise CorpusRunError(
+                    "dialogue log is not a list during UCNS pass",
+                    code="DIALOGUE_LOG_SHAPE",
+                )
+            for turn_index, turn in enumerate(log):
+                if not isinstance(turn, Mapping) or "text" not in turn:
+                    raise CorpusRunError(
+                        "turn is not an object with a text field during UCNS pass",
+                        code="TURN_SHAPE",
+                    )
+                source_text = turn["text"]
+                if not isinstance(source_text, str):
+                    raise CorpusRunError(
+                        "turn text is not a string during UCNS pass",
+                        code="TURN_TEXT_TYPE",
+                    )
+                speaker_id = _speaker_id(turn_index)
+                source_bytes = source_text.encode("utf-8")
+                tracker["turn_evidence_digest_chain"] = _chain(
+                    tracker["turn_evidence_digest_chain"],
+                    {
+                        "dialogue_id": dialogue_id,
+                        "dialogue_index": dialogue_index,
+                        "speaker_id": speaker_id,
+                        "text_code_points": len(source_text),
+                        "text_sha256": sha256(source_bytes).hexdigest(),
+                        "text_utf8_bytes": len(source_bytes),
+                        "turn_index": turn_index,
+                    },
+                )
+                tracker["turns"] += 1
+                yield speaker_id, source_text
+            tracker["dialogues"] += 1
 
 
 def _profile_identity(evidence: Mapping[str, Any]) -> dict[str, Any]:
@@ -1102,6 +1333,7 @@ def _build_report(
         "reconciliation": dict(reconciliation),
         "schema_id": RUNNER_SCHEMA_ID,
         "schema_version": RUNNER_SCHEMA_VERSION,
+        "ucns_full_corpus_gate": state["ucns_full_corpus_gate"],
     }
     report["report_digest"] = _digest(report)
     return report
@@ -1151,6 +1383,26 @@ def _build_receipt(
         "schema_id": RECEIPT_SCHEMA_ID,
         "schema_version": RECEIPT_SCHEMA_VERSION,
         "status": status,
+        "ucns_full_corpus": (
+            None
+            if not isinstance(state.get("ucns_full_corpus_gate"), Mapping)
+            else {
+                "failure": state["ucns_full_corpus_gate"].get("failure"),
+                "gate_effect": state["ucns_full_corpus_gate"]["gate_effect"],
+                "processed_turn_count": state["ucns_full_corpus_gate"][
+                    "processed_turn_count"
+                ],
+                "receipt_id": (
+                    state["ucns_full_corpus_gate"]["receipt"]["receipt_id"]
+                    if state["ucns_full_corpus_gate"]["receipt"] is not None
+                    else None
+                ),
+                "source_native_reconciliation": state[
+                    "ucns_full_corpus_gate"
+                ].get("source_native_reconciliation"),
+                "status": state["ucns_full_corpus_gate"]["status"],
+            }
+        ),
     }
     receipt["receipt_digest"] = _digest(receipt)
     return receipt
@@ -1160,6 +1412,7 @@ def run_archive(
     archive_path: Path,
     *,
     adapter: ActualUCNSAdapter,
+    full_corpus_gate: UCNSFullCorpusGate,
     edcm_commit: str,
     ucns_commit: str,
     manifest: AdmissionManifest | None = None,
@@ -1168,9 +1421,10 @@ def run_archive(
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Run and reconcile the entire admitted archive.
 
-    ``adapter`` and the two immutable commits are explicit so tests can exercise
-    the runner without installing optional siblings. Production CLI use loads
-    and verifies the pinned UCNS checkout and clean EDCM commit first.
+    ``adapter``, ``full_corpus_gate``, and the two immutable commits are explicit
+    so tests can exercise the runner without installing optional siblings.
+    Production CLI use loads and verifies the pinned UCNS checkout and clean
+    EDCM commit first.
     """
 
     manifest = manifest or load_admission_manifest()
@@ -1314,6 +1568,57 @@ def run_archive(
                 code="RECONCILIATION_FAILED",
                 state=state,
             )
+        ucns_tracker = {
+            "dialogues": 0,
+            "turn_evidence_digest_chain": EMPTY_CHAIN_DIGEST,
+            "turns": 0,
+        }
+        ucns_turns = _iter_ucns_full_corpus_turns(
+            archive,
+            manifest,
+            ucns_tracker,
+        )
+        try:
+            ucns_gate_report = full_corpus_gate.execute(
+                manifest,
+                ucns_turns,
+            )
+        finally:
+            ucns_turns.close()
+        source_native_checks = {
+            "dialogue_count_matches_source_native_pass": (
+                ucns_tracker["dialogues"] == state["dialogues"]
+            ),
+            "turn_count_matches_source_native_pass": (
+                ucns_tracker["turns"] == state["source_turns"]
+                and ucns_gate_report["processed_turn_count"]
+                == state["source_turns"]
+            ),
+            "turn_evidence_chain_matches_source_native_pass": (
+                ucns_tracker["turn_evidence_digest_chain"]
+                == state["turn_evidence_digest_chain"]
+            ),
+        }
+        ucns_gate_report["source_native_reconciliation"] = {
+            "checks": source_native_checks,
+            "complete": all(source_native_checks.values()),
+            "dialogues": ucns_tracker["dialogues"],
+            "turn_evidence_digest_chain": ucns_tracker[
+                "turn_evidence_digest_chain"
+            ],
+            "turns": ucns_tracker["turns"],
+        }
+        state["ucns_full_corpus_gate"] = ucns_gate_report
+        if (
+            ucns_gate_report["status"] != "complete"
+            or ucns_gate_report["receipt"] is None
+            or not ucns_gate_report["source_native_reconciliation"]["complete"]
+        ):
+            raise CorpusRunError(
+                "UCNS v0.14.1 full-corpus completion gate did not reconcile",
+                code="UCNS_FULL_CORPUS_INCOMPLETE",
+                state=state,
+            )
         report = _build_report(
             manifest=manifest,
             archive_identity=archive_identity,
@@ -1384,7 +1689,9 @@ def _git_commit(root: Path, *, require_clean: bool) -> str:
     return commit
 
 
-def _load_pinned_adapter(ucns_source_root: Path) -> ActualUCNSAdapter:
+def _load_pinned_runtime(
+    ucns_source_root: Path,
+) -> tuple[ActualUCNSAdapter, UCNSFullCorpusGate]:
     commit = _git_commit(ucns_source_root, require_clean=True)
     if commit != PINNED_UCNS_COMMIT:
         raise CorpusRunError(
@@ -1418,7 +1725,7 @@ def _load_pinned_adapter(ucns_source_root: Path) -> ActualUCNSAdapter:
             "imported UCNS module is not from the pinned checkout",
             code="UCNS_IMPORT_IDENTITY",
         )
-    return ActualUCNSAdapter(module)
+    return ActualUCNSAdapter(module), UCNSFullCorpusGate(module)
 
 
 def _incomplete_receipt(
@@ -1473,10 +1780,13 @@ def main(argv: list[str] | None = None) -> int:
     edcm_commit: str | None = None
     try:
         edcm_commit = _git_commit(repository_root, require_clean=True)
-        adapter = _load_pinned_adapter(args.ucns_source_root.resolve())
+        adapter, full_corpus_gate = _load_pinned_runtime(
+            args.ucns_source_root.resolve()
+        )
         report, receipt = run_archive(
             args.archive.resolve(),
             adapter=adapter,
+            full_corpus_gate=full_corpus_gate,
             edcm_commit=edcm_commit,
             ucns_commit=PINNED_UCNS_COMMIT,
             manifest=manifest,

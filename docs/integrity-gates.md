@@ -73,6 +73,30 @@ CI runs the integrity gate:
 
 This prevents a false green where source tests pass while packaged resources or exports drift.
 
+## Skill-lib and msdmd
+
+EDCM vendors a bounded build/evidence subset from
+`The-Interdependency/skill-lib@2b24be24947223b86440f59f1bd9766130f9cc11`.
+The skill-compliance workflow checks those files byte-for-byte, generates the
+canonical `edcm_msdmd.ts` collection, compares it with the tracked collection,
+and runs the EDCM-native metadata validator.
+
+Local validation:
+
+```bash
+python /path/to/skill-lib/tools/check_consumer_drift.py . \
+  --canon-root /path/to/skill-lib \
+  --sha 2b24be24947223b86440f59f1bd9766130f9cc11 \
+  --strict-sha --require-vendored
+
+PYTHONPATH=/path/to/skill-lib python /path/to/skill-lib/msdmd/collect.py \
+  --root . --repo The-Interdependency/edcm --out /tmp/edcm_msdmd.ts
+diff -u edcm_msdmd.ts /tmp/edcm_msdmd.ts
+python tools/check_metadata_contracts.py
+```
+
 ## hmmm
 
-The repository still lacks a repo-local `.agents/skills/` installation and callable skill-lib drift/msdmd runner. That gap is separate from these implemented integrity checks and must not be represented as passing until the real tooling is installed.
+The repository-wide CONTRACTS/CHECKS graph is collected but is not yet
+mutation-verified. A passing graph audit is evidence of linkage and resolution,
+not proof that every witness detects every possible behavioral break.

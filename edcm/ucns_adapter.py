@@ -30,7 +30,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 #   tests: tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_shared_stack_contract
 #   rollout: optional exact-profile activation only when the pinned profile surface matches
 #   rollback: suspend the optional adapter; base EDCM measurement remains operational
-#   requires: ucns.edcm at c799b3547afc91a6039a5d3b15f997426eed138a
+#   requires: ucns.edcm at 868d80878c9ecd93ff30e91ca289122ded805a49
 #   since: 2026-07-25
 #   unresolved: formal Mobius coordinates, higher-gonol composition, and projection policies remain outside this observation adapter
 # === END MODULE_BUILD ===
@@ -68,7 +68,7 @@ from typing import Any, Mapping, Protocol, Sequence
 UCNS_SOURCE_REPOSITORY = "https://github.com/The-Interdependency/ucns"
 SUPPORTED_PROFILE = ("ucns.profile.edcm-word-gonol", "0.2.0")
 SUPPORTED_PROFILE_SCOPE = "edcm-only"
-PINNED_UCNS_COMMIT = "c799b3547afc91a6039a5d3b15f997426eed138a"
+PINNED_UCNS_COMMIT = "868d80878c9ecd93ff30e91ca289122ded805a49"
 EXPECTED_PUBLIC_GONOL_SHA256 = (
     "55d10c84529a4d7bc7714786357e977b68d9df2ac3f73d20e229580b552c2ef5"
 )

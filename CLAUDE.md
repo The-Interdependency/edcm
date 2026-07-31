@@ -85,7 +85,8 @@ Direct absence of `metapat` is typed unavailability. Transitive import errors, m
 ## Exact EDCM UCNS observation profile
 
 EDCM owns the consumer adapter. UCNS owns the exact EDCM-only word-gonol
-profile at `c799b3547afc91a6039a5d3b15f997426eed138a`.
+profile and v0.14.1 full-corpus gate at
+`868d80878c9ecd93ff30e91ca289122ded805a49`.
 
 The adapter activates only for `ucns.profile.edcm-word-gonol/0.2.0` with all
 fourteen fixed options, `source_domain=unicode-scalar-values`, the exact
@@ -247,14 +248,18 @@ Optional skips are explicit. Fake sibling implementations may test adversarial c
 - Tests carry no `MODULE_BUILD` block.
 - Historical measurement modules retain provenance until the explicit metadata-reconciliation pass.
 - Code and documentation include runnable usage guidance, integration notes, limitations, and `hmmm` boundaries.
-- EDCM currently has no `.agents/skills/` installation. Do not claim repo-local skill-lib drift or msdmd success until the real installation and callable runners exist.
+- EDCM vendors the bounded build/evidence subset from
+  `The-Interdependency/skill-lib@2b24be24947223b86440f59f1bd9766130f9cc11`.
+  The canonical drift checker and msdmd collector run in
+  `.github/workflows/skill-compliance.yml`; repo-local copies are consumers,
+  never authority.
 
 ## hmmm
 
 Still unresolved:
 
 - cryptographically signed UCNS producer or transport authentication;
-- repo-local skill-lib installation and drift/msdmd CI gates;
+- mutation-level verification for the repository-wide CONTRACTS/CHECKS graph;
 - remaining historical L0/L1/L2/L3 split, P assignment, matrix wiring, bidirectional alerts, and Bridge-home decisions.
 
 These unresolveds do not reopen measurement authority, semantic-authority ownership, canonical evidence schemas, certification policy, integrity guarantees, or the proof-transfer firewall.

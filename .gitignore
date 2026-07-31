@@ -8,6 +8,11 @@ __pycache__/
 .ruff_cache/
 .mypy_cache/
 
+# Python package build outputs
+build/
+dist/
+*.egg-info/
+
 # Raw real-system corpora and resumable local checkpoints
 experiments/corpora/raw/
 experiments/corpora/checkpoints/

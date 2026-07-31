@@ -138,18 +138,21 @@ python -m pip install -e .[dev,ucns-profile]
 MultiWOZ 2.1 is the first admitted real-system source. Its runner verifies the
 exact University of Cambridge archive and every logical member, streams all
 `10,438` dialogues in source order, observes every exact speaker turn through
-the pinned EDCM UCNS word-gonol profile, and emits only aggregate evidence and
-completion or incompletion receipts. Raw corpus bytes remain outside Git.
+the pinned EDCM UCNS word-gonol profile, and independently repeats the exact
+turn stream through the UCNS v0.14.1 full-corpus completion gate. Completion
+requires both passes and their source-native turn chains to reconcile. Only
+aggregate evidence and completion or incompletion receipts are emitted. Raw
+corpus bytes remain outside Git.
 Carrier SPACE metrics are derived from profile assignment at alphabet position
 zero; the exact source code point remains independently serialized.
 
 ```bash
 python -m edcm.corpora.multiwoz21 \
   --archive /path/to/MULTIWOZ2.1.zip \
-  --ucns-source-root /path/to/ucns-at-c799b3547afc91a6039a5d3b15f997426eed138a \
-  --output experiments/corpora/results/2026-07-28-multiwoz-2.1-space-origin-rerun.json \
-  --receipt experiments/corpora/receipts/2026-07-28-multiwoz-2.1-space-origin-complete.json \
-  --checkpoint /tmp/multiwoz-2.1-space-origin.checkpoint.json
+  --ucns-source-root /path/to/ucns-at-868d80878c9ecd93ff30e91ca289122ded805a49 \
+  --output /tmp/multiwoz-2.1-ucns-v0141.json \
+  --receipt /tmp/multiwoz-2.1-ucns-v0141-receipt.json \
+  --checkpoint /tmp/multiwoz-2.1-ucns-v0141.checkpoint.json
 ```
 
 See [`docs/corpora/multiwoz-2.1.md`](docs/corpora/multiwoz-2.1.md). This is
@@ -160,6 +163,9 @@ misclassified as out-of-alphabet instead of SPACE manifestations. The sealed
 profile-0.2 replacement assigns all `4,094` occurrences to carrier position
 zero, reports `1,783,679` SPACE boundaries and no carrier-unassigned source
 code points, and preserves the original source and turn digest chains.
+That historical receipt remains immutable; it is not a UCNS v0.14.1
+completion receipt. A new sealed receipt requires rerunning the authenticated
+archive through the current command.
 
 ## Integrity gate
 
