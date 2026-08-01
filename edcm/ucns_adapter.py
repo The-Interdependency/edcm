@@ -21,14 +21,14 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 #   summary: fail-closed consumer for the exact EDCM-only UCNS word-gonol profile from the reviewed v0.19 producer, preserving full-corpus speaker-turn observations without coordinate, geometry, or proof transfer
 #   owner: Erin Spencer
 #   public_surface: ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter
-#   internal_surface: _canonical_bytes, _digest, _package_present, _token_record, _segment_record, _turn_record
+#   internal_surface: _canonical_bytes, _digest, _package_present, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
 #   user_data_boundary: exact source turns remain in caller-owned in-memory results and are not transmitted
 #   admin_only: false
 #   tests: tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_shared_stack_contract
-#   rollout: optional exact-profile activation only when the pinned profile surface matches
+#   rollout: optional exact-profile activation only when the pinned producer commit and profile surface match
 #   rollback: suspend the optional adapter; base EDCM measurement remains operational
 #   requires: ucns.edcm at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8
 #   since: 2026-07-25
@@ -38,7 +38,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 # === CONTRACTS ===
 # id: edcm_ucns_exact_profile_only
 #   given: an importable UCNS package is considered for activation
-#   then: every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type matches the pinned EDCM word-gonol surface or the adapter remains suspended
+#   then: the producer-owned or installed-distribution commit identity and every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended
 #   class: safety
 #   since: 2026-07-25
 #
@@ -57,18 +57,25 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 
 from __future__ import annotations
 
+from dataclasses import asdict, dataclass, replace
 import hashlib
 import importlib
+from importlib import metadata as importlib_metadata
 import importlib.util
 import json
-from dataclasses import asdict, dataclass, replace
+from pathlib import Path
+import re
+import subprocess
 from types import ModuleType
 from typing import Any, Mapping, Protocol, Sequence
+from urllib.parse import unquote, urlsplit
+from urllib.request import url2pathname
 
 UCNS_SOURCE_REPOSITORY = "https://github.com/The-Interdependency/ucns"
 SUPPORTED_PROFILE = ("ucns.profile.edcm-word-gonol", "0.2.0")
 SUPPORTED_PROFILE_SCOPE = "edcm-only"
 PINNED_UCNS_COMMIT = "872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
+_COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
 EXPECTED_PUBLIC_GONOL_SHA256 = (
     "55d10c84529a4d7bc7714786357e977b68d9df2ac3f73d20e229580b552c2ef5"
 )
@@ -244,6 +251,152 @@ def _digest(value: Any) -> str:
     return hashlib.sha256(_canonical_bytes(value)).hexdigest()
 
 
+def _repository_identity(value: str) -> str:
+    normalized = value.strip().removeprefix("git+").rstrip("/")
+    if normalized.startswith("git@github.com:"):
+        normalized = "https://github.com/" + normalized.removeprefix(
+            "git@github.com:"
+        )
+    if normalized.endswith(".git"):
+        normalized = normalized[:-4]
+    return normalized.lower()
+
+
+def _module_file(module: ModuleType) -> Path:
+    raw = getattr(module, "__file__", None)
+    if not isinstance(raw, str) or not raw:
+        raise UCNSAdapterConstructionError(
+            "UCNS producer commit identity unavailable: module file is unknown"
+        )
+    return Path(raw).resolve()
+
+
+def _git_checkout_commit(root: Path) -> str:
+    try:
+        remote = subprocess.run(
+            ["git", "-C", str(root), "remote", "get-url", "origin"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        commit = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip().lower()
+        status = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(root),
+                "status",
+                "--porcelain",
+                "--untracked-files=no",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise UCNSAdapterConstructionError(
+            "UCNS producer commit identity unavailable from editable checkout"
+        ) from exc
+    if _repository_identity(remote) != _repository_identity(
+        UCNS_SOURCE_REPOSITORY
+    ):
+        raise UnsupportedUCNSSchemaError(
+            "UCNS producer repository identity mismatch"
+        )
+    if status:
+        raise UCNSAdapterConstructionError(
+            "UCNS editable checkout has tracked modifications"
+        )
+    if not _COMMIT_RE.fullmatch(commit):
+        raise UCNSAdapterConstructionError(
+            "UCNS editable checkout commit identity is malformed"
+        )
+    return commit
+
+
+def _distribution_commit(module: ModuleType) -> str:
+    try:
+        distribution = importlib_metadata.distribution("ucns")
+    except importlib_metadata.PackageNotFoundError as exc:
+        raise UCNSAdapterConstructionError(
+            "UCNS producer commit identity unavailable from distribution metadata"
+        ) from exc
+    direct_url_text = distribution.read_text("direct_url.json")
+    if not direct_url_text:
+        raise UCNSAdapterConstructionError(
+            "UCNS producer commit identity unavailable: direct_url.json missing"
+        )
+    try:
+        direct_url = json.loads(direct_url_text)
+    except (TypeError, json.JSONDecodeError) as exc:
+        raise UCNSAdapterConstructionError(
+            "UCNS producer commit identity unavailable: direct_url.json invalid"
+        ) from exc
+    module_file = _module_file(module)
+    source_url = direct_url.get("url")
+    if not isinstance(source_url, str):
+        raise UCNSAdapterConstructionError(
+            "UCNS producer commit identity unavailable: source URL missing"
+        )
+    vcs_info = direct_url.get("vcs_info")
+    if isinstance(vcs_info, Mapping):
+        if vcs_info.get("vcs") != "git":
+            raise UnsupportedUCNSSchemaError(
+                "UCNS producer distribution is not Git-backed"
+            )
+        if _repository_identity(source_url) != _repository_identity(
+            UCNS_SOURCE_REPOSITORY
+        ):
+            raise UnsupportedUCNSSchemaError(
+                "UCNS producer repository identity mismatch"
+            )
+        installed_module = Path(
+            distribution.locate_file("ucns/__init__.py")
+        ).resolve()
+        if module_file != installed_module:
+            raise UCNSAdapterConstructionError(
+                "UCNS module does not belong to the identified distribution"
+            )
+        commit = str(vcs_info.get("commit_id", "")).lower()
+        if not _COMMIT_RE.fullmatch(commit):
+            raise UCNSAdapterConstructionError(
+                "UCNS producer distribution commit identity is malformed"
+            )
+        return commit
+    if isinstance(direct_url.get("dir_info"), Mapping):
+        parsed = urlsplit(source_url)
+        if parsed.scheme != "file":
+            raise UCNSAdapterConstructionError(
+                "UCNS editable distribution source is not a local checkout"
+            )
+        root = Path(url2pathname(unquote(parsed.path))).resolve()
+        if not module_file.is_relative_to(root):
+            raise UCNSAdapterConstructionError(
+                "UCNS module does not belong to the editable distribution"
+            )
+        return _git_checkout_commit(root)
+    raise UCNSAdapterConstructionError(
+        "UCNS producer commit identity unavailable from distribution metadata"
+    )
+
+
+def _resolve_ucns_producer_commit(module: ModuleType) -> str:
+    producer_commit = getattr(module, "UCNS_PRODUCER_COMMIT", None)
+    if producer_commit is not None:
+        commit = str(producer_commit).lower()
+        if not _COMMIT_RE.fullmatch(commit):
+            raise UCNSAdapterConstructionError(
+                "UCNS producer-owned commit identity is malformed"
+            )
+        return commit
+    return _distribution_commit(module)
+
+
 def _token_record(token: Any) -> dict[str, Any]:
     source_value = token.value
     source_code_point = token.code_point
@@ -393,6 +546,12 @@ class ActualUCNSAdapter:
             raise UCNSAdapterConstructionError(
                 "UCNS exact EDCM profile surface missing: " + ", ".join(missing)
             )
+        producer_commit = _resolve_ucns_producer_commit(module)
+        if producer_commit != PINNED_UCNS_COMMIT:
+            raise UnsupportedUCNSSchemaError(
+                "UCNS producer commit mismatch: expected "
+                f"{PINNED_UCNS_COMMIT}, observed {producer_commit}"
+            )
         if (
             str(module.EDCM_PROFILE_ID),
             str(module.EDCM_PROFILE_VERSION),
@@ -472,6 +631,7 @@ class ActualUCNSAdapter:
         ):
             raise UnsupportedUCNSSchemaError("UCNS public gonol digest mismatch")
         self._module = module
+        self._producer_commit = producer_commit
         self._space_code_point_labels = space_code_point_labels
         try:
             self._profile = module.EdcmWordGonolProfile()
@@ -533,7 +693,7 @@ class ActualUCNSAdapter:
             "profile_version": self._module.EDCM_PROFILE_VERSION,
             "profile_scope": self._module.EDCM_PROFILE_SCOPE,
             "source_repository": UCNS_SOURCE_REPOSITORY,
-            "source_commit": PINNED_UCNS_COMMIT,
+            "source_commit": self._producer_commit,
             "options": EXPECTED_PROFILE_OPTIONS,
             "normalization_policy": self._module.EDCM_NORMALIZATION_POLICY,
             "support_policy": self._module.EDCM_SUPPORT_POLICY,

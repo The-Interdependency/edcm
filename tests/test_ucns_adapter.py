@@ -47,6 +47,7 @@ from edcm.ucns_adapter import (
 
 def _exact_identity_module() -> ModuleType:
     module = ModuleType("ucns")
+    module.UCNS_PRODUCER_COMMIT = PINNED_UCNS_COMMIT
     module.EDCM_PROFILE_ID, module.EDCM_PROFILE_VERSION = (
         adapter_module.SUPPORTED_PROFILE
     )
@@ -139,6 +140,14 @@ def test_exact_profile_activates_and_option_drift_suspends(monkeypatch):
     assert selection.status.profile_supported is True
     assert selection.status.adapter_active is True
 
+    module.UCNS_PRODUCER_COMMIT = "868d80878c9ecd93ff30e91ca289122ded805a49"
+    selection = select_ucns_adapter()
+    assert selection.adapter is None
+    assert selection.status.adapter_active is False
+    assert "producer commit mismatch" in selection.status.errors[0]
+
+    module.UCNS_PRODUCER_COMMIT = PINNED_UCNS_COMMIT
+
     module.EDCM_PROFILE_OPTIONS = (*EXPECTED_PROFILE_OPTIONS[:-1], ("z", "drift"))
     selection = select_ucns_adapter()
     assert selection.adapter is None
@@ -163,6 +172,72 @@ def test_exact_profile_activates_and_option_drift_suspends(monkeypatch):
     assert selection.adapter is None
     assert selection.status.adapter_active is False
     assert "source domain mismatch" in selection.status.errors[0]
+
+
+def test_exact_surface_rejects_stale_or_missing_producer_identity(monkeypatch):
+    module = _exact_identity_module()
+    module.UCNS_PRODUCER_COMMIT = "868d80878c9ecd93ff30e91ca289122ded805a49"
+    with pytest.raises(UnsupportedUCNSSchemaError, match="producer commit mismatch"):
+        ActualUCNSAdapter(module)
+
+    del module.UCNS_PRODUCER_COMMIT
+
+    def missing_distribution(name):
+        raise adapter_module.importlib_metadata.PackageNotFoundError(name)
+
+    monkeypatch.setattr(
+        adapter_module.importlib_metadata,
+        "distribution",
+        missing_distribution,
+    )
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="identity unavailable from distribution metadata",
+    ):
+        ActualUCNSAdapter(module)
+
+
+def test_distribution_commit_identity_rejects_stale_lookalike(monkeypatch):
+    module = _exact_identity_module()
+    del module.UCNS_PRODUCER_COMMIT
+    module.__file__ = __file__
+
+    class Distribution:
+        def __init__(self, commit):
+            self.commit = commit
+
+        def read_text(self, name):
+            assert name == "direct_url.json"
+            return adapter_module.json.dumps(
+                {
+                    "url": "https://github.com/The-Interdependency/ucns.git",
+                    "vcs_info": {
+                        "vcs": "git",
+                        "commit_id": self.commit,
+                    },
+                }
+            )
+
+        def locate_file(self, path):
+            assert path == "ucns/__init__.py"
+            return __file__
+
+    monkeypatch.setattr(
+        adapter_module.importlib_metadata,
+        "distribution",
+        lambda name: Distribution(
+            "868d80878c9ecd93ff30e91ca289122ded805a49"
+        ),
+    )
+    with pytest.raises(UnsupportedUCNSSchemaError, match="producer commit mismatch"):
+        ActualUCNSAdapter(module)
+
+    monkeypatch.setattr(
+        adapter_module.importlib_metadata,
+        "distribution",
+        lambda name: Distribution(PINNED_UCNS_COMMIT),
+    )
+    assert ActualUCNSAdapter(module).status.adapter_active is True
 
 
 def test_retired_bridge_object_and_factorization_inputs_fail_closed():

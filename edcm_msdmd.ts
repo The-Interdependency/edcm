@@ -1082,7 +1082,7 @@ export default defineMsdmdCollection({
         "class": "safety",
         "given": "an importable UCNS package is considered for activation",
         "since": "2026-07-25",
-        "then": "every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type matches the pinned EDCM word-gonol surface or the adapter remains suspended"
+        "then": "the producer-owned or installed-distribution commit identity and every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended"
       },
       "file": "edcm/ucns_adapter.py",
       "id": "edcm_ucns_exact_profile_only"
@@ -1114,7 +1114,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_canonical_bytes, _digest, _package_present, _token_record, _segment_record, _turn_record",
+        "internal_surface": "_canonical_bytes, _digest, _package_present, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record",
         "module_kind": "adapter",
         "module_name": "ucns_adapter",
         "network_boundary": "none",
@@ -1122,7 +1122,7 @@ export default defineMsdmdCollection({
         "public_surface": "ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter",
         "requires": "ucns.edcm at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
         "rollback": "suspend the optional adapter; base EDCM measurement remains operational",
-        "rollout": "optional exact-profile activation only when the pinned profile surface matches",
+        "rollout": "optional exact-profile activation only when the pinned producer commit and profile surface match",
         "since": "2026-07-25",
         "storage_boundary": "none",
         "summary": "fail-closed consumer for the exact EDCM-only UCNS word-gonol profile from the reviewed v0.19 producer, preserving full-corpus speaker-turn observations without coordinate, geometry, or proof transfer",
