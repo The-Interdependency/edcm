@@ -61,9 +61,12 @@ EDCM producer checkout. The bootstrap resolves one exact commit and `edcm/`
 tree, archives that exact commit, and passes the same tree identity into the
 worker, so a concurrent `HEAD` change cannot relabel the executing snapshot.
 That authenticated runner verifies the original worktree and its active caches,
-then verifies the UCNS package tree and active caches before its first import.
+then verifies the UCNS package tree and the exact active cache derived for each
+source, including an external `PYTHONPYCACHEPREFIX`, before its first import.
 Already-loaded or pre-verification module code therefore cannot survive into
-sealed execution. Bootstrap identity, archive, or extraction failure writes an
+sealed execution. Worker mode is selected only by the authenticated extracted
+snapshot context; no command-line flag can bypass the bootstrap. Bootstrap
+identity, archive, or extraction failure writes an
 incomplete receipt before exit. The child preserves the caller's working
 directory, so relative command-line paths keep their documented meaning. A
 checkpoint is written atomically at the selected interval and can resume only
@@ -182,8 +185,8 @@ NA != 0
 After the v0.19 source-coordinate boundary reached clean review, EDCM repinned
 the unchanged profile `0.2.0` and full-corpus gate `0.14.1` to exact UCNS commit
 `872f53571d5dc2f133ff1813b7bdffd3a9c309f8`. Clean EDCM producer commit
-`69f7470439ad5e3a578bf16eab8c6165b6ea07d6`, whose `edcm/` subtree is
-`006441f18e665097e66d10af9486ad6512122757`, reran the admitted archive. A
+`ead854098c8ef8248fd9d7bb8d95872414794f15`, whose `edcm/` subtree is
+`5c39683c8e7b1fb77c893c08de41a76ea0b0bb4e`, reran the admitted archive. A
 completed-checkpoint repeat produced byte-identical artifacts.
 
 Schema `1.3.0` seals the content-addressed Git tree for the executing `edcm/`
@@ -198,8 +201,8 @@ an audit coordinate but is not required to recover the executed package bytes.
 - source, adapter, UCNS-gate, and unit-support turns: `143,048`
 - exact UCNS source/observation stream SHA-256: `e94ba2e5e1e9d52b23fd5b9c33303be009dae32f4c3bc6a1d5186a353acb40b5`
 - UCNS receipt id: `921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c`
-- EDCM report digest: `161d0a981d7f62e1e33b38cadd1a05a41c3a92593b94fa4ee220f4e5d2fac97e`
-- EDCM receipt digest: `7f23a5535e5d90da28ba08bc57ce2df0bdcf53b8a67d99dfe25afc7207ed0249`
+- EDCM report digest: `45cfa7ef2406453f91d8d0e911e6d31823bdbdc14caea5da07458d8f0653a8e6`
+- EDCM receipt digest: `0280942e6b887453ec490fa3163ebcf0e1534242dc40ef1dd2dbd69eeb856eb8`
 
 The source dialogue chain, turn-evidence chain, execution counts, failure-seeking
 aggregates, exact stream hash, and v0.14.1 gate receipt remain identical to the
