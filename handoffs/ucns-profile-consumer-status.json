@@ -4,15 +4,16 @@
     "0.2.0"
   ],
   "profile_scope": "edcm-only",
-  "pinned_ucns_commit": "868d80878c9ecd93ff30e91ca289122ded805a49",
+  "pinned_ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
   "pinned_skill_lib_commit": "2b24be24947223b86440f59f1bd9766130f9cc11",
   "adapter_activation_status": "exact-profile-active-when-matching-package-is-installed",
   "ucns_full_corpus_gate": {
     "admitted_archive_sha256": "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e",
     "declared_turn_count": 143048,
-    "runner_schema": "edcm.multiwoz21-full-corpus/1.2.0",
+    "runner_schema": "edcm.multiwoz21-full-corpus/1.3.0",
     "schema": "ucns.edcm.full-corpus-execution/0.14.1",
-    "sealed_edcm_commit": "2e667f648bfcfa9f067997eb7e56d2346a4ba30c",
+    "sealed_edcm_commit": "973d4b314ee7fbcd35b2e207b889faf7366c3814",
+    "sealed_edcm_tree": "658767bc64936f152e19c2f1cebb9ae86c1932cb",
     "sealed_receipt_id": "921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c",
     "status": "sealed-complete"
   },
@@ -39,6 +40,20 @@
     "report_sha256": "f2044a4c1555b7fa52f9f05a562136f24b8960902630dc32cfce7fcdb0af7fde",
     "status": "complete",
     "ucns_commit": "868d80878c9ecd93ff30e91ca289122ded805a49"
+  },
+  "sealed_ucns_v019_corpus_evidence": {
+    "corpus_id": "multiwoz-2.1",
+    "edcm_tree": "658767bc64936f152e19c2f1cebb9ae86c1932cb",
+    "exact_stream_sha256": "e94ba2e5e1e9d52b23fd5b9c33303be009dae32f4c3bc6a1d5186a353acb40b5",
+    "receipt_digest": "feb7e98891cdb4baee521cc90c68a695922d9ce70d665678fa9e9ea3dde5f629",
+    "receipt_id": "921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c",
+    "receipt_path": "experiments/corpora/receipts/2026-07-31-multiwoz-2.1-ucns-v0.19-complete.json",
+    "receipt_sha256": "ec384e9151d17a110240ad07545ce6448414b582bae1403e592972be6f48f9da",
+    "report_digest": "2dd40a6c220db0fb99bfdbca8237ab7910d041dede1cd33d2ae4873dd3a9e4b4",
+    "report_path": "experiments/corpora/results/2026-07-31-multiwoz-2.1-ucns-v0.19-full.json",
+    "report_sha256": "2ba500a78bff3f805b26dd9505fc3305207a28c69ae420732ddba1176d14174d",
+    "status": "complete",
+    "ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
   },
   "input_contract": "full ordered corpus as exact (speaker_id, text) tuples",
   "fixed_options": {
@@ -84,7 +99,7 @@
   ],
   "historical_experiment_ucns_commit": "5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
   "unresolved_constraints": [
-    "Formal Mobius carrier coordinates are not supplied.",
+    "UCNS v0.19 supplies a nonselected ordered source-coordinate candidate over its fixed full producer demonstration, but this observation adapter does not attach or consume it.",
     "Higher-gonol composition and the hyper-dimensional lattice relation law remain open.",
     "Projection policy must deepen only with experimental evidence.",
     "True non-SPACE coverage outside the 157-token carrier alphabet requires further real-system corpus pressure.",
@@ -94,5 +109,5 @@
   "theorem_transfer": false,
   "measurement_validity": false,
   "metapat_validity": false,
-  "hmmm": "The sealed MultiWOZ rerun and UCNS v0.14.1 receipt verify source-preserved SPACE-origin assignment plus bounded complete execution without supplying formal coordinates or measurement validity; neither result permits missing geometry or true non-SPACE coverage to collapse into a convenient bridge."
+  "hmmm": "The sealed v0.19-producer MultiWOZ rerun verifies source-preserved SPACE-origin assignment plus bounded complete execution and preserves the historical exact stream and gate receipt. The reviewed v0.19 producer's coordinate candidate is limited to its fixed full demonstration, and EDCM does not attach that evidence or acquire measurement validity; neither result permits missing higher geometry or true non-SPACE coverage to collapse into a convenient bridge."
 }

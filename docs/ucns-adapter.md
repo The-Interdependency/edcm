@@ -5,7 +5,7 @@
 EDCM optionally consumes the exact EDCM-only observation profile at:
 
 ```text
-The-Interdependency/ucns@868d80878c9ecd93ff30e91ca289122ded805a49
+The-Interdependency/ucns@872f53571d5dc2f133ff1813b7bdffd3a9c309f8
 profile: ucns.profile.edcm-word-gonol/0.2.0
 full-corpus gate: ucns.edcm.full-corpus-execution/0.14.1
 ```
@@ -16,9 +16,23 @@ Install it with:
 python -m pip install -e .[dev,ucns-profile]
 ```
 
-Package presence alone does not activate a lookalike. The consumer checks the
-profile identity, all fourteen option values, the exact 157-token public gonol
-invariants and digest, the source domain, the pinned
+Package presence alone does not activate a lookalike. Before accepting the
+profile, the consumer requires the pinned UCNS commit from PEP 610
+installed-distribution metadata. A non-editable installation must also match
+the EDCM-pinned package-file manifest independently of its mutable wheel
+`RECORD`. A local editable install must resolve to a clean checkout of the
+declared UCNS repository at that exact commit. A
+producer-owned commit identity, when exported, is cross-checked against that
+installed identity and cannot bypass checkout verification. An explicit UCNS
+source checkout supplied to the corpus runner is accepted only when the
+imported module is the checkout's exact package path and the same repository,
+clean-tree, and commit checks pass. After byte authentication, the consumer
+freshly loads the UCNS module graph and rechecks the identity so stale in-memory
+code cannot inherit the verified label. It verifies caches only for the active
+Python ABI and exact runtime optimization level, including levels above two,
+because other cache files cannot execute in that runtime. The
+consumer then checks the profile identity, all fourteen option values, the exact
+157-token public gonol invariants and digest, the source domain, the pinned
 `unicode-white-space-origin-v1` assignment policy, all 25 exact SPACE source
 code points, and the required producer types. A mismatch produces typed
 suspension.
@@ -159,7 +173,9 @@ view candidates remain scoped to their recorded epoch.
 
 The executable profile establishes exact corpus observations and now resolves
 the admitted SPACE manifestations to the Möbius origin. Coverage of true
-non-SPACE code points outside the 157-token carrier alphabet, formal Möbius
-coordinates, higher-gonol composition, and any projection from observations
+non-SPACE code points outside the 157-token carrier alphabet remains open.
+UCNS v0.19 supplies a nonselected trace-local source-coordinate candidate over
+its fixed full producer demonstration, but this adapter does not attach or
+consume that evidence. Higher-gonol composition and any projection from observations
 into geometry or scalar claims remain open and must be learned from full
 real-system corpus runs rather than collapsed early.

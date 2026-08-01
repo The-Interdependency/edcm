@@ -131,7 +131,7 @@ The exact word-gonol profile is also optional:
 python -m pip install -e .[dev,ucns-profile]
 ```
 
-`full-stack` installs both the exact METAPAT producer and the EDCM UCNS profile producer. Use `ucns-experiments` only for the historical v0.1–v0.4 experiment epoch. Package availability alone attaches no evidence; exact ordered `ucns_turns` are required.
+`full-stack` installs both the exact METAPAT producer and the EDCM UCNS profile producer. Use `ucns-experiments` only for the historical v0.1–v0.4 experiment epoch. Package availability alone attaches no evidence: UCNS activation also requires checkout package bytes that match the exact Git tree or a VCS installation whose package bytes match EDCM's pinned producer manifest and raw wheel `RECORD`; the verified module graph is freshly loaded, and every runtime-loadable cache must derive from those verified sources. Exact ordered `ucns_turns` are required before an observation is attached.
 
 ## First real-system corpus runner
 
@@ -139,20 +139,21 @@ MultiWOZ 2.1 is the first admitted real-system source. Its runner verifies the
 exact University of Cambridge archive and every logical member, streams all
 `10,438` dialogues in source order, observes every exact speaker turn through
 the pinned EDCM UCNS word-gonol profile, and independently repeats the exact
-turn stream through the UCNS v0.14.1 full-corpus completion gate. Completion
-requires both passes and their source-native turn chains to reconcile. Only
+turn stream through the UCNS v0.14.1 full-corpus completion gate from the
+exact v0.19 producer commit. Completion requires both passes and their
+source-native turn chains to reconcile. Only
 aggregate evidence and completion or incompletion receipts are emitted. Raw
 corpus bytes remain outside Git.
 Carrier SPACE metrics are derived from profile assignment at alphabet position
 zero; the exact source code point remains independently serialized.
 
 ```bash
-python -m edcm.corpora.multiwoz21 \
+python edcm/corpora/run_multiwoz21_seal.py \
   --archive /path/to/MULTIWOZ2.1.zip \
-  --ucns-source-root /path/to/ucns-at-868d80878c9ecd93ff30e91ca289122ded805a49 \
-  --output /tmp/multiwoz-2.1-ucns-v0141.json \
-  --receipt /tmp/multiwoz-2.1-ucns-v0141-receipt.json \
-  --checkpoint /tmp/multiwoz-2.1-ucns-v0141.checkpoint.json
+  --ucns-source-root /path/to/ucns-at-872f53571d5dc2f133ff1813b7bdffd3a9c309f8 \
+  --output /tmp/multiwoz-2.1-ucns-v019.json \
+  --receipt /tmp/multiwoz-2.1-ucns-v019-receipt.json \
+  --checkpoint /tmp/multiwoz-2.1-ucns-v019.checkpoint.json
 ```
 
 See [`docs/corpora/multiwoz-2.1.md`](docs/corpora/multiwoz-2.1.md). This is
@@ -170,6 +171,17 @@ sealed in its own aggregate
 and [completion receipt](experiments/corpora/receipts/2026-07-31-multiwoz-2.1-ucns-v0.14.1-complete.json).
 It consumed all `143,048` turns, reconciled the repeated source-native chain,
 and left EDCM and METAPAT activation inactive.
+
+The exact reviewed UCNS v0.19 producer was then repinned and rerun without
+changing the consumed profile or gate schema. Its sealed
+[report](experiments/corpora/results/2026-07-31-multiwoz-2.1-ucns-v0.19-full.json)
+and [completion receipt](experiments/corpora/receipts/2026-07-31-multiwoz-2.1-ucns-v0.19-complete.json)
+cover all `10,438` dialogues and `143,048` turns. A completed-checkpoint repeat
+was byte-identical. The exact stream hash and UCNS v0.14.1 receipt id remain
+unchanged; the report and receipt identities bind the EDCM package tree and
+the UCNS producer commit.
+Measurement remains `not-run`, canon selection is null, and EDCM/METAPAT stay
+inactive.
 
 ## Integrity gate
 
@@ -216,4 +228,9 @@ Historical implementation, source packets, repair handoffs, and prior adapter co
 
 ## hmmm
 
-Formal Möbius coordinates, higher-gonol composition, and lawful projection from exact observations into a higher-dimensional lattice remain open. The corrected MultiWOZ 2.1 SPACE-origin aggregate is sealed represented evidence, not measurement validity; true non-SPACE carrier coverage remains a separate hmmm.
+UCNS v0.19 supplies a nonselected trace-local source-coordinate candidate over
+its fixed full producer demonstration. This EDCM observation path does not
+attach or consume that candidate, and higher-gonol composition plus lawful projection
+into EDCM readouts remain open. The corrected MultiWOZ 2.1 SPACE-origin
+aggregate is sealed represented evidence, not measurement validity; true
+non-SPACE carrier coverage remains a separate hmmm.

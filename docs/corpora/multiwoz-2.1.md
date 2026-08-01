@@ -2,7 +2,7 @@
 
 **Status:** admitted; profile-0.2 sealed full-corpus rerun complete on
 2026-07-28; profile-0.1 SPACE interpretation superseded; UCNS v0.14.1
-completion-receipt rerun sealed on 2026-07-31.
+completion-receipt rerun and exact v0.19-producer rerun sealed on 2026-07-31.
 **Evidence state:** current and historical represented evidence; no EDCM
 candidate measurement or joint-canon selection.
 
@@ -40,20 +40,40 @@ source-native evidence and do not silently enter the word-gonol observation.
 ## Usage guidance
 
 Keep the archive outside the repository and use a clean checkout of the exact
-UCNS profile commit:
+UCNS v0.19 producer commit. The consumed profile remains version 0.2.0 and the
+full-corpus completion schema remains version 0.14.1:
 
 ```bash
-python -m edcm.corpora.multiwoz21 \
+python edcm/corpora/run_multiwoz21_seal.py \
   --archive /path/to/MULTIWOZ2.1.zip \
-  --ucns-source-root /path/to/ucns-at-868d80878c9ecd93ff30e91ca289122ded805a49 \
-  --output /tmp/multiwoz-2.1-ucns-v0141.json \
-  --receipt /tmp/multiwoz-2.1-ucns-v0141-receipt.json \
-  --checkpoint /tmp/multiwoz-2.1-ucns-v0141.checkpoint.json
+  --ucns-source-root /path/to/ucns-at-872f53571d5dc2f133ff1813b7bdffd3a9c309f8 \
+  --output /tmp/multiwoz-2.1-ucns-v019.json \
+  --receipt /tmp/multiwoz-2.1-ucns-v019-receipt.json \
+  --checkpoint /tmp/multiwoz-2.1-ucns-v019.checkpoint.json
 ```
 
-The runner refuses a dirty EDCM or UCNS tracked tree for a sealed run. A
+The runner refuses a dirty EDCM or UCNS tracked tree for a sealed run. It also
+compares every EDCM package file directly with replacement-disabled `HEAD` and
+verifies active-runtime EDCM caches, so index flags cannot hide executed-code
+drift. Its directly executed source launcher establishes the trust boundary
+before importing the corpus module, so a pre-existing module cache cannot
+replace the bootstrap program. The launcher dispatches the seal to an isolated
+fresh Python interpreter from a cache-free, replacement-disabled Git archive of
+the sealed EDCM producer checkout. It removes inherited Git repository-selector
+variables, resolves one exact commit and `edcm/`
+tree, archives that exact commit, and passes the same tree identity into the
+worker, so a concurrent `HEAD` change cannot relabel the executing snapshot.
+That authenticated runner verifies the original worktree and its active caches,
+then verifies the UCNS package tree and the exact active cache derived for each
+source, including an external `PYTHONPYCACHEPREFIX`, before its first import.
+Already-loaded or pre-verification module code therefore cannot survive into
+sealed execution. Worker mode is selected only by the authenticated extracted
+snapshot context; no command-line flag can bypass the bootstrap. Bootstrap
+identity, archive, or extraction failure writes an
+incomplete receipt before exit. The child preserves the caller's working
+directory, so relative command-line paths keep their documented meaning. A
 checkpoint is written atomically at the selected interval and can resume only
-when archive, admission, EDCM commit, UCNS commit, and already-processed source
+when archive, admission, EDCM package tree, UCNS commit, and already-processed source
 prefix all match.
 
 Successful completion requires:
@@ -163,6 +183,38 @@ candidate-measured evidence != canonically measured evidence
 NA != 0
 ```
 
+## UCNS v0.19 producer seal
+
+After the v0.19 source-coordinate boundary reached clean review, EDCM repinned
+the unchanged profile `0.2.0` and full-corpus gate `0.14.1` to exact UCNS commit
+`872f53571d5dc2f133ff1813b7bdffd3a9c309f8`. Clean EDCM producer commit
+`973d4b314ee7fbcd35b2e207b889faf7366c3814`, whose `edcm/` subtree is
+`658767bc64936f152e19c2f1cebb9ae86c1932cb`, reran the admitted archive. A
+completed-checkpoint repeat produced byte-identical artifacts.
+
+Schema `1.3.0` seals the content-addressed Git tree for the executing `edcm/`
+package rather than treating the intermediate producer commit as the durable
+code identity. The same subtree is embedded unchanged in the evidence commit
+and remains reachable after a squash merge; the producer commit is retained as
+an audit coordinate but is not required to recover the executed package bytes.
+
+- [aggregate report](../../experiments/corpora/results/2026-07-31-multiwoz-2.1-ucns-v0.19-full.json)
+- [completion receipt](../../experiments/corpora/receipts/2026-07-31-multiwoz-2.1-ucns-v0.19-complete.json)
+- dialogues: `10,438`
+- source, adapter, UCNS-gate, and unit-support turns: `143,048`
+- exact UCNS source/observation stream SHA-256: `e94ba2e5e1e9d52b23fd5b9c33303be009dae32f4c3bc6a1d5186a353acb40b5`
+- UCNS receipt id: `921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c`
+- EDCM report digest: `2dd40a6c220db0fb99bfdbca8237ab7910d041dede1cd33d2ae4873dd3a9e4b4`
+- EDCM receipt digest: `feb7e98891cdb4baee521cc90c68a695922d9ce70d665678fa9e9ea3dde5f629`
+
+The source dialogue chain, turn-evidence chain, execution counts, failure-seeking
+aggregates, exact stream hash, and v0.14.1 gate receipt remain identical to the
+prior sealed rerun. The EDCM report and receipt identities change because they
+correctly bind the EDCM package tree and UCNS producer commit. UCNS v0.19's coordinate
+candidate is evidenced only over its fixed full producer demonstration; this
+corpus runner neither attaches nor consumes it. `canon_selection` remains null,
+candidate measurement remains `not-run`, and EDCM/METAPAT remain inactive.
+
 ## File plan
 
 | Path | Change | Purpose | Risk | Required test |
@@ -183,5 +235,7 @@ inferred from the prior report. They are not formal Möbius geometry or an EDCM
 measurement-validity claim. Source-native
 labels for correction, retraction, refusal, and unresolved reference are not
 complete in MultiWOZ 2.1 and remain unresolved rather than being guessed from
-text. Formal Möbius coordinates, higher-gonol composition, and lawful projection
-from exact observations into EDCM scalar readouts also remain open.
+text. UCNS v0.19 supplies a nonselected trace-local source-coordinate candidate
+over its fixed full producer demonstration, but this corpus runner does not
+attach or consume it. Higher-gonol composition and lawful projection from exact
+observations into EDCM scalar readouts remain open.

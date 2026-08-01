@@ -34,10 +34,10 @@ remain source-native noninputs to this profile run.
 # id: edcm_multiwoz21_corpus
 #   module_name: multiwoz21
 #   module_kind: adapter
-#   summary: verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate without committing raw text
+#   summary: verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate from the reviewed v0.19 producer without committing raw text
 #   owner: Erin Spencer
-#   public_surface: AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive, main
-#   internal_surface: UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic
+#   public_surface: AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive
+#   internal_surface: UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _git_tree_identity, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_worker_arguments, _sealed_main
 #   auth_boundary: none
 #   storage_boundary: reads a caller-held archive and writes only caller-selected aggregate report, receipt, and resumable checkpoint paths
 #   network_boundary: none; source acquisition is separate and the runner requires local pinned bytes
@@ -46,7 +46,7 @@ remain source-native noninputs to this profile run.
 #   tests: tests.test_multiwoz21_corpus
 #   rollout: explicit admitted full-corpus command; no sampling and no default measurement or canon selection
 #   rollback: remove the adapter and supersede its aggregate receipts by identity; raw source remains outside Git
-#   requires: edcm_ucns_adapter, ucns.edcm and ucns.full_corpus at 868d80878c9ecd93ff30e91ca289122ded805a49
+#   requires: edcm_ucns_adapter, ucns.edcm and ucns.full_corpus at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8
 #   since: 2026-07-28
 #   unresolved: source-native semantic labels for correction, retraction, and unresolved reference; formal UCNS geometry and lawful EDCM projection
 # === END MODULE_BUILD ===
@@ -96,6 +96,7 @@ import importlib
 import importlib.resources
 import io
 import json
+import os
 import subprocess
 import sys
 from collections.abc import Iterable, Iterator, Mapping
@@ -106,15 +107,25 @@ from types import ModuleType
 from typing import Any
 from zipfile import BadZipFile, ZipFile
 
-from edcm.ucns_adapter import ActualUCNSAdapter, PINNED_UCNS_COMMIT
+from edcm.ucns_adapter import (
+    ActualUCNSAdapter,
+    PINNED_UCNS_COMMIT,
+    UCNSAdapterConstructionError,
+    _is_runtime_cache,
+    _verify_cached_bytecode,
+)
 
 
 RUNNER_SCHEMA_ID = "edcm.multiwoz21-full-corpus"
-RUNNER_SCHEMA_VERSION = "1.2.0"
+RUNNER_SCHEMA_VERSION = "1.3.0"
+_SEALED_REPOSITORY_ROOT_ENV = "EDCM_SEALED_REPOSITORY_ROOT"
+_SEALED_EDCM_COMMIT_ENV = "EDCM_SEALED_COMMIT"
+_SEALED_EDCM_TREE_ENV = "EDCM_SEALED_TREE"
+_SEALED_SNAPSHOT_ROOT_ENV = "EDCM_SEALED_SNAPSHOT_ROOT"
 RECEIPT_SCHEMA_ID = "edcm.corpus-run-receipt"
-RECEIPT_SCHEMA_VERSION = "1.2.0"
+RECEIPT_SCHEMA_VERSION = "1.3.0"
 CHECKPOINT_SCHEMA_ID = "edcm.multiwoz21-checkpoint"
-CHECKPOINT_SCHEMA_VERSION = "1.2.0"
+CHECKPOINT_SCHEMA_VERSION = "1.3.0"
 UCNS_FULL_CORPUS_SCHEMA_ID = "ucns.edcm.full-corpus-execution"
 UCNS_FULL_CORPUS_SCHEMA_VERSION = "0.14.1"
 EMPTY_CHAIN_DIGEST = sha256(b"").hexdigest()
@@ -617,7 +628,7 @@ def _new_state(
     *,
     archive_sha256: str,
     admission_digest: str,
-    edcm_commit: str,
+    edcm_tree: str,
     ucns_commit: str,
 ) -> dict[str, Any]:
     return {
@@ -630,7 +641,7 @@ def _new_state(
         "code_points": 0,
         "dialogues": 0,
         "dialogues_with_odd_turn_count": 0,
-        "edcm_commit": edcm_commit,
+        "edcm_tree": edcm_tree,
         "empty_turns": 0,
         "first_dialogue_id": None,
         "last_completed_dialogue_id": None,
@@ -1309,7 +1320,7 @@ def _build_report(
         "hmmm": manifest.payload["hmmm"],
         "identities": {
             "archive": dict(archive_identity),
-            "edcm_commit": state["edcm_commit"],
+            "edcm_tree": state["edcm_tree"],
             "profile_observation_digest_chain": state[
                 "profile_observation_digest_chain"
             ],
@@ -1360,7 +1371,7 @@ def _build_receipt(
         ),
         "identities": {
             "archive_sha256": state.get("archive_sha256"),
-            "edcm_commit": state.get("edcm_commit"),
+            "edcm_tree": state.get("edcm_tree"),
             "ucns_commit": state.get("ucns_commit"),
         },
         "last_completed": {
@@ -1413,7 +1424,7 @@ def run_archive(
     *,
     adapter: ActualUCNSAdapter,
     full_corpus_gate: UCNSFullCorpusGate,
-    edcm_commit: str,
+    edcm_tree: str,
     ucns_commit: str,
     manifest: AdmissionManifest | None = None,
     checkpoint_path: Path | None = None,
@@ -1421,10 +1432,10 @@ def run_archive(
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Run and reconcile the entire admitted archive.
 
-    ``adapter``, ``full_corpus_gate``, and the two immutable commits are explicit
+    ``adapter``, ``full_corpus_gate``, and immutable producer identities are explicit
     so tests can exercise the runner without installing optional siblings.
     Production CLI use loads and verifies the pinned UCNS checkout and clean
-    EDCM commit first.
+    EDCM package tree first.
     """
 
     manifest = manifest or load_admission_manifest()
@@ -1437,7 +1448,7 @@ def run_archive(
     state = _new_state(
         archive_sha256=archive_identity["sha256"],
         admission_digest=manifest.digest,
-        edcm_commit=edcm_commit,
+        edcm_tree=edcm_tree,
         ucns_commit=ucns_commit,
     )
     try:
@@ -1459,7 +1470,7 @@ def run_archive(
         expected_checkpoint_identity = {
             "admission_digest": manifest.digest,
             "archive_sha256": archive_identity["sha256"],
-            "edcm_commit": edcm_commit,
+            "edcm_tree": edcm_tree,
             "ucns_commit": ucns_commit,
         }
         resumed = (
@@ -1660,14 +1671,135 @@ def run_archive(
         archive.close()
 
 
-def _git_commit(root: Path, *, require_clean: bool) -> str:
+def _verify_git_tree(
+    root: Path,
+    pathspec: str,
+    *,
+    environment: dict[str, str],
+    treeish: str = "HEAD",
+    producer_name: str = "EDCM",
+    observed_root: Path | None = None,
+) -> None:
+    dirty_code = f"{producer_name}_DIRTY"
+    source_root = root if observed_root is None else observed_root
+    try:
+        tree_output = subprocess.run(
+            [
+                "git",
+                "ls-tree",
+                "-r",
+                "-z",
+                "--name-only",
+                treeish,
+                "--",
+                pathspec,
+            ],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            env=environment,
+        ).stdout
+        tracked_paths = {
+            Path(os.fsdecode(raw_path))
+            for raw_path in tree_output.split(b"\0")
+            if raw_path
+        }
+        scope = source_root / pathspec
+        actual_paths = (
+            {
+                path.relative_to(source_root)
+                for path in scope.rglob("*")
+                if path.is_file()
+            }
+            if scope.is_dir()
+            else {scope.relative_to(source_root)}
+        )
+    except (OSError, subprocess.CalledProcessError, ValueError) as exc:
+        raise CorpusRunError(
+            f"{producer_name} package tree cannot be verified",
+            code="GIT_IDENTITY",
+        ) from exc
+    unexpected_paths = {
+        path
+        for path in actual_paths - tracked_paths
+        if not (path.suffix == ".pyc" and "__pycache__" in path.parts)
+    }
+    if tracked_paths - actual_paths or unexpected_paths:
+        raise CorpusRunError(
+            f"{producer_name} package files differ from the sealed commit",
+            code=dirty_code,
+        )
+    for relative_path in sorted(tracked_paths):
+        try:
+            expected = subprocess.run(
+                [
+                    "git",
+                    "cat-file",
+                    "blob",
+                    f"{treeish}:{relative_path.as_posix()}",
+                ],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                env=environment,
+            ).stdout
+            observed = (source_root / relative_path).read_bytes()
+        except (OSError, subprocess.CalledProcessError) as exc:
+            raise CorpusRunError(
+                f"{producer_name} package bytes cannot be verified",
+                code="GIT_IDENTITY",
+            ) from exc
+        if observed != expected:
+            raise CorpusRunError(
+                f"{producer_name} package file differs from the sealed commit: {relative_path}",
+                code=dirty_code,
+            )
+    verified_paths = {(source_root / path).resolve() for path in tracked_paths}
+    for cached_path in scope.rglob("*.pyc") if scope.is_dir() else ():
+        if not _is_runtime_cache(cached_path):
+            continue
+        try:
+            source_path = Path(
+                importlib.util.source_from_cache(str(cached_path))
+            ).resolve()
+        except ValueError:
+            continue
+        if source_path not in verified_paths:
+            continue
+        try:
+            _verify_cached_bytecode(
+                cached_path.resolve(),
+                verified_paths=verified_paths,
+            )
+        except UCNSAdapterConstructionError as exc:
+            raise CorpusRunError(
+                f"{producer_name} cached bytecode differs from the sealed source: {cached_path.name}",
+                code=dirty_code,
+            ) from exc
+
+
+def _git_commit(
+    root: Path,
+    *,
+    require_clean: bool,
+    verify_tree: str | None = None,
+    producer_name: str = "EDCM",
+    expected_commit: str | None = None,
+) -> str:
+    environment = {
+        name: value
+        for name, value in os.environ.items()
+        if not name.startswith("GIT_")
+    }
+    environment["GIT_NO_REPLACE_OBJECTS"] = "1"
     try:
         commit = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
+            ["git", "rev-parse", "--verify", "HEAD^{commit}"],
             cwd=root,
             check=True,
             capture_output=True,
             text=True,
+            env=environment,
         ).stdout.strip()
         status = subprocess.run(
             ["git", "status", "--porcelain", "--untracked-files=no"],
@@ -1675,6 +1807,7 @@ def _git_commit(root: Path, *, require_clean: bool) -> str:
             check=True,
             capture_output=True,
             text=True,
+            env=environment,
         ).stdout.strip()
     except (OSError, subprocess.CalledProcessError) as exc:
         raise CorpusRunError(
@@ -1683,49 +1816,107 @@ def _git_commit(root: Path, *, require_clean: bool) -> str:
         ) from exc
     if require_clean and status:
         raise CorpusRunError(
-            "EDCM tracked files must be clean before a sealed corpus run",
-            code="EDCM_DIRTY",
+            f"{producer_name} tracked files must be clean before a sealed corpus run",
+            code=f"{producer_name}_DIRTY",
+        )
+    if expected_commit is not None and commit != expected_commit:
+        raise CorpusRunError(
+            f"{producer_name} checkout changed after sealed snapshot creation",
+            code="GIT_IDENTITY",
+        )
+    if verify_tree is not None:
+        _verify_git_tree(
+            root,
+            verify_tree,
+            environment=environment,
+            treeish=commit,
+            producer_name=producer_name,
         )
     return commit
+
+
+def _git_tree_identity(
+    root: Path,
+    pathspec: str,
+    *,
+    treeish: str = "HEAD",
+) -> str:
+    environment = {
+        name: value
+        for name, value in os.environ.items()
+        if not name.startswith("GIT_")
+    }
+    environment["GIT_NO_REPLACE_OBJECTS"] = "1"
+    try:
+        tree = subprocess.run(
+            ["git", "rev-parse", "--verify", f"{treeish}:{pathspec}"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+            env=environment,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise CorpusRunError(
+            "Git package-tree identity cannot be resolved",
+            code="GIT_IDENTITY",
+        ) from exc
+    if len(tree) != 40 or any(character not in "0123456789abcdef" for character in tree):
+        raise CorpusRunError(
+            "Git package-tree identity is malformed",
+            code="GIT_IDENTITY",
+        )
+    return tree
 
 
 def _load_pinned_runtime(
     ucns_source_root: Path,
 ) -> tuple[ActualUCNSAdapter, UCNSFullCorpusGate]:
-    commit = _git_commit(ucns_source_root, require_clean=True)
-    if commit != PINNED_UCNS_COMMIT:
-        raise CorpusRunError(
-            f"UCNS checkout mismatch: expected {PINNED_UCNS_COMMIT}, got {commit}",
-            code="UCNS_COMMIT",
-        )
     source_path = (ucns_source_root / "src").resolve()
     if not source_path.is_dir():
         raise CorpusRunError(
             "UCNS checkout has no src directory",
             code="UCNS_SOURCE_LAYOUT",
         )
-    existing = sys.modules.get("ucns")
-    if existing is not None:
-        module_path = Path(existing.__file__).resolve()
-        if not module_path.is_relative_to(source_path):
-            raise CorpusRunError(
-                "a different UCNS module is already imported",
-                code="UCNS_IMPORT_IDENTITY",
-            )
-        module = existing
-    else:
-        sys.path.insert(0, str(source_path))
-        try:
-            module = importlib.import_module("ucns")
-        finally:
-            sys.path.remove(str(source_path))
+    commit = _git_commit(
+        ucns_source_root,
+        require_clean=True,
+        verify_tree="src/ucns",
+        producer_name="UCNS",
+    )
+    if commit != PINNED_UCNS_COMMIT:
+        raise CorpusRunError(
+            f"UCNS checkout mismatch: expected {PINNED_UCNS_COMMIT}, got {commit}",
+            code="UCNS_COMMIT",
+        )
+    for name in tuple(sys.modules):
+        if name == "ucns" or name.startswith("ucns."):
+            sys.modules.pop(name, None)
+    importlib.invalidate_caches()
+    sys.path.insert(0, str(source_path))
+    try:
+        module = importlib.import_module("ucns")
+    except Exception as exc:
+        raise CorpusRunError(
+            f"authenticated UCNS import failed: {type(exc).__name__}: {exc}",
+            code="UCNS_IMPORT",
+        ) from exc
+    finally:
+        sys.path.remove(str(source_path))
     module_path = Path(module.__file__).resolve()
     if not module_path.is_relative_to(source_path):
         raise CorpusRunError(
             "imported UCNS module is not from the pinned checkout",
             code="UCNS_IMPORT_IDENTITY",
         )
-    return ActualUCNSAdapter(module), UCNSFullCorpusGate(module)
+    try:
+        adapter = ActualUCNSAdapter(module)
+        return adapter, UCNSFullCorpusGate(adapter._module)
+    except UCNSAdapterConstructionError as exc:
+        raise CorpusRunError(
+            f"UCNS adapter construction failed: {exc}",
+            code="UCNS_ADAPTER_CONSTRUCTION",
+        ) from exc
 
 
 def _incomplete_receipt(
@@ -1733,12 +1924,12 @@ def _incomplete_receipt(
     manifest: AdmissionManifest,
     error: CorpusRunError,
     archive_path: Path,
-    edcm_commit: str | None,
+    edcm_tree: str | None,
     ucns_commit: str,
 ) -> dict[str, Any]:
     state = dict(error.state)
     state.setdefault("archive_sha256", None)
-    state.setdefault("edcm_commit", edcm_commit)
+    state.setdefault("edcm_tree", edcm_tree)
     state.setdefault("ucns_commit", ucns_commit)
     state.setdefault("last_completed_dialogue_id", None)
     state.setdefault("last_completed_dialogue_index", None)
@@ -1773,13 +1964,117 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def main(argv: list[str] | None = None) -> int:
+def _sealed_worker_arguments(argv: list[str] | None = None) -> list[str] | None:
+    """Return worker arguments only inside the authenticated snapshot bootstrap."""
+
+    snapshot_value = os.environ.get(_SEALED_SNAPSHOT_ROOT_ENV)
+    if snapshot_value is None:
+        return None
+    required_values = {
+        _SEALED_REPOSITORY_ROOT_ENV: os.environ.get(_SEALED_REPOSITORY_ROOT_ENV),
+        _SEALED_EDCM_COMMIT_ENV: os.environ.get(_SEALED_EDCM_COMMIT_ENV),
+        _SEALED_EDCM_TREE_ENV: os.environ.get(_SEALED_EDCM_TREE_ENV),
+    }
+    if any(value is None for value in required_values.values()):
+        raise RuntimeError("sealed worker context is incomplete")
+    snapshot_root = Path(snapshot_value).resolve()
+    expected_module = snapshot_root / "edcm/corpora/multiwoz21.py"
+    if Path(__file__).resolve() != expected_module:
+        raise RuntimeError("sealed worker is not executing from its snapshot")
+    if not sys.path or Path(sys.path[0]).resolve() != snapshot_root:
+        raise RuntimeError("sealed worker snapshot is not first on the import path")
+    if not sys.dont_write_bytecode or sys.pycache_prefix is not None:
+        raise RuntimeError("sealed worker bytecode isolation is inactive")
+    return list(sys.argv[1:] if argv is None else argv)
+
+
+def _sealed_main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
     manifest = load_admission_manifest()
-    repository_root = Path(__file__).resolve().parents[2]
-    edcm_commit: str | None = None
+    sealed_repository_root = os.environ.get(_SEALED_REPOSITORY_ROOT_ENV)
+    repository_root = (
+        Path(sealed_repository_root).resolve()
+        if sealed_repository_root is not None
+        else Path(__file__).resolve().parents[2]
+    )
+    sealed_commit = os.environ.get(_SEALED_EDCM_COMMIT_ENV)
+    sealed_tree = os.environ.get(_SEALED_EDCM_TREE_ENV)
+    sealed_snapshot_root = os.environ.get(_SEALED_SNAPSHOT_ROOT_ENV)
+    edcm_tree: str | None = sealed_tree
+    completed_state: dict[str, Any] | None = None
+
+    def emit_failure(error: CorpusRunError) -> int:
+        receipt = _incomplete_receipt(
+            manifest=manifest,
+            error=error,
+            archive_path=args.archive,
+            edcm_tree=edcm_tree,
+            ucns_commit=PINNED_UCNS_COMMIT,
+        )
+        try:
+            _write_json_atomic(args.receipt.resolve(), receipt)
+        except OSError as receipt_error:
+            print(
+                json.dumps(
+                    {
+                        "error_code": error.code,
+                        "reason": str(error),
+                        "receipt_error": (
+                            f"{type(receipt_error).__name__}: {receipt_error}"
+                        ),
+                        "status": "incomplete-receipt-write-failed",
+                    },
+                    sort_keys=True,
+                ),
+                file=sys.stderr,
+            )
+            return 1
+        print(
+            json.dumps(
+                {
+                    "error_code": error.code,
+                    "reason": str(error),
+                    "receipt": str(args.receipt),
+                    "status": "incomplete",
+                },
+                sort_keys=True,
+            ),
+            file=sys.stderr,
+        )
+        return 1
+
     try:
-        edcm_commit = _git_commit(repository_root, require_clean=True)
+        commit = _git_commit(
+            repository_root,
+            require_clean=True,
+            verify_tree="edcm",
+            expected_commit=sealed_commit,
+        )
+        edcm_tree = _git_tree_identity(
+            repository_root,
+            "edcm",
+            treeish=commit,
+        )
+        if sealed_tree is not None and edcm_tree != sealed_tree:
+            raise CorpusRunError(
+                "EDCM package tree differs from the sealed bootstrap snapshot",
+                code="GIT_IDENTITY",
+            )
+        if sealed_snapshot_root is not None:
+            environment = {
+                name: value
+                for name, value in os.environ.items()
+                if not name.startswith("GIT_")
+            }
+            environment["GIT_NO_REPLACE_OBJECTS"] = "1"
+            _verify_git_tree(
+                repository_root,
+                "edcm",
+                environment=environment,
+                treeish=commit,
+                producer_name="EDCM_SNAPSHOT",
+                observed_root=Path(sealed_snapshot_root).resolve(),
+            )
         adapter, full_corpus_gate = _load_pinned_runtime(
             args.ucns_source_root.resolve()
         )
@@ -1787,7 +2082,7 @@ def main(argv: list[str] | None = None) -> int:
             args.archive.resolve(),
             adapter=adapter,
             full_corpus_gate=full_corpus_gate,
-            edcm_commit=edcm_commit,
+            edcm_tree=edcm_tree,
             ucns_commit=PINNED_UCNS_COMMIT,
             manifest=manifest,
             checkpoint_path=(
@@ -1795,6 +2090,25 @@ def main(argv: list[str] | None = None) -> int:
             ),
             checkpoint_every=args.checkpoint_every,
         )
+        completed_state = {
+            "archive_sha256": receipt["identities"]["archive_sha256"],
+            "edcm_tree": receipt["identities"]["edcm_tree"],
+            "ucns_commit": receipt["identities"]["ucns_commit"],
+            "last_completed_dialogue_id": receipt["last_completed"][
+                "dialogue_id"
+            ],
+            "last_completed_dialogue_index": receipt["last_completed"][
+                "dialogue_index"
+            ],
+            "active_dialogue_id": receipt["next_or_active"]["dialogue_id"],
+            "active_dialogue_index": receipt["next_or_active"][
+                "dialogue_index"
+            ],
+            "active_turn_index": receipt["next_or_active"]["turn_index"],
+            "adapter_turns": receipt["processed"]["adapter_turns"],
+            "dialogues": receipt["processed"]["dialogues"],
+            "source_turns": receipt["processed"]["source_turns"],
+        }
         _write_json_atomic(args.output.resolve(), report)
         _write_json_atomic(args.receipt.resolve(), receipt)
         print(
@@ -1811,28 +2125,24 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 0
     except CorpusRunError as exc:
-        receipt = _incomplete_receipt(
-            manifest=manifest,
-            error=exc,
-            archive_path=args.archive,
-            edcm_commit=edcm_commit,
-            ucns_commit=PINNED_UCNS_COMMIT,
+        return emit_failure(exc)
+    except OSError as exc:
+        return emit_failure(
+            CorpusRunError(
+                f"output storage failed: {type(exc).__name__}: {exc}",
+                code="OUTPUT_IO",
+                state={} if completed_state is None else completed_state,
+            )
         )
-        _write_json_atomic(args.receipt.resolve(), receipt)
-        print(
-            json.dumps(
-                {
-                    "error_code": exc.code,
-                    "reason": str(exc),
-                    "receipt": str(args.receipt),
-                    "status": "incomplete",
-                },
-                sort_keys=True,
-            ),
-            file=sys.stderr,
-        )
-        return 1
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sealed_worker_arguments = _sealed_worker_arguments()
+    if sealed_worker_arguments is None:
+        print(
+            "unauthenticated module entry refused; run "
+            "'python edcm/corpora/run_multiwoz21_seal.py' from the repository",
+            file=sys.stderr,
+        )
+        raise SystemExit(2)
+    raise SystemExit(_sealed_main(sealed_worker_arguments))

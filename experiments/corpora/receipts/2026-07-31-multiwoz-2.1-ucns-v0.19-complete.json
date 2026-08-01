@@ -1,0 +1,72 @@
+{
+  "admission_digest": "dfe7b65a9f4af739a4d149e65e60674333e87f56ff9db3cd07c144b9cab85fc2",
+  "corpus_id": "multiwoz-2.1",
+  "error": null,
+  "identities": {
+    "archive_sha256": "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e",
+    "edcm_tree": "658767bc64936f152e19c2f1cebb9ae86c1932cb",
+    "ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
+  },
+  "last_completed": {
+    "dialogue_id": "MUL0501.json",
+    "dialogue_index": 10437
+  },
+  "next_or_active": {
+    "dialogue_id": null,
+    "dialogue_index": null,
+    "turn_index": null
+  },
+  "processed": {
+    "adapter_turns": 143048,
+    "dialogues": 10438,
+    "source_turns": 143048
+  },
+  "receipt_digest": "feb7e98891cdb4baee521cc90c68a695922d9ce70d665678fa9e9ea3dde5f629",
+  "reconciliation": {
+    "checks": {
+      "adapter_turns_equal_source_turns": true,
+      "all_test_ids_seen": true,
+      "all_validation_ids_seen": true,
+      "dialogue_count_matches_manifest": true,
+      "partition_counts_match_manifest": true,
+      "stream_count_equals_processed_count": true,
+      "unit_support_equals_adapter_turns": true
+    },
+    "complete": true,
+    "expected_dialogues": 10438,
+    "expected_partitions": {
+      "test": 1000,
+      "train": 8438,
+      "validation": 1000
+    },
+    "observed_dialogues": 10438,
+    "observed_partitions": {
+      "test": 1000,
+      "train": 8438,
+      "validation": 1000
+    }
+  },
+  "report_digest": "2dd40a6c220db0fb99bfdbca8237ab7910d041dede1cd33d2ae4873dd3a9e4b4",
+  "report_sha256": "2ba500a78bff3f805b26dd9505fc3305207a28c69ae420732ddba1176d14174d",
+  "schema_id": "edcm.corpus-run-receipt",
+  "schema_version": "1.3.0",
+  "status": "complete",
+  "ucns_full_corpus": {
+    "failure": null,
+    "gate_effect": "open-for-failure-seeking-analysis-only",
+    "processed_turn_count": 143048,
+    "receipt_id": "921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c",
+    "source_native_reconciliation": {
+      "checks": {
+        "dialogue_count_matches_source_native_pass": true,
+        "turn_count_matches_source_native_pass": true,
+        "turn_evidence_chain_matches_source_native_pass": true
+      },
+      "complete": true,
+      "dialogues": 10438,
+      "turn_evidence_digest_chain": "d3d61c5e6104b10ae062be968779edf103f721f6c15dac279bfad63b30d22449",
+      "turns": 143048
+    },
+    "status": "complete"
+  }
+}

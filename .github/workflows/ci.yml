@@ -160,7 +160,7 @@ jobs:
           contract = result["edcm_result"]
           observation = contract["ucns_profile_observation"]
           assert observation["profile_id"] == "ucns.profile.edcm-word-gonol"
-          assert observation["source_commit"] == "868d80878c9ecd93ff30e91ca289122ded805a49"
+          assert observation["source_commit"] == "872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
           assert observation["source_domain"] == "unicode-scalar-values"
           assert observation["space_assignment_policy"] == "unicode-white-space-origin-v1"
           assert observation["space_code_points_sha256"] == "a5dc5ec34775d511a02b17911aa385c5d92908ee58749ea16d721cd53d19b944"

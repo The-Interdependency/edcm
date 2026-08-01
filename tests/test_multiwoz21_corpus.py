@@ -60,15 +60,23 @@ from __future__ import annotations
 #   cleanup: tempdir_teardown
 # === END CHECKS ===
 
+import importlib.util
 import io
 import json
 from hashlib import sha256
+import os
 from pathlib import Path
+import py_compile
+import shutil
+import subprocess
+import sys
+from types import ModuleType
 from typing import Any
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import pytest
 
+import edcm.corpora.multiwoz21 as multiwoz21_module
 from edcm.corpora.multiwoz21 import (
     AdmissionManifest,
     CorpusRunError,
@@ -76,7 +84,33 @@ from edcm.corpora.multiwoz21 import (
     iter_top_level_object,
     run_archive,
 )
-from edcm.ucns_adapter import ActualUCNSAdapter, PINNED_UCNS_COMMIT
+from edcm.ucns_adapter import (
+    ActualUCNSAdapter,
+    PINNED_UCNS_COMMIT,
+    UCNSAdapterConstructionError,
+)
+
+
+SEAL_LAUNCHER = (
+    Path(multiwoz21_module.__file__).resolve().parent
+    / "run_multiwoz21_seal.py"
+)
+
+
+def _run_seal_launcher(
+    argv: list[str],
+    *,
+    repository_root: Path,
+) -> int:
+    return subprocess.run(
+        [
+            sys.executable,
+            str(SEAL_LAUNCHER),
+            f"--edcm-repository-root={repository_root}",
+            *argv,
+        ],
+        check=False,
+    ).returncode
 
 
 SPACE_MANIFESTATIONS = frozenset(
@@ -620,6 +654,109 @@ def test_historical_report_is_superseded_by_exact_sealed_rerun() -> None:
         "ucns_commit": expected_identities["ucns_commit"],
     }
 
+    v019_report_path = (
+        root
+        / "experiments/corpora/results/"
+        "2026-07-31-multiwoz-2.1-ucns-v0.19-full.json"
+    )
+    v019_receipt_path = (
+        root
+        / "experiments/corpora/receipts/"
+        "2026-07-31-multiwoz-2.1-ucns-v0.19-complete.json"
+    )
+    v019 = json.loads(v019_report_path.read_text(encoding="utf-8"))
+    v019_receipt = json.loads(v019_receipt_path.read_text(encoding="utf-8"))
+    v019_handoff = json.loads(
+        (root / "handoffs/ucns-profile-consumer-status.json").read_text(
+            encoding="utf-8"
+        )
+    )["sealed_ucns_v019_corpus_evidence"]
+
+    assert v019["report_digest"] == (
+        "2dd40a6c220db0fb99bfdbca8237ab7910d041dede1cd33d2ae4873dd3a9e4b4"
+    )
+    assert v019_receipt["receipt_digest"] == (
+        "feb7e98891cdb4baee521cc90c68a695922d9ce70d665678fa9e9ea3dde5f629"
+    )
+    assert v019["schema_version"] == "1.3.0"
+    assert v019_receipt["schema_version"] == "1.3.0"
+    assert v019["report_digest"] == _canonical_digest_without(
+        v019, "report_digest"
+    )
+    assert v019_receipt["receipt_digest"] == _canonical_digest_without(
+        v019_receipt, "receipt_digest"
+    )
+    assert sha256(v019_report_path.read_bytes()).hexdigest() == (
+        "2ba500a78bff3f805b26dd9505fc3305207a28c69ae420732ddba1176d14174d"
+    )
+    assert sha256(v019_receipt_path.read_bytes()).hexdigest() == (
+        "ec384e9151d17a110240ad07545ce6448414b582bae1403e592972be6f48f9da"
+    )
+    v019_identities = {
+        "archive_sha256": (
+            "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e"
+        ),
+        "edcm_tree": "658767bc64936f152e19c2f1cebb9ae86c1932cb",
+        "ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
+    }
+    assert v019_receipt["identities"] == v019_identities
+    assert v019["identities"]["edcm_tree"] == v019_identities["edcm_tree"]
+    assert v019["identities"]["ucns_commit"] == v019_identities["ucns_commit"]
+    assert v019["profile"]["source_commit"] == v019_identities["ucns_commit"]
+    assert v019_receipt["report_digest"] == v019["report_digest"]
+    assert v019_receipt["report_sha256"] == sha256(
+        v019_report_path.read_bytes()
+    ).hexdigest()
+
+    assert v019["execution"] == current["execution"]
+    assert (
+        v019["failure_seeking_observations"]
+        == current["failure_seeking_observations"]
+    )
+    assert v019["identities"]["source_dialogue_digest_chain"] == (
+        current["identities"]["source_dialogue_digest_chain"]
+    )
+    assert v019["identities"]["turn_evidence_digest_chain"] == (
+        current["identities"]["turn_evidence_digest_chain"]
+    )
+    v019_gate = v019["ucns_full_corpus_gate"]
+    assert v019_gate["schema_version"] == "0.14.1"
+    assert v019_gate["status"] == "complete"
+    assert v019_gate["processed_turn_count"] == 143048
+    assert v019_gate["exact_source_stream_sha256"] == (
+        "e94ba2e5e1e9d52b23fd5b9c33303be009dae32f4c3bc6a1d5186a353acb40b5"
+    )
+    assert (
+        v019_gate["exact_observation_stream_sha256"]
+        == v019_gate["exact_source_stream_sha256"]
+    )
+    assert v019_gate["receipt"]["receipt_id"] == receipt_id
+    assert v019_receipt["ucns_full_corpus"]["receipt_id"] == receipt_id
+    assert v019_gate["activations"] == {
+        "edcm": "inactive",
+        "metapat": "inactive",
+        "selection_effect": "none",
+    }
+    assert v019["canon_selection"] is None
+    assert v019["information_boundaries"]["candidate_measurement"] == "not-run"
+    assert v019["information_boundaries"]["formal_ucns_geometry"] == "NA"
+    assert v019["information_boundaries"]["raw_source_committed"] is False
+
+    assert v019_handoff == {
+        "corpus_id": "multiwoz-2.1",
+        "edcm_tree": v019_identities["edcm_tree"],
+        "exact_stream_sha256": v019_gate["exact_source_stream_sha256"],
+        "receipt_digest": v019_receipt["receipt_digest"],
+        "receipt_id": receipt_id,
+        "receipt_path": str(v019_receipt_path.relative_to(root)),
+        "receipt_sha256": sha256(v019_receipt_path.read_bytes()).hexdigest(),
+        "report_digest": v019["report_digest"],
+        "report_path": str(v019_report_path.relative_to(root)),
+        "report_sha256": sha256(v019_report_path.read_bytes()).hexdigest(),
+        "status": "complete",
+        "ucns_commit": v019_identities["ucns_commit"],
+    }
+
 
 def test_full_fixture_run_preserves_order_exact_text_and_profile_counts(
     tmp_path: Path,
@@ -629,7 +766,7 @@ def test_full_fixture_run_preserves_order_exact_text_and_profile_counts(
         archive,
         adapter=FixtureAdapter(),
         full_corpus_gate=FixtureFullCorpusGate(),
-        edcm_commit="fixture-edcm",
+        edcm_tree="fixture-edcm-tree",
         ucns_commit="fixture-ucns",
         manifest=manifest,
     )
@@ -646,8 +783,10 @@ def test_full_fixture_run_preserves_order_exact_text_and_profile_counts(
         "validation": 0,
     }
     observations = report["failure_seeking_observations"]
-    assert report["schema_version"] == "1.2.0"
-    assert receipt["schema_version"] == "1.2.0"
+    assert report["schema_version"] == "1.3.0"
+    assert receipt["schema_version"] == "1.3.0"
+    assert report["identities"]["edcm_tree"] == "fixture-edcm-tree"
+    assert receipt["identities"]["edcm_tree"] == "fixture-edcm-tree"
     assert report["profile"]["space_assignment_policy"] == (
         "unicode-white-space-origin-v1"
     )
@@ -690,12 +829,663 @@ def test_archive_mutation_fails_before_dialogue_observation(tmp_path: Path) -> N
             archive,
             adapter=FixtureAdapter(),
             full_corpus_gate=FixtureFullCorpusGate(),
-            edcm_commit="fixture-edcm",
+            edcm_tree="fixture-edcm-tree",
             ucns_commit="fixture-ucns",
             manifest=manifest,
         )
     assert caught.value.code == "ARCHIVE_BYTES"
     assert caught.value.state == {}
+
+
+def test_adapter_construction_failure_writes_incomplete_receipt(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    source_root = tmp_path / "ucns-source"
+    module_path = source_root / "src/ucns/__init__.py"
+    module_path.parent.mkdir(parents=True)
+    module_path.write_text("# fixture\n", encoding="utf-8")
+    module = ModuleType("ucns")
+    module.__file__ = str(module_path)
+
+    monkeypatch.setitem(multiwoz21_module.sys.modules, "ucns", module)
+    monkeypatch.setattr(
+        multiwoz21_module,
+        "_git_commit",
+        lambda root, *, require_clean, verify_tree=None, producer_name="EDCM", expected_commit=None: PINNED_UCNS_COMMIT,
+    )
+    monkeypatch.setattr(
+        multiwoz21_module,
+        "_git_tree_identity",
+        lambda root, pathspec, *, treeish="HEAD": "fixture-edcm-tree",
+    )
+
+    def reject_adapter(candidate):
+        raise UCNSAdapterConstructionError("fixture identity rejection")
+
+    monkeypatch.setattr(multiwoz21_module, "ActualUCNSAdapter", reject_adapter)
+    receipt_path = tmp_path / "receipt.json"
+    exit_code = multiwoz21_module._sealed_main(
+        [
+            "--archive",
+            str(tmp_path / "archive.zip"),
+            "--ucns-source-root",
+            str(source_root),
+            "--output",
+            str(tmp_path / "report.json"),
+            "--receipt",
+            str(receipt_path),
+        ]
+    )
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert exit_code == 1
+    assert receipt["status"] == "incomplete"
+    assert receipt["error"]["code"] == "UCNS_ADAPTER_CONSTRUCTION"
+    assert "fixture identity rejection" in receipt["error"]["reason"]
+
+
+def test_module_entry_refuses_unauthenticated_worker_flag() -> None:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "edcm.corpora.multiwoz21",
+            "--edcm-sealed-worker",
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 2
+    assert "unauthenticated module entry refused" in completed.stderr
+
+
+def test_direct_worker_flag_is_not_a_worker_capability(monkeypatch) -> None:
+    for name in (
+        multiwoz21_module._SEALED_REPOSITORY_ROOT_ENV,
+        multiwoz21_module._SEALED_EDCM_COMMIT_ENV,
+        multiwoz21_module._SEALED_EDCM_TREE_ENV,
+        multiwoz21_module._SEALED_SNAPSHOT_ROOT_ENV,
+    ):
+        monkeypatch.delenv(name, raising=False)
+
+    assert (
+        multiwoz21_module._sealed_worker_arguments(
+            ["--edcm-sealed-worker", "--archive=untrusted.zip"]
+        )
+        is None
+    )
+
+
+def test_isolated_bootstrap_avoids_post_311_extraction_filter_apis() -> None:
+    bootstrap = SEAL_LAUNCHER.read_text(encoding="utf-8")
+
+    assert "tarfile.data_filter" not in bootstrap
+    assert ".extractall(" not in bootstrap
+    assert "member.isfile()" in bootstrap
+    assert "member.isdir()" in bootstrap
+    assert multiwoz21_module.load_admission_manifest().digest in bootstrap
+    assert "if not name.startswith(\"GIT_\")" in bootstrap
+    assert "runpy.run_module" in bootstrap
+
+
+@pytest.mark.parametrize("equals_form", [False, True], ids=["split", "equals"])
+def test_bootstrap_git_failure_writes_incomplete_receipt(
+    tmp_path: Path,
+    equals_form: bool,
+) -> None:
+    repository = tmp_path / "not-a-repository"
+    repository.mkdir()
+    receipt_path = tmp_path / "bootstrap-receipt.json"
+    archive_path = tmp_path / "archive.zip"
+
+    archive_arguments = (
+        [f"--archive={archive_path}"]
+        if equals_form
+        else ["--archive", str(archive_path)]
+    )
+    receipt_arguments = (
+        [f"--receipt={receipt_path}"]
+        if equals_form
+        else ["--receipt", str(receipt_path)]
+    )
+    exit_code = _run_seal_launcher(
+        [
+            *archive_arguments,
+            "--ucns-source-root",
+            str(tmp_path / "ucns"),
+            "--output",
+            str(tmp_path / "report.json"),
+            *receipt_arguments,
+        ],
+        repository_root=repository,
+    )
+
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert exit_code == 1
+    assert receipt["schema_id"] == multiwoz21_module.RECEIPT_SCHEMA_ID
+    assert receipt["schema_version"] == multiwoz21_module.RECEIPT_SCHEMA_VERSION
+    assert receipt["admission_digest"] == (
+        multiwoz21_module.load_admission_manifest().digest
+    )
+    assert receipt["status"] == "incomplete"
+    assert receipt["error"]["code"] == "GIT_IDENTITY"
+    assert receipt["source_artifact_filename"] == archive_path.name
+    assert receipt["receipt_digest"] == _canonical_digest_without(
+        receipt,
+        "receipt_digest",
+    )
+
+
+def test_worker_output_failure_uses_output_io_receipt(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    output_path = (tmp_path / "report.json").resolve()
+    receipt_path = (tmp_path / "receipt.json").resolve()
+    original_write = multiwoz21_module._write_json_atomic
+
+    monkeypatch.setattr(
+        multiwoz21_module,
+        "_git_commit",
+        lambda root, *, require_clean, verify_tree=None, producer_name="EDCM", expected_commit=None: "fixture-commit",
+    )
+    monkeypatch.setattr(
+        multiwoz21_module,
+        "_git_tree_identity",
+        lambda root, pathspec, *, treeish="HEAD": "fixture-edcm-tree",
+    )
+    monkeypatch.setattr(
+        multiwoz21_module,
+        "_load_pinned_runtime",
+        lambda source_root: (object(), object()),
+    )
+    monkeypatch.setattr(
+        multiwoz21_module,
+        "run_archive",
+        lambda *args, **kwargs: (
+            {},
+            {
+                "identities": {
+                    "archive_sha256": "fixture-archive",
+                    "edcm_tree": "fixture-edcm-tree",
+                    "ucns_commit": PINNED_UCNS_COMMIT,
+                },
+                "last_completed": {
+                    "dialogue_id": "fixture-final.json",
+                    "dialogue_index": 10437,
+                },
+                "next_or_active": {
+                    "dialogue_id": None,
+                    "dialogue_index": None,
+                    "turn_index": None,
+                },
+                "processed": {
+                    "adapter_turns": 143048,
+                    "dialogues": 10438,
+                    "source_turns": 143048,
+                },
+            },
+        ),
+    )
+
+    def fail_report_write(path, payload):
+        if path == output_path:
+            raise PermissionError("fixture report path is unwritable")
+        return original_write(path, payload)
+
+    monkeypatch.setattr(
+        multiwoz21_module,
+        "_write_json_atomic",
+        fail_report_write,
+    )
+    exit_code = multiwoz21_module._sealed_main(
+        [
+            "--archive",
+            str(tmp_path / "archive.zip"),
+            "--ucns-source-root",
+            str(tmp_path / "ucns"),
+            "--output",
+            str(output_path),
+            "--receipt",
+            str(receipt_path),
+        ]
+    )
+
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert exit_code == 1
+    assert receipt["status"] == "incomplete"
+    assert receipt["error"]["code"] == "OUTPUT_IO"
+    assert "PermissionError" in receipt["error"]["reason"]
+    assert receipt["last_completed"] == {
+        "dialogue_id": "fixture-final.json",
+        "dialogue_index": 10437,
+    }
+    assert receipt["processed"] == {
+        "adapter_turns": 143048,
+        "dialogues": 10438,
+        "source_turns": 143048,
+    }
+    assert receipt["receipt_digest"] == _canonical_digest_without(
+        receipt,
+        "receipt_digest",
+    )
+
+
+def test_early_git_failure_receipt_retains_sealed_tree(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    sealed_tree = "a" * 40
+    monkeypatch.setenv(multiwoz21_module._SEALED_EDCM_TREE_ENV, sealed_tree)
+
+    def fail_git(*args, **kwargs):
+        raise CorpusRunError("fixture checkout changed", code="GIT_IDENTITY")
+
+    monkeypatch.setattr(multiwoz21_module, "_git_commit", fail_git)
+    receipt_path = tmp_path / "receipt.json"
+    exit_code = multiwoz21_module._sealed_main(
+        [
+            "--archive",
+            str(tmp_path / "archive.zip"),
+            "--ucns-source-root",
+            str(tmp_path / "ucns"),
+            "--output",
+            str(tmp_path / "report.json"),
+            "--receipt",
+            str(receipt_path),
+        ]
+    )
+
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert exit_code == 1
+    assert receipt["status"] == "incomplete"
+    assert receipt["error"]["code"] == "GIT_IDENTITY"
+    assert receipt["identities"]["edcm_tree"] == sealed_tree
+
+
+def _committed_edcm_fixture(tmp_path: Path) -> Path:
+    repository = tmp_path / "repository"
+    shutil.copytree(
+        Path(multiwoz21_module.__file__).resolve().parents[1],
+        repository / "edcm",
+        ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
+    )
+    subprocess.run(
+        ["git", "init", str(repository)],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(repository), "add", "edcm"],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(repository),
+            "-c",
+            "user.name=EDCM Test",
+            "-c",
+            "user.email=edcm-test@example.invalid",
+            "commit",
+            "-m",
+            "trusted EDCM fixture",
+        ],
+        check=True,
+        capture_output=True,
+    )
+    return repository
+
+
+def test_source_launcher_rejects_altered_runner_cache(
+    tmp_path: Path,
+) -> None:
+    repository = _committed_edcm_fixture(tmp_path)
+    source = repository / "edcm/corpora/multiwoz21.py"
+    original_source = source.read_bytes()
+    altered_source = original_source.replace(
+        b"if not _is_runtime_cache(cached_path):",
+        b"if     _is_runtime_cache(cached_path):",
+        1,
+    )
+    assert altered_source != original_source
+    assert len(altered_source) == len(original_source)
+    source.write_bytes(altered_source)
+    cache = Path(importlib.util.cache_from_source(str(source)))
+    py_compile.compile(str(source), cfile=str(cache), doraise=True)
+    compiled_stat = source.stat()
+    source.write_bytes(original_source)
+    os.utime(
+        source,
+        ns=(compiled_stat.st_atime_ns, compiled_stat.st_mtime_ns),
+    )
+
+    receipt = tmp_path / "cache-rejection-receipt.json"
+    exit_code = _run_seal_launcher(
+        [
+            "--archive",
+            str(tmp_path / "archive.zip"),
+            "--ucns-source-root",
+            str(tmp_path / "ucns"),
+            "--output",
+            str(tmp_path / "report.json"),
+            "--receipt",
+            str(receipt),
+        ],
+        repository_root=repository,
+    )
+
+    assert exit_code == 1
+    assert json.loads(receipt.read_text(encoding="utf-8"))["error"]["code"] == (
+        "EDCM_DIRTY"
+    )
+
+
+def test_isolated_bootstrap_preserves_caller_relative_paths(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    repository = _committed_edcm_fixture(tmp_path)
+    caller = tmp_path / "caller"
+    caller.mkdir()
+    monkeypatch.chdir(caller)
+
+    exit_code = _run_seal_launcher(
+        [
+            "--archive",
+            "archive.zip",
+            "--ucns-source-root",
+            "ucns",
+            "--output",
+            "report.json",
+            "--receipt",
+            "receipt.json",
+        ],
+        repository_root=repository,
+    )
+
+    assert exit_code == 1
+    assert (caller / "receipt.json").is_file()
+    assert not (repository / "receipt.json").exists()
+
+
+def test_ucns_tree_is_authenticated_before_import(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    source_root = tmp_path / "ucns-source"
+    module_path = source_root / "src/ucns/__init__.py"
+    module_path.parent.mkdir(parents=True)
+    module_path.write_text("# fixture\n", encoding="utf-8")
+    events: list[str] = []
+    module = ModuleType("ucns")
+    module.__file__ = str(module_path)
+    module.V014_FULL_CORPUS_SCHEMA_ID = (
+        multiwoz21_module.UCNS_FULL_CORPUS_SCHEMA_ID
+    )
+    module.V014_FULL_CORPUS_SCHEMA_VERSION = (
+        multiwoz21_module.UCNS_FULL_CORPUS_SCHEMA_VERSION
+    )
+    for name in UCNSFullCorpusGate._REQUIRED_SURFACES:
+        setattr(module, name, lambda *args, **kwargs: None)
+
+    def verify(
+        root,
+        *,
+        require_clean,
+        verify_tree=None,
+        producer_name="EDCM",
+        expected_commit=None,
+    ):
+        events.append("verify")
+        assert verify_tree == "src/ucns"
+        assert producer_name == "UCNS"
+        return PINNED_UCNS_COMMIT
+
+    def import_module(name):
+        events.append("import")
+        assert name == "ucns"
+        assert "ucns" not in multiwoz21_module.sys.modules
+        return module
+
+    class FixtureAdapter:
+        def __init__(self, candidate):
+            events.append("adapter")
+            self._module = candidate
+
+    monkeypatch.setitem(multiwoz21_module.sys.modules, "ucns", ModuleType("ucns"))
+    monkeypatch.setattr(multiwoz21_module, "_git_commit", verify)
+    monkeypatch.setattr(
+        multiwoz21_module.importlib,
+        "import_module",
+        import_module,
+    )
+    monkeypatch.setattr(multiwoz21_module, "ActualUCNSAdapter", FixtureAdapter)
+
+    multiwoz21_module._load_pinned_runtime(source_root)
+
+    assert events == ["verify", "import", "adapter"]
+
+
+def test_sealed_git_identity_disables_replacement_refs(tmp_path: Path) -> None:
+    checkout = tmp_path / "edcm"
+    checkout.mkdir()
+    subprocess.run(["git", "init", str(checkout)], check=True, capture_output=True)
+    tracked = checkout / "producer.py"
+    tracked.write_text("VALUE = 'trusted'\n", encoding="utf-8")
+    subprocess.run(
+        ["git", "-C", str(checkout), "add", "producer.py"],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "-c",
+            "user.name=EDCM Test",
+            "-c",
+            "user.email=edcm-test@example.invalid",
+            "commit",
+            "-m",
+            "trusted fixture",
+        ],
+        check=True,
+        capture_output=True,
+    )
+    commit = subprocess.run(
+        ["git", "-C", str(checkout), "rev-parse", "HEAD"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    tracked.write_text("VALUE = 'altered'\n", encoding="utf-8")
+    subprocess.run(
+        ["git", "-C", str(checkout), "add", "producer.py"],
+        check=True,
+        capture_output=True,
+    )
+    replacement_tree = subprocess.run(
+        ["git", "-C", str(checkout), "write-tree"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    replacement_commit = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "-c",
+            "user.name=EDCM Test",
+            "-c",
+            "user.email=edcm-test@example.invalid",
+            "commit-tree",
+            replacement_tree,
+            "-p",
+            commit,
+            "-m",
+            "replacement fixture",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    subprocess.run(
+        ["git", "-C", str(checkout), "reset", "--hard", commit],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(checkout), "replace", commit, replacement_commit],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(checkout), "reset", "--hard", commit],
+        check=True,
+        capture_output=True,
+    )
+    assert "altered" in tracked.read_text(encoding="utf-8")
+
+    with pytest.raises(CorpusRunError, match="tracked files must be clean"):
+        multiwoz21_module._git_commit(checkout, require_clean=True)
+
+
+def test_sealed_git_identity_rejects_hidden_package_mutation(
+    tmp_path: Path,
+) -> None:
+    checkout = tmp_path / "repository"
+    package = checkout / "edcm"
+    package.mkdir(parents=True)
+    tracked = package / "producer.py"
+    tracked.write_text("VALUE = 'trusted'\n", encoding="utf-8")
+    subprocess.run(["git", "init", str(checkout)], check=True, capture_output=True)
+    subprocess.run(
+        ["git", "-C", str(checkout), "add", "edcm/producer.py"],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "-c",
+            "user.name=EDCM Test",
+            "-c",
+            "user.email=edcm-test@example.invalid",
+            "commit",
+            "-m",
+            "trusted fixture",
+        ],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "update-index",
+            "--assume-unchanged",
+            "--",
+            "edcm/producer.py",
+        ],
+        check=True,
+        capture_output=True,
+    )
+    tracked.write_text("VALUE = 'altered'\n", encoding="utf-8")
+    status = subprocess.run(
+        ["git", "-C", str(checkout), "status", "--porcelain"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout
+    assert status == ""
+
+    with pytest.raises(CorpusRunError, match="differs from the sealed commit"):
+        multiwoz21_module._git_commit(
+            checkout,
+            require_clean=True,
+            verify_tree="edcm",
+        )
+
+
+def test_edcm_tree_identity_survives_evidence_only_commit(
+    tmp_path: Path,
+) -> None:
+    checkout = tmp_path / "repository"
+    package = checkout / "edcm"
+    package.mkdir(parents=True)
+    (package / "producer.py").write_text(
+        "VALUE = 'trusted'\n",
+        encoding="utf-8",
+    )
+    evidence = checkout / "evidence.json"
+    evidence.write_text('{"run": 1}\n', encoding="utf-8")
+    subprocess.run(["git", "init", str(checkout)], check=True, capture_output=True)
+    subprocess.run(
+        ["git", "-C", str(checkout), "add", "edcm", "evidence.json"],
+        check=True,
+        capture_output=True,
+    )
+    commit_command = [
+        "git",
+        "-C",
+        str(checkout),
+        "-c",
+        "user.name=EDCM Test",
+        "-c",
+        "user.email=edcm-test@example.invalid",
+        "commit",
+        "-m",
+    ]
+    subprocess.run(
+        [*commit_command, "producer"],
+        check=True,
+        capture_output=True,
+    )
+    producer_commit = subprocess.run(
+        ["git", "-C", str(checkout), "rev-parse", "HEAD"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    producer_tree = multiwoz21_module._git_tree_identity(checkout, "edcm")
+
+    evidence.write_text('{"run": 2}\n', encoding="utf-8")
+    subprocess.run(
+        ["git", "-C", str(checkout), "add", "evidence.json"],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        [*commit_command, "evidence"],
+        check=True,
+        capture_output=True,
+    )
+
+    assert multiwoz21_module._git_tree_identity(checkout, "edcm") == (
+        producer_tree
+    )
+    assert multiwoz21_module._git_tree_identity(
+        checkout,
+        "edcm",
+        treeish=producer_commit,
+    ) == producer_tree
+    with pytest.raises(CorpusRunError, match="changed after sealed snapshot"):
+        multiwoz21_module._git_commit(
+            checkout,
+            require_clean=True,
+            verify_tree="edcm",
+            expected_commit=producer_commit,
+        )
 
 
 def test_claimed_gate_without_source_exhaustion_cannot_complete(
@@ -707,7 +1497,7 @@ def test_claimed_gate_without_source_exhaustion_cannot_complete(
             archive,
             adapter=FixtureAdapter(),
             full_corpus_gate=NonConsumingFullCorpusGate(),
-            edcm_commit="fixture-edcm",
+            edcm_tree="fixture-edcm-tree",
             ucns_commit="fixture-ucns",
             manifest=manifest,
         )
@@ -731,7 +1521,7 @@ def test_manifest_count_mismatch_refuses_completion(tmp_path: Path) -> None:
             archive,
             adapter=FixtureAdapter(),
             full_corpus_gate=FixtureFullCorpusGate(),
-            edcm_commit="fixture-edcm",
+            edcm_tree="fixture-edcm-tree",
             ucns_commit="fixture-ucns",
             manifest=AdmissionManifest(payload),
         )
@@ -746,7 +1536,7 @@ def test_invalid_turn_reports_exact_active_source_position(tmp_path: Path) -> No
             archive,
             adapter=FixtureAdapter(),
             full_corpus_gate=FixtureFullCorpusGate(),
-            edcm_commit="fixture-edcm",
+            edcm_tree="fixture-edcm-tree",
             ucns_commit="fixture-ucns",
             manifest=manifest,
         )
@@ -766,7 +1556,7 @@ def test_report_and_checkpoint_exclude_source_turn_text(tmp_path: Path) -> None:
         archive,
         adapter=FixtureAdapter(),
         full_corpus_gate=FixtureFullCorpusGate(),
-        edcm_commit="fixture-edcm",
+        edcm_tree="fixture-edcm-tree",
         ucns_commit="fixture-ucns",
         manifest=manifest,
         checkpoint_path=checkpoint,
@@ -782,7 +1572,7 @@ def test_report_and_checkpoint_exclude_source_turn_text(tmp_path: Path) -> None:
         archive,
         adapter=FixtureAdapter(),
         full_corpus_gate=FixtureFullCorpusGate(),
-        edcm_commit="fixture-edcm",
+        edcm_tree="fixture-edcm-tree",
         ucns_commit="fixture-ucns",
         manifest=manifest,
         checkpoint_path=checkpoint,
@@ -801,7 +1591,7 @@ def test_actual_pinned_ucns_profile_can_drive_fixture_when_installed(
         archive,
         adapter=ActualUCNSAdapter(ucns),
         full_corpus_gate=UCNSFullCorpusGate(ucns),
-        edcm_commit="fixture-edcm",
+        edcm_tree="fixture-edcm-tree",
         ucns_commit=PINNED_UCNS_COMMIT,
         manifest=manifest,
     )

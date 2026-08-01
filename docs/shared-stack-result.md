@@ -74,7 +74,9 @@ assert contract["status_evidence"]["proof_status_transfers_to_measurement_validi
 
 ## Failure behavior
 
-The current path fails closed for profile identity or option drift, public
+The current path fails closed for profile identity or option drift, checkout
+package bytes that differ from the pinned tree, installed-package inventory or
+hash drift, executable-bytecode drift, malformed producer metadata, public
 alphabet drift, malformed turn containers, retired bridge/object/factorization
 inputs, malformed METAPAT evidence, and transitive import failures. Only direct
 optional-package absence becomes typed unavailability.

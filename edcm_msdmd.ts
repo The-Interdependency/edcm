@@ -121,24 +121,48 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic",
+        "internal_surface": "UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _git_tree_identity, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_worker_arguments, _sealed_main",
         "module_kind": "adapter",
         "module_name": "multiwoz21",
         "network_boundary": "none; source acquisition is separate and the runner requires local pinned bytes",
         "owner": "Erin Spencer",
-        "public_surface": "AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive, main",
-        "requires": "edcm_ucns_adapter, ucns.edcm and ucns.full_corpus at 868d80878c9ecd93ff30e91ca289122ded805a49",
+        "public_surface": "AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive",
+        "requires": "edcm_ucns_adapter, ucns.edcm and ucns.full_corpus at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
         "rollback": "remove the adapter and supersede its aggregate receipts by identity; raw source remains outside Git",
         "rollout": "explicit admitted full-corpus command; no sampling and no default measurement or canon selection",
         "since": "2026-07-28",
         "storage_boundary": "reads a caller-held archive and writes only caller-selected aggregate report, receipt, and resumable checkpoint paths",
-        "summary": "verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate without committing raw text",
+        "summary": "verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate from the reviewed v0.19 producer without committing raw text",
         "tests": "tests.test_multiwoz21_corpus",
         "unresolved": "source-native semantic labels for correction, retraction, and unresolved reference; formal UCNS geometry and lawful EDCM projection",
         "user_data_boundary": "exact dialogue text is processed in memory and represented only by counts and cryptographic identities in written outputs"
       },
       "file": "edcm/corpora/multiwoz21.py",
       "id": "edcm_multiwoz21_corpus"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "directly executed source is the bootstrap trust root and the child admits only the exact archived edcm tree",
+        "internal_surface": "_git_environment, _option_value, _pop_repository_root, _write_bootstrap_failure, _extract_source_only",
+        "module_kind": "adapter",
+        "module_name": "run_multiwoz21_seal",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "main",
+        "requires": "git, python3, edcm_multiwoz21_corpus",
+        "rollback": "remove the launcher and supersede evidence produced by its edcm tree identity",
+        "rollout": "invoke this source file directly from a clean repository checkout",
+        "since": "2026-08-01",
+        "storage_boundary": "reads a caller-held archive and writes only caller-selected aggregate, receipt, and checkpoint paths",
+        "summary": "establishes a cache-independent replacement-disabled Git snapshot before importing the sealed MultiWOZ runner",
+        "tests": "tests.test_multiwoz21_corpus",
+        "unresolved": "the host Python interpreter and Git executable remain external trust roots",
+        "user_data_boundary": "does not inspect dialogue text; the isolated runner owns in-memory source processing"
+      },
+      "file": "edcm/corpora/run_multiwoz21_seal.py",
+      "id": "edcm_multiwoz21_seal_launcher"
     },
     {
       "block": "MODULE_BUILD",
@@ -1082,7 +1106,7 @@ export default defineMsdmdCollection({
         "class": "safety",
         "given": "an importable UCNS package is considered for activation",
         "since": "2026-07-25",
-        "then": "every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type matches the pinned EDCM word-gonol surface or the adapter remains suspended"
+        "then": "checkout package bytes match the pinned Git tree or installed package bytes match the EDCM-pinned producer manifest plus raw RECORD as applicable, the verified UCNS module graph is freshly loaded, every runtime-loadable cached bytecode file derives from its verified source, and any producer-owned commit identity plus every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended"
       },
       "file": "edcm/ucns_adapter.py",
       "id": "edcm_ucns_exact_profile_only"
@@ -1114,20 +1138,20 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_canonical_bytes, _digest, _package_present, _token_record, _segment_record, _turn_record",
+        "internal_surface": "_canonical_bytes, _digest, _package_present, _run_git, _verify_checkout_package_tree, _source_checkout_commit, _code_semantic_identity, _is_runtime_cache, _verify_cached_bytecode, _verify_active_source_caches, _verify_pinned_package_tree, _verify_distribution_files, _reload_verified_ucns_module, _resolve_ucns_producer, _token_record, _segment_record, _turn_record",
         "module_kind": "adapter",
         "module_name": "ucns_adapter",
         "network_boundary": "none",
         "owner": "Erin Spencer",
         "public_surface": "ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter",
-        "requires": "ucns.edcm at 868d80878c9ecd93ff30e91ca289122ded805a49",
+        "requires": "ucns.edcm at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
         "rollback": "suspend the optional adapter; base EDCM measurement remains operational",
-        "rollout": "optional exact-profile activation only when the pinned profile surface matches",
+        "rollout": "optional exact-profile activation only when the pinned producer commit and profile surface match",
         "since": "2026-07-25",
         "storage_boundary": "none",
-        "summary": "fail-closed consumer for the exact EDCM-only UCNS word-gonol profile, preserving full-corpus speaker-turn observations without geometry or proof transfer",
+        "summary": "fail-closed consumer for the exact EDCM-only UCNS word-gonol profile from the reviewed v0.19 producer, preserving full-corpus speaker-turn observations without coordinate, geometry, or proof transfer",
         "tests": "tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_shared_stack_contract",
-        "unresolved": "formal Mobius coordinates, higher-gonol composition, and projection policies remain outside this observation adapter",
+        "unresolved": "consumption of the upstream nonselected ordered source-coordinate candidate, higher-gonol composition, and projection policies remain outside this observation adapter",
         "user_data_boundary": "exact source turns remain in caller-owned in-memory results and are not transmitted"
       },
       "file": "edcm/ucns_adapter.py",
@@ -2773,7 +2797,35 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_multiwoz21_corpus",
-      "to": "ucns.edcm and ucns.full_corpus at 868d80878c9ecd93ff30e91ca289122ded805a49"
+      "to": "ucns.edcm and ucns.full_corpus at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
+    },
+    {
+      "from": "edcm_multiwoz21_seal_launcher",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_seal_launcher",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_multiwoz21_seal_launcher",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_seal_launcher",
+      "to": "edcm_multiwoz21_corpus"
+    },
+    {
+      "from": "edcm_multiwoz21_seal_launcher",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_seal_launcher",
+      "to": "git"
+    },
+    {
+      "from": "edcm_multiwoz21_seal_launcher",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_seal_launcher",
+      "to": "python3"
     },
     {
       "from": "edcm_package",
@@ -2906,7 +2958,7 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_ucns_adapter",
-      "to": "ucns.edcm at 868d80878c9ecd93ff30e91ca289122ded805a49"
+      "to": "ucns.edcm at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
     },
     {
       "from": "edcm_ucns_dependency",
