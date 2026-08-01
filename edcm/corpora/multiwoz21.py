@@ -36,8 +36,8 @@ remain source-native noninputs to this profile run.
 #   module_kind: adapter
 #   summary: verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate from the reviewed v0.19 producer without committing raw text
 #   owner: Erin Spencer
-#   public_surface: AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive, main
-#   internal_surface: UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _git_tree_identity, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_worker_arguments, _sealed_main, _run_in_fresh_process
+#   public_surface: AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive
+#   internal_surface: UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _git_tree_identity, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_worker_arguments, _sealed_main
 #   auth_boundary: none
 #   storage_boundary: reads a caller-held archive and writes only caller-selected aggregate report, receipt, and resumable checkpoint paths
 #   network_boundary: none; source acquisition is separate and the runner requires local pinned bytes
@@ -122,177 +122,6 @@ _SEALED_REPOSITORY_ROOT_ENV = "EDCM_SEALED_REPOSITORY_ROOT"
 _SEALED_EDCM_COMMIT_ENV = "EDCM_SEALED_COMMIT"
 _SEALED_EDCM_TREE_ENV = "EDCM_SEALED_TREE"
 _SEALED_SNAPSHOT_ROOT_ENV = "EDCM_SEALED_SNAPSHOT_ROOT"
-_BOOTSTRAP_ADMISSION_DIGEST = (
-    "dfe7b65a9f4af739a4d149e65e60674333e87f56ff9db3cd07c144b9cab85fc2"
-)
-_ISOLATED_WORKER_BOOTSTRAP = """
-import hashlib
-import io
-import json
-import os
-from pathlib import Path
-import runpy
-import shutil
-import subprocess
-import sys
-import tarfile
-import tempfile
-
-repository_root = sys.argv.pop(1)
-environment = dict(os.environ)
-environment["GIT_NO_REPLACE_OBJECTS"] = "1"
-
-def option_value(name):
-    prefix = f"{name}="
-    for index, argument in enumerate(sys.argv):
-        if argument == name:
-            return sys.argv[index + 1] if index + 1 < len(sys.argv) else None
-        if argument.startswith(prefix):
-            return argument[len(prefix):]
-    return None
-
-def write_bootstrap_failure(reason, edcm_tree=None):
-    receipt_value = option_value("--receipt")
-    if receipt_value is None:
-        return
-    archive_value = option_value("--archive")
-    receipt = {
-        "admission_digest": "__BOOTSTRAP_ADMISSION_DIGEST__",
-        "corpus_id": "multiwoz-2.1",
-        "error": {"code": "GIT_IDENTITY", "reason": reason},
-        "identities": {
-            "archive_sha256": None,
-            "edcm_tree": edcm_tree,
-            "ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
-        },
-        "last_completed": {"dialogue_id": None, "dialogue_index": None},
-        "next_or_active": {
-            "dialogue_id": None,
-            "dialogue_index": None,
-            "turn_index": None,
-        },
-        "processed": {"adapter_turns": 0, "dialogues": 0, "source_turns": 0},
-        "reconciliation": None,
-        "report_digest": None,
-        "report_sha256": None,
-        "schema_id": "edcm.corpus-run-receipt",
-        "schema_version": "1.3.0",
-        "source_artifact_filename": (
-            None if archive_value is None else Path(archive_value).name
-        ),
-        "status": "incomplete",
-        "ucns_full_corpus": None,
-    }
-    receipt["receipt_digest"] = hashlib.sha256(
-        json.dumps(
-            receipt,
-            ensure_ascii=False,
-            sort_keys=True,
-            separators=(",", ":"),
-        ).encode("utf-8")
-    ).hexdigest()
-    receipt_path = Path(receipt_value).resolve()
-    receipt_path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = receipt_path.with_name(f".{receipt_path.name}.tmp")
-    temporary.write_text(
-        json.dumps(receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\\n",
-        encoding="utf-8",
-        newline="\\n",
-    )
-    temporary.replace(receipt_path)
-    print(
-        json.dumps(
-            {
-                "error_code": "GIT_IDENTITY",
-                "reason": reason,
-                "receipt": str(receipt_path),
-                "status": "incomplete",
-            },
-            sort_keys=True,
-        ),
-        file=sys.stderr,
-    )
-
-def extract_source_only(package, snapshot):
-    for member in package:
-        parts = member.name.split("/")
-        if (
-            not parts
-            or parts[0] != "edcm"
-            or any(part in {"", ".", ".."} for part in parts)
-        ):
-            raise RuntimeError("unsafe sealed-source archive path")
-        if member.name.endswith(".pyc") or "__pycache__" in parts:
-            continue
-        target = os.path.join(snapshot, *parts)
-        if member.isdir():
-            os.makedirs(target, exist_ok=True)
-            continue
-        if not member.isfile():
-            raise RuntimeError("unsafe sealed-source archive member type")
-        os.makedirs(os.path.dirname(target), exist_ok=True)
-        source = package.extractfile(member)
-        if source is None:
-            raise RuntimeError("sealed-source archive member cannot be read")
-        with source, open(target, "xb") as destination:
-            shutil.copyfileobj(source, destination)
-
-edcm_tree = None
-snapshot_context = None
-try:
-    commit = subprocess.run(
-        ["git", "rev-parse", "--verify", "HEAD^{commit}"],
-        cwd=repository_root,
-        check=True,
-        capture_output=True,
-        text=True,
-        env=environment,
-    ).stdout.strip()
-    edcm_tree = subprocess.run(
-        ["git", "rev-parse", "--verify", f"{commit}:edcm"],
-        cwd=repository_root,
-        check=True,
-        capture_output=True,
-        text=True,
-        env=environment,
-    ).stdout.strip()
-    archive = subprocess.run(
-        ["git", "archive", "--format=tar", commit, "edcm"],
-        cwd=repository_root,
-        check=True,
-        capture_output=True,
-        env=environment,
-    ).stdout
-    snapshot_context = tempfile.TemporaryDirectory(prefix="edcm-sealed-source-")
-    with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as package:
-        extract_source_only(package, snapshot_context.name)
-except (OSError, subprocess.CalledProcessError, tarfile.TarError, RuntimeError) as error:
-    if snapshot_context is not None:
-        snapshot_context.cleanup()
-    reason = f"sealed bootstrap failed: {type(error).__name__}: {error}"
-    try:
-        write_bootstrap_failure(reason, edcm_tree)
-    except OSError as receipt_error:
-        print(
-            f"{reason}; receipt failure: {type(receipt_error).__name__}: {receipt_error}",
-            file=sys.stderr,
-        )
-    raise SystemExit(1)
-else:
-    with snapshot_context as snapshot:
-        os.environ["EDCM_SEALED_REPOSITORY_ROOT"] = repository_root
-        os.environ["EDCM_SEALED_COMMIT"] = commit
-        os.environ["EDCM_SEALED_TREE"] = edcm_tree
-        os.environ["EDCM_SEALED_SNAPSHOT_ROOT"] = snapshot
-        os.environ.pop("PYTHONPYCACHEPREFIX", None)
-        sys.dont_write_bytecode = True
-        sys.pycache_prefix = None
-        sys.path.insert(0, snapshot)
-        runpy.run_module("edcm.corpora.multiwoz21", run_name="__main__")
-""".replace(
-    "__BOOTSTRAP_ADMISSION_DIGEST__",
-    _BOOTSTRAP_ADMISSION_DIGEST,
-)
 RECEIPT_SCHEMA_ID = "edcm.corpus-run-receipt"
 RECEIPT_SCHEMA_VERSION = "1.3.0"
 CHECKPOINT_SCHEMA_ID = "edcm.multiwoz21-checkpoint"
@@ -1957,7 +1786,11 @@ def _git_commit(
     producer_name: str = "EDCM",
     expected_commit: str | None = None,
 ) -> str:
-    environment = dict(os.environ)
+    environment = {
+        name: value
+        for name, value in os.environ.items()
+        if not name.startswith("GIT_")
+    }
     environment["GIT_NO_REPLACE_OBJECTS"] = "1"
     try:
         commit = subprocess.run(
@@ -2008,7 +1841,11 @@ def _git_tree_identity(
     *,
     treeish: str = "HEAD",
 ) -> str:
-    environment = dict(os.environ)
+    environment = {
+        name: value
+        for name, value in os.environ.items()
+        if not name.startswith("GIT_")
+    }
     environment["GIT_NO_REPLACE_OBJECTS"] = "1"
     try:
         tree = subprocess.run(
@@ -2223,7 +2060,11 @@ def _sealed_main(argv: list[str] | None = None) -> int:
                 code="GIT_IDENTITY",
             )
         if sealed_snapshot_root is not None:
-            environment = dict(os.environ)
+            environment = {
+                name: value
+                for name, value in os.environ.items()
+                if not name.startswith("GIT_")
+            }
             environment["GIT_NO_REPLACE_OBJECTS"] = "1"
             _verify_git_tree(
                 repository_root,
@@ -2274,42 +2115,13 @@ def _sealed_main(argv: list[str] | None = None) -> int:
         )
 
 
-def _run_in_fresh_process(
-    argv: list[str],
-    *,
-    repository_root: Path | None = None,
-) -> int:
-    source_repository_root = (
-        Path(__file__).resolve().parents[2]
-        if repository_root is None
-        else repository_root.resolve()
-    )
-    completed = subprocess.run(
-        [
-            sys.executable,
-            "-I",
-            "-c",
-            _ISOLATED_WORKER_BOOTSTRAP,
-            str(source_repository_root),
-            *argv,
-        ],
-        check=False,
-    )
-    return completed.returncode
-
-
-def main(argv: list[str] | None = None) -> int:
-    """Run the seal in an isolated interpreter with a fresh EDCM module graph."""
-
-    return _run_in_fresh_process(
-        list(sys.argv[1:] if argv is None else argv)
-    )
-
-
 if __name__ == "__main__":
     sealed_worker_arguments = _sealed_worker_arguments()
-    raise SystemExit(
-        main()
-        if sealed_worker_arguments is None
-        else _sealed_main(sealed_worker_arguments)
-    )
+    if sealed_worker_arguments is None:
+        print(
+            "unauthenticated module entry refused; run "
+            "'python edcm/corpora/run_multiwoz21_seal.py' from the repository",
+            file=sys.stderr,
+        )
+        raise SystemExit(2)
+    raise SystemExit(_sealed_main(sealed_worker_arguments))

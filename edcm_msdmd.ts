@@ -121,12 +121,12 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _git_tree_identity, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_worker_arguments, _sealed_main, _run_in_fresh_process",
+        "internal_surface": "UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _git_tree_identity, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_worker_arguments, _sealed_main",
         "module_kind": "adapter",
         "module_name": "multiwoz21",
         "network_boundary": "none; source acquisition is separate and the runner requires local pinned bytes",
         "owner": "Erin Spencer",
-        "public_surface": "AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive, main",
+        "public_surface": "AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive",
         "requires": "edcm_ucns_adapter, ucns.edcm and ucns.full_corpus at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
         "rollback": "remove the adapter and supersede its aggregate receipts by identity; raw source remains outside Git",
         "rollout": "explicit admitted full-corpus command; no sampling and no default measurement or canon selection",
@@ -139,6 +139,30 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/corpora/multiwoz21.py",
       "id": "edcm_multiwoz21_corpus"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "directly executed source is the bootstrap trust root and the child admits only the exact archived edcm tree",
+        "internal_surface": "_git_environment, _option_value, _pop_repository_root, _write_bootstrap_failure, _extract_source_only",
+        "module_kind": "adapter",
+        "module_name": "run_multiwoz21_seal",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "main",
+        "requires": "git, python3, edcm_multiwoz21_corpus",
+        "rollback": "remove the launcher and supersede evidence produced by its edcm tree identity",
+        "rollout": "invoke this source file directly from a clean repository checkout",
+        "since": "2026-08-01",
+        "storage_boundary": "reads a caller-held archive and writes only caller-selected aggregate, receipt, and checkpoint paths",
+        "summary": "establishes a cache-independent replacement-disabled Git snapshot before importing the sealed MultiWOZ runner",
+        "tests": "tests.test_multiwoz21_corpus",
+        "unresolved": "the host Python interpreter and Git executable remain external trust roots",
+        "user_data_boundary": "does not inspect dialogue text; the isolated runner owns in-memory source processing"
+      },
+      "file": "edcm/corpora/run_multiwoz21_seal.py",
+      "id": "edcm_multiwoz21_seal_launcher"
     },
     {
       "block": "MODULE_BUILD",
@@ -2774,6 +2798,34 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_multiwoz21_corpus",
       "to": "ucns.edcm and ucns.full_corpus at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
+    },
+    {
+      "from": "edcm_multiwoz21_seal_launcher",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_seal_launcher",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_multiwoz21_seal_launcher",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_seal_launcher",
+      "to": "edcm_multiwoz21_corpus"
+    },
+    {
+      "from": "edcm_multiwoz21_seal_launcher",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_seal_launcher",
+      "to": "git"
+    },
+    {
+      "from": "edcm_multiwoz21_seal_launcher",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_seal_launcher",
+      "to": "python3"
     },
     {
       "from": "edcm_package",

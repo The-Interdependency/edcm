@@ -317,7 +317,11 @@ def _run_git(
     *arguments: str,
     text: bool = False,
 ) -> subprocess.CompletedProcess[Any]:
-    environment = dict(os.environ)
+    environment = {
+        name: value
+        for name, value in os.environ.items()
+        if not name.startswith("GIT_")
+    }
     environment["GIT_NO_REPLACE_OBJECTS"] = "1"
     return subprocess.run(
         ["git", "-C", str(root), *arguments],

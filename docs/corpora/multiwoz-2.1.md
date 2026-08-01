@@ -44,7 +44,7 @@ UCNS v0.19 producer commit. The consumed profile remains version 0.2.0 and the
 full-corpus completion schema remains version 0.14.1:
 
 ```bash
-python -m edcm.corpora.multiwoz21 \
+python edcm/corpora/run_multiwoz21_seal.py \
   --archive /path/to/MULTIWOZ2.1.zip \
   --ucns-source-root /path/to/ucns-at-872f53571d5dc2f133ff1813b7bdffd3a9c309f8 \
   --output /tmp/multiwoz-2.1-ucns-v019.json \
@@ -55,9 +55,12 @@ python -m edcm.corpora.multiwoz21 \
 The runner refuses a dirty EDCM or UCNS tracked tree for a sealed run. It also
 compares every EDCM package file directly with replacement-disabled `HEAD` and
 verifies active-runtime EDCM caches, so index flags cannot hide executed-code
-drift. Its public entry point dispatches the seal to an isolated fresh Python
-interpreter from a cache-free, replacement-disabled Git archive of the sealed
-EDCM producer checkout. The bootstrap resolves one exact commit and `edcm/`
+drift. Its directly executed source launcher establishes the trust boundary
+before importing the corpus module, so a pre-existing module cache cannot
+replace the bootstrap program. The launcher dispatches the seal to an isolated
+fresh Python interpreter from a cache-free, replacement-disabled Git archive of
+the sealed EDCM producer checkout. It removes inherited Git repository-selector
+variables, resolves one exact commit and `edcm/`
 tree, archives that exact commit, and passes the same tree identity into the
 worker, so a concurrent `HEAD` change cannot relabel the executing snapshot.
 That authenticated runner verifies the original worktree and its active caches,

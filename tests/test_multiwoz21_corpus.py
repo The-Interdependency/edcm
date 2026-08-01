@@ -69,6 +69,7 @@ from pathlib import Path
 import py_compile
 import shutil
 import subprocess
+import sys
 from types import ModuleType
 from typing import Any
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -88,6 +89,28 @@ from edcm.ucns_adapter import (
     PINNED_UCNS_COMMIT,
     UCNSAdapterConstructionError,
 )
+
+
+SEAL_LAUNCHER = (
+    Path(multiwoz21_module.__file__).resolve().parent
+    / "run_multiwoz21_seal.py"
+)
+
+
+def _run_seal_launcher(
+    argv: list[str],
+    *,
+    repository_root: Path,
+) -> int:
+    return subprocess.run(
+        [
+            sys.executable,
+            str(SEAL_LAUNCHER),
+            f"--edcm-repository-root={repository_root}",
+            *argv,
+        ],
+        check=False,
+    ).returncode
 
 
 SPACE_MANIFESTATIONS = frozenset(
@@ -861,15 +884,21 @@ def test_adapter_construction_failure_writes_incomplete_receipt(
     assert "fixture identity rejection" in receipt["error"]["reason"]
 
 
-def test_public_main_uses_fresh_isolated_edcm_module_graph(
-    monkeypatch,
-) -> None:
-    def reject_in_process(argv):
-        raise AssertionError("sealed work reused the already-loaded module graph")
+def test_module_entry_refuses_unauthenticated_worker_flag() -> None:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "edcm.corpora.multiwoz21",
+            "--edcm-sealed-worker",
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
 
-    monkeypatch.setattr(multiwoz21_module, "_sealed_main", reject_in_process)
-
-    assert multiwoz21_module.main(["--help"]) == 0
+    assert completed.returncode == 2
+    assert "unauthenticated module entry refused" in completed.stderr
 
 
 def test_direct_worker_flag_is_not_a_worker_capability(monkeypatch) -> None:
@@ -890,15 +919,15 @@ def test_direct_worker_flag_is_not_a_worker_capability(monkeypatch) -> None:
 
 
 def test_isolated_bootstrap_avoids_post_311_extraction_filter_apis() -> None:
-    bootstrap = multiwoz21_module._ISOLATED_WORKER_BOOTSTRAP
+    bootstrap = SEAL_LAUNCHER.read_text(encoding="utf-8")
 
     assert "tarfile.data_filter" not in bootstrap
     assert ".extractall(" not in bootstrap
     assert "member.isfile()" in bootstrap
     assert "member.isdir()" in bootstrap
-    assert multiwoz21_module._BOOTSTRAP_ADMISSION_DIGEST == (
-        multiwoz21_module.load_admission_manifest().digest
-    )
+    assert multiwoz21_module.load_admission_manifest().digest in bootstrap
+    assert "if not name.startswith(\"GIT_\")" in bootstrap
+    assert "runpy.run_module" in bootstrap
 
 
 @pytest.mark.parametrize("equals_form", [False, True], ids=["split", "equals"])
@@ -921,7 +950,7 @@ def test_bootstrap_git_failure_writes_incomplete_receipt(
         if equals_form
         else ["--receipt", str(receipt_path)]
     )
-    exit_code = multiwoz21_module._run_in_fresh_process(
+    exit_code = _run_seal_launcher(
         [
             *archive_arguments,
             "--ucns-source-root",
@@ -1048,7 +1077,7 @@ def _committed_edcm_fixture(tmp_path: Path) -> Path:
     return repository
 
 
-def test_isolated_bootstrap_rejects_altered_runner_cache(
+def test_source_launcher_rejects_altered_runner_cache(
     tmp_path: Path,
 ) -> None:
     repository = _committed_edcm_fixture(tmp_path)
@@ -1072,7 +1101,7 @@ def test_isolated_bootstrap_rejects_altered_runner_cache(
     )
 
     receipt = tmp_path / "cache-rejection-receipt.json"
-    exit_code = multiwoz21_module._run_in_fresh_process(
+    exit_code = _run_seal_launcher(
         [
             "--archive",
             str(tmp_path / "archive.zip"),
@@ -1101,7 +1130,7 @@ def test_isolated_bootstrap_preserves_caller_relative_paths(
     caller.mkdir()
     monkeypatch.chdir(caller)
 
-    exit_code = multiwoz21_module._run_in_fresh_process(
+    exit_code = _run_seal_launcher(
         [
             "--archive",
             "archive.zip",

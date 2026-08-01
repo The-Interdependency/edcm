@@ -796,6 +796,50 @@ def test_checkout_repository_identity_accepts_renamed_remote(
         == commit
     )
 
+    foreign_repository = tmp_path / "foreign-repository"
+    foreign_repository.mkdir()
+    subprocess.run(
+        ["git", "init", str(foreign_repository)],
+        check=True,
+        capture_output=True,
+    )
+    (foreign_repository / "foreign.txt").write_text(
+        "foreign fixture\n",
+        encoding="utf-8",
+    )
+    subprocess.run(
+        ["git", "-C", str(foreign_repository), "add", "foreign.txt"],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(foreign_repository),
+            "-c",
+            "user.name=EDCM Test",
+            "-c",
+            "user.email=edcm-test@example.invalid",
+            "commit",
+            "-m",
+            "foreign fixture",
+        ],
+        check=True,
+        capture_output=True,
+    )
+    monkeypatch.setenv("GIT_DIR", str(foreign_repository / ".git"))
+    monkeypatch.setenv("GIT_WORK_TREE", str(foreign_repository))
+    assert (
+        adapter_module._git_checkout_commit(
+            checkout,
+            module_file=tracked_module,
+        )
+        == commit
+    )
+    monkeypatch.delenv("GIT_DIR")
+    monkeypatch.delenv("GIT_WORK_TREE")
+
     subprocess.run(
         [
             "git",
