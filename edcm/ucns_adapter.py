@@ -518,10 +518,12 @@ def _code_semantic_identity(code: CodeType) -> tuple[Any, ...]:
 
 def _is_runtime_cache(path: Path) -> bool:
     cache_tag = sys.implementation.cache_tag
-    return cache_tag is not None and re.search(
-        rf"\.{re.escape(cache_tag)}(?:\.opt-[0-2])?\.pyc$",
-        path.name,
-    ) is not None
+    if cache_tag is None:
+        return False
+    optimization_suffix = (
+        "" if sys.flags.optimize == 0 else f".opt-{sys.flags.optimize}"
+    )
+    return path.name.endswith(f".{cache_tag}{optimization_suffix}.pyc")
 
 
 def _verify_cached_bytecode(
@@ -541,16 +543,10 @@ def _verify_cached_bytecode(
         raise UCNSAdapterConstructionError(
             f"UCNS cached bytecode has no hash-verified source: {installed_path.name}"
         )
-    optimization_match = re.search(r"\.opt-([0-2])\.pyc$", installed_path.name)
-    if ".opt-" in installed_path.name and optimization_match is None:
+    if not _is_runtime_cache(installed_path):
         raise UCNSAdapterConstructionError(
-            f"UCNS cached bytecode optimization is unsupported: {installed_path.name}"
+            f"UCNS cached bytecode is not loadable by this runtime: {installed_path.name}"
         )
-    optimization = (
-        int(optimization_match.group(1))
-        if optimization_match is not None
-        else 0
-    )
     try:
         bytecode = installed_path.read_bytes()
         if len(bytecode) < 16 or bytecode[:4] != importlib.util.MAGIC_NUMBER:
@@ -561,7 +557,7 @@ def _verify_cached_bytecode(
             str(source_path),
             "exec",
             dont_inherit=True,
-            optimize=optimization,
+            optimize=-1,
         )
     except (EOFError, OSError, SyntaxError, TypeError, ValueError) as exc:
         raise UCNSAdapterConstructionError(

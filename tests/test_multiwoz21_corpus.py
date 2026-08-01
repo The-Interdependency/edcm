@@ -821,7 +821,7 @@ def test_adapter_construction_failure_writes_incomplete_receipt(
     monkeypatch.setattr(
         multiwoz21_module,
         "_git_commit",
-        lambda root, *, require_clean: PINNED_UCNS_COMMIT,
+        lambda root, *, require_clean, verify_tree=None: PINNED_UCNS_COMMIT,
     )
 
     def reject_adapter(candidate):
@@ -932,6 +932,66 @@ def test_sealed_git_identity_disables_replacement_refs(tmp_path: Path) -> None:
 
     with pytest.raises(CorpusRunError, match="tracked files must be clean"):
         multiwoz21_module._git_commit(checkout, require_clean=True)
+
+
+def test_sealed_git_identity_rejects_hidden_package_mutation(
+    tmp_path: Path,
+) -> None:
+    checkout = tmp_path / "repository"
+    package = checkout / "edcm"
+    package.mkdir(parents=True)
+    tracked = package / "producer.py"
+    tracked.write_text("VALUE = 'trusted'\n", encoding="utf-8")
+    subprocess.run(["git", "init", str(checkout)], check=True, capture_output=True)
+    subprocess.run(
+        ["git", "-C", str(checkout), "add", "edcm/producer.py"],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "-c",
+            "user.name=EDCM Test",
+            "-c",
+            "user.email=edcm-test@example.invalid",
+            "commit",
+            "-m",
+            "trusted fixture",
+        ],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "update-index",
+            "--assume-unchanged",
+            "--",
+            "edcm/producer.py",
+        ],
+        check=True,
+        capture_output=True,
+    )
+    tracked.write_text("VALUE = 'altered'\n", encoding="utf-8")
+    status = subprocess.run(
+        ["git", "-C", str(checkout), "status", "--porcelain"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout
+    assert status == ""
+
+    with pytest.raises(CorpusRunError, match="differs from the sealed commit"):
+        multiwoz21_module._git_commit(
+            checkout,
+            require_clean=True,
+            verify_tree="edcm",
+        )
 
 
 def test_claimed_gate_without_source_exhaustion_cannot_complete(

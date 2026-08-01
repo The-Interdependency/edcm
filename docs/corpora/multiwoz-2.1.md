@@ -52,7 +52,10 @@ python -m edcm.corpora.multiwoz21 \
   --checkpoint /tmp/multiwoz-2.1-ucns-v019.checkpoint.json
 ```
 
-The runner refuses a dirty EDCM or UCNS tracked tree for a sealed run. A
+The runner refuses a dirty EDCM or UCNS tracked tree for a sealed run. It also
+compares every EDCM package file directly with replacement-disabled `HEAD` and
+verifies active-runtime EDCM caches, so index flags cannot hide executed-code
+drift. A
 checkpoint is written atomically at the selected interval and can resume only
 when archive, admission, EDCM commit, UCNS commit, and already-processed source
 prefix all match.

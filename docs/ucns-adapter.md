@@ -29,7 +29,8 @@ imported module is the checkout's exact package path and the same repository,
 clean-tree, and commit checks pass. After byte authentication, the consumer
 freshly loads the UCNS module graph and rechecks the identity so stale in-memory
 code cannot inherit the verified label. It verifies caches only for the active
-Python ABI, because foreign-ABI cache files cannot execute in that runtime. The
+Python ABI and exact runtime optimization level, including levels above two,
+because other cache files cannot execute in that runtime. The
 consumer then checks the profile identity, all fourteen option values, the exact
 157-token public gonol invariants and digest, the source domain, the pinned
 `unicode-white-space-origin-v1` assignment policy, all 25 exact SPACE source

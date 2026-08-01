@@ -448,6 +448,50 @@ def test_distribution_identity_accepts_bytecode_without_debug_ranges(
     assert ActualUCNSAdapter(module).status.adapter_active is True
 
 
+def test_active_optimization_above_two_is_verified(tmp_path):
+    script = """
+import importlib.util
+import os
+from pathlib import Path
+import py_compile
+import sys
+from edcm.ucns_adapter import (
+    UCNSAdapterConstructionError,
+    _is_runtime_cache,
+    _verify_cached_bytecode,
+)
+
+root = Path(sys.argv[1])
+source = root / "profile.py"
+trusted = b"VALUE = 'trusted'\\n"
+altered = b"VALUE = 'altered'\\n"
+source.write_bytes(trusted)
+cache = Path(importlib.util.cache_from_source(str(source)))
+py_compile.compile(str(source), cfile=str(cache), doraise=True)
+assert sys.flags.optimize == 3
+assert ".opt-3.pyc" in cache.name
+assert _is_runtime_cache(cache)
+_verify_cached_bytecode(cache, verified_paths={source.resolve()})
+source.write_bytes(altered)
+py_compile.compile(str(source), cfile=str(cache), doraise=True)
+compiled_stat = source.stat()
+source.write_bytes(trusted)
+os.utime(source, ns=(compiled_stat.st_atime_ns, compiled_stat.st_mtime_ns))
+try:
+    _verify_cached_bytecode(cache, verified_paths={source.resolve()})
+except UCNSAdapterConstructionError:
+    pass
+else:
+    raise AssertionError("altered active opt-3 cache was accepted")
+"""
+    subprocess.run(
+        [sys.executable, "-OOO", "-c", script, str(tmp_path)],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
 def test_distribution_identity_ignores_foreign_abi_cache(
     monkeypatch,
     tmp_path,
