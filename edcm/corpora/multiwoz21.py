@@ -124,6 +124,7 @@ _ISOLATED_WORKER_BOOTSTRAP = """
 import io
 import os
 import runpy
+import shutil
 import subprocess
 import sys
 import tarfile
@@ -140,17 +141,33 @@ archive = subprocess.run(
     env=environment,
 ).stdout
 
-def source_only(member, destination):
-    filtered = tarfile.data_filter(member, destination)
-    if filtered is None:
-        return None
-    if filtered.name.endswith(".pyc") or "__pycache__" in filtered.name.split("/"):
-        return None
-    return filtered
+def extract_source_only(package, snapshot):
+    for member in package:
+        parts = member.name.split("/")
+        if (
+            not parts
+            or parts[0] != "edcm"
+            or any(part in {"", ".", ".."} for part in parts)
+        ):
+            raise RuntimeError("unsafe sealed-source archive path")
+        if member.name.endswith(".pyc") or "__pycache__" in parts:
+            continue
+        target = os.path.join(snapshot, *parts)
+        if member.isdir():
+            os.makedirs(target, exist_ok=True)
+            continue
+        if not member.isfile():
+            raise RuntimeError("unsafe sealed-source archive member type")
+        os.makedirs(os.path.dirname(target), exist_ok=True)
+        source = package.extractfile(member)
+        if source is None:
+            raise RuntimeError("sealed-source archive member cannot be read")
+        with source, open(target, "xb") as destination:
+            shutil.copyfileobj(source, destination)
 
 with tempfile.TemporaryDirectory(prefix="edcm-sealed-source-") as snapshot:
     with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as package:
-        package.extractall(snapshot, filter=source_only)
+        extract_source_only(package, snapshot)
     os.environ["EDCM_SEALED_REPOSITORY_ROOT"] = repository_root
     sys.dont_write_bytecode = True
     sys.path.insert(0, snapshot)

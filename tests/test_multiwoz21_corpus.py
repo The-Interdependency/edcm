@@ -867,6 +867,15 @@ def test_public_main_uses_fresh_isolated_edcm_module_graph(
     assert multiwoz21_module.main(["--help"]) == 0
 
 
+def test_isolated_bootstrap_avoids_post_311_extraction_filter_apis() -> None:
+    bootstrap = multiwoz21_module._ISOLATED_WORKER_BOOTSTRAP
+
+    assert "tarfile.data_filter" not in bootstrap
+    assert ".extractall(" not in bootstrap
+    assert "member.isfile()" in bootstrap
+    assert "member.isdir()" in bootstrap
+
+
 def _committed_edcm_fixture(tmp_path: Path) -> Path:
     repository = tmp_path / "repository"
     shutil.copytree(
