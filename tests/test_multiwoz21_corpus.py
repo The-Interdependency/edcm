@@ -884,22 +884,34 @@ def test_isolated_bootstrap_avoids_post_311_extraction_filter_apis() -> None:
     )
 
 
-def test_bootstrap_git_failure_writes_incomplete_receipt(tmp_path: Path) -> None:
+@pytest.mark.parametrize("equals_form", [False, True], ids=["split", "equals"])
+def test_bootstrap_git_failure_writes_incomplete_receipt(
+    tmp_path: Path,
+    equals_form: bool,
+) -> None:
     repository = tmp_path / "not-a-repository"
     repository.mkdir()
     receipt_path = tmp_path / "bootstrap-receipt.json"
     archive_path = tmp_path / "archive.zip"
 
+    archive_arguments = (
+        [f"--archive={archive_path}"]
+        if equals_form
+        else ["--archive", str(archive_path)]
+    )
+    receipt_arguments = (
+        [f"--receipt={receipt_path}"]
+        if equals_form
+        else ["--receipt", str(receipt_path)]
+    )
     exit_code = multiwoz21_module._run_in_fresh_process(
         [
-            "--archive",
-            str(archive_path),
+            *archive_arguments,
             "--ucns-source-root",
             str(tmp_path / "ucns"),
             "--output",
             str(tmp_path / "report.json"),
-            "--receipt",
-            str(receipt_path),
+            *receipt_arguments,
         ],
         repository_root=repository,
     )
@@ -914,6 +926,69 @@ def test_bootstrap_git_failure_writes_incomplete_receipt(tmp_path: Path) -> None
     assert receipt["status"] == "incomplete"
     assert receipt["error"]["code"] == "GIT_IDENTITY"
     assert receipt["source_artifact_filename"] == archive_path.name
+    assert receipt["receipt_digest"] == _canonical_digest_without(
+        receipt,
+        "receipt_digest",
+    )
+
+
+def test_worker_output_failure_uses_output_io_receipt(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    output_path = (tmp_path / "report.json").resolve()
+    receipt_path = (tmp_path / "receipt.json").resolve()
+    original_write = multiwoz21_module._write_json_atomic
+
+    monkeypatch.setattr(
+        multiwoz21_module,
+        "_git_commit",
+        lambda root, *, require_clean, verify_tree=None, producer_name="EDCM", expected_commit=None: "fixture-commit",
+    )
+    monkeypatch.setattr(
+        multiwoz21_module,
+        "_git_tree_identity",
+        lambda root, pathspec, *, treeish="HEAD": "fixture-edcm-tree",
+    )
+    monkeypatch.setattr(
+        multiwoz21_module,
+        "_load_pinned_runtime",
+        lambda source_root: (object(), object()),
+    )
+    monkeypatch.setattr(
+        multiwoz21_module,
+        "run_archive",
+        lambda *args, **kwargs: ({}, {}),
+    )
+
+    def fail_report_write(path, payload):
+        if path == output_path:
+            raise PermissionError("fixture report path is unwritable")
+        return original_write(path, payload)
+
+    monkeypatch.setattr(
+        multiwoz21_module,
+        "_write_json_atomic",
+        fail_report_write,
+    )
+    exit_code = multiwoz21_module._sealed_main(
+        [
+            "--archive",
+            str(tmp_path / "archive.zip"),
+            "--ucns-source-root",
+            str(tmp_path / "ucns"),
+            "--output",
+            str(output_path),
+            "--receipt",
+            str(receipt_path),
+        ]
+    )
+
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert exit_code == 1
+    assert receipt["status"] == "incomplete"
+    assert receipt["error"]["code"] == "OUTPUT_IO"
+    assert "PermissionError" in receipt["error"]["reason"]
     assert receipt["receipt_digest"] == _canonical_digest_without(
         receipt,
         "receipt_digest",

@@ -143,10 +143,13 @@ environment = dict(os.environ)
 environment["GIT_NO_REPLACE_OBJECTS"] = "1"
 
 def option_value(name):
-    try:
-        return sys.argv[sys.argv.index(name) + 1]
-    except (ValueError, IndexError):
-        return None
+    prefix = f"{name}="
+    for index, argument in enumerate(sys.argv):
+        if argument == name:
+            return sys.argv[index + 1] if index + 1 < len(sys.argv) else None
+        if argument.startswith(prefix):
+            return argument[len(prefix):]
+    return None
 
 def write_bootstrap_failure(reason, edcm_tree=None):
     receipt_value = option_value("--receipt")
@@ -235,6 +238,7 @@ def extract_source_only(package, snapshot):
             shutil.copyfileobj(source, destination)
 
 edcm_tree = None
+snapshot_context = None
 try:
     commit = subprocess.run(
         ["git", "rev-parse", "--verify", "HEAD^{commit}"],
@@ -259,16 +263,12 @@ try:
         capture_output=True,
         env=environment,
     ).stdout
-    with tempfile.TemporaryDirectory(prefix="edcm-sealed-source-") as snapshot:
-        with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as package:
-            extract_source_only(package, snapshot)
-        os.environ["EDCM_SEALED_REPOSITORY_ROOT"] = repository_root
-        os.environ["EDCM_SEALED_COMMIT"] = commit
-        os.environ["EDCM_SEALED_TREE"] = edcm_tree
-        sys.dont_write_bytecode = True
-        sys.path.insert(0, snapshot)
-        runpy.run_module("edcm.corpora.multiwoz21", run_name="__main__")
+    snapshot_context = tempfile.TemporaryDirectory(prefix="edcm-sealed-source-")
+    with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as package:
+        extract_source_only(package, snapshot_context.name)
 except (OSError, subprocess.CalledProcessError, tarfile.TarError, RuntimeError) as error:
+    if snapshot_context is not None:
+        snapshot_context.cleanup()
     reason = f"sealed bootstrap failed: {type(error).__name__}: {error}"
     try:
         write_bootstrap_failure(reason, edcm_tree)
@@ -278,6 +278,14 @@ except (OSError, subprocess.CalledProcessError, tarfile.TarError, RuntimeError) 
             file=sys.stderr,
         )
     raise SystemExit(1)
+else:
+    with snapshot_context as snapshot:
+        os.environ["EDCM_SEALED_REPOSITORY_ROOT"] = repository_root
+        os.environ["EDCM_SEALED_COMMIT"] = commit
+        os.environ["EDCM_SEALED_TREE"] = edcm_tree
+        sys.dont_write_bytecode = True
+        sys.path.insert(0, snapshot)
+        runpy.run_module("edcm.corpora.multiwoz21", run_name="__main__")
 """.replace(
     "__BOOTSTRAP_ADMISSION_DIGEST__",
     _BOOTSTRAP_ADMISSION_DIGEST,
@@ -2122,6 +2130,47 @@ def _sealed_main(argv: list[str] | None = None) -> int:
     sealed_commit = os.environ.get(_SEALED_EDCM_COMMIT_ENV)
     sealed_tree = os.environ.get(_SEALED_EDCM_TREE_ENV)
     edcm_tree: str | None = None
+
+    def emit_failure(error: CorpusRunError) -> int:
+        receipt = _incomplete_receipt(
+            manifest=manifest,
+            error=error,
+            archive_path=args.archive,
+            edcm_tree=edcm_tree,
+            ucns_commit=PINNED_UCNS_COMMIT,
+        )
+        try:
+            _write_json_atomic(args.receipt.resolve(), receipt)
+        except OSError as receipt_error:
+            print(
+                json.dumps(
+                    {
+                        "error_code": error.code,
+                        "reason": str(error),
+                        "receipt_error": (
+                            f"{type(receipt_error).__name__}: {receipt_error}"
+                        ),
+                        "status": "incomplete-receipt-write-failed",
+                    },
+                    sort_keys=True,
+                ),
+                file=sys.stderr,
+            )
+            return 1
+        print(
+            json.dumps(
+                {
+                    "error_code": error.code,
+                    "reason": str(error),
+                    "receipt": str(args.receipt),
+                    "status": "incomplete",
+                },
+                sort_keys=True,
+            ),
+            file=sys.stderr,
+        )
+        return 1
+
     try:
         commit = _git_commit(
             repository_root,
@@ -2170,27 +2219,14 @@ def _sealed_main(argv: list[str] | None = None) -> int:
         )
         return 0
     except CorpusRunError as exc:
-        receipt = _incomplete_receipt(
-            manifest=manifest,
-            error=exc,
-            archive_path=args.archive,
-            edcm_tree=edcm_tree,
-            ucns_commit=PINNED_UCNS_COMMIT,
+        return emit_failure(exc)
+    except OSError as exc:
+        return emit_failure(
+            CorpusRunError(
+                f"output storage failed: {type(exc).__name__}: {exc}",
+                code="OUTPUT_IO",
+            )
         )
-        _write_json_atomic(args.receipt.resolve(), receipt)
-        print(
-            json.dumps(
-                {
-                    "error_code": exc.code,
-                    "reason": str(exc),
-                    "receipt": str(args.receipt),
-                    "status": "incomplete",
-                },
-                sort_keys=True,
-            ),
-            file=sys.stderr,
-        )
-        return 1
 
 
 def _run_in_fresh_process(
