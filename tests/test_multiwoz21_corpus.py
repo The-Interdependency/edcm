@@ -650,11 +650,13 @@ def test_historical_report_is_superseded_by_exact_sealed_rerun() -> None:
     )["sealed_ucns_v019_corpus_evidence"]
 
     assert v019["report_digest"] == (
-        "74194e5523f5bd32cf97610c6c0bab9bdb9aded263e92b431bd627f5e7630cc1"
+        "9f1a463216cb2cc132cf70955ce974b79612df93c3eba0ad9de94669a157bc6d"
     )
     assert v019_receipt["receipt_digest"] == (
-        "67525b6b4b1b45ff29c06a61884d17030b189a5a826d2e9a4955842f2f50558f"
+        "5686c5dac602f98f0b7cb112b287f4174b1da591fdbf9f5bb5be7909be38f5f5"
     )
+    assert v019["schema_version"] == "1.3.0"
+    assert v019_receipt["schema_version"] == "1.3.0"
     assert v019["report_digest"] == _canonical_digest_without(
         v019, "report_digest"
     )
@@ -662,20 +664,20 @@ def test_historical_report_is_superseded_by_exact_sealed_rerun() -> None:
         v019_receipt, "receipt_digest"
     )
     assert sha256(v019_report_path.read_bytes()).hexdigest() == (
-        "43f49bacc8d162e872ebc592450bfa46960b5a49a4fc4919ef324fd970066bdb"
+        "8f5e6fc9a17ed89acfdfbba331bc2277566de3e90e7438d749eccc66fb0a5325"
     )
     assert sha256(v019_receipt_path.read_bytes()).hexdigest() == (
-        "706bf02df41c62eaa08fc8248314b14009fdc6fdcb2d974448faf594f85947f1"
+        "b7ab31dda5079ae68df42f32c8d940e88116c871a3877390774c634c55a4ba4c"
     )
     v019_identities = {
         "archive_sha256": (
             "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e"
         ),
-        "edcm_commit": "71c680c078dfdd795e439913e45133f787904923",
+        "edcm_tree": "5f2b3c40d28f030a77f83e3e0faa440a54915c90",
         "ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
     }
     assert v019_receipt["identities"] == v019_identities
-    assert v019["identities"]["edcm_commit"] == v019_identities["edcm_commit"]
+    assert v019["identities"]["edcm_tree"] == v019_identities["edcm_tree"]
     assert v019["identities"]["ucns_commit"] == v019_identities["ucns_commit"]
     assert v019["profile"]["source_commit"] == v019_identities["ucns_commit"]
     assert v019_receipt["report_digest"] == v019["report_digest"]
@@ -719,7 +721,7 @@ def test_historical_report_is_superseded_by_exact_sealed_rerun() -> None:
 
     assert v019_handoff == {
         "corpus_id": "multiwoz-2.1",
-        "edcm_commit": v019_identities["edcm_commit"],
+        "edcm_tree": v019_identities["edcm_tree"],
         "exact_stream_sha256": v019_gate["exact_source_stream_sha256"],
         "receipt_digest": v019_receipt["receipt_digest"],
         "receipt_id": receipt_id,

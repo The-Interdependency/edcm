@@ -178,7 +178,8 @@ changing the consumed profile or gate schema. Its sealed
 and [completion receipt](experiments/corpora/receipts/2026-07-31-multiwoz-2.1-ucns-v0.19-complete.json)
 cover all `10,438` dialogues and `143,048` turns. A completed-checkpoint repeat
 was byte-identical. The exact stream hash and UCNS v0.14.1 receipt id remain
-unchanged; the report and receipt identities bind the new EDCM and UCNS commits.
+unchanged; the report and receipt identities bind the EDCM package tree and
+the UCNS producer commit.
 Measurement remains `not-run`, canon selection is null, and EDCM/METAPAT stay
 inactive.
 

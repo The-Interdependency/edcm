@@ -10,9 +10,10 @@
   "ucns_full_corpus_gate": {
     "admitted_archive_sha256": "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e",
     "declared_turn_count": 143048,
-    "runner_schema": "edcm.multiwoz21-full-corpus/1.2.0",
+    "runner_schema": "edcm.multiwoz21-full-corpus/1.3.0",
     "schema": "ucns.edcm.full-corpus-execution/0.14.1",
-    "sealed_edcm_commit": "71c680c078dfdd795e439913e45133f787904923",
+    "sealed_edcm_commit": "297bdcbadaa958497c581be60b26fc40d75a0c5a",
+    "sealed_edcm_tree": "5f2b3c40d28f030a77f83e3e0faa440a54915c90",
     "sealed_receipt_id": "921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c",
     "status": "sealed-complete"
   },
@@ -42,15 +43,15 @@
   },
   "sealed_ucns_v019_corpus_evidence": {
     "corpus_id": "multiwoz-2.1",
-    "edcm_commit": "71c680c078dfdd795e439913e45133f787904923",
+    "edcm_tree": "5f2b3c40d28f030a77f83e3e0faa440a54915c90",
     "exact_stream_sha256": "e94ba2e5e1e9d52b23fd5b9c33303be009dae32f4c3bc6a1d5186a353acb40b5",
-    "receipt_digest": "67525b6b4b1b45ff29c06a61884d17030b189a5a826d2e9a4955842f2f50558f",
+    "receipt_digest": "5686c5dac602f98f0b7cb112b287f4174b1da591fdbf9f5bb5be7909be38f5f5",
     "receipt_id": "921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c",
     "receipt_path": "experiments/corpora/receipts/2026-07-31-multiwoz-2.1-ucns-v0.19-complete.json",
-    "receipt_sha256": "706bf02df41c62eaa08fc8248314b14009fdc6fdcb2d974448faf594f85947f1",
-    "report_digest": "74194e5523f5bd32cf97610c6c0bab9bdb9aded263e92b431bd627f5e7630cc1",
+    "receipt_sha256": "b7ab31dda5079ae68df42f32c8d940e88116c871a3877390774c634c55a4ba4c",
+    "report_digest": "9f1a463216cb2cc132cf70955ce974b79612df93c3eba0ad9de94669a157bc6d",
     "report_path": "experiments/corpora/results/2026-07-31-multiwoz-2.1-ucns-v0.19-full.json",
-    "report_sha256": "43f49bacc8d162e872ebc592450bfa46960b5a49a4fc4919ef324fd970066bdb",
+    "report_sha256": "8f5e6fc9a17ed89acfdfbba331bc2277566de3e90e7438d749eccc66fb0a5325",
     "status": "complete",
     "ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
   },

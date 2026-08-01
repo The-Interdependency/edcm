@@ -57,13 +57,13 @@ compares every EDCM package file directly with replacement-disabled `HEAD` and
 verifies active-runtime EDCM caches, so index flags cannot hide executed-code
 drift. Its public entry point dispatches the seal to an isolated fresh Python
 interpreter from a cache-free, replacement-disabled Git archive of the sealed
-EDCM commit. That authenticated runner verifies the original worktree and its
+EDCM producer checkout. That authenticated runner verifies the original worktree and its
 active caches, then verifies the UCNS package tree and active caches before its
 first import. Already-loaded or pre-verification module code therefore cannot
 survive into sealed execution. The child preserves the caller's working
 directory, so relative command-line paths keep their documented meaning. A
 checkpoint is written atomically at the selected interval and can resume only
-when archive, admission, EDCM commit, UCNS commit, and already-processed source
+when archive, admission, EDCM package tree, UCNS commit, and already-processed source
 prefix all match.
 
 Successful completion requires:
@@ -177,10 +177,10 @@ NA != 0
 
 After the v0.19 source-coordinate boundary reached clean review, EDCM repinned
 the unchanged profile `0.2.0` and full-corpus gate `0.14.1` to exact UCNS commit
-`872f53571d5dc2f133ff1813b7bdffd3a9c309f8`. A clean EDCM commit
-`71c680c078dfdd795e439913e45133f787904923`, reachable from the reviewed PR
-history, reran the admitted archive. A completed-checkpoint repeat produced
-byte-identical artifacts.
+`872f53571d5dc2f133ff1813b7bdffd3a9c309f8`. Clean EDCM producer commit
+`297bdcbadaa958497c581be60b26fc40d75a0c5a`, whose `edcm/` subtree is
+`5f2b3c40d28f030a77f83e3e0faa440a54915c90`, reran the admitted archive. A
+completed-checkpoint repeat produced byte-identical artifacts.
 
 Schema `1.3.0` seals the content-addressed Git tree for the executing `edcm/`
 package rather than treating the intermediate producer commit as the durable
@@ -194,8 +194,8 @@ an audit coordinate but is not required to recover the executed package bytes.
 - source, adapter, UCNS-gate, and unit-support turns: `143,048`
 - exact UCNS source/observation stream SHA-256: `e94ba2e5e1e9d52b23fd5b9c33303be009dae32f4c3bc6a1d5186a353acb40b5`
 - UCNS receipt id: `921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c`
-- EDCM report digest: `74194e5523f5bd32cf97610c6c0bab9bdb9aded263e92b431bd627f5e7630cc1`
-- EDCM receipt digest: `67525b6b4b1b45ff29c06a61884d17030b189a5a826d2e9a4955842f2f50558f`
+- EDCM report digest: `9f1a463216cb2cc132cf70955ce974b79612df93c3eba0ad9de94669a157bc6d`
+- EDCM receipt digest: `5686c5dac602f98f0b7cb112b287f4174b1da591fdbf9f5bb5be7909be38f5f5`
 
 The source dialogue chain, turn-evidence chain, execution counts, failure-seeking
 aggregates, exact stream hash, and v0.14.1 gate receipt remain identical to the
