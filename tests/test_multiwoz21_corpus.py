@@ -741,7 +741,7 @@ def test_full_fixture_run_preserves_order_exact_text_and_profile_counts(
         archive,
         adapter=FixtureAdapter(),
         full_corpus_gate=FixtureFullCorpusGate(),
-        edcm_commit="fixture-edcm",
+        edcm_tree="fixture-edcm-tree",
         ucns_commit="fixture-ucns",
         manifest=manifest,
     )
@@ -758,8 +758,10 @@ def test_full_fixture_run_preserves_order_exact_text_and_profile_counts(
         "validation": 0,
     }
     observations = report["failure_seeking_observations"]
-    assert report["schema_version"] == "1.2.0"
-    assert receipt["schema_version"] == "1.2.0"
+    assert report["schema_version"] == "1.3.0"
+    assert receipt["schema_version"] == "1.3.0"
+    assert report["identities"]["edcm_tree"] == "fixture-edcm-tree"
+    assert receipt["identities"]["edcm_tree"] == "fixture-edcm-tree"
     assert report["profile"]["space_assignment_policy"] == (
         "unicode-white-space-origin-v1"
     )
@@ -802,7 +804,7 @@ def test_archive_mutation_fails_before_dialogue_observation(tmp_path: Path) -> N
             archive,
             adapter=FixtureAdapter(),
             full_corpus_gate=FixtureFullCorpusGate(),
-            edcm_commit="fixture-edcm",
+            edcm_tree="fixture-edcm-tree",
             ucns_commit="fixture-ucns",
             manifest=manifest,
         )
@@ -1168,6 +1170,59 @@ def test_sealed_git_identity_rejects_hidden_package_mutation(
         )
 
 
+def test_edcm_tree_identity_survives_evidence_only_commit(
+    tmp_path: Path,
+) -> None:
+    checkout = tmp_path / "repository"
+    package = checkout / "edcm"
+    package.mkdir(parents=True)
+    (package / "producer.py").write_text(
+        "VALUE = 'trusted'\n",
+        encoding="utf-8",
+    )
+    evidence = checkout / "evidence.json"
+    evidence.write_text('{"run": 1}\n', encoding="utf-8")
+    subprocess.run(["git", "init", str(checkout)], check=True, capture_output=True)
+    subprocess.run(
+        ["git", "-C", str(checkout), "add", "edcm", "evidence.json"],
+        check=True,
+        capture_output=True,
+    )
+    commit_command = [
+        "git",
+        "-C",
+        str(checkout),
+        "-c",
+        "user.name=EDCM Test",
+        "-c",
+        "user.email=edcm-test@example.invalid",
+        "commit",
+        "-m",
+    ]
+    subprocess.run(
+        [*commit_command, "producer"],
+        check=True,
+        capture_output=True,
+    )
+    producer_tree = multiwoz21_module._git_tree_identity(checkout, "edcm")
+
+    evidence.write_text('{"run": 2}\n', encoding="utf-8")
+    subprocess.run(
+        ["git", "-C", str(checkout), "add", "evidence.json"],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        [*commit_command, "evidence"],
+        check=True,
+        capture_output=True,
+    )
+
+    assert multiwoz21_module._git_tree_identity(checkout, "edcm") == (
+        producer_tree
+    )
+
+
 def test_claimed_gate_without_source_exhaustion_cannot_complete(
     tmp_path: Path,
 ) -> None:
@@ -1177,7 +1232,7 @@ def test_claimed_gate_without_source_exhaustion_cannot_complete(
             archive,
             adapter=FixtureAdapter(),
             full_corpus_gate=NonConsumingFullCorpusGate(),
-            edcm_commit="fixture-edcm",
+            edcm_tree="fixture-edcm-tree",
             ucns_commit="fixture-ucns",
             manifest=manifest,
         )
@@ -1201,7 +1256,7 @@ def test_manifest_count_mismatch_refuses_completion(tmp_path: Path) -> None:
             archive,
             adapter=FixtureAdapter(),
             full_corpus_gate=FixtureFullCorpusGate(),
-            edcm_commit="fixture-edcm",
+            edcm_tree="fixture-edcm-tree",
             ucns_commit="fixture-ucns",
             manifest=AdmissionManifest(payload),
         )
@@ -1216,7 +1271,7 @@ def test_invalid_turn_reports_exact_active_source_position(tmp_path: Path) -> No
             archive,
             adapter=FixtureAdapter(),
             full_corpus_gate=FixtureFullCorpusGate(),
-            edcm_commit="fixture-edcm",
+            edcm_tree="fixture-edcm-tree",
             ucns_commit="fixture-ucns",
             manifest=manifest,
         )
@@ -1236,7 +1291,7 @@ def test_report_and_checkpoint_exclude_source_turn_text(tmp_path: Path) -> None:
         archive,
         adapter=FixtureAdapter(),
         full_corpus_gate=FixtureFullCorpusGate(),
-        edcm_commit="fixture-edcm",
+        edcm_tree="fixture-edcm-tree",
         ucns_commit="fixture-ucns",
         manifest=manifest,
         checkpoint_path=checkpoint,
@@ -1252,7 +1307,7 @@ def test_report_and_checkpoint_exclude_source_turn_text(tmp_path: Path) -> None:
         archive,
         adapter=FixtureAdapter(),
         full_corpus_gate=FixtureFullCorpusGate(),
-        edcm_commit="fixture-edcm",
+        edcm_tree="fixture-edcm-tree",
         ucns_commit="fixture-ucns",
         manifest=manifest,
         checkpoint_path=checkpoint,
@@ -1271,7 +1326,7 @@ def test_actual_pinned_ucns_profile_can_drive_fixture_when_installed(
         archive,
         adapter=ActualUCNSAdapter(ucns),
         full_corpus_gate=UCNSFullCorpusGate(ucns),
-        edcm_commit="fixture-edcm",
+        edcm_tree="fixture-edcm-tree",
         ucns_commit=PINNED_UCNS_COMMIT,
         manifest=manifest,
     )

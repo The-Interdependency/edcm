@@ -812,7 +812,9 @@ def _distribution_commit(module: ModuleType) -> str:
 
 def _reload_verified_ucns_module(module: ModuleType) -> ModuleType:
     if module.__name__ != "ucns" or module.__spec__ is None:
-        return module
+        raise UCNSAdapterConstructionError(
+            "UCNS module cannot be reload-authenticated"
+        )
     module_file = _module_file(module)
     import_root = module_file.parent.parent
     previous_modules = {

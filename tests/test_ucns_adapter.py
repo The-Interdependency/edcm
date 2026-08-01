@@ -53,9 +53,15 @@ from edcm.ucns_adapter import (
 )
 
 
+_REAL_RELOAD_VERIFIED_UCNS_MODULE = (
+    adapter_module._reload_verified_ucns_module
+)
+
+
 @pytest.fixture(autouse=True)
 def _identify_identity_only_fake_modules(monkeypatch):
     real_distribution_commit = adapter_module._distribution_commit
+    real_reload = adapter_module._reload_verified_ucns_module
 
     def identify(module):
         if module.__name__ == "ucns" and getattr(module, "__file__", None) is None:
@@ -63,6 +69,17 @@ def _identify_identity_only_fake_modules(monkeypatch):
         return real_distribution_commit(module)
 
     monkeypatch.setattr(adapter_module, "_distribution_commit", identify)
+
+    def reload_verified(module):
+        if module.__spec__ is None:
+            return module
+        return real_reload(module)
+
+    monkeypatch.setattr(
+        adapter_module,
+        "_reload_verified_ucns_module",
+        reload_verified,
+    )
 
 
 def _exact_identity_module() -> ModuleType:
@@ -630,6 +647,31 @@ def test_verified_identity_reloads_stale_ucns_module(
             if name == "ucns" or name.startswith("ucns."):
                 sys.modules.pop(name, None)
         sys.modules.update(previous_modules)
+
+
+def test_verified_identity_rejects_module_without_reload_identity(
+    monkeypatch,
+    tmp_path,
+):
+    module = _exact_identity_module()
+    module.__file__ = str(tmp_path / "ucns/__init__.py")
+    module.__spec__ = None
+    monkeypatch.setattr(
+        adapter_module,
+        "_distribution_commit",
+        lambda candidate: PINNED_UCNS_COMMIT,
+    )
+    monkeypatch.setattr(
+        adapter_module,
+        "_reload_verified_ucns_module",
+        _REAL_RELOAD_VERIFIED_UCNS_MODULE,
+    )
+
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="cannot be reload-authenticated",
+    ):
+        ActualUCNSAdapter(module)
 
 
 def test_distribution_raw_record_detects_deleted_file(

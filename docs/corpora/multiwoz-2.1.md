@@ -182,6 +182,12 @@ the unchanged profile `0.2.0` and full-corpus gate `0.14.1` to exact UCNS commit
 history, reran the admitted archive. A completed-checkpoint repeat produced
 byte-identical artifacts.
 
+Schema `1.3.0` seals the content-addressed Git tree for the executing `edcm/`
+package rather than treating the intermediate producer commit as the durable
+code identity. The same subtree is embedded unchanged in the evidence commit
+and remains reachable after a squash merge; the producer commit is retained as
+an audit coordinate but is not required to recover the executed package bytes.
+
 - [aggregate report](../../experiments/corpora/results/2026-07-31-multiwoz-2.1-ucns-v0.19-full.json)
 - [completion receipt](../../experiments/corpora/receipts/2026-07-31-multiwoz-2.1-ucns-v0.19-complete.json)
 - dialogues: `10,438`
@@ -194,7 +200,7 @@ byte-identical artifacts.
 The source dialogue chain, turn-evidence chain, execution counts, failure-seeking
 aggregates, exact stream hash, and v0.14.1 gate receipt remain identical to the
 prior sealed rerun. The EDCM report and receipt identities change because they
-correctly bind the new EDCM and UCNS producer commits. UCNS v0.19's coordinate
+correctly bind the EDCM package tree and UCNS producer commit. UCNS v0.19's coordinate
 candidate is evidenced only over its fixed full producer demonstration; this
 corpus runner neither attaches nor consumes it. `canon_selection` remains null,
 candidate measurement remains `not-run`, and EDCM/METAPAT remain inactive.

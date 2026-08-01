@@ -37,7 +37,7 @@ remain source-native noninputs to this profile run.
 #   summary: verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate from the reviewed v0.19 producer without committing raw text
 #   owner: Erin Spencer
 #   public_surface: AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive, main
-#   internal_surface: UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_main, _run_in_fresh_process
+#   internal_surface: UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _git_tree_identity, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_main, _run_in_fresh_process
 #   auth_boundary: none
 #   storage_boundary: reads a caller-held archive and writes only caller-selected aggregate report, receipt, and resumable checkpoint paths
 #   network_boundary: none; source acquisition is separate and the runner requires local pinned bytes
@@ -117,7 +117,7 @@ from edcm.ucns_adapter import (
 
 
 RUNNER_SCHEMA_ID = "edcm.multiwoz21-full-corpus"
-RUNNER_SCHEMA_VERSION = "1.2.0"
+RUNNER_SCHEMA_VERSION = "1.3.0"
 _SEALED_WORKER_FLAG = "--edcm-sealed-worker"
 _SEALED_REPOSITORY_ROOT_ENV = "EDCM_SEALED_REPOSITORY_ROOT"
 _ISOLATED_WORKER_BOOTSTRAP = """
@@ -157,9 +157,9 @@ with tempfile.TemporaryDirectory(prefix="edcm-sealed-source-") as snapshot:
     runpy.run_module("edcm.corpora.multiwoz21", run_name="__main__")
 """
 RECEIPT_SCHEMA_ID = "edcm.corpus-run-receipt"
-RECEIPT_SCHEMA_VERSION = "1.2.0"
+RECEIPT_SCHEMA_VERSION = "1.3.0"
 CHECKPOINT_SCHEMA_ID = "edcm.multiwoz21-checkpoint"
-CHECKPOINT_SCHEMA_VERSION = "1.2.0"
+CHECKPOINT_SCHEMA_VERSION = "1.3.0"
 UCNS_FULL_CORPUS_SCHEMA_ID = "ucns.edcm.full-corpus-execution"
 UCNS_FULL_CORPUS_SCHEMA_VERSION = "0.14.1"
 EMPTY_CHAIN_DIGEST = sha256(b"").hexdigest()
@@ -662,7 +662,7 @@ def _new_state(
     *,
     archive_sha256: str,
     admission_digest: str,
-    edcm_commit: str,
+    edcm_tree: str,
     ucns_commit: str,
 ) -> dict[str, Any]:
     return {
@@ -675,7 +675,7 @@ def _new_state(
         "code_points": 0,
         "dialogues": 0,
         "dialogues_with_odd_turn_count": 0,
-        "edcm_commit": edcm_commit,
+        "edcm_tree": edcm_tree,
         "empty_turns": 0,
         "first_dialogue_id": None,
         "last_completed_dialogue_id": None,
@@ -1354,7 +1354,7 @@ def _build_report(
         "hmmm": manifest.payload["hmmm"],
         "identities": {
             "archive": dict(archive_identity),
-            "edcm_commit": state["edcm_commit"],
+            "edcm_tree": state["edcm_tree"],
             "profile_observation_digest_chain": state[
                 "profile_observation_digest_chain"
             ],
@@ -1405,7 +1405,7 @@ def _build_receipt(
         ),
         "identities": {
             "archive_sha256": state.get("archive_sha256"),
-            "edcm_commit": state.get("edcm_commit"),
+            "edcm_tree": state.get("edcm_tree"),
             "ucns_commit": state.get("ucns_commit"),
         },
         "last_completed": {
@@ -1458,7 +1458,7 @@ def run_archive(
     *,
     adapter: ActualUCNSAdapter,
     full_corpus_gate: UCNSFullCorpusGate,
-    edcm_commit: str,
+    edcm_tree: str,
     ucns_commit: str,
     manifest: AdmissionManifest | None = None,
     checkpoint_path: Path | None = None,
@@ -1466,10 +1466,10 @@ def run_archive(
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Run and reconcile the entire admitted archive.
 
-    ``adapter``, ``full_corpus_gate``, and the two immutable commits are explicit
+    ``adapter``, ``full_corpus_gate``, and immutable producer identities are explicit
     so tests can exercise the runner without installing optional siblings.
     Production CLI use loads and verifies the pinned UCNS checkout and clean
-    EDCM commit first.
+    EDCM package tree first.
     """
 
     manifest = manifest or load_admission_manifest()
@@ -1482,7 +1482,7 @@ def run_archive(
     state = _new_state(
         archive_sha256=archive_identity["sha256"],
         admission_digest=manifest.digest,
-        edcm_commit=edcm_commit,
+        edcm_tree=edcm_tree,
         ucns_commit=ucns_commit,
     )
     try:
@@ -1504,7 +1504,7 @@ def run_archive(
         expected_checkpoint_identity = {
             "admission_digest": manifest.digest,
             "archive_sha256": archive_identity["sha256"],
-            "edcm_commit": edcm_commit,
+            "edcm_tree": edcm_tree,
             "ucns_commit": ucns_commit,
         }
         resumed = (
@@ -1851,6 +1851,31 @@ def _git_commit(
     return commit
 
 
+def _git_tree_identity(root: Path, pathspec: str) -> str:
+    environment = dict(os.environ)
+    environment["GIT_NO_REPLACE_OBJECTS"] = "1"
+    try:
+        tree = subprocess.run(
+            ["git", "rev-parse", f"HEAD:{pathspec}"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+            env=environment,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise CorpusRunError(
+            "Git package-tree identity cannot be resolved",
+            code="GIT_IDENTITY",
+        ) from exc
+    if len(tree) != 40 or any(character not in "0123456789abcdef" for character in tree):
+        raise CorpusRunError(
+            "Git package-tree identity is malformed",
+            code="GIT_IDENTITY",
+        )
+    return tree
+
+
 def _load_pinned_runtime(
     ucns_source_root: Path,
 ) -> tuple[ActualUCNSAdapter, UCNSFullCorpusGate]:
@@ -1906,12 +1931,12 @@ def _incomplete_receipt(
     manifest: AdmissionManifest,
     error: CorpusRunError,
     archive_path: Path,
-    edcm_commit: str | None,
+    edcm_tree: str | None,
     ucns_commit: str,
 ) -> dict[str, Any]:
     state = dict(error.state)
     state.setdefault("archive_sha256", None)
-    state.setdefault("edcm_commit", edcm_commit)
+    state.setdefault("edcm_tree", edcm_tree)
     state.setdefault("ucns_commit", ucns_commit)
     state.setdefault("last_completed_dialogue_id", None)
     state.setdefault("last_completed_dialogue_index", None)
@@ -1955,13 +1980,14 @@ def _sealed_main(argv: list[str] | None = None) -> int:
         if sealed_repository_root is not None
         else Path(__file__).resolve().parents[2]
     )
-    edcm_commit: str | None = None
+    edcm_tree: str | None = None
     try:
-        edcm_commit = _git_commit(
+        _git_commit(
             repository_root,
             require_clean=True,
             verify_tree="edcm",
         )
+        edcm_tree = _git_tree_identity(repository_root, "edcm")
         adapter, full_corpus_gate = _load_pinned_runtime(
             args.ucns_source_root.resolve()
         )
@@ -1969,7 +1995,7 @@ def _sealed_main(argv: list[str] | None = None) -> int:
             args.archive.resolve(),
             adapter=adapter,
             full_corpus_gate=full_corpus_gate,
-            edcm_commit=edcm_commit,
+            edcm_tree=edcm_tree,
             ucns_commit=PINNED_UCNS_COMMIT,
             manifest=manifest,
             checkpoint_path=(
@@ -1997,7 +2023,7 @@ def _sealed_main(argv: list[str] | None = None) -> int:
             manifest=manifest,
             error=exc,
             archive_path=args.archive,
-            edcm_commit=edcm_commit,
+            edcm_tree=edcm_tree,
             ucns_commit=PINNED_UCNS_COMMIT,
         )
         _write_json_atomic(args.receipt.resolve(), receipt)
