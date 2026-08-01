@@ -75,10 +75,11 @@ assert contract["status_evidence"]["proof_status_transfers_to_measurement_validi
 ## Failure behavior
 
 The current path fails closed for profile identity or option drift, producer
-checkout drift, installed-file hash drift, public alphabet drift, malformed
-turn containers, retired bridge/object/factorization inputs, malformed METAPAT
-evidence, and transitive import failures. Only direct optional-package absence
-becomes typed unavailability.
+checkout drift, installed-file hash or executable-bytecode drift, malformed
+producer metadata, public alphabet drift, malformed turn containers, retired
+bridge/object/factorization inputs, malformed METAPAT evidence, and transitive
+import failures. Only direct optional-package absence becomes typed
+unavailability.
 
 ## hmmm
 

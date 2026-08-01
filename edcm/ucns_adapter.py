@@ -21,7 +21,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 #   summary: fail-closed consumer for the exact EDCM-only UCNS word-gonol profile from the reviewed v0.19 producer, preserving full-corpus speaker-turn observations without coordinate, geometry, or proof transfer
 #   owner: Erin Spencer
 #   public_surface: ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter
-#   internal_surface: _canonical_bytes, _digest, _package_present, _source_checkout_commit, _verify_distribution_files, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record
+#   internal_surface: _canonical_bytes, _digest, _package_present, _source_checkout_commit, _verify_cached_bytecode, _verify_distribution_files, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
@@ -38,7 +38,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 # === CONTRACTS ===
 # id: edcm_ucns_exact_profile_only
 #   given: an importable UCNS package is considered for activation
-#   then: the clean-checkout or installed-distribution commit identity, installed-file RECORD hashes, any producer-owned commit identity, and every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended
+#   then: the tracked clean-checkout or installed-distribution commit identity, installed-file RECORD hashes, source-derived cached bytecode, any producer-owned commit identity, and every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended
 #   class: safety
 #   since: 2026-07-25
 #
@@ -65,10 +65,11 @@ import importlib
 from importlib import metadata as importlib_metadata
 import importlib.util
 import json
+import marshal
 from pathlib import Path
 import re
 import subprocess
-from types import ModuleType
+from types import CodeType, ModuleType
 from typing import Any, Mapping, Protocol, Sequence
 from urllib.parse import unquote, urlsplit
 from urllib.request import url2pathname
@@ -273,7 +274,11 @@ def _module_file(module: ModuleType) -> Path:
     return Path(raw).resolve()
 
 
-def _git_checkout_commit(root: Path) -> str:
+def _git_checkout_commit(
+    root: Path,
+    *,
+    module_file: Path | None = None,
+) -> str:
     try:
         remote_names = subprocess.run(
             ["git", "-C", str(root), "remote"],
@@ -304,13 +309,29 @@ def _git_checkout_commit(root: Path) -> str:
                 str(root),
                 "status",
                 "--porcelain",
-                "--untracked-files=no",
+                "--untracked-files=all",
             ],
             check=True,
             capture_output=True,
             text=True,
         ).stdout
-    except (OSError, subprocess.CalledProcessError) as exc:
+        if module_file is not None:
+            relative_module = module_file.relative_to(root)
+            subprocess.run(
+                [
+                    "git",
+                    "-C",
+                    str(root),
+                    "ls-files",
+                    "--error-unmatch",
+                    "--",
+                    relative_module.as_posix(),
+                ],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+    except (OSError, subprocess.CalledProcessError, ValueError) as exc:
         raise UCNSAdapterConstructionError(
             "UCNS producer commit identity unavailable from editable checkout"
         ) from exc
@@ -324,7 +345,7 @@ def _git_checkout_commit(root: Path) -> str:
         )
     if status:
         raise UCNSAdapterConstructionError(
-            "UCNS editable checkout has tracked modifications"
+            "UCNS checkout has tracked or untracked modifications"
         )
     if not _COMMIT_RE.fullmatch(commit):
         raise UCNSAdapterConstructionError(
@@ -357,7 +378,56 @@ def _source_checkout_commit(module: ModuleType) -> str | None:
     }
     if module_file not in expected_modules:
         return None
-    return _git_checkout_commit(root)
+    return _git_checkout_commit(root, module_file=module_file)
+
+
+def _verify_cached_bytecode(
+    installed_path: Path,
+    *,
+    verified_paths: set[Path],
+) -> None:
+    try:
+        source_path = Path(
+            importlib.util.source_from_cache(str(installed_path))
+        ).resolve()
+    except ValueError as exc:
+        raise UCNSAdapterConstructionError(
+            f"UCNS cached bytecode path is malformed: {installed_path.name}"
+        ) from exc
+    if source_path not in verified_paths:
+        raise UCNSAdapterConstructionError(
+            f"UCNS cached bytecode has no hash-verified source: {installed_path.name}"
+        )
+    optimization_match = re.search(r"\.opt-([0-2])\.pyc$", installed_path.name)
+    if ".opt-" in installed_path.name and optimization_match is None:
+        raise UCNSAdapterConstructionError(
+            f"UCNS cached bytecode optimization is unsupported: {installed_path.name}"
+        )
+    optimization = (
+        int(optimization_match.group(1))
+        if optimization_match is not None
+        else 0
+    )
+    try:
+        bytecode = installed_path.read_bytes()
+        if len(bytecode) < 16 or bytecode[:4] != importlib.util.MAGIC_NUMBER:
+            raise ValueError("invalid bytecode header")
+        cached_code = marshal.loads(bytecode[16:])
+        source_code = compile(
+            source_path.read_bytes(),
+            str(source_path),
+            "exec",
+            dont_inherit=True,
+            optimize=optimization,
+        )
+    except (EOFError, OSError, SyntaxError, TypeError, ValueError) as exc:
+        raise UCNSAdapterConstructionError(
+            f"UCNS cached bytecode is unverifiable: {installed_path.name}"
+        ) from exc
+    if not isinstance(cached_code, CodeType) or cached_code != source_code:
+        raise UCNSAdapterConstructionError(
+            f"UCNS cached bytecode does not match its hash-verified source: {installed_path.name}"
+        )
 
 
 def _verify_distribution_files(
@@ -371,21 +441,27 @@ def _verify_distribution_files(
             "UCNS producer distribution has no installed-file manifest"
         )
     verified_paths: set[Path] = set()
+    cached_bytecode: list[Path] = []
     direct_url_verified = False
     for entry in files:
         record_path = Path(str(entry))
         file_hash = entry.hash
         if file_hash is None:
             if (
-                (
-                    record_path.name == "RECORD"
-                    and record_path.parent.name.endswith(".dist-info")
-                )
-                or (
-                    record_path.suffix == ".pyc"
-                    and "__pycache__" in record_path.parts
-                )
+                record_path.name == "RECORD"
+                and record_path.parent.name.endswith(".dist-info")
             ):
+                continue
+            if (
+                record_path.suffix == ".pyc"
+                and "__pycache__" in record_path.parts
+            ):
+                installed_path = Path(distribution.locate_file(entry)).resolve()
+                if not installed_path.is_file():
+                    raise UCNSAdapterConstructionError(
+                        f"UCNS installed file is missing: {record_path}"
+                    )
+                cached_bytecode.append(installed_path)
                 continue
             raise UCNSAdapterConstructionError(
                 f"UCNS installed file has no recorded hash: {record_path}"
@@ -424,6 +500,8 @@ def _verify_distribution_files(
         raise UCNSAdapterConstructionError(
             "UCNS direct_url.json is absent from the installed-file manifest"
         )
+    for installed_path in cached_bytecode:
+        _verify_cached_bytecode(installed_path, verified_paths=verified_paths)
 
 
 def _distribution_commit(module: ModuleType) -> str:
@@ -447,6 +525,10 @@ def _distribution_commit(module: ModuleType) -> str:
         raise UCNSAdapterConstructionError(
             "UCNS producer commit identity unavailable: direct_url.json invalid"
         ) from exc
+    if not isinstance(direct_url, Mapping):
+        raise UCNSAdapterConstructionError(
+            "UCNS producer commit identity unavailable: direct_url.json invalid"
+        )
     module_file = _module_file(module)
     source_url = direct_url.get("url")
     if not isinstance(source_url, str):
@@ -490,7 +572,7 @@ def _distribution_commit(module: ModuleType) -> str:
             raise UCNSAdapterConstructionError(
                 "UCNS module does not belong to the editable distribution"
             )
-        return _git_checkout_commit(root)
+        return _git_checkout_commit(root, module_file=module_file)
     raise UCNSAdapterConstructionError(
         "UCNS producer commit identity unavailable from distribution metadata"
     )

@@ -25,6 +25,9 @@ from __future__ import annotations
 import base64
 from hashlib import sha256
 import importlib.util
+import os
+from pathlib import Path
+import py_compile
 import subprocess
 from types import ModuleType
 
@@ -108,7 +111,7 @@ class _RecordedPath(str):
 
 
 def _vcs_distribution(root, commit):
-    module_payload = b"# installed UCNS fixture\n"
+    module_payload = b"VALUE = 'trusted'\n"
     direct_url_payload = adapter_module.json.dumps(
         {
             "url": "https://github.com/The-Interdependency/ucns.git",
@@ -123,11 +126,19 @@ def _vcs_distribution(root, commit):
     direct_url_path.parent.mkdir(parents=True)
     module_path.write_bytes(module_payload)
     direct_url_path.write_bytes(direct_url_payload)
+    bytecode_path = Path(importlib.util.cache_from_source(str(module_path)))
+    py_compile.compile(str(module_path), cfile=str(bytecode_path), doraise=True)
+    bytecode_relative = bytecode_path.relative_to(root).as_posix()
 
     class Distribution:
         files = (
             _RecordedPath(module_relative, module_payload),
             _RecordedPath(direct_url_relative, direct_url_payload),
+            type(
+                "BytecodePath",
+                (str,),
+                {"hash": None, "size": None},
+            )(bytecode_relative),
             type(
                 "RecordPath",
                 (str,),
@@ -142,7 +153,7 @@ def _vcs_distribution(root, commit):
         def locate_file(self, path):
             return root / str(path)
 
-    return Distribution(), module_path
+    return Distribution(), module_path, bytecode_path
 
 
 def test_absent_package_is_typed_suspension(monkeypatch):
@@ -276,7 +287,7 @@ def test_distribution_commit_identity_rejects_stale_lookalike(
 ):
     module = _exact_identity_module()
     del module.UCNS_PRODUCER_COMMIT
-    stale_distribution, module_path = _vcs_distribution(
+    stale_distribution, module_path, _ = _vcs_distribution(
         tmp_path / "stale",
         "868d80878c9ecd93ff30e91ca289122ded805a49",
     )
@@ -290,7 +301,7 @@ def test_distribution_commit_identity_rejects_stale_lookalike(
     with pytest.raises(UnsupportedUCNSSchemaError, match="producer commit mismatch"):
         ActualUCNSAdapter(module)
 
-    pinned_distribution, module_path = _vcs_distribution(
+    pinned_distribution, module_path, _ = _vcs_distribution(
         tmp_path / "pinned",
         PINNED_UCNS_COMMIT,
     )
@@ -320,13 +331,82 @@ def test_distribution_commit_identity_rejects_stale_lookalike(
         ActualUCNSAdapter(module)
 
 
+def test_distribution_identity_rejects_timestamp_valid_altered_bytecode(
+    monkeypatch,
+    tmp_path,
+):
+    distribution, module_path, bytecode_path = _vcs_distribution(
+        tmp_path / "pinned",
+        PINNED_UCNS_COMMIT,
+    )
+    module = _exact_identity_module()
+    del module.UCNS_PRODUCER_COMMIT
+    module.__file__ = str(module_path)
+    monkeypatch.setattr(
+        adapter_module.importlib_metadata,
+        "distribution",
+        lambda name: distribution,
+    )
+    assert ActualUCNSAdapter(module).status.adapter_active is True
+
+    original_source = module_path.read_bytes()
+    malicious_source = original_source.replace(b"trusted", b"altered")
+    assert len(malicious_source) == len(original_source)
+    module_path.write_bytes(malicious_source)
+    py_compile.compile(str(module_path), cfile=str(bytecode_path), doraise=True)
+    compiled_stat = module_path.stat()
+    module_path.write_bytes(original_source)
+    os.utime(
+        module_path,
+        ns=(compiled_stat.st_atime_ns, compiled_stat.st_mtime_ns),
+    )
+    bytecode = bytecode_path.read_bytes()
+    assert int.from_bytes(bytecode[8:12], "little") == int(
+        module_path.stat().st_mtime
+    )
+    assert int.from_bytes(bytecode[12:16], "little") == len(original_source)
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="cached bytecode does not match",
+    ):
+        ActualUCNSAdapter(module)
+
+
+def test_distribution_identity_rejects_non_object_direct_url(
+    monkeypatch,
+    tmp_path,
+):
+    distribution, module_path, _ = _vcs_distribution(
+        tmp_path / "pinned",
+        PINNED_UCNS_COMMIT,
+    )
+    module = _exact_identity_module()
+    del module.UCNS_PRODUCER_COMMIT
+    module.__file__ = str(module_path)
+    monkeypatch.setattr(distribution, "read_text", lambda name: "[]")
+    monkeypatch.setattr(
+        adapter_module.importlib_metadata,
+        "distribution",
+        lambda name: distribution,
+    )
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="direct_url.json invalid",
+    ):
+        ActualUCNSAdapter(module)
+
+
 def test_checkout_repository_identity_accepts_renamed_remote(tmp_path):
     checkout = tmp_path / "ucns"
     checkout.mkdir()
     subprocess.run(["git", "init", str(checkout)], check=True, capture_output=True)
+    tracked_module = checkout / "src/ucns/__init__.py"
+    tracked_module.parent.mkdir(parents=True)
+    tracked_module.write_text("# tracked fixture\n", encoding="utf-8")
+    (checkout / ".gitignore").write_text("/ucns/\n", encoding="utf-8")
     (checkout / "tracked.txt").write_text("fixture\n", encoding="utf-8")
     subprocess.run(
-        ["git", "-C", str(checkout), "add", "tracked.txt"],
+        ["git", "-C", str(checkout), "add", "."],
         check=True,
         capture_output=True,
     )
@@ -365,7 +445,25 @@ def test_checkout_repository_identity_accepts_renamed_remote(tmp_path):
         capture_output=True,
         text=True,
     ).stdout.strip()
-    assert adapter_module._git_checkout_commit(checkout) == commit
+    assert (
+        adapter_module._git_checkout_commit(
+            checkout,
+            module_file=tracked_module,
+        )
+        == commit
+    )
+
+    ignored_module = checkout / "ucns/__init__.py"
+    ignored_module.parent.mkdir()
+    ignored_module.write_text("# fabricated fixture\n", encoding="utf-8")
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="identity unavailable from editable checkout",
+    ):
+        adapter_module._git_checkout_commit(
+            checkout,
+            module_file=ignored_module,
+        )
 
 
 def test_explicit_verified_source_checkout_does_not_require_distribution(
