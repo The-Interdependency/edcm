@@ -1082,7 +1082,7 @@ export default defineMsdmdCollection({
         "class": "safety",
         "given": "an importable UCNS package is considered for activation",
         "since": "2026-07-25",
-        "then": "the installed-distribution commit identity, any producer-owned commit identity, and every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended"
+        "then": "the clean-checkout or installed-distribution commit identity, installed-file RECORD hashes, any producer-owned commit identity, and every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended"
       },
       "file": "edcm/ucns_adapter.py",
       "id": "edcm_ucns_exact_profile_only"
@@ -1114,7 +1114,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_canonical_bytes, _digest, _package_present, _source_checkout_commit, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record",
+        "internal_surface": "_canonical_bytes, _digest, _package_present, _source_checkout_commit, _verify_distribution_files, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record",
         "module_kind": "adapter",
         "module_name": "ucns_adapter",
         "network_boundary": "none",

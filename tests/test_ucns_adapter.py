@@ -22,7 +22,10 @@ from __future__ import annotations
 #   cleanup: none
 # === END CHECKS ===
 
+import base64
+from hashlib import sha256
 import importlib.util
+import subprocess
 from types import ModuleType
 
 import pytest
@@ -89,6 +92,57 @@ def _exact_identity_module() -> ModuleType:
         "SuperpositionedSpaceBoundary", (), {}
     )
     return module
+
+
+class _RecordedPath(str):
+    def __new__(cls, value: str, payload: bytes):
+        instance = super().__new__(cls, value)
+        digest = base64.urlsafe_b64encode(sha256(payload).digest()).rstrip(b"=")
+        instance.hash = type(
+            "RecordedHash",
+            (),
+            {"mode": "sha256", "value": digest.decode("ascii")},
+        )()
+        instance.size = len(payload)
+        return instance
+
+
+def _vcs_distribution(root, commit):
+    module_payload = b"# installed UCNS fixture\n"
+    direct_url_payload = adapter_module.json.dumps(
+        {
+            "url": "https://github.com/The-Interdependency/ucns.git",
+            "vcs_info": {"vcs": "git", "commit_id": commit},
+        }
+    ).encode("utf-8")
+    module_relative = "ucns/__init__.py"
+    direct_url_relative = "ucns-0.0.0.dist-info/direct_url.json"
+    module_path = root / module_relative
+    direct_url_path = root / direct_url_relative
+    module_path.parent.mkdir(parents=True)
+    direct_url_path.parent.mkdir(parents=True)
+    module_path.write_bytes(module_payload)
+    direct_url_path.write_bytes(direct_url_payload)
+
+    class Distribution:
+        files = (
+            _RecordedPath(module_relative, module_payload),
+            _RecordedPath(direct_url_relative, direct_url_payload),
+            type(
+                "RecordPath",
+                (str,),
+                {"hash": None, "size": None},
+            )("ucns-0.0.0.dist-info/RECORD"),
+        )
+
+        def read_text(self, name):
+            assert name == "direct_url.json"
+            return direct_url_path.read_text(encoding="utf-8")
+
+        def locate_file(self, path):
+            return root / str(path)
+
+    return Distribution(), module_path
 
 
 def test_absent_package_is_typed_suspension(monkeypatch):
@@ -216,45 +270,35 @@ def test_exact_surface_rejects_stale_or_missing_producer_identity(monkeypatch):
         ActualUCNSAdapter(module)
 
 
-def test_distribution_commit_identity_rejects_stale_lookalike(monkeypatch):
+def test_distribution_commit_identity_rejects_stale_lookalike(
+    monkeypatch,
+    tmp_path,
+):
     module = _exact_identity_module()
     del module.UCNS_PRODUCER_COMMIT
-    module.__file__ = __file__
-
-    class Distribution:
-        def __init__(self, commit):
-            self.commit = commit
-
-        def read_text(self, name):
-            assert name == "direct_url.json"
-            return adapter_module.json.dumps(
-                {
-                    "url": "https://github.com/The-Interdependency/ucns.git",
-                    "vcs_info": {
-                        "vcs": "git",
-                        "commit_id": self.commit,
-                    },
-                }
-            )
-
-        def locate_file(self, path):
-            assert path == "ucns/__init__.py"
-            return __file__
+    stale_distribution, module_path = _vcs_distribution(
+        tmp_path / "stale",
+        "868d80878c9ecd93ff30e91ca289122ded805a49",
+    )
+    module.__file__ = str(module_path)
 
     monkeypatch.setattr(
         adapter_module.importlib_metadata,
         "distribution",
-        lambda name: Distribution(
-            "868d80878c9ecd93ff30e91ca289122ded805a49"
-        ),
+        lambda name: stale_distribution,
     )
     with pytest.raises(UnsupportedUCNSSchemaError, match="producer commit mismatch"):
         ActualUCNSAdapter(module)
 
+    pinned_distribution, module_path = _vcs_distribution(
+        tmp_path / "pinned",
+        PINNED_UCNS_COMMIT,
+    )
+    module.__file__ = str(module_path)
     monkeypatch.setattr(
         adapter_module.importlib_metadata,
         "distribution",
-        lambda name: Distribution(PINNED_UCNS_COMMIT),
+        lambda name: pinned_distribution,
     )
     assert ActualUCNSAdapter(module).status.adapter_active is True
 
@@ -266,6 +310,62 @@ def test_distribution_commit_identity_rejects_stale_lookalike(monkeypatch):
         match="producer-owned and installed commit identities disagree",
     ):
         ActualUCNSAdapter(module)
+
+    del module.UCNS_PRODUCER_COMMIT
+    module_path.write_text("# locally modified UCNS fixture\n", encoding="utf-8")
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="installed file (size|hash) mismatch",
+    ):
+        ActualUCNSAdapter(module)
+
+
+def test_checkout_repository_identity_accepts_renamed_remote(tmp_path):
+    checkout = tmp_path / "ucns"
+    checkout.mkdir()
+    subprocess.run(["git", "init", str(checkout)], check=True, capture_output=True)
+    (checkout / "tracked.txt").write_text("fixture\n", encoding="utf-8")
+    subprocess.run(
+        ["git", "-C", str(checkout), "add", "tracked.txt"],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "-c",
+            "user.name=EDCM Test",
+            "-c",
+            "user.email=edcm-test@example.invalid",
+            "commit",
+            "-m",
+            "fixture",
+        ],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "remote",
+            "add",
+            "upstream",
+            adapter_module.UCNS_SOURCE_REPOSITORY,
+        ],
+        check=True,
+        capture_output=True,
+    )
+    commit = subprocess.run(
+        ["git", "-C", str(checkout), "rev-parse", "HEAD"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    assert adapter_module._git_checkout_commit(checkout) == commit
 
 
 def test_explicit_verified_source_checkout_does_not_require_distribution(

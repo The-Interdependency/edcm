@@ -21,7 +21,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 #   summary: fail-closed consumer for the exact EDCM-only UCNS word-gonol profile from the reviewed v0.19 producer, preserving full-corpus speaker-turn observations without coordinate, geometry, or proof transfer
 #   owner: Erin Spencer
 #   public_surface: ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter
-#   internal_surface: _canonical_bytes, _digest, _package_present, _source_checkout_commit, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record
+#   internal_surface: _canonical_bytes, _digest, _package_present, _source_checkout_commit, _verify_distribution_files, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
@@ -38,7 +38,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 # === CONTRACTS ===
 # id: edcm_ucns_exact_profile_only
 #   given: an importable UCNS package is considered for activation
-#   then: the installed-distribution commit identity, any producer-owned commit identity, and every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended
+#   then: the clean-checkout or installed-distribution commit identity, installed-file RECORD hashes, any producer-owned commit identity, and every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended
 #   class: safety
 #   since: 2026-07-25
 #
@@ -57,8 +57,10 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 
 from __future__ import annotations
 
+import base64
 from dataclasses import asdict, dataclass, replace
 import hashlib
+import hmac
 import importlib
 from importlib import metadata as importlib_metadata
 import importlib.util
@@ -273,12 +275,22 @@ def _module_file(module: ModuleType) -> Path:
 
 def _git_checkout_commit(root: Path) -> str:
     try:
-        remote = subprocess.run(
-            ["git", "-C", str(root), "remote", "get-url", "origin"],
+        remote_names = subprocess.run(
+            ["git", "-C", str(root), "remote"],
             check=True,
             capture_output=True,
             text=True,
-        ).stdout.strip()
+        ).stdout.splitlines()
+        remote_urls = tuple(
+            url
+            for name in remote_names
+            for url in subprocess.run(
+                ["git", "-C", str(root), "remote", "get-url", "--all", name],
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.splitlines()
+        )
         commit = subprocess.run(
             ["git", "-C", str(root), "rev-parse", "HEAD"],
             check=True,
@@ -302,8 +314,10 @@ def _git_checkout_commit(root: Path) -> str:
         raise UCNSAdapterConstructionError(
             "UCNS producer commit identity unavailable from editable checkout"
         ) from exc
-    if _repository_identity(remote) != _repository_identity(
-        UCNS_SOURCE_REPOSITORY
+    expected_repository = _repository_identity(UCNS_SOURCE_REPOSITORY)
+    if not any(
+        _repository_identity(remote) == expected_repository
+        for remote in remote_urls
     ):
         raise UnsupportedUCNSSchemaError(
             "UCNS producer repository identity mismatch"
@@ -344,6 +358,72 @@ def _source_checkout_commit(module: ModuleType) -> str | None:
     if module_file not in expected_modules:
         return None
     return _git_checkout_commit(root)
+
+
+def _verify_distribution_files(
+    distribution: importlib_metadata.Distribution,
+    *,
+    module_file: Path,
+) -> None:
+    files = distribution.files
+    if files is None:
+        raise UCNSAdapterConstructionError(
+            "UCNS producer distribution has no installed-file manifest"
+        )
+    verified_paths: set[Path] = set()
+    direct_url_verified = False
+    for entry in files:
+        record_path = Path(str(entry))
+        file_hash = entry.hash
+        if file_hash is None:
+            if (
+                (
+                    record_path.name == "RECORD"
+                    and record_path.parent.name.endswith(".dist-info")
+                )
+                or (
+                    record_path.suffix == ".pyc"
+                    and "__pycache__" in record_path.parts
+                )
+            ):
+                continue
+            raise UCNSAdapterConstructionError(
+                f"UCNS installed file has no recorded hash: {record_path}"
+            )
+        if file_hash.mode != "sha256":
+            raise UCNSAdapterConstructionError(
+                f"UCNS installed file uses an unsupported hash: {record_path}"
+            )
+        installed_path = Path(distribution.locate_file(entry)).resolve()
+        if not installed_path.is_file():
+            raise UCNSAdapterConstructionError(
+                f"UCNS installed file is missing: {record_path}"
+            )
+        if entry.size is not None and installed_path.stat().st_size != entry.size:
+            raise UCNSAdapterConstructionError(
+                f"UCNS installed file size mismatch: {record_path}"
+            )
+        with installed_path.open("rb") as handle:
+            digest = hashlib.file_digest(handle, "sha256").digest()
+        encoded = base64.urlsafe_b64encode(digest).rstrip(b"=").decode("ascii")
+        if not hmac.compare_digest(encoded, file_hash.value):
+            raise UCNSAdapterConstructionError(
+                f"UCNS installed file hash mismatch: {record_path}"
+            )
+        verified_paths.add(installed_path)
+        if (
+            record_path.name == "direct_url.json"
+            and record_path.parent.name.endswith(".dist-info")
+        ):
+            direct_url_verified = True
+    if module_file not in verified_paths:
+        raise UCNSAdapterConstructionError(
+            "UCNS module is absent from the installed-file manifest"
+        )
+    if not direct_url_verified:
+        raise UCNSAdapterConstructionError(
+            "UCNS direct_url.json is absent from the installed-file manifest"
+        )
 
 
 def _distribution_commit(module: ModuleType) -> str:
@@ -392,6 +472,7 @@ def _distribution_commit(module: ModuleType) -> str:
             raise UCNSAdapterConstructionError(
                 "UCNS module does not belong to the identified distribution"
             )
+        _verify_distribution_files(distribution, module_file=module_file)
         commit = str(vcs_info.get("commit_id", "")).lower()
         if not _COMMIT_RE.fullmatch(commit):
             raise UCNSAdapterConstructionError(

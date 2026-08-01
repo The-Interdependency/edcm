@@ -106,7 +106,11 @@ from types import ModuleType
 from typing import Any
 from zipfile import BadZipFile, ZipFile
 
-from edcm.ucns_adapter import ActualUCNSAdapter, PINNED_UCNS_COMMIT
+from edcm.ucns_adapter import (
+    ActualUCNSAdapter,
+    PINNED_UCNS_COMMIT,
+    UCNSAdapterConstructionError,
+)
 
 
 RUNNER_SCHEMA_ID = "edcm.multiwoz21-full-corpus"
@@ -1725,7 +1729,13 @@ def _load_pinned_runtime(
             "imported UCNS module is not from the pinned checkout",
             code="UCNS_IMPORT_IDENTITY",
         )
-    return ActualUCNSAdapter(module), UCNSFullCorpusGate(module)
+    try:
+        return ActualUCNSAdapter(module), UCNSFullCorpusGate(module)
+    except UCNSAdapterConstructionError as exc:
+        raise CorpusRunError(
+            f"UCNS adapter construction failed: {exc}",
+            code="UCNS_ADAPTER_CONSTRUCTION",
+        ) from exc
 
 
 def _incomplete_receipt(

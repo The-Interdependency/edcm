@@ -64,11 +64,13 @@ import io
 import json
 from hashlib import sha256
 from pathlib import Path
+from types import ModuleType
 from typing import Any
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import pytest
 
+import edcm.corpora.multiwoz21 as multiwoz21_module
 from edcm.corpora.multiwoz21 import (
     AdmissionManifest,
     CorpusRunError,
@@ -76,7 +78,11 @@ from edcm.corpora.multiwoz21 import (
     iter_top_level_object,
     run_archive,
 )
-from edcm.ucns_adapter import ActualUCNSAdapter, PINNED_UCNS_COMMIT
+from edcm.ucns_adapter import (
+    ActualUCNSAdapter,
+    PINNED_UCNS_COMMIT,
+    UCNSAdapterConstructionError,
+)
 
 
 SPACE_MANIFESTATIONS = frozenset(
@@ -797,6 +803,48 @@ def test_archive_mutation_fails_before_dialogue_observation(tmp_path: Path) -> N
         )
     assert caught.value.code == "ARCHIVE_BYTES"
     assert caught.value.state == {}
+
+
+def test_adapter_construction_failure_writes_incomplete_receipt(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    source_root = tmp_path / "ucns-source"
+    module_path = source_root / "src/ucns/__init__.py"
+    module_path.parent.mkdir(parents=True)
+    module_path.write_text("# fixture\n", encoding="utf-8")
+    module = ModuleType("ucns")
+    module.__file__ = str(module_path)
+
+    monkeypatch.setitem(multiwoz21_module.sys.modules, "ucns", module)
+    monkeypatch.setattr(
+        multiwoz21_module,
+        "_git_commit",
+        lambda root, *, require_clean: PINNED_UCNS_COMMIT,
+    )
+
+    def reject_adapter(candidate):
+        raise UCNSAdapterConstructionError("fixture identity rejection")
+
+    monkeypatch.setattr(multiwoz21_module, "ActualUCNSAdapter", reject_adapter)
+    receipt_path = tmp_path / "receipt.json"
+    exit_code = multiwoz21_module.main(
+        [
+            "--archive",
+            str(tmp_path / "archive.zip"),
+            "--ucns-source-root",
+            str(source_root),
+            "--output",
+            str(tmp_path / "report.json"),
+            "--receipt",
+            str(receipt_path),
+        ]
+    )
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert exit_code == 1
+    assert receipt["status"] == "incomplete"
+    assert receipt["error"]["code"] == "UCNS_ADAPTER_CONSTRUCTION"
+    assert "fixture identity rejection" in receipt["error"]["reason"]
 
 
 def test_claimed_gate_without_source_exhaustion_cannot_complete(
