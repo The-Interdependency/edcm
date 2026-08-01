@@ -119,12 +119,43 @@ from edcm.ucns_adapter import (
 RUNNER_SCHEMA_ID = "edcm.multiwoz21-full-corpus"
 RUNNER_SCHEMA_VERSION = "1.2.0"
 _SEALED_WORKER_FLAG = "--edcm-sealed-worker"
-_ISOLATED_WORKER_BOOTSTRAP = (
-    "import runpy, sys; "
-    "repository_root = sys.argv.pop(1); "
-    "sys.path.insert(0, repository_root); "
-    "runpy.run_module('edcm.corpora.multiwoz21', run_name='__main__')"
-)
+_SEALED_REPOSITORY_ROOT_ENV = "EDCM_SEALED_REPOSITORY_ROOT"
+_ISOLATED_WORKER_BOOTSTRAP = """
+import io
+import os
+import runpy
+import subprocess
+import sys
+import tarfile
+import tempfile
+
+repository_root = sys.argv.pop(1)
+environment = dict(os.environ)
+environment["GIT_NO_REPLACE_OBJECTS"] = "1"
+archive = subprocess.run(
+    ["git", "archive", "--format=tar", "HEAD", "edcm"],
+    cwd=repository_root,
+    check=True,
+    capture_output=True,
+    env=environment,
+).stdout
+
+def source_only(member, destination):
+    filtered = tarfile.data_filter(member, destination)
+    if filtered is None:
+        return None
+    if filtered.name.endswith(".pyc") or "__pycache__" in filtered.name.split("/"):
+        return None
+    return filtered
+
+with tempfile.TemporaryDirectory(prefix="edcm-sealed-source-") as snapshot:
+    with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as package:
+        package.extractall(snapshot, filter=source_only)
+    os.environ["EDCM_SEALED_REPOSITORY_ROOT"] = repository_root
+    sys.dont_write_bytecode = True
+    sys.path.insert(0, snapshot)
+    runpy.run_module("edcm.corpora.multiwoz21", run_name="__main__")
+"""
 RECEIPT_SCHEMA_ID = "edcm.corpus-run-receipt"
 RECEIPT_SCHEMA_VERSION = "1.2.0"
 CHECKPOINT_SCHEMA_ID = "edcm.multiwoz21-checkpoint"
@@ -1679,7 +1710,9 @@ def _verify_git_tree(
     pathspec: str,
     *,
     environment: dict[str, str],
+    producer_name: str = "EDCM",
 ) -> None:
+    dirty_code = f"{producer_name}_DIRTY"
     try:
         tree_output = subprocess.run(
             [
@@ -1710,7 +1743,7 @@ def _verify_git_tree(
         )
     except (OSError, subprocess.CalledProcessError, ValueError) as exc:
         raise CorpusRunError(
-            "EDCM package tree cannot be verified",
+            f"{producer_name} package tree cannot be verified",
             code="GIT_IDENTITY",
         ) from exc
     unexpected_paths = {
@@ -1720,8 +1753,8 @@ def _verify_git_tree(
     }
     if tracked_paths - actual_paths or unexpected_paths:
         raise CorpusRunError(
-            "EDCM package files differ from the sealed commit",
-            code="EDCM_DIRTY",
+            f"{producer_name} package files differ from the sealed commit",
+            code=dirty_code,
         )
     for relative_path in sorted(tracked_paths):
         try:
@@ -1740,13 +1773,13 @@ def _verify_git_tree(
             observed = (root / relative_path).read_bytes()
         except (OSError, subprocess.CalledProcessError) as exc:
             raise CorpusRunError(
-                "EDCM package bytes cannot be verified",
+                f"{producer_name} package bytes cannot be verified",
                 code="GIT_IDENTITY",
             ) from exc
         if observed != expected:
             raise CorpusRunError(
-                f"EDCM package file differs from the sealed commit: {relative_path}",
-                code="EDCM_DIRTY",
+                f"{producer_name} package file differs from the sealed commit: {relative_path}",
+                code=dirty_code,
             )
     verified_paths = {(root / path).resolve() for path in tracked_paths}
     for cached_path in scope.rglob("*.pyc") if scope.is_dir() else ():
@@ -1767,8 +1800,8 @@ def _verify_git_tree(
             )
         except UCNSAdapterConstructionError as exc:
             raise CorpusRunError(
-                f"EDCM cached bytecode differs from the sealed source: {cached_path.name}",
-                code="EDCM_DIRTY",
+                f"{producer_name} cached bytecode differs from the sealed source: {cached_path.name}",
+                code=dirty_code,
             ) from exc
 
 
@@ -1777,6 +1810,7 @@ def _git_commit(
     *,
     require_clean: bool,
     verify_tree: str | None = None,
+    producer_name: str = "EDCM",
 ) -> str:
     environment = dict(os.environ)
     environment["GIT_NO_REPLACE_OBJECTS"] = "1"
@@ -1804,44 +1838,53 @@ def _git_commit(
         ) from exc
     if require_clean and status:
         raise CorpusRunError(
-            "EDCM tracked files must be clean before a sealed corpus run",
-            code="EDCM_DIRTY",
+            f"{producer_name} tracked files must be clean before a sealed corpus run",
+            code=f"{producer_name}_DIRTY",
         )
     if verify_tree is not None:
-        _verify_git_tree(root, verify_tree, environment=environment)
+        _verify_git_tree(
+            root,
+            verify_tree,
+            environment=environment,
+            producer_name=producer_name,
+        )
     return commit
 
 
 def _load_pinned_runtime(
     ucns_source_root: Path,
 ) -> tuple[ActualUCNSAdapter, UCNSFullCorpusGate]:
-    commit = _git_commit(ucns_source_root, require_clean=True)
-    if commit != PINNED_UCNS_COMMIT:
-        raise CorpusRunError(
-            f"UCNS checkout mismatch: expected {PINNED_UCNS_COMMIT}, got {commit}",
-            code="UCNS_COMMIT",
-        )
     source_path = (ucns_source_root / "src").resolve()
     if not source_path.is_dir():
         raise CorpusRunError(
             "UCNS checkout has no src directory",
             code="UCNS_SOURCE_LAYOUT",
         )
-    existing = sys.modules.get("ucns")
-    if existing is not None:
-        module_path = Path(existing.__file__).resolve()
-        if not module_path.is_relative_to(source_path):
-            raise CorpusRunError(
-                "a different UCNS module is already imported",
-                code="UCNS_IMPORT_IDENTITY",
-            )
-        module = existing
-    else:
-        sys.path.insert(0, str(source_path))
-        try:
-            module = importlib.import_module("ucns")
-        finally:
-            sys.path.remove(str(source_path))
+    commit = _git_commit(
+        ucns_source_root,
+        require_clean=True,
+        verify_tree="src/ucns",
+        producer_name="UCNS",
+    )
+    if commit != PINNED_UCNS_COMMIT:
+        raise CorpusRunError(
+            f"UCNS checkout mismatch: expected {PINNED_UCNS_COMMIT}, got {commit}",
+            code="UCNS_COMMIT",
+        )
+    for name in tuple(sys.modules):
+        if name == "ucns" or name.startswith("ucns."):
+            sys.modules.pop(name, None)
+    importlib.invalidate_caches()
+    sys.path.insert(0, str(source_path))
+    try:
+        module = importlib.import_module("ucns")
+    except Exception as exc:
+        raise CorpusRunError(
+            f"authenticated UCNS import failed: {type(exc).__name__}: {exc}",
+            code="UCNS_IMPORT",
+        ) from exc
+    finally:
+        sys.path.remove(str(source_path))
     module_path = Path(module.__file__).resolve()
     if not module_path.is_relative_to(source_path):
         raise CorpusRunError(
@@ -1906,7 +1949,12 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
 def _sealed_main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
     manifest = load_admission_manifest()
-    repository_root = Path(__file__).resolve().parents[2]
+    sealed_repository_root = os.environ.get(_SEALED_REPOSITORY_ROOT_ENV)
+    repository_root = (
+        Path(sealed_repository_root).resolve()
+        if sealed_repository_root is not None
+        else Path(__file__).resolve().parents[2]
+    )
     edcm_commit: str | None = None
     try:
         edcm_commit = _git_commit(
@@ -1968,19 +2016,26 @@ def _sealed_main(argv: list[str] | None = None) -> int:
         return 1
 
 
-def _run_in_fresh_process(argv: list[str]) -> int:
-    repository_root = Path(__file__).resolve().parents[2]
+def _run_in_fresh_process(
+    argv: list[str],
+    *,
+    repository_root: Path | None = None,
+) -> int:
+    source_repository_root = (
+        Path(__file__).resolve().parents[2]
+        if repository_root is None
+        else repository_root.resolve()
+    )
     completed = subprocess.run(
         [
             sys.executable,
             "-I",
             "-c",
             _ISOLATED_WORKER_BOOTSTRAP,
-            str(repository_root),
+            str(source_repository_root),
             _SEALED_WORKER_FLAG,
             *argv,
         ],
-        cwd=repository_root,
         check=False,
     )
     return completed.returncode

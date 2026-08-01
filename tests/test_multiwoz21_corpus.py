@@ -60,10 +60,14 @@ from __future__ import annotations
 #   cleanup: tempdir_teardown
 # === END CHECKS ===
 
+import importlib.util
 import io
 import json
 from hashlib import sha256
+import os
 from pathlib import Path
+import py_compile
+import shutil
 import subprocess
 from types import ModuleType
 from typing import Any
@@ -821,7 +825,7 @@ def test_adapter_construction_failure_writes_incomplete_receipt(
     monkeypatch.setattr(
         multiwoz21_module,
         "_git_commit",
-        lambda root, *, require_clean, verify_tree=None: PINNED_UCNS_COMMIT,
+        lambda root, *, require_clean, verify_tree=None, producer_name="EDCM": PINNED_UCNS_COMMIT,
     )
 
     def reject_adapter(candidate):
@@ -857,6 +861,165 @@ def test_public_main_uses_fresh_isolated_edcm_module_graph(
     monkeypatch.setattr(multiwoz21_module, "_sealed_main", reject_in_process)
 
     assert multiwoz21_module.main(["--help"]) == 0
+
+
+def _committed_edcm_fixture(tmp_path: Path) -> Path:
+    repository = tmp_path / "repository"
+    shutil.copytree(
+        Path(multiwoz21_module.__file__).resolve().parents[1],
+        repository / "edcm",
+        ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
+    )
+    subprocess.run(
+        ["git", "init", str(repository)],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(repository), "add", "edcm"],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(repository),
+            "-c",
+            "user.name=EDCM Test",
+            "-c",
+            "user.email=edcm-test@example.invalid",
+            "commit",
+            "-m",
+            "trusted EDCM fixture",
+        ],
+        check=True,
+        capture_output=True,
+    )
+    return repository
+
+
+def test_isolated_bootstrap_rejects_altered_runner_cache(
+    tmp_path: Path,
+) -> None:
+    repository = _committed_edcm_fixture(tmp_path)
+    source = repository / "edcm/corpora/multiwoz21.py"
+    original_source = source.read_bytes()
+    altered_source = original_source.replace(
+        b"if not _is_runtime_cache(cached_path):",
+        b"if     _is_runtime_cache(cached_path):",
+        1,
+    )
+    assert altered_source != original_source
+    assert len(altered_source) == len(original_source)
+    source.write_bytes(altered_source)
+    cache = Path(importlib.util.cache_from_source(str(source)))
+    py_compile.compile(str(source), cfile=str(cache), doraise=True)
+    compiled_stat = source.stat()
+    source.write_bytes(original_source)
+    os.utime(
+        source,
+        ns=(compiled_stat.st_atime_ns, compiled_stat.st_mtime_ns),
+    )
+
+    receipt = tmp_path / "cache-rejection-receipt.json"
+    exit_code = multiwoz21_module._run_in_fresh_process(
+        [
+            "--archive",
+            str(tmp_path / "archive.zip"),
+            "--ucns-source-root",
+            str(tmp_path / "ucns"),
+            "--output",
+            str(tmp_path / "report.json"),
+            "--receipt",
+            str(receipt),
+        ],
+        repository_root=repository,
+    )
+
+    assert exit_code == 1
+    assert json.loads(receipt.read_text(encoding="utf-8"))["error"]["code"] == (
+        "EDCM_DIRTY"
+    )
+
+
+def test_isolated_bootstrap_preserves_caller_relative_paths(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    repository = _committed_edcm_fixture(tmp_path)
+    caller = tmp_path / "caller"
+    caller.mkdir()
+    monkeypatch.chdir(caller)
+
+    exit_code = multiwoz21_module._run_in_fresh_process(
+        [
+            "--archive",
+            "archive.zip",
+            "--ucns-source-root",
+            "ucns",
+            "--output",
+            "report.json",
+            "--receipt",
+            "receipt.json",
+        ],
+        repository_root=repository,
+    )
+
+    assert exit_code == 1
+    assert (caller / "receipt.json").is_file()
+    assert not (repository / "receipt.json").exists()
+
+
+def test_ucns_tree_is_authenticated_before_import(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    source_root = tmp_path / "ucns-source"
+    module_path = source_root / "src/ucns/__init__.py"
+    module_path.parent.mkdir(parents=True)
+    module_path.write_text("# fixture\n", encoding="utf-8")
+    events: list[str] = []
+    module = ModuleType("ucns")
+    module.__file__ = str(module_path)
+    module.V014_FULL_CORPUS_SCHEMA_ID = (
+        multiwoz21_module.UCNS_FULL_CORPUS_SCHEMA_ID
+    )
+    module.V014_FULL_CORPUS_SCHEMA_VERSION = (
+        multiwoz21_module.UCNS_FULL_CORPUS_SCHEMA_VERSION
+    )
+    for name in UCNSFullCorpusGate._REQUIRED_SURFACES:
+        setattr(module, name, lambda *args, **kwargs: None)
+
+    def verify(root, *, require_clean, verify_tree=None, producer_name="EDCM"):
+        events.append("verify")
+        assert verify_tree == "src/ucns"
+        assert producer_name == "UCNS"
+        return PINNED_UCNS_COMMIT
+
+    def import_module(name):
+        events.append("import")
+        assert name == "ucns"
+        assert "ucns" not in multiwoz21_module.sys.modules
+        return module
+
+    class FixtureAdapter:
+        def __init__(self, candidate):
+            events.append("adapter")
+            self._module = candidate
+
+    monkeypatch.setitem(multiwoz21_module.sys.modules, "ucns", ModuleType("ucns"))
+    monkeypatch.setattr(multiwoz21_module, "_git_commit", verify)
+    monkeypatch.setattr(
+        multiwoz21_module.importlib,
+        "import_module",
+        import_module,
+    )
+    monkeypatch.setattr(multiwoz21_module, "ActualUCNSAdapter", FixtureAdapter)
+
+    multiwoz21_module._load_pinned_runtime(source_root)
+
+    assert events == ["verify", "import", "adapter"]
 
 
 def test_sealed_git_identity_disables_replacement_refs(tmp_path: Path) -> None:
