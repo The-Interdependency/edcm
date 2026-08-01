@@ -4,7 +4,7 @@
   "error": null,
   "identities": {
     "archive_sha256": "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e",
-    "edcm_commit": "dc385d8990e8a9b812a1e477180b2ae4867a3e23",
+    "edcm_commit": "1b512624d99c58e1e1f5d7c4e95dab70420ff77b",
     "ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
   },
   "last_completed": {
@@ -21,7 +21,7 @@
     "dialogues": 10438,
     "source_turns": 143048
   },
-  "receipt_digest": "aa2f7c9d31efe727fba169b72ca51c8ff0496d192e8c80275e78e5a13e9b3703",
+  "receipt_digest": "c2bce543351f12354ce71f8d960c8c94802f2738c8722a5bc370aec3214015b6",
   "reconciliation": {
     "checks": {
       "adapter_turns_equal_source_turns": true,
@@ -46,8 +46,8 @@
       "validation": 1000
     }
   },
-  "report_digest": "d85a0fd5f2847b311b0f796f15cc291f4d3a8523fbc0255ad2b11ad2c9099690",
-  "report_sha256": "dbe9f95a93d1780299ee51036349e7afd062357abbddfedc3308e4e7dfedd81f",
+  "report_digest": "5abe6f52ffa3d47636d11742b48c534c53b059ae76b8ac66ba37c01c758dc206",
+  "report_sha256": "f190fc1b4df48ff65b0368b89dd843a7a7f70f7675a5f31b6724839fd8079c6f",
   "schema_id": "edcm.corpus-run-receipt",
   "schema_version": "1.2.0",
   "status": "complete",
