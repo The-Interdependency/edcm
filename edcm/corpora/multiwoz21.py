@@ -37,7 +37,7 @@ remain source-native noninputs to this profile run.
 #   summary: verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate from the reviewed v0.19 producer without committing raw text
 #   owner: Erin Spencer
 #   public_surface: AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive, main
-#   internal_surface: UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _git_tree_identity, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_main, _run_in_fresh_process
+#   internal_surface: UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _git_tree_identity, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_worker_arguments, _sealed_main, _run_in_fresh_process
 #   auth_boundary: none
 #   storage_boundary: reads a caller-held archive and writes only caller-selected aggregate report, receipt, and resumable checkpoint paths
 #   network_boundary: none; source acquisition is separate and the runner requires local pinned bytes
@@ -118,10 +118,10 @@ from edcm.ucns_adapter import (
 
 RUNNER_SCHEMA_ID = "edcm.multiwoz21-full-corpus"
 RUNNER_SCHEMA_VERSION = "1.3.0"
-_SEALED_WORKER_FLAG = "--edcm-sealed-worker"
 _SEALED_REPOSITORY_ROOT_ENV = "EDCM_SEALED_REPOSITORY_ROOT"
 _SEALED_EDCM_COMMIT_ENV = "EDCM_SEALED_COMMIT"
 _SEALED_EDCM_TREE_ENV = "EDCM_SEALED_TREE"
+_SEALED_SNAPSHOT_ROOT_ENV = "EDCM_SEALED_SNAPSHOT_ROOT"
 _BOOTSTRAP_ADMISSION_DIGEST = (
     "dfe7b65a9f4af739a4d149e65e60674333e87f56ff9db3cd07c144b9cab85fc2"
 )
@@ -283,7 +283,10 @@ else:
         os.environ["EDCM_SEALED_REPOSITORY_ROOT"] = repository_root
         os.environ["EDCM_SEALED_COMMIT"] = commit
         os.environ["EDCM_SEALED_TREE"] = edcm_tree
+        os.environ["EDCM_SEALED_SNAPSHOT_ROOT"] = snapshot
+        os.environ.pop("PYTHONPYCACHEPREFIX", None)
         sys.dont_write_bytecode = True
+        sys.pycache_prefix = None
         sys.path.insert(0, snapshot)
         runpy.run_module("edcm.corpora.multiwoz21", run_name="__main__")
 """.replace(
@@ -1846,8 +1849,10 @@ def _verify_git_tree(
     environment: dict[str, str],
     treeish: str = "HEAD",
     producer_name: str = "EDCM",
+    observed_root: Path | None = None,
 ) -> None:
     dirty_code = f"{producer_name}_DIRTY"
+    source_root = root if observed_root is None else observed_root
     try:
         tree_output = subprocess.run(
             [
@@ -1870,11 +1875,15 @@ def _verify_git_tree(
             for raw_path in tree_output.split(b"\0")
             if raw_path
         }
-        scope = root / pathspec
+        scope = source_root / pathspec
         actual_paths = (
-            {path.relative_to(root) for path in scope.rglob("*") if path.is_file()}
+            {
+                path.relative_to(source_root)
+                for path in scope.rglob("*")
+                if path.is_file()
+            }
             if scope.is_dir()
-            else {scope.relative_to(root)}
+            else {scope.relative_to(source_root)}
         )
     except (OSError, subprocess.CalledProcessError, ValueError) as exc:
         raise CorpusRunError(
@@ -1905,7 +1914,7 @@ def _verify_git_tree(
                 capture_output=True,
                 env=environment,
             ).stdout
-            observed = (root / relative_path).read_bytes()
+            observed = (source_root / relative_path).read_bytes()
         except (OSError, subprocess.CalledProcessError) as exc:
             raise CorpusRunError(
                 f"{producer_name} package bytes cannot be verified",
@@ -1916,7 +1925,7 @@ def _verify_git_tree(
                 f"{producer_name} package file differs from the sealed commit: {relative_path}",
                 code=dirty_code,
             )
-    verified_paths = {(root / path).resolve() for path in tracked_paths}
+    verified_paths = {(source_root / path).resolve() for path in tracked_paths}
     for cached_path in scope.rglob("*.pyc") if scope.is_dir() else ():
         if not _is_runtime_cache(cached_path):
             continue
@@ -2118,6 +2127,30 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+def _sealed_worker_arguments(argv: list[str] | None = None) -> list[str] | None:
+    """Return worker arguments only inside the authenticated snapshot bootstrap."""
+
+    snapshot_value = os.environ.get(_SEALED_SNAPSHOT_ROOT_ENV)
+    if snapshot_value is None:
+        return None
+    required_values = {
+        _SEALED_REPOSITORY_ROOT_ENV: os.environ.get(_SEALED_REPOSITORY_ROOT_ENV),
+        _SEALED_EDCM_COMMIT_ENV: os.environ.get(_SEALED_EDCM_COMMIT_ENV),
+        _SEALED_EDCM_TREE_ENV: os.environ.get(_SEALED_EDCM_TREE_ENV),
+    }
+    if any(value is None for value in required_values.values()):
+        raise RuntimeError("sealed worker context is incomplete")
+    snapshot_root = Path(snapshot_value).resolve()
+    expected_module = snapshot_root / "edcm/corpora/multiwoz21.py"
+    if Path(__file__).resolve() != expected_module:
+        raise RuntimeError("sealed worker is not executing from its snapshot")
+    if not sys.path or Path(sys.path[0]).resolve() != snapshot_root:
+        raise RuntimeError("sealed worker snapshot is not first on the import path")
+    if not sys.dont_write_bytecode or sys.pycache_prefix is not None:
+        raise RuntimeError("sealed worker bytecode isolation is inactive")
+    return list(sys.argv[1:] if argv is None else argv)
+
+
 def _sealed_main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
     manifest = load_admission_manifest()
@@ -2129,6 +2162,7 @@ def _sealed_main(argv: list[str] | None = None) -> int:
     )
     sealed_commit = os.environ.get(_SEALED_EDCM_COMMIT_ENV)
     sealed_tree = os.environ.get(_SEALED_EDCM_TREE_ENV)
+    sealed_snapshot_root = os.environ.get(_SEALED_SNAPSHOT_ROOT_ENV)
     edcm_tree: str | None = None
 
     def emit_failure(error: CorpusRunError) -> int:
@@ -2188,6 +2222,17 @@ def _sealed_main(argv: list[str] | None = None) -> int:
                 "EDCM package tree differs from the sealed bootstrap snapshot",
                 code="GIT_IDENTITY",
             )
+        if sealed_snapshot_root is not None:
+            environment = dict(os.environ)
+            environment["GIT_NO_REPLACE_OBJECTS"] = "1"
+            _verify_git_tree(
+                repository_root,
+                "edcm",
+                environment=environment,
+                treeish=commit,
+                producer_name="EDCM_SNAPSHOT",
+                observed_root=Path(sealed_snapshot_root).resolve(),
+            )
         adapter, full_corpus_gate = _load_pinned_runtime(
             args.ucns_source_root.resolve()
         )
@@ -2246,7 +2291,6 @@ def _run_in_fresh_process(
             "-c",
             _ISOLATED_WORKER_BOOTSTRAP,
             str(source_repository_root),
-            _SEALED_WORKER_FLAG,
             *argv,
         ],
         check=False,
@@ -2263,6 +2307,9 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == _SEALED_WORKER_FLAG:
-        raise SystemExit(_sealed_main(sys.argv[2:]))
-    raise SystemExit(main())
+    sealed_worker_arguments = _sealed_worker_arguments()
+    raise SystemExit(
+        main()
+        if sealed_worker_arguments is None
+        else _sealed_main(sealed_worker_arguments)
+    )

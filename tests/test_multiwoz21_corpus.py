@@ -872,6 +872,23 @@ def test_public_main_uses_fresh_isolated_edcm_module_graph(
     assert multiwoz21_module.main(["--help"]) == 0
 
 
+def test_direct_worker_flag_is_not_a_worker_capability(monkeypatch) -> None:
+    for name in (
+        multiwoz21_module._SEALED_REPOSITORY_ROOT_ENV,
+        multiwoz21_module._SEALED_EDCM_COMMIT_ENV,
+        multiwoz21_module._SEALED_EDCM_TREE_ENV,
+        multiwoz21_module._SEALED_SNAPSHOT_ROOT_ENV,
+    ):
+        monkeypatch.delenv(name, raising=False)
+
+    assert (
+        multiwoz21_module._sealed_worker_arguments(
+            ["--edcm-sealed-worker", "--archive=untrusted.zip"]
+        )
+        is None
+    )
+
+
 def test_isolated_bootstrap_avoids_post_311_extraction_filter_apis() -> None:
     bootstrap = multiwoz21_module._ISOLATED_WORKER_BOOTSTRAP
 

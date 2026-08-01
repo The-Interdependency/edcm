@@ -736,7 +736,10 @@ def test_distribution_identity_rejects_non_object_direct_url(
         ActualUCNSAdapter(module)
 
 
-def test_checkout_repository_identity_accepts_renamed_remote(tmp_path):
+def test_checkout_repository_identity_accepts_renamed_remote(
+    monkeypatch,
+    tmp_path,
+):
     checkout = tmp_path / "ucns"
     checkout.mkdir()
     subprocess.run(["git", "init", str(checkout)], check=True, capture_output=True)
@@ -909,6 +912,34 @@ def test_checkout_repository_identity_accepts_renamed_remote(tmp_path):
         cfile=str(cached_module),
         doraise=True,
     )
+
+    external_cache_root = tmp_path / "external-pycache"
+    monkeypatch.setattr(sys, "pycache_prefix", str(external_cache_root))
+    tracked_module.write_bytes(malicious_module)
+    external_cached_module = Path(
+        importlib.util.cache_from_source(str(tracked_module))
+    )
+    external_cached_module.parent.mkdir(parents=True)
+    py_compile.compile(
+        str(tracked_module),
+        cfile=str(external_cached_module),
+        doraise=True,
+    )
+    compiled_stat = tracked_module.stat()
+    tracked_module.write_bytes(original_module)
+    os.utime(
+        tracked_module,
+        ns=(compiled_stat.st_atime_ns, compiled_stat.st_mtime_ns),
+    )
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="cached bytecode does not match",
+    ):
+        adapter_module._git_checkout_commit(
+            checkout,
+            module_file=tracked_module,
+        )
+    monkeypatch.setattr(sys, "pycache_prefix", None)
 
     subprocess.run(
         [

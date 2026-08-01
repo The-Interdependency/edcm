@@ -21,7 +21,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 #   summary: fail-closed consumer for the exact EDCM-only UCNS word-gonol profile from the reviewed v0.19 producer, preserving full-corpus speaker-turn observations without coordinate, geometry, or proof transfer
 #   owner: Erin Spencer
 #   public_surface: ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter
-#   internal_surface: _canonical_bytes, _digest, _package_present, _run_git, _verify_checkout_package_tree, _source_checkout_commit, _code_semantic_identity, _is_runtime_cache, _verify_cached_bytecode, _verify_pinned_package_tree, _verify_distribution_files, _reload_verified_ucns_module, _resolve_ucns_producer, _token_record, _segment_record, _turn_record
+#   internal_surface: _canonical_bytes, _digest, _package_present, _run_git, _verify_checkout_package_tree, _source_checkout_commit, _code_semantic_identity, _is_runtime_cache, _verify_cached_bytecode, _verify_active_source_caches, _verify_pinned_package_tree, _verify_distribution_files, _reload_verified_ucns_module, _resolve_ucns_producer, _token_record, _segment_record, _turn_record
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
@@ -404,6 +404,7 @@ def _verify_checkout_package_tree(root: Path, module_file: Path) -> None:
                 cached_path.resolve(),
                 verified_paths=verified_paths,
             )
+    _verify_active_source_caches(verified_paths)
 
 
 def _git_checkout_commit(
@@ -571,6 +572,29 @@ def _verify_cached_bytecode(
         )
 
 
+def _verify_active_source_caches(verified_paths: set[Path]) -> None:
+    """Verify the cache path this interpreter derives for every trusted source."""
+
+    if sys.implementation.cache_tag is None:
+        return
+    for source_path in sorted(
+        path for path in verified_paths if path.suffix == ".py"
+    ):
+        try:
+            cached_path = Path(
+                importlib.util.cache_from_source(str(source_path))
+            )
+        except (NotImplementedError, ValueError) as exc:
+            raise UCNSAdapterConstructionError(
+                f"UCNS active cache path cannot be derived: {source_path.name}"
+            ) from exc
+        if cached_path.is_file():
+            _verify_cached_bytecode(
+                cached_path,
+                verified_paths=verified_paths,
+            )
+
+
 def _verify_pinned_package_tree(package_root: Path) -> set[Path]:
     actual_paths = {
         path.relative_to(package_root).as_posix(): path.resolve()
@@ -729,6 +753,7 @@ def _verify_distribution_files(
             )
     for installed_path in sorted(cached_bytecode):
         _verify_cached_bytecode(installed_path, verified_paths=verified_paths)
+    _verify_active_source_caches(pinned_paths)
 
 
 def _distribution_commit(module: ModuleType) -> str:
