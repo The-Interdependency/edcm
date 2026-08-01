@@ -131,7 +131,7 @@ The exact word-gonol profile is also optional:
 python -m pip install -e .[dev,ucns-profile]
 ```
 
-`full-stack` installs both the exact METAPAT producer and the EDCM UCNS profile producer. Use `ucns-experiments` only for the historical v0.1–v0.4 experiment epoch. Package availability alone attaches no evidence: UCNS activation also requires checkout package bytes that match the exact Git tree or a VCS installation whose package inventory and wheel-record hashes match; every discovered checkout or installed cache must derive from those verified sources. Exact ordered `ucns_turns` are required before an observation is attached.
+`full-stack` installs both the exact METAPAT producer and the EDCM UCNS profile producer. Use `ucns-experiments` only for the historical v0.1–v0.4 experiment epoch. Package availability alone attaches no evidence: UCNS activation also requires checkout package bytes that match the exact Git tree or a VCS installation whose raw wheel `RECORD` inventory and hashes match; every discovered checkout or installed cache must derive from those verified sources. Exact ordered `ucns_turns` are required before an observation is attached.
 
 ## First real-system corpus runner
 

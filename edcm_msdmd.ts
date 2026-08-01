@@ -1082,7 +1082,7 @@ export default defineMsdmdCollection({
         "class": "safety",
         "given": "an importable UCNS package is considered for activation",
         "since": "2026-07-25",
-        "then": "checkout package bytes match the pinned Git tree or installed package inventory and RECORD hashes match as applicable, every discovered cached bytecode file derives from its verified source, and any producer-owned commit identity plus every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended"
+        "then": "checkout package bytes match the pinned Git tree or the raw installed RECORD inventory and hashes match as applicable, every discovered cached bytecode file derives from its verified source, and any producer-owned commit identity plus every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended"
       },
       "file": "edcm/ucns_adapter.py",
       "id": "edcm_ucns_exact_profile_only"

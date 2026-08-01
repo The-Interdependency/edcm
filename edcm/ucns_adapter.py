@@ -38,7 +38,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 # === CONTRACTS ===
 # id: edcm_ucns_exact_profile_only
 #   given: an importable UCNS package is considered for activation
-#   then: checkout package bytes match the pinned Git tree or installed package inventory and RECORD hashes match as applicable, every discovered cached bytecode file derives from its verified source, and any producer-owned commit identity plus every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended
+#   then: checkout package bytes match the pinned Git tree or the raw installed RECORD inventory and hashes match as applicable, every discovered cached bytecode file derives from its verified source, and any producer-owned commit identity plus every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended
 #   class: safety
 #   since: 2026-07-25
 #
@@ -58,12 +58,14 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 from __future__ import annotations
 
 import base64
+import csv
 from dataclasses import asdict, dataclass, replace
 import hashlib
 import hmac
 import importlib
 from importlib import metadata as importlib_metadata
 import importlib.util
+import io
 import json
 import marshal
 import os
@@ -519,18 +521,39 @@ def _verify_distribution_files(
     *,
     module_file: Path,
 ) -> None:
-    files = distribution.files
-    if files is None:
+    try:
+        record_text = distribution.read_text("RECORD")
+    except (OSError, UnicodeError) as exc:
+        raise UCNSAdapterConstructionError(
+            "UCNS producer distribution RECORD is unreadable"
+        ) from exc
+    if not record_text:
         raise UCNSAdapterConstructionError(
             "UCNS producer distribution has no installed-file manifest"
         )
+    try:
+        rows = tuple(csv.reader(io.StringIO(record_text)))
+    except csv.Error as exc:
+        raise UCNSAdapterConstructionError(
+            "UCNS producer distribution RECORD is invalid"
+        ) from exc
     verified_paths: set[Path] = set()
     cached_bytecode: set[Path] = set()
+    recorded_paths: set[str] = set()
     direct_url_verified = False
-    for entry in files:
-        record_path = Path(str(entry))
-        file_hash = entry.hash
-        if file_hash is None:
+    for row in rows:
+        if len(row) != 3 or not row[0]:
+            raise UCNSAdapterConstructionError(
+                "UCNS producer distribution RECORD is invalid"
+            )
+        record_name, hash_spec, size_text = row
+        if record_name in recorded_paths:
+            raise UCNSAdapterConstructionError(
+                f"UCNS producer distribution RECORD duplicates: {record_name}"
+            )
+        recorded_paths.add(record_name)
+        record_path = Path(record_name)
+        if not hash_spec:
             if (
                 record_path.name == "RECORD"
                 and record_path.parent.name.endswith(".dist-info")
@@ -540,7 +563,9 @@ def _verify_distribution_files(
                 record_path.suffix == ".pyc"
                 and "__pycache__" in record_path.parts
             ):
-                installed_path = Path(distribution.locate_file(entry)).resolve()
+                installed_path = Path(
+                    distribution.locate_file(record_name)
+                ).resolve()
                 if not installed_path.is_file():
                     raise UCNSAdapterConstructionError(
                         f"UCNS installed file is missing: {record_path}"
@@ -550,23 +575,39 @@ def _verify_distribution_files(
             raise UCNSAdapterConstructionError(
                 f"UCNS installed file has no recorded hash: {record_path}"
             )
-        if file_hash.mode != "sha256":
+        try:
+            hash_mode, hash_value = hash_spec.split("=", 1)
+        except ValueError as exc:
+            raise UCNSAdapterConstructionError(
+                f"UCNS installed file has a malformed hash: {record_path}"
+            ) from exc
+        if hash_mode != "sha256" or not hash_value:
             raise UCNSAdapterConstructionError(
                 f"UCNS installed file uses an unsupported hash: {record_path}"
             )
-        installed_path = Path(distribution.locate_file(entry)).resolve()
+        try:
+            recorded_size = int(size_text)
+        except ValueError as exc:
+            raise UCNSAdapterConstructionError(
+                f"UCNS installed file has a malformed size: {record_path}"
+            ) from exc
+        if recorded_size < 0:
+            raise UCNSAdapterConstructionError(
+                f"UCNS installed file has a malformed size: {record_path}"
+            )
+        installed_path = Path(distribution.locate_file(record_name)).resolve()
         if not installed_path.is_file():
             raise UCNSAdapterConstructionError(
                 f"UCNS installed file is missing: {record_path}"
             )
-        if entry.size is not None and installed_path.stat().st_size != entry.size:
+        if installed_path.stat().st_size != recorded_size:
             raise UCNSAdapterConstructionError(
                 f"UCNS installed file size mismatch: {record_path}"
             )
         with installed_path.open("rb") as handle:
             digest = hashlib.file_digest(handle, "sha256").digest()
         encoded = base64.urlsafe_b64encode(digest).rstrip(b"=").decode("ascii")
-        if not hmac.compare_digest(encoded, file_hash.value):
+        if not hmac.compare_digest(encoded, hash_value):
             raise UCNSAdapterConstructionError(
                 f"UCNS installed file hash mismatch: {record_path}"
             )

@@ -112,6 +112,7 @@ class _RecordedPath(str):
 
 def _vcs_distribution(root, commit):
     module_payload = b"VALUE = 'trusted'\n"
+    profile_payload = b"PROFILE = 'trusted'\n"
     direct_url_payload = adapter_module.json.dumps(
         {
             "url": "https://github.com/The-Interdependency/ucns.git",
@@ -119,12 +120,15 @@ def _vcs_distribution(root, commit):
         }
     ).encode("utf-8")
     module_relative = "ucns/__init__.py"
+    profile_relative = "ucns/profile.py"
     direct_url_relative = "ucns-0.0.0.dist-info/direct_url.json"
     module_path = root / module_relative
+    profile_path = root / profile_relative
     direct_url_path = root / direct_url_relative
     module_path.parent.mkdir(parents=True)
     direct_url_path.parent.mkdir(parents=True)
     module_path.write_bytes(module_payload)
+    profile_path.write_bytes(profile_payload)
     direct_url_path.write_bytes(direct_url_payload)
     bytecode_path = Path(importlib.util.cache_from_source(str(module_path)))
     py_compile.compile(str(module_path), cfile=str(bytecode_path), doraise=True)
@@ -133,6 +137,7 @@ def _vcs_distribution(root, commit):
     class Distribution:
         files = (
             _RecordedPath(module_relative, module_payload),
+            _RecordedPath(profile_relative, profile_payload),
             _RecordedPath(direct_url_relative, direct_url_payload),
             type(
                 "BytecodePath",
@@ -147,8 +152,24 @@ def _vcs_distribution(root, commit):
         )
 
         def read_text(self, name):
-            assert name == "direct_url.json"
-            return direct_url_path.read_text(encoding="utf-8")
+            if name == "direct_url.json":
+                return direct_url_path.read_text(encoding="utf-8")
+            if name == "RECORD":
+                return "\n".join(
+                    ",".join(
+                        (
+                            str(entry),
+                            (
+                                ""
+                                if entry.hash is None
+                                else f"{entry.hash.mode}={entry.hash.value}"
+                            ),
+                            "" if entry.size is None else str(entry.size),
+                        )
+                    )
+                    for entry in self.files
+                )
+            raise AssertionError(name)
 
         def locate_file(self, path):
             return root / str(path)
@@ -373,6 +394,32 @@ def test_distribution_identity_rejects_timestamp_valid_altered_bytecode(
     with pytest.raises(
         UCNSAdapterConstructionError,
         match="cached bytecode does not match",
+    ):
+        ActualUCNSAdapter(module)
+
+
+def test_distribution_raw_record_detects_deleted_file(
+    monkeypatch,
+    tmp_path,
+):
+    distribution, module_path, _ = _vcs_distribution(
+        tmp_path / "pinned",
+        PINNED_UCNS_COMMIT,
+    )
+    module = _exact_identity_module()
+    del module.UCNS_PRODUCER_COMMIT
+    module.__file__ = str(module_path)
+    monkeypatch.setattr(
+        adapter_module.importlib_metadata,
+        "distribution",
+        lambda name: distribution,
+    )
+    assert ActualUCNSAdapter(module).status.adapter_active is True
+
+    (module_path.parent / "profile.py").unlink()
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="installed file is missing: ucns/profile.py",
     ):
         ActualUCNSAdapter(module)
 
