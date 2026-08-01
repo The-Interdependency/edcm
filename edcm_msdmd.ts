@@ -1114,7 +1114,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_canonical_bytes, _digest, _package_present, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record",
+        "internal_surface": "_canonical_bytes, _digest, _package_present, _source_checkout_commit, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record",
         "module_kind": "adapter",
         "module_name": "ucns_adapter",
         "network_boundary": "none",

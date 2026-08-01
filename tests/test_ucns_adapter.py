@@ -268,6 +268,29 @@ def test_distribution_commit_identity_rejects_stale_lookalike(monkeypatch):
         ActualUCNSAdapter(module)
 
 
+def test_explicit_verified_source_checkout_does_not_require_distribution(
+    monkeypatch,
+):
+    module = _exact_identity_module()
+    del module.UCNS_PRODUCER_COMMIT
+    module.__file__ = "/verified/ucns/src/ucns/__init__.py"
+    monkeypatch.setattr(
+        adapter_module,
+        "_source_checkout_commit",
+        lambda candidate: PINNED_UCNS_COMMIT,
+    )
+
+    def unrelated_distribution(name):
+        raise AssertionError("explicit checkout must not use installed metadata")
+
+    monkeypatch.setattr(
+        adapter_module.importlib_metadata,
+        "distribution",
+        unrelated_distribution,
+    )
+    assert ActualUCNSAdapter(module).status.adapter_active is True
+
+
 def test_retired_bridge_object_and_factorization_inputs_fail_closed():
     adapter = ActualUCNSAdapter(_exact_identity_module())
     for key in (

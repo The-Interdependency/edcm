@@ -21,7 +21,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 #   summary: fail-closed consumer for the exact EDCM-only UCNS word-gonol profile from the reviewed v0.19 producer, preserving full-corpus speaker-turn observations without coordinate, geometry, or proof transfer
 #   owner: Erin Spencer
 #   public_surface: ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter
-#   internal_surface: _canonical_bytes, _digest, _package_present, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record
+#   internal_surface: _canonical_bytes, _digest, _package_present, _source_checkout_commit, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
@@ -319,7 +319,37 @@ def _git_checkout_commit(root: Path) -> str:
     return commit
 
 
+def _source_checkout_commit(module: ModuleType) -> str | None:
+    module_file = _module_file(module)
+    try:
+        root_text = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(module_file.parent),
+                "rev-parse",
+                "--show-toplevel",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return None
+    root = Path(root_text).resolve()
+    expected_modules = {
+        (root / "src/ucns/__init__.py").resolve(),
+        (root / "ucns/__init__.py").resolve(),
+    }
+    if module_file not in expected_modules:
+        return None
+    return _git_checkout_commit(root)
+
+
 def _distribution_commit(module: ModuleType) -> str:
+    checkout_commit = _source_checkout_commit(module)
+    if checkout_commit is not None:
+        return checkout_commit
     try:
         distribution = importlib_metadata.distribution("ucns")
     except importlib_metadata.PackageNotFoundError as exc:

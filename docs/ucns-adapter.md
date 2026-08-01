@@ -21,7 +21,10 @@ profile, the consumer requires the pinned UCNS commit from PEP 610
 installed-distribution metadata. A local editable install must resolve to a
 clean checkout of the declared UCNS repository at that exact commit. A
 producer-owned commit identity, when exported, is cross-checked against that
-installed identity and cannot bypass checkout verification. The consumer then checks the profile identity, all fourteen option
+installed identity and cannot bypass checkout verification. An explicit UCNS
+source checkout supplied to the corpus runner is accepted only when the
+imported module is the checkout's exact package path and the same repository,
+clean-tree, and commit checks pass. The consumer then checks the profile identity, all fourteen option
 values, the exact 157-token public gonol invariants and digest, the source domain, the pinned
 `unicode-white-space-origin-v1` assignment policy, all 25 exact SPACE source
 code points, and the required producer types. A mismatch produces typed
