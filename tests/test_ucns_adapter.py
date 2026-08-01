@@ -417,7 +417,7 @@ def test_checkout_repository_identity_accepts_renamed_remote(tmp_path):
     subprocess.run(["git", "init", str(checkout)], check=True, capture_output=True)
     tracked_module = checkout / "src/ucns/__init__.py"
     tracked_module.parent.mkdir(parents=True)
-    tracked_module.write_text("# tracked fixture\n", encoding="utf-8")
+    tracked_module.write_text("VALUE = 'trusted'\n", encoding="utf-8")
     (checkout / ".gitignore").write_text("/ucns/\n", encoding="utf-8")
     (checkout / "tracked.txt").write_text("fixture\n", encoding="utf-8")
     subprocess.run(
@@ -469,6 +469,34 @@ def test_checkout_repository_identity_accepts_renamed_remote(tmp_path):
     )
 
     original_module = tracked_module.read_bytes()
+    malicious_module = original_module.replace(b"trusted", b"altered")
+    tracked_module.write_bytes(malicious_module)
+    cached_module = Path(importlib.util.cache_from_source(str(tracked_module)))
+    py_compile.compile(
+        str(tracked_module),
+        cfile=str(cached_module),
+        doraise=True,
+    )
+    compiled_stat = tracked_module.stat()
+    tracked_module.write_bytes(original_module)
+    os.utime(
+        tracked_module,
+        ns=(compiled_stat.st_atime_ns, compiled_stat.st_mtime_ns),
+    )
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="cached bytecode does not match",
+    ):
+        adapter_module._git_checkout_commit(
+            checkout,
+            module_file=tracked_module,
+        )
+    py_compile.compile(
+        str(tracked_module),
+        cfile=str(cached_module),
+        doraise=True,
+    )
+
     subprocess.run(
         [
             "git",

@@ -38,7 +38,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 # === CONTRACTS ===
 # id: edcm_ucns_exact_profile_only
 #   given: an importable UCNS package is considered for activation
-#   then: the checkout package bytes match the pinned Git tree or the installed package inventory and RECORD hashes match with source-derived cached bytecode, and any producer-owned commit identity plus every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended
+#   then: checkout package bytes match the pinned Git tree or installed package inventory and RECORD hashes match as applicable, every discovered cached bytecode file derives from its verified source, and any producer-owned commit identity plus every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended
 #   class: safety
 #   since: 2026-07-25
 #
@@ -346,6 +346,13 @@ def _verify_checkout_package_tree(root: Path, module_file: Path) -> None:
         if not hmac.compare_digest(observed, expected):
             raise UCNSAdapterConstructionError(
                 f"UCNS checkout file differs from the pinned tree: {relative_path}"
+            )
+    verified_paths = {(root / path).resolve() for path in tracked_paths}
+    for cached_path in package_root.rglob("*.pyc"):
+        if "__pycache__" in cached_path.parts:
+            _verify_cached_bytecode(
+                cached_path.resolve(),
+                verified_paths=verified_paths,
             )
 
 
