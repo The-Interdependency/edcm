@@ -121,7 +121,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _git_tree_identity, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_main, _run_in_fresh_process",
+        "internal_surface": "UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _git_tree_identity, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_worker_arguments, _sealed_main, _run_in_fresh_process",
         "module_kind": "adapter",
         "module_name": "multiwoz21",
         "network_boundary": "none; source acquisition is separate and the runner requires local pinned bytes",
@@ -1114,7 +1114,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_canonical_bytes, _digest, _package_present, _run_git, _verify_checkout_package_tree, _source_checkout_commit, _code_semantic_identity, _is_runtime_cache, _verify_cached_bytecode, _verify_pinned_package_tree, _verify_distribution_files, _reload_verified_ucns_module, _resolve_ucns_producer, _token_record, _segment_record, _turn_record",
+        "internal_surface": "_canonical_bytes, _digest, _package_present, _run_git, _verify_checkout_package_tree, _source_checkout_commit, _code_semantic_identity, _is_runtime_cache, _verify_cached_bytecode, _verify_active_source_caches, _verify_pinned_package_tree, _verify_distribution_files, _reload_verified_ucns_module, _resolve_ucns_producer, _token_record, _segment_record, _turn_record",
         "module_kind": "adapter",
         "module_name": "ucns_adapter",
         "network_boundary": "none",
