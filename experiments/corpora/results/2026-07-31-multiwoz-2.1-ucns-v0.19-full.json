@@ -143,7 +143,7 @@
       ],
       "sha256": "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e"
     },
-    "edcm_commit": "34e7ce4b2e1852e201bdf14b8d43b6f1a915def6",
+    "edcm_commit": "70f590084483cafe32a552071411e949d6ee2008",
     "profile_observation_digest_chain": "723fe1c36fb80a0f4d5b851f95e5c97e7302d92085d351a7c17b948ed1e2933a",
     "source_dialogue_digest_chain": "16c1277c528a5d078c14c1c9b7029cd02806f4017317d0b277a6dbecd3a88f7d",
     "turn_evidence_digest_chain": "d3d61c5e6104b10ae062be968779edf103f721f6c15dac279bfad63b30d22449",
@@ -298,7 +298,7 @@
       "validation": 1000
     }
   },
-  "report_digest": "496fd6ebffa0ae73b4164be2cdc25ef261e11925e0c6743c7ae2a9c8a1c544c7",
+  "report_digest": "ea554f0acc2598f8b81b1a9e228027a1bf9c005645c7f006c886594eafb95ad3",
   "schema_id": "edcm.multiwoz21-full-corpus",
   "schema_version": "1.2.0",
   "ucns_full_corpus_gate": {
