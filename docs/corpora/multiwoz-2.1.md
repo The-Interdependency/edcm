@@ -188,8 +188,8 @@ NA != 0
 After the v0.19 source-coordinate boundary reached clean review, EDCM repinned
 the unchanged profile `0.2.0` and full-corpus gate `0.14.1` to exact UCNS commit
 `872f53571d5dc2f133ff1813b7bdffd3a9c309f8`. Clean EDCM producer commit
-`983726891e118553725274874b9ff75ce450cb1f`, whose `edcm/` subtree is
-`b19b76a8e29a7640e2018fac3c0d23009f6039cb`, reran the admitted archive. A
+`973d4b314ee7fbcd35b2e207b889faf7366c3814`, whose `edcm/` subtree is
+`658767bc64936f152e19c2f1cebb9ae86c1932cb`, reran the admitted archive. A
 completed-checkpoint repeat produced byte-identical artifacts.
 
 Schema `1.3.0` seals the content-addressed Git tree for the executing `edcm/`
@@ -204,8 +204,8 @@ an audit coordinate but is not required to recover the executed package bytes.
 - source, adapter, UCNS-gate, and unit-support turns: `143,048`
 - exact UCNS source/observation stream SHA-256: `e94ba2e5e1e9d52b23fd5b9c33303be009dae32f4c3bc6a1d5186a353acb40b5`
 - UCNS receipt id: `921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c`
-- EDCM report digest: `2d0d390a63602820e3820f514369a2c65659ee47d8f4a378389787520d8ed303`
-- EDCM receipt digest: `66f847e8a2a1217d2f5def440ef516b408496a109b3b643d6ae8b11f9c3e66a2`
+- EDCM report digest: `2dd40a6c220db0fb99bfdbca8237ab7910d041dede1cd33d2ae4873dd3a9e4b4`
+- EDCM receipt digest: `feb7e98891cdb4baee521cc90c68a695922d9ce70d665678fa9e9ea3dde5f629`
 
 The source dialogue chain, turn-evidence chain, execution counts, failure-seeking
 aggregates, exact stream hash, and v0.14.1 gate receipt remain identical to the
