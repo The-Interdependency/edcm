@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import base64
 from hashlib import sha256
+import importlib
 import importlib.util
 import os
 from pathlib import Path
@@ -111,7 +112,7 @@ class _RecordedPath(str):
         return instance
 
 
-def _vcs_distribution(root, commit):
+def _vcs_distribution(monkeypatch, root, commit):
     module_payload = b"VALUE = 'trusted'\n"
     profile_payload = b"PROFILE = 'trusted'\n"
     direct_url_payload = adapter_module.json.dumps(
@@ -134,6 +135,14 @@ def _vcs_distribution(root, commit):
     bytecode_path = Path(importlib.util.cache_from_source(str(module_path)))
     py_compile.compile(str(module_path), cfile=str(bytecode_path), doraise=True)
     bytecode_relative = bytecode_path.relative_to(root).as_posix()
+    monkeypatch.setattr(
+        adapter_module,
+        "PINNED_UCNS_PACKAGE_SHA256",
+        {
+            "__init__.py": sha256(module_payload).hexdigest(),
+            "profile.py": sha256(profile_payload).hexdigest(),
+        },
+    )
 
     class Distribution:
         files = (
@@ -310,6 +319,7 @@ def test_distribution_commit_identity_rejects_stale_lookalike(
     module = _exact_identity_module()
     del module.UCNS_PRODUCER_COMMIT
     stale_distribution, module_path, _ = _vcs_distribution(
+        monkeypatch,
         tmp_path / "stale",
         "868d80878c9ecd93ff30e91ca289122ded805a49",
     )
@@ -324,6 +334,7 @@ def test_distribution_commit_identity_rejects_stale_lookalike(
         ActualUCNSAdapter(module)
 
     pinned_distribution, module_path, _ = _vcs_distribution(
+        monkeypatch,
         tmp_path / "pinned",
         PINNED_UCNS_COMMIT,
     )
@@ -358,6 +369,7 @@ def test_distribution_identity_rejects_timestamp_valid_altered_bytecode(
     tmp_path,
 ):
     distribution, module_path, bytecode_path = _vcs_distribution(
+        monkeypatch,
         tmp_path / "pinned",
         PINNED_UCNS_COMMIT,
     )
@@ -404,6 +416,7 @@ def test_distribution_identity_accepts_bytecode_without_debug_ranges(
     tmp_path,
 ):
     distribution, module_path, bytecode_path = _vcs_distribution(
+        monkeypatch,
         tmp_path / "pinned",
         PINNED_UCNS_COMMIT,
     )
@@ -435,11 +448,125 @@ def test_distribution_identity_accepts_bytecode_without_debug_ranges(
     assert ActualUCNSAdapter(module).status.adapter_active is True
 
 
+def test_distribution_identity_ignores_foreign_abi_cache(
+    monkeypatch,
+    tmp_path,
+):
+    distribution, module_path, bytecode_path = _vcs_distribution(
+        monkeypatch,
+        tmp_path / "pinned",
+        PINNED_UCNS_COMMIT,
+    )
+    cache_tag = sys.implementation.cache_tag
+    assert cache_tag is not None
+    foreign_cache = bytecode_path.with_name(
+        bytecode_path.name.replace(cache_tag, "cpython-999")
+    )
+    foreign_cache.write_bytes(b"foreign ABI cache is not executable here")
+    module = _exact_identity_module()
+    del module.UCNS_PRODUCER_COMMIT
+    module.__file__ = str(module_path)
+    monkeypatch.setattr(
+        adapter_module.importlib_metadata,
+        "distribution",
+        lambda name: distribution,
+    )
+
+    assert ActualUCNSAdapter(module).status.adapter_active is True
+
+
+def test_distribution_record_cannot_reanchor_altered_package(
+    monkeypatch,
+    tmp_path,
+):
+    distribution, module_path, _ = _vcs_distribution(
+        monkeypatch,
+        tmp_path / "pinned",
+        PINNED_UCNS_COMMIT,
+    )
+    module = _exact_identity_module()
+    del module.UCNS_PRODUCER_COMMIT
+    module.__file__ = str(module_path)
+    monkeypatch.setattr(
+        adapter_module.importlib_metadata,
+        "distribution",
+        lambda name: distribution,
+    )
+    assert ActualUCNSAdapter(module).status.adapter_active is True
+
+    altered_payload = b"VALUE = 'altered and reanchored'\n"
+    module_path.write_bytes(altered_payload)
+    distribution.files = tuple(
+        _RecordedPath(str(entry), altered_payload)
+        if str(entry) == "ucns/__init__.py"
+        else entry
+        for entry in distribution.files
+    )
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="differs from the pinned producer tree",
+    ):
+        ActualUCNSAdapter(module)
+
+
+def test_verified_identity_reloads_stale_ucns_module(
+    monkeypatch,
+    tmp_path,
+):
+    package_root = tmp_path / "ucns"
+    package_root.mkdir()
+    module_path = package_root / "__init__.py"
+    module_path.write_text(
+        f"UCNS_PRODUCER_COMMIT = '{PINNED_UCNS_COMMIT}'\nVALUE = 'stale'\n",
+        encoding="utf-8",
+    )
+    previous_modules = {
+        name: loaded
+        for name, loaded in sys.modules.items()
+        if name == "ucns" or name.startswith("ucns.")
+    }
+    for name in previous_modules:
+        sys.modules.pop(name, None)
+    monkeypatch.syspath_prepend(str(tmp_path))
+    importlib.invalidate_caches()
+    try:
+        stale_module = importlib.import_module("ucns")
+        assert stale_module.VALUE == "stale"
+        module_path.write_text(
+            (
+                f"UCNS_PRODUCER_COMMIT = '{PINNED_UCNS_COMMIT}'\n"
+                "VALUE = 'verified'\n"
+            ),
+            encoding="utf-8",
+        )
+        Path(importlib.util.cache_from_source(str(module_path))).unlink(
+            missing_ok=True
+        )
+        monkeypatch.setattr(
+            adapter_module,
+            "_distribution_commit",
+            lambda module: PINNED_UCNS_COMMIT,
+        )
+
+        fresh_module, commit = adapter_module._resolve_ucns_producer(
+            stale_module
+        )
+        assert commit == PINNED_UCNS_COMMIT
+        assert fresh_module is not stale_module
+        assert fresh_module.VALUE == "verified"
+    finally:
+        for name in tuple(sys.modules):
+            if name == "ucns" or name.startswith("ucns."):
+                sys.modules.pop(name, None)
+        sys.modules.update(previous_modules)
+
+
 def test_distribution_raw_record_detects_deleted_file(
     monkeypatch,
     tmp_path,
 ):
     distribution, module_path, _ = _vcs_distribution(
+        monkeypatch,
         tmp_path / "pinned",
         PINNED_UCNS_COMMIT,
     )
@@ -466,6 +593,7 @@ def test_distribution_identity_rejects_non_object_direct_url(
     tmp_path,
 ):
     distribution, module_path, _ = _vcs_distribution(
+        monkeypatch,
         tmp_path / "pinned",
         PINNED_UCNS_COMMIT,
     )

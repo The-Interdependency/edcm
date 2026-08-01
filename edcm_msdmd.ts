@@ -1082,7 +1082,7 @@ export default defineMsdmdCollection({
         "class": "safety",
         "given": "an importable UCNS package is considered for activation",
         "since": "2026-07-25",
-        "then": "checkout package bytes match the pinned Git tree or the raw installed RECORD inventory and hashes match as applicable, every discovered cached bytecode file derives from its verified source, and any producer-owned commit identity plus every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended"
+        "then": "checkout package bytes match the pinned Git tree or installed package bytes match the EDCM-pinned producer manifest plus raw RECORD as applicable, the verified UCNS module graph is freshly loaded, every runtime-loadable cached bytecode file derives from its verified source, and any producer-owned commit identity plus every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended"
       },
       "file": "edcm/ucns_adapter.py",
       "id": "edcm_ucns_exact_profile_only"
@@ -1114,7 +1114,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_canonical_bytes, _digest, _package_present, _run_git, _verify_checkout_package_tree, _source_checkout_commit, _code_semantic_identity, _verify_cached_bytecode, _verify_distribution_files, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record",
+        "internal_surface": "_canonical_bytes, _digest, _package_present, _run_git, _verify_checkout_package_tree, _source_checkout_commit, _code_semantic_identity, _is_runtime_cache, _verify_cached_bytecode, _verify_pinned_package_tree, _verify_distribution_files, _reload_verified_ucns_module, _resolve_ucns_producer, _token_record, _segment_record, _turn_record",
         "module_kind": "adapter",
         "module_name": "ucns_adapter",
         "network_boundary": "none",

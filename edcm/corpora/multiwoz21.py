@@ -1735,7 +1735,8 @@ def _load_pinned_runtime(
             code="UCNS_IMPORT_IDENTITY",
         )
     try:
-        return ActualUCNSAdapter(module), UCNSFullCorpusGate(module)
+        adapter = ActualUCNSAdapter(module)
+        return adapter, UCNSFullCorpusGate(adapter._module)
     except UCNSAdapterConstructionError as exc:
         raise CorpusRunError(
             f"UCNS adapter construction failed: {exc}",
