@@ -21,7 +21,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 #   summary: fail-closed consumer for the exact EDCM-only UCNS word-gonol profile from the reviewed v0.19 producer, preserving full-corpus speaker-turn observations without coordinate, geometry, or proof transfer
 #   owner: Erin Spencer
 #   public_surface: ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter
-#   internal_surface: _canonical_bytes, _digest, _package_present, _source_checkout_commit, _verify_cached_bytecode, _verify_distribution_files, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record
+#   internal_surface: _canonical_bytes, _digest, _package_present, _verify_checkout_package_tree, _source_checkout_commit, _verify_cached_bytecode, _verify_distribution_files, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
@@ -38,7 +38,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 # === CONTRACTS ===
 # id: edcm_ucns_exact_profile_only
 #   given: an importable UCNS package is considered for activation
-#   then: the tracked clean-checkout or installed-distribution commit identity, installed-file RECORD hashes, source-derived cached bytecode, any producer-owned commit identity, and every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended
+#   then: the checkout package bytes match the pinned Git tree or the installed package inventory and RECORD hashes match with source-derived cached bytecode, and any producer-owned commit identity plus every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended
 #   class: safety
 #   since: 2026-07-25
 #
@@ -66,6 +66,7 @@ from importlib import metadata as importlib_metadata
 import importlib.util
 import json
 import marshal
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -274,6 +275,80 @@ def _module_file(module: ModuleType) -> Path:
     return Path(raw).resolve()
 
 
+def _verify_checkout_package_tree(root: Path, module_file: Path) -> None:
+    try:
+        package_root = module_file.parent
+        package_relative = package_root.relative_to(root)
+        tree_output = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(root),
+                "ls-tree",
+                "-r",
+                "-z",
+                "--name-only",
+                "HEAD",
+                "--",
+                package_relative.as_posix(),
+            ],
+            check=True,
+            capture_output=True,
+        ).stdout
+        tracked_paths = {
+            Path(os.fsdecode(raw_path))
+            for raw_path in tree_output.split(b"\0")
+            if raw_path
+        }
+        relative_module = module_file.relative_to(root)
+    except (OSError, subprocess.CalledProcessError, ValueError) as exc:
+        raise UCNSAdapterConstructionError(
+            "UCNS checkout package tree cannot be verified"
+        ) from exc
+    if relative_module not in tracked_paths:
+        raise UCNSAdapterConstructionError(
+            "UCNS imported module is not tracked at the checkout commit"
+        )
+    actual_paths = {
+        path.relative_to(root)
+        for path in package_root.rglob("*")
+        if path.is_file()
+    }
+    missing_paths = tracked_paths - actual_paths
+    unexpected_paths = {
+        path
+        for path in actual_paths - tracked_paths
+        if not (path.suffix == ".pyc" and "__pycache__" in path.parts)
+    }
+    if missing_paths or unexpected_paths:
+        raise UCNSAdapterConstructionError(
+            "UCNS checkout package files differ from the pinned tree"
+        )
+    for relative_path in sorted(tracked_paths):
+        try:
+            expected = subprocess.run(
+                [
+                    "git",
+                    "-C",
+                    str(root),
+                    "cat-file",
+                    "blob",
+                    f"HEAD:{relative_path.as_posix()}",
+                ],
+                check=True,
+                capture_output=True,
+            ).stdout
+            observed = (root / relative_path).read_bytes()
+        except (OSError, subprocess.CalledProcessError) as exc:
+            raise UCNSAdapterConstructionError(
+                "UCNS checkout package bytes cannot be verified"
+            ) from exc
+        if not hmac.compare_digest(observed, expected):
+            raise UCNSAdapterConstructionError(
+                f"UCNS checkout file differs from the pinned tree: {relative_path}"
+            )
+
+
 def _git_checkout_commit(
     root: Path,
     *,
@@ -335,6 +410,8 @@ def _git_checkout_commit(
         raise UCNSAdapterConstructionError(
             "UCNS producer commit identity unavailable from editable checkout"
         ) from exc
+    if module_file is not None:
+        _verify_checkout_package_tree(root, module_file)
     expected_repository = _repository_identity(UCNS_SOURCE_REPOSITORY)
     if not any(
         _repository_identity(remote) == expected_repository
@@ -441,7 +518,7 @@ def _verify_distribution_files(
             "UCNS producer distribution has no installed-file manifest"
         )
     verified_paths: set[Path] = set()
-    cached_bytecode: list[Path] = []
+    cached_bytecode: set[Path] = set()
     direct_url_verified = False
     for entry in files:
         record_path = Path(str(entry))
@@ -461,7 +538,7 @@ def _verify_distribution_files(
                     raise UCNSAdapterConstructionError(
                         f"UCNS installed file is missing: {record_path}"
                     )
-                cached_bytecode.append(installed_path)
+                cached_bytecode.add(installed_path)
                 continue
             raise UCNSAdapterConstructionError(
                 f"UCNS installed file has no recorded hash: {record_path}"
@@ -500,7 +577,21 @@ def _verify_distribution_files(
         raise UCNSAdapterConstructionError(
             "UCNS direct_url.json is absent from the installed-file manifest"
         )
-    for installed_path in cached_bytecode:
+    package_root = module_file.parent
+    for installed_path in package_root.rglob("*"):
+        if not installed_path.is_file():
+            continue
+        resolved_path = installed_path.resolve()
+        if (
+            installed_path.suffix == ".pyc"
+            and "__pycache__" in installed_path.parts
+        ):
+            cached_bytecode.add(resolved_path)
+        elif resolved_path not in verified_paths:
+            raise UCNSAdapterConstructionError(
+                f"UCNS installed package file is absent from RECORD: {installed_path.name}"
+            )
+    for installed_path in sorted(cached_bytecode):
         _verify_cached_bytecode(installed_path, verified_paths=verified_paths)
 
 
@@ -514,7 +605,12 @@ def _distribution_commit(module: ModuleType) -> str:
         raise UCNSAdapterConstructionError(
             "UCNS producer commit identity unavailable from distribution metadata"
         ) from exc
-    direct_url_text = distribution.read_text("direct_url.json")
+    try:
+        direct_url_text = distribution.read_text("direct_url.json")
+    except (OSError, UnicodeError) as exc:
+        raise UCNSAdapterConstructionError(
+            "UCNS producer commit identity unavailable: direct_url.json unreadable"
+        ) from exc
     if not direct_url_text:
         raise UCNSAdapterConstructionError(
             "UCNS producer commit identity unavailable: direct_url.json missing"

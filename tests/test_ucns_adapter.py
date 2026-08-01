@@ -342,6 +342,11 @@ def test_distribution_identity_rejects_timestamp_valid_altered_bytecode(
     module = _exact_identity_module()
     del module.UCNS_PRODUCER_COMMIT
     module.__file__ = str(module_path)
+    distribution.files = tuple(
+        entry
+        for entry in distribution.files
+        if not str(entry).endswith(".pyc")
+    )
     monkeypatch.setattr(
         adapter_module.importlib_metadata,
         "distribution",
@@ -392,6 +397,16 @@ def test_distribution_identity_rejects_non_object_direct_url(
     with pytest.raises(
         UCNSAdapterConstructionError,
         match="direct_url.json invalid",
+    ):
+        ActualUCNSAdapter(module)
+
+    def unreadable_direct_url(name):
+        raise UnicodeDecodeError("utf-8", b"\xff", 0, 1, "invalid start byte")
+
+    monkeypatch.setattr(distribution, "read_text", unreadable_direct_url)
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="direct_url.json unreadable",
     ):
         ActualUCNSAdapter(module)
 
@@ -451,6 +466,44 @@ def test_checkout_repository_identity_accepts_renamed_remote(tmp_path):
             module_file=tracked_module,
         )
         == commit
+    )
+
+    original_module = tracked_module.read_bytes()
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "update-index",
+            "--assume-unchanged",
+            "--",
+            "src/ucns/__init__.py",
+        ],
+        check=True,
+        capture_output=True,
+    )
+    tracked_module.write_text("# hidden modification\n", encoding="utf-8")
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="differs from the pinned tree",
+    ):
+        adapter_module._git_checkout_commit(
+            checkout,
+            module_file=tracked_module,
+        )
+    tracked_module.write_bytes(original_module)
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "update-index",
+            "--no-assume-unchanged",
+            "--",
+            "src/ucns/__init__.py",
+        ],
+        check=True,
+        capture_output=True,
     )
 
     ignored_module = checkout / "ucns/__init__.py"
