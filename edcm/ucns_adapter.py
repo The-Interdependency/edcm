@@ -38,7 +38,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 # === CONTRACTS ===
 # id: edcm_ucns_exact_profile_only
 #   given: an importable UCNS package is considered for activation
-#   then: the producer-owned or installed-distribution commit identity and every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended
+#   then: the installed-distribution commit identity, any producer-owned commit identity, and every profile identity, option, Unicode-scalar source domain, 25-value SPACE pin, public-alphabet invariant, and producer type match the pinned EDCM word-gonol surface or the adapter remains suspended
 #   class: safety
 #   since: 2026-07-25
 #
@@ -386,15 +386,19 @@ def _distribution_commit(module: ModuleType) -> str:
 
 
 def _resolve_ucns_producer_commit(module: ModuleType) -> str:
+    installed_commit = _distribution_commit(module)
     producer_commit = getattr(module, "UCNS_PRODUCER_COMMIT", None)
     if producer_commit is not None:
-        commit = str(producer_commit).lower()
-        if not _COMMIT_RE.fullmatch(commit):
+        declared_commit = str(producer_commit).lower()
+        if not _COMMIT_RE.fullmatch(declared_commit):
             raise UCNSAdapterConstructionError(
                 "UCNS producer-owned commit identity is malformed"
             )
-        return commit
-    return _distribution_commit(module)
+        if declared_commit != installed_commit:
+            raise UnsupportedUCNSSchemaError(
+                "UCNS producer-owned and installed commit identities disagree"
+            )
+    return installed_commit
 
 
 def _token_record(token: Any) -> dict[str, Any]:

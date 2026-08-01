@@ -45,6 +45,18 @@ from edcm.ucns_adapter import (
 )
 
 
+@pytest.fixture(autouse=True)
+def _identify_identity_only_fake_modules(monkeypatch):
+    real_distribution_commit = adapter_module._distribution_commit
+
+    def identify(module):
+        if module.__name__ == "ucns" and getattr(module, "__file__", None) is None:
+            return PINNED_UCNS_COMMIT
+        return real_distribution_commit(module)
+
+    monkeypatch.setattr(adapter_module, "_distribution_commit", identify)
+
+
 def _exact_identity_module() -> ModuleType:
     module = ModuleType("ucns")
     module.UCNS_PRODUCER_COMMIT = PINNED_UCNS_COMMIT
@@ -144,7 +156,10 @@ def test_exact_profile_activates_and_option_drift_suspends(monkeypatch):
     selection = select_ucns_adapter()
     assert selection.adapter is None
     assert selection.status.adapter_active is False
-    assert "producer commit mismatch" in selection.status.errors[0]
+    assert (
+        "producer-owned and installed commit identities disagree"
+        in selection.status.errors[0]
+    )
 
     module.UCNS_PRODUCER_COMMIT = PINNED_UCNS_COMMIT
 
@@ -177,10 +192,14 @@ def test_exact_profile_activates_and_option_drift_suspends(monkeypatch):
 def test_exact_surface_rejects_stale_or_missing_producer_identity(monkeypatch):
     module = _exact_identity_module()
     module.UCNS_PRODUCER_COMMIT = "868d80878c9ecd93ff30e91ca289122ded805a49"
-    with pytest.raises(UnsupportedUCNSSchemaError, match="producer commit mismatch"):
+    with pytest.raises(
+        UnsupportedUCNSSchemaError,
+        match="producer-owned and installed commit identities disagree",
+    ):
         ActualUCNSAdapter(module)
 
     del module.UCNS_PRODUCER_COMMIT
+    module.__file__ = __file__
 
     def missing_distribution(name):
         raise adapter_module.importlib_metadata.PackageNotFoundError(name)
@@ -238,6 +257,15 @@ def test_distribution_commit_identity_rejects_stale_lookalike(monkeypatch):
         lambda name: Distribution(PINNED_UCNS_COMMIT),
     )
     assert ActualUCNSAdapter(module).status.adapter_active is True
+
+    module.UCNS_PRODUCER_COMMIT = (
+        "868d80878c9ecd93ff30e91ca289122ded805a49"
+    )
+    with pytest.raises(
+        UnsupportedUCNSSchemaError,
+        match="producer-owned and installed commit identities disagree",
+    ):
+        ActualUCNSAdapter(module)
 
 
 def test_retired_bridge_object_and_factorization_inputs_fail_closed():
