@@ -448,6 +448,33 @@ def test_distribution_identity_accepts_bytecode_without_debug_ranges(
     assert ActualUCNSAdapter(module).status.adapter_active is True
 
 
+def test_cached_bytecode_identity_is_relocatable(tmp_path):
+    original_root = tmp_path / "original"
+    original_root.mkdir()
+    original_source = original_root / "profile.py"
+    original_source.write_text("VALUE = 'trusted'\n", encoding="utf-8")
+    original_cache = Path(
+        importlib.util.cache_from_source(str(original_source))
+    )
+    py_compile.compile(
+        str(original_source),
+        cfile=str(original_cache),
+        doraise=True,
+    )
+
+    relocated_root = tmp_path / "relocated"
+    original_root.rename(relocated_root)
+    relocated_source = relocated_root / "profile.py"
+    relocated_cache = Path(
+        importlib.util.cache_from_source(str(relocated_source))
+    )
+
+    adapter_module._verify_cached_bytecode(
+        relocated_cache,
+        verified_paths={relocated_source.resolve()},
+    )
+
+
 def test_active_optimization_above_two_is_verified(tmp_path):
     script = """
 import importlib.util

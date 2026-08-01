@@ -55,7 +55,9 @@ python -m edcm.corpora.multiwoz21 \
 The runner refuses a dirty EDCM or UCNS tracked tree for a sealed run. It also
 compares every EDCM package file directly with replacement-disabled `HEAD` and
 verifies active-runtime EDCM caches, so index flags cannot hide executed-code
-drift. A
+drift. Its public entry point dispatches the seal to an isolated fresh Python
+interpreter before recording identities, so an already-loaded EDCM module graph
+cannot survive into sealed execution. A
 checkpoint is written atomically at the selected interval and can resume only
 when archive, admission, EDCM commit, UCNS commit, and already-processed source
 prefix all match.

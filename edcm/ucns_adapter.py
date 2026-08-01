@@ -505,7 +505,6 @@ def _code_semantic_identity(code: CodeType) -> tuple[Any, ...]:
         constants,
         code.co_names,
         code.co_varnames,
-        code.co_filename,
         code.co_name,
         code.co_qualname,
         code.co_firstlineno,

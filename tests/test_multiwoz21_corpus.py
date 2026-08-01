@@ -829,7 +829,7 @@ def test_adapter_construction_failure_writes_incomplete_receipt(
 
     monkeypatch.setattr(multiwoz21_module, "ActualUCNSAdapter", reject_adapter)
     receipt_path = tmp_path / "receipt.json"
-    exit_code = multiwoz21_module.main(
+    exit_code = multiwoz21_module._sealed_main(
         [
             "--archive",
             str(tmp_path / "archive.zip"),
@@ -846,6 +846,17 @@ def test_adapter_construction_failure_writes_incomplete_receipt(
     assert receipt["status"] == "incomplete"
     assert receipt["error"]["code"] == "UCNS_ADAPTER_CONSTRUCTION"
     assert "fixture identity rejection" in receipt["error"]["reason"]
+
+
+def test_public_main_uses_fresh_isolated_edcm_module_graph(
+    monkeypatch,
+) -> None:
+    def reject_in_process(argv):
+        raise AssertionError("sealed work reused the already-loaded module graph")
+
+    monkeypatch.setattr(multiwoz21_module, "_sealed_main", reject_in_process)
+
+    assert multiwoz21_module.main(["--help"]) == 0
 
 
 def test_sealed_git_identity_disables_replacement_refs(tmp_path: Path) -> None:
