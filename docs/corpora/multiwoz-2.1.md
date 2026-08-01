@@ -57,10 +57,14 @@ compares every EDCM package file directly with replacement-disabled `HEAD` and
 verifies active-runtime EDCM caches, so index flags cannot hide executed-code
 drift. Its public entry point dispatches the seal to an isolated fresh Python
 interpreter from a cache-free, replacement-disabled Git archive of the sealed
-EDCM producer checkout. That authenticated runner verifies the original worktree and its
-active caches, then verifies the UCNS package tree and active caches before its
-first import. Already-loaded or pre-verification module code therefore cannot
-survive into sealed execution. The child preserves the caller's working
+EDCM producer checkout. The bootstrap resolves one exact commit and `edcm/`
+tree, archives that exact commit, and passes the same tree identity into the
+worker, so a concurrent `HEAD` change cannot relabel the executing snapshot.
+That authenticated runner verifies the original worktree and its active caches,
+then verifies the UCNS package tree and active caches before its first import.
+Already-loaded or pre-verification module code therefore cannot survive into
+sealed execution. Bootstrap identity, archive, or extraction failure writes an
+incomplete receipt before exit. The child preserves the caller's working
 directory, so relative command-line paths keep their documented meaning. A
 checkpoint is written atomically at the selected interval and can resume only
 when archive, admission, EDCM package tree, UCNS commit, and already-processed source

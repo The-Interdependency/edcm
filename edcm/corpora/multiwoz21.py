@@ -120,9 +120,17 @@ RUNNER_SCHEMA_ID = "edcm.multiwoz21-full-corpus"
 RUNNER_SCHEMA_VERSION = "1.3.0"
 _SEALED_WORKER_FLAG = "--edcm-sealed-worker"
 _SEALED_REPOSITORY_ROOT_ENV = "EDCM_SEALED_REPOSITORY_ROOT"
+_SEALED_EDCM_COMMIT_ENV = "EDCM_SEALED_COMMIT"
+_SEALED_EDCM_TREE_ENV = "EDCM_SEALED_TREE"
+_BOOTSTRAP_ADMISSION_DIGEST = (
+    "dfe7b65a9f4af739a4d149e65e60674333e87f56ff9db3cd07c144b9cab85fc2"
+)
 _ISOLATED_WORKER_BOOTSTRAP = """
+import hashlib
 import io
+import json
 import os
+from pathlib import Path
 import runpy
 import shutil
 import subprocess
@@ -133,13 +141,74 @@ import tempfile
 repository_root = sys.argv.pop(1)
 environment = dict(os.environ)
 environment["GIT_NO_REPLACE_OBJECTS"] = "1"
-archive = subprocess.run(
-    ["git", "archive", "--format=tar", "HEAD", "edcm"],
-    cwd=repository_root,
-    check=True,
-    capture_output=True,
-    env=environment,
-).stdout
+
+def option_value(name):
+    try:
+        return sys.argv[sys.argv.index(name) + 1]
+    except (ValueError, IndexError):
+        return None
+
+def write_bootstrap_failure(reason, edcm_tree=None):
+    receipt_value = option_value("--receipt")
+    if receipt_value is None:
+        return
+    archive_value = option_value("--archive")
+    receipt = {
+        "admission_digest": "__BOOTSTRAP_ADMISSION_DIGEST__",
+        "corpus_id": "multiwoz-2.1",
+        "error": {"code": "GIT_IDENTITY", "reason": reason},
+        "identities": {
+            "archive_sha256": None,
+            "edcm_tree": edcm_tree,
+            "ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
+        },
+        "last_completed": {"dialogue_id": None, "dialogue_index": None},
+        "next_or_active": {
+            "dialogue_id": None,
+            "dialogue_index": None,
+            "turn_index": None,
+        },
+        "processed": {"adapter_turns": 0, "dialogues": 0, "source_turns": 0},
+        "reconciliation": None,
+        "report_digest": None,
+        "report_sha256": None,
+        "schema_id": "edcm.corpus-run-receipt",
+        "schema_version": "1.3.0",
+        "source_artifact_filename": (
+            None if archive_value is None else Path(archive_value).name
+        ),
+        "status": "incomplete",
+        "ucns_full_corpus": None,
+    }
+    receipt["receipt_digest"] = hashlib.sha256(
+        json.dumps(
+            receipt,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+    receipt_path = Path(receipt_value).resolve()
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = receipt_path.with_name(f".{receipt_path.name}.tmp")
+    temporary.write_text(
+        json.dumps(receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\\n",
+        encoding="utf-8",
+        newline="\\n",
+    )
+    temporary.replace(receipt_path)
+    print(
+        json.dumps(
+            {
+                "error_code": "GIT_IDENTITY",
+                "reason": reason,
+                "receipt": str(receipt_path),
+                "status": "incomplete",
+            },
+            sort_keys=True,
+        ),
+        file=sys.stderr,
+    )
 
 def extract_source_only(package, snapshot):
     for member in package:
@@ -165,14 +234,54 @@ def extract_source_only(package, snapshot):
         with source, open(target, "xb") as destination:
             shutil.copyfileobj(source, destination)
 
-with tempfile.TemporaryDirectory(prefix="edcm-sealed-source-") as snapshot:
-    with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as package:
-        extract_source_only(package, snapshot)
-    os.environ["EDCM_SEALED_REPOSITORY_ROOT"] = repository_root
-    sys.dont_write_bytecode = True
-    sys.path.insert(0, snapshot)
-    runpy.run_module("edcm.corpora.multiwoz21", run_name="__main__")
-"""
+edcm_tree = None
+try:
+    commit = subprocess.run(
+        ["git", "rev-parse", "--verify", "HEAD^{commit}"],
+        cwd=repository_root,
+        check=True,
+        capture_output=True,
+        text=True,
+        env=environment,
+    ).stdout.strip()
+    edcm_tree = subprocess.run(
+        ["git", "rev-parse", "--verify", f"{commit}:edcm"],
+        cwd=repository_root,
+        check=True,
+        capture_output=True,
+        text=True,
+        env=environment,
+    ).stdout.strip()
+    archive = subprocess.run(
+        ["git", "archive", "--format=tar", commit, "edcm"],
+        cwd=repository_root,
+        check=True,
+        capture_output=True,
+        env=environment,
+    ).stdout
+    with tempfile.TemporaryDirectory(prefix="edcm-sealed-source-") as snapshot:
+        with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as package:
+            extract_source_only(package, snapshot)
+        os.environ["EDCM_SEALED_REPOSITORY_ROOT"] = repository_root
+        os.environ["EDCM_SEALED_COMMIT"] = commit
+        os.environ["EDCM_SEALED_TREE"] = edcm_tree
+        sys.dont_write_bytecode = True
+        sys.path.insert(0, snapshot)
+        runpy.run_module("edcm.corpora.multiwoz21", run_name="__main__")
+except (OSError, subprocess.CalledProcessError, tarfile.TarError, RuntimeError) as error:
+    reason = f"sealed bootstrap failed: {type(error).__name__}: {error}"
+    try:
+        write_bootstrap_failure(reason, edcm_tree)
+    except OSError as receipt_error:
+        print(
+            f"{reason}; receipt failure: {type(receipt_error).__name__}: {receipt_error}",
+            file=sys.stderr,
+        )
+    raise SystemExit(1)
+""".replace(
+    "__BOOTSTRAP_ADMISSION_DIGEST__",
+    _BOOTSTRAP_ADMISSION_DIGEST,
+)
 RECEIPT_SCHEMA_ID = "edcm.corpus-run-receipt"
 RECEIPT_SCHEMA_VERSION = "1.3.0"
 CHECKPOINT_SCHEMA_ID = "edcm.multiwoz21-checkpoint"
@@ -1727,6 +1836,7 @@ def _verify_git_tree(
     pathspec: str,
     *,
     environment: dict[str, str],
+    treeish: str = "HEAD",
     producer_name: str = "EDCM",
 ) -> None:
     dirty_code = f"{producer_name}_DIRTY"
@@ -1738,7 +1848,7 @@ def _verify_git_tree(
                 "-r",
                 "-z",
                 "--name-only",
-                "HEAD",
+                treeish,
                 "--",
                 pathspec,
             ],
@@ -1780,7 +1890,7 @@ def _verify_git_tree(
                     "git",
                     "cat-file",
                     "blob",
-                    f"HEAD:{relative_path.as_posix()}",
+                    f"{treeish}:{relative_path.as_posix()}",
                 ],
                 cwd=root,
                 check=True,
@@ -1828,12 +1938,13 @@ def _git_commit(
     require_clean: bool,
     verify_tree: str | None = None,
     producer_name: str = "EDCM",
+    expected_commit: str | None = None,
 ) -> str:
     environment = dict(os.environ)
     environment["GIT_NO_REPLACE_OBJECTS"] = "1"
     try:
         commit = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
+            ["git", "rev-parse", "--verify", "HEAD^{commit}"],
             cwd=root,
             check=True,
             capture_output=True,
@@ -1858,22 +1969,33 @@ def _git_commit(
             f"{producer_name} tracked files must be clean before a sealed corpus run",
             code=f"{producer_name}_DIRTY",
         )
+    if expected_commit is not None and commit != expected_commit:
+        raise CorpusRunError(
+            f"{producer_name} checkout changed after sealed snapshot creation",
+            code="GIT_IDENTITY",
+        )
     if verify_tree is not None:
         _verify_git_tree(
             root,
             verify_tree,
             environment=environment,
+            treeish=commit,
             producer_name=producer_name,
         )
     return commit
 
 
-def _git_tree_identity(root: Path, pathspec: str) -> str:
+def _git_tree_identity(
+    root: Path,
+    pathspec: str,
+    *,
+    treeish: str = "HEAD",
+) -> str:
     environment = dict(os.environ)
     environment["GIT_NO_REPLACE_OBJECTS"] = "1"
     try:
         tree = subprocess.run(
-            ["git", "rev-parse", f"HEAD:{pathspec}"],
+            ["git", "rev-parse", "--verify", f"{treeish}:{pathspec}"],
             cwd=root,
             check=True,
             capture_output=True,
@@ -1997,14 +2119,26 @@ def _sealed_main(argv: list[str] | None = None) -> int:
         if sealed_repository_root is not None
         else Path(__file__).resolve().parents[2]
     )
+    sealed_commit = os.environ.get(_SEALED_EDCM_COMMIT_ENV)
+    sealed_tree = os.environ.get(_SEALED_EDCM_TREE_ENV)
     edcm_tree: str | None = None
     try:
-        _git_commit(
+        commit = _git_commit(
             repository_root,
             require_clean=True,
             verify_tree="edcm",
+            expected_commit=sealed_commit,
         )
-        edcm_tree = _git_tree_identity(repository_root, "edcm")
+        edcm_tree = _git_tree_identity(
+            repository_root,
+            "edcm",
+            treeish=commit,
+        )
+        if sealed_tree is not None and edcm_tree != sealed_tree:
+            raise CorpusRunError(
+                "EDCM package tree differs from the sealed bootstrap snapshot",
+                code="GIT_IDENTITY",
+            )
         adapter, full_corpus_gate = _load_pinned_runtime(
             args.ucns_source_root.resolve()
         )

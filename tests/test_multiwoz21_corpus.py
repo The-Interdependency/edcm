@@ -829,7 +829,12 @@ def test_adapter_construction_failure_writes_incomplete_receipt(
     monkeypatch.setattr(
         multiwoz21_module,
         "_git_commit",
-        lambda root, *, require_clean, verify_tree=None, producer_name="EDCM": PINNED_UCNS_COMMIT,
+        lambda root, *, require_clean, verify_tree=None, producer_name="EDCM", expected_commit=None: PINNED_UCNS_COMMIT,
+    )
+    monkeypatch.setattr(
+        multiwoz21_module,
+        "_git_tree_identity",
+        lambda root, pathspec, *, treeish="HEAD": "fixture-edcm-tree",
     )
 
     def reject_adapter(candidate):
@@ -874,6 +879,45 @@ def test_isolated_bootstrap_avoids_post_311_extraction_filter_apis() -> None:
     assert ".extractall(" not in bootstrap
     assert "member.isfile()" in bootstrap
     assert "member.isdir()" in bootstrap
+    assert multiwoz21_module._BOOTSTRAP_ADMISSION_DIGEST == (
+        multiwoz21_module.load_admission_manifest().digest
+    )
+
+
+def test_bootstrap_git_failure_writes_incomplete_receipt(tmp_path: Path) -> None:
+    repository = tmp_path / "not-a-repository"
+    repository.mkdir()
+    receipt_path = tmp_path / "bootstrap-receipt.json"
+    archive_path = tmp_path / "archive.zip"
+
+    exit_code = multiwoz21_module._run_in_fresh_process(
+        [
+            "--archive",
+            str(archive_path),
+            "--ucns-source-root",
+            str(tmp_path / "ucns"),
+            "--output",
+            str(tmp_path / "report.json"),
+            "--receipt",
+            str(receipt_path),
+        ],
+        repository_root=repository,
+    )
+
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert exit_code == 1
+    assert receipt["schema_id"] == multiwoz21_module.RECEIPT_SCHEMA_ID
+    assert receipt["schema_version"] == multiwoz21_module.RECEIPT_SCHEMA_VERSION
+    assert receipt["admission_digest"] == (
+        multiwoz21_module.load_admission_manifest().digest
+    )
+    assert receipt["status"] == "incomplete"
+    assert receipt["error"]["code"] == "GIT_IDENTITY"
+    assert receipt["source_artifact_filename"] == archive_path.name
+    assert receipt["receipt_digest"] == _canonical_digest_without(
+        receipt,
+        "receipt_digest",
+    )
 
 
 def _committed_edcm_fixture(tmp_path: Path) -> Path:
@@ -1004,7 +1048,14 @@ def test_ucns_tree_is_authenticated_before_import(
     for name in UCNSFullCorpusGate._REQUIRED_SURFACES:
         setattr(module, name, lambda *args, **kwargs: None)
 
-    def verify(root, *, require_clean, verify_tree=None, producer_name="EDCM"):
+    def verify(
+        root,
+        *,
+        require_clean,
+        verify_tree=None,
+        producer_name="EDCM",
+        expected_commit=None,
+    ):
         events.append("verify")
         assert verify_tree == "src/ucns"
         assert producer_name == "UCNS"
@@ -1215,6 +1266,12 @@ def test_edcm_tree_identity_survives_evidence_only_commit(
         check=True,
         capture_output=True,
     )
+    producer_commit = subprocess.run(
+        ["git", "-C", str(checkout), "rev-parse", "HEAD"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
     producer_tree = multiwoz21_module._git_tree_identity(checkout, "edcm")
 
     evidence.write_text('{"run": 2}\n', encoding="utf-8")
@@ -1232,6 +1289,18 @@ def test_edcm_tree_identity_survives_evidence_only_commit(
     assert multiwoz21_module._git_tree_identity(checkout, "edcm") == (
         producer_tree
     )
+    assert multiwoz21_module._git_tree_identity(
+        checkout,
+        "edcm",
+        treeish=producer_commit,
+    ) == producer_tree
+    with pytest.raises(CorpusRunError, match="changed after sealed snapshot"):
+        multiwoz21_module._git_commit(
+            checkout,
+            require_clean=True,
+            verify_tree="edcm",
+            expected_commit=producer_commit,
+        )
 
 
 def test_claimed_gate_without_source_exhaustion_cannot_complete(
