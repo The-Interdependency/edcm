@@ -29,6 +29,7 @@ import os
 from pathlib import Path
 import py_compile
 import subprocess
+import sys
 from types import ModuleType
 
 import pytest
@@ -398,6 +399,42 @@ def test_distribution_identity_rejects_timestamp_valid_altered_bytecode(
         ActualUCNSAdapter(module)
 
 
+def test_distribution_identity_accepts_bytecode_without_debug_ranges(
+    monkeypatch,
+    tmp_path,
+):
+    distribution, module_path, bytecode_path = _vcs_distribution(
+        tmp_path / "pinned",
+        PINNED_UCNS_COMMIT,
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            "-X",
+            "no_debug_ranges",
+            "-c",
+            (
+                "import py_compile, sys; "
+                "py_compile.compile(sys.argv[1], cfile=sys.argv[2], doraise=True)"
+            ),
+            str(module_path),
+            str(bytecode_path),
+        ],
+        check=True,
+        capture_output=True,
+    )
+    module = _exact_identity_module()
+    del module.UCNS_PRODUCER_COMMIT
+    module.__file__ = str(module_path)
+    monkeypatch.setattr(
+        adapter_module.importlib_metadata,
+        "distribution",
+        lambda name: distribution,
+    )
+
+    assert ActualUCNSAdapter(module).status.adapter_active is True
+
+
 def test_distribution_raw_record_detects_deleted_file(
     monkeypatch,
     tmp_path,
@@ -515,7 +552,95 @@ def test_checkout_repository_identity_accepts_renamed_remote(tmp_path):
         == commit
     )
 
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "remote",
+            "set-url",
+            "upstream",
+            "ssh://git@github.com/The-Interdependency/ucns.git",
+        ],
+        check=True,
+        capture_output=True,
+    )
+    assert (
+        adapter_module._git_checkout_commit(
+            checkout,
+            module_file=tracked_module,
+        )
+        == commit
+    )
+
     original_module = tracked_module.read_bytes()
+    tracked_module.write_bytes(original_module.replace(b"trusted", b"altered"))
+    subprocess.run(
+        ["git", "-C", str(checkout), "add", "src/ucns/__init__.py"],
+        check=True,
+        capture_output=True,
+    )
+    replacement_tree = subprocess.run(
+        ["git", "-C", str(checkout), "write-tree"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    replacement_commit = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "-c",
+            "user.name=EDCM Test",
+            "-c",
+            "user.email=edcm-test@example.invalid",
+            "commit-tree",
+            replacement_tree,
+            "-p",
+            commit,
+            "-m",
+            "replacement fixture",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    subprocess.run(
+        ["git", "-C", str(checkout), "reset", "--hard", commit],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(checkout), "replace", commit, replacement_commit],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(checkout), "reset", "--hard", commit],
+        check=True,
+        capture_output=True,
+    )
+    assert b"altered" in tracked_module.read_bytes()
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="differs from the pinned tree",
+    ):
+        adapter_module._git_checkout_commit(
+            checkout,
+            module_file=tracked_module,
+        )
+    subprocess.run(
+        ["git", "-C", str(checkout), "replace", "-d", commit],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(checkout), "reset", "--hard", commit],
+        check=True,
+        capture_output=True,
+    )
+
     malicious_module = original_module.replace(b"trusted", b"altered")
     tracked_module.write_bytes(malicious_module)
     cached_module = Path(importlib.util.cache_from_source(str(tracked_module)))

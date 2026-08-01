@@ -37,7 +37,7 @@ remain source-native noninputs to this profile run.
 #   summary: verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate from the reviewed v0.19 producer without committing raw text
 #   owner: Erin Spencer
 #   public_surface: AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive, main
-#   internal_surface: UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic
+#   internal_surface: UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _git_commit, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic
 #   auth_boundary: none
 #   storage_boundary: reads a caller-held archive and writes only caller-selected aggregate report, receipt, and resumable checkpoint paths
 #   network_boundary: none; source acquisition is separate and the runner requires local pinned bytes
@@ -96,6 +96,7 @@ import importlib
 import importlib.resources
 import io
 import json
+import os
 import subprocess
 import sys
 from collections.abc import Iterable, Iterator, Mapping
@@ -1665,6 +1666,8 @@ def run_archive(
 
 
 def _git_commit(root: Path, *, require_clean: bool) -> str:
+    environment = dict(os.environ)
+    environment["GIT_NO_REPLACE_OBJECTS"] = "1"
     try:
         commit = subprocess.run(
             ["git", "rev-parse", "HEAD"],
@@ -1672,6 +1675,7 @@ def _git_commit(root: Path, *, require_clean: bool) -> str:
             check=True,
             capture_output=True,
             text=True,
+            env=environment,
         ).stdout.strip()
         status = subprocess.run(
             ["git", "status", "--porcelain", "--untracked-files=no"],
@@ -1679,6 +1683,7 @@ def _git_commit(root: Path, *, require_clean: bool) -> str:
             check=True,
             capture_output=True,
             text=True,
+            env=environment,
         ).stdout.strip()
     except (OSError, subprocess.CalledProcessError) as exc:
         raise CorpusRunError(

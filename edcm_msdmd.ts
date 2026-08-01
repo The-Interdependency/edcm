@@ -121,7 +121,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic",
+        "internal_surface": "UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _git_commit, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic",
         "module_kind": "adapter",
         "module_name": "multiwoz21",
         "network_boundary": "none; source acquisition is separate and the runner requires local pinned bytes",
@@ -1114,7 +1114,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_canonical_bytes, _digest, _package_present, _verify_checkout_package_tree, _source_checkout_commit, _verify_cached_bytecode, _verify_distribution_files, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record",
+        "internal_surface": "_canonical_bytes, _digest, _package_present, _run_git, _verify_checkout_package_tree, _source_checkout_commit, _code_semantic_identity, _verify_cached_bytecode, _verify_distribution_files, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record",
         "module_kind": "adapter",
         "module_name": "ucns_adapter",
         "network_boundary": "none",

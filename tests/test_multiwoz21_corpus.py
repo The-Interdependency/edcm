@@ -64,6 +64,7 @@ import io
 import json
 from hashlib import sha256
 from pathlib import Path
+import subprocess
 from types import ModuleType
 from typing import Any
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -845,6 +846,92 @@ def test_adapter_construction_failure_writes_incomplete_receipt(
     assert receipt["status"] == "incomplete"
     assert receipt["error"]["code"] == "UCNS_ADAPTER_CONSTRUCTION"
     assert "fixture identity rejection" in receipt["error"]["reason"]
+
+
+def test_sealed_git_identity_disables_replacement_refs(tmp_path: Path) -> None:
+    checkout = tmp_path / "edcm"
+    checkout.mkdir()
+    subprocess.run(["git", "init", str(checkout)], check=True, capture_output=True)
+    tracked = checkout / "producer.py"
+    tracked.write_text("VALUE = 'trusted'\n", encoding="utf-8")
+    subprocess.run(
+        ["git", "-C", str(checkout), "add", "producer.py"],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "-c",
+            "user.name=EDCM Test",
+            "-c",
+            "user.email=edcm-test@example.invalid",
+            "commit",
+            "-m",
+            "trusted fixture",
+        ],
+        check=True,
+        capture_output=True,
+    )
+    commit = subprocess.run(
+        ["git", "-C", str(checkout), "rev-parse", "HEAD"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    tracked.write_text("VALUE = 'altered'\n", encoding="utf-8")
+    subprocess.run(
+        ["git", "-C", str(checkout), "add", "producer.py"],
+        check=True,
+        capture_output=True,
+    )
+    replacement_tree = subprocess.run(
+        ["git", "-C", str(checkout), "write-tree"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    replacement_commit = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "-c",
+            "user.name=EDCM Test",
+            "-c",
+            "user.email=edcm-test@example.invalid",
+            "commit-tree",
+            replacement_tree,
+            "-p",
+            commit,
+            "-m",
+            "replacement fixture",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    subprocess.run(
+        ["git", "-C", str(checkout), "reset", "--hard", commit],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(checkout), "replace", commit, replacement_commit],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(checkout), "reset", "--hard", commit],
+        check=True,
+        capture_output=True,
+    )
+    assert "altered" in tracked.read_text(encoding="utf-8")
+
+    with pytest.raises(CorpusRunError, match="tracked files must be clean"):
+        multiwoz21_module._git_commit(checkout, require_clean=True)
 
 
 def test_claimed_gate_without_source_exhaustion_cannot_complete(

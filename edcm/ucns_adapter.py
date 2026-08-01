@@ -21,7 +21,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 #   summary: fail-closed consumer for the exact EDCM-only UCNS word-gonol profile from the reviewed v0.19 producer, preserving full-corpus speaker-turn observations without coordinate, geometry, or proof transfer
 #   owner: Erin Spencer
 #   public_surface: ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter
-#   internal_surface: _canonical_bytes, _digest, _package_present, _verify_checkout_package_tree, _source_checkout_commit, _verify_cached_bytecode, _verify_distribution_files, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record
+#   internal_surface: _canonical_bytes, _digest, _package_present, _run_git, _verify_checkout_package_tree, _source_checkout_commit, _code_semantic_identity, _verify_cached_bytecode, _verify_distribution_files, _resolve_ucns_producer_commit, _token_record, _segment_record, _turn_record
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
@@ -259,13 +259,40 @@ def _digest(value: Any) -> str:
 
 def _repository_identity(value: str) -> str:
     normalized = value.strip().removeprefix("git+").rstrip("/")
-    if normalized.startswith("git@github.com:"):
-        normalized = "https://github.com/" + normalized.removeprefix(
-            "git@github.com:"
+    scp_match = re.fullmatch(
+        r"(?:[^@/:]+@)?(?P<host>github\.com):(?P<path>.+)",
+        normalized,
+        flags=re.IGNORECASE,
+    )
+    if scp_match is not None:
+        normalized = (
+            f"ssh://{scp_match.group('host')}/{scp_match.group('path')}"
         )
+    parsed = urlsplit(normalized)
+    if parsed.hostname is not None:
+        path = parsed.path.strip("/")
+        if path.endswith(".git"):
+            path = path[:-4]
+        return f"{parsed.hostname}/{path}".lower()
     if normalized.endswith(".git"):
         normalized = normalized[:-4]
     return normalized.lower()
+
+
+def _run_git(
+    root: Path,
+    *arguments: str,
+    text: bool = False,
+) -> subprocess.CompletedProcess[Any]:
+    environment = dict(os.environ)
+    environment["GIT_NO_REPLACE_OBJECTS"] = "1"
+    return subprocess.run(
+        ["git", "-C", str(root), *arguments],
+        check=True,
+        capture_output=True,
+        text=text,
+        env=environment,
+    )
 
 
 def _module_file(module: ModuleType) -> Path:
@@ -281,21 +308,15 @@ def _verify_checkout_package_tree(root: Path, module_file: Path) -> None:
     try:
         package_root = module_file.parent
         package_relative = package_root.relative_to(root)
-        tree_output = subprocess.run(
-            [
-                "git",
-                "-C",
-                str(root),
-                "ls-tree",
-                "-r",
-                "-z",
-                "--name-only",
-                "HEAD",
-                "--",
-                package_relative.as_posix(),
-            ],
-            check=True,
-            capture_output=True,
+        tree_output = _run_git(
+            root,
+            "ls-tree",
+            "-r",
+            "-z",
+            "--name-only",
+            "HEAD",
+            "--",
+            package_relative.as_posix(),
         ).stdout
         tracked_paths = {
             Path(os.fsdecode(raw_path))
@@ -328,17 +349,11 @@ def _verify_checkout_package_tree(root: Path, module_file: Path) -> None:
         )
     for relative_path in sorted(tracked_paths):
         try:
-            expected = subprocess.run(
-                [
-                    "git",
-                    "-C",
-                    str(root),
-                    "cat-file",
-                    "blob",
-                    f"HEAD:{relative_path.as_posix()}",
-                ],
-                check=True,
-                capture_output=True,
+            expected = _run_git(
+                root,
+                "cat-file",
+                "blob",
+                f"HEAD:{relative_path.as_posix()}",
             ).stdout
             observed = (root / relative_path).read_bytes()
         except (OSError, subprocess.CalledProcessError) as exc:
@@ -364,55 +379,35 @@ def _git_checkout_commit(
     module_file: Path | None = None,
 ) -> str:
     try:
-        remote_names = subprocess.run(
-            ["git", "-C", str(root), "remote"],
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout.splitlines()
+        remote_names = _run_git(root, "remote", text=True).stdout.splitlines()
         remote_urls = tuple(
             url
             for name in remote_names
-            for url in subprocess.run(
-                ["git", "-C", str(root), "remote", "get-url", "--all", name],
-                check=True,
-                capture_output=True,
+            for url in _run_git(
+                root,
+                "remote",
+                "get-url",
+                "--all",
+                name,
                 text=True,
             ).stdout.splitlines()
         )
-        commit = subprocess.run(
-            ["git", "-C", str(root), "rev-parse", "HEAD"],
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout.strip().lower()
-        status = subprocess.run(
-            [
-                "git",
-                "-C",
-                str(root),
-                "status",
-                "--porcelain",
-                "--untracked-files=all",
-            ],
-            check=True,
-            capture_output=True,
+        commit = _run_git(root, "rev-parse", "HEAD", text=True).stdout.strip().lower()
+        status = _run_git(
+            root,
+            "status",
+            "--porcelain",
+            "--untracked-files=all",
             text=True,
         ).stdout
         if module_file is not None:
             relative_module = module_file.relative_to(root)
-            subprocess.run(
-                [
-                    "git",
-                    "-C",
-                    str(root),
-                    "ls-files",
-                    "--error-unmatch",
-                    "--",
-                    relative_module.as_posix(),
-                ],
-                check=True,
-                capture_output=True,
+            _run_git(
+                root,
+                "ls-files",
+                "--error-unmatch",
+                "--",
+                relative_module.as_posix(),
                 text=True,
             )
     except (OSError, subprocess.CalledProcessError, ValueError) as exc:
@@ -443,16 +438,10 @@ def _git_checkout_commit(
 def _source_checkout_commit(module: ModuleType) -> str | None:
     module_file = _module_file(module)
     try:
-        root_text = subprocess.run(
-            [
-                "git",
-                "-C",
-                str(module_file.parent),
-                "rev-parse",
-                "--show-toplevel",
-            ],
-            check=True,
-            capture_output=True,
+        root_text = _run_git(
+            module_file.parent,
+            "rev-parse",
+            "--show-toplevel",
             text=True,
         ).stdout.strip()
     except (OSError, subprocess.CalledProcessError):
@@ -465,6 +454,33 @@ def _source_checkout_commit(module: ModuleType) -> str | None:
     if module_file not in expected_modules:
         return None
     return _git_checkout_commit(root, module_file=module_file)
+
+
+def _code_semantic_identity(code: CodeType) -> tuple[Any, ...]:
+    constants = tuple(
+        _code_semantic_identity(value) if isinstance(value, CodeType) else value
+        for value in code.co_consts
+    )
+    return (
+        code.co_argcount,
+        code.co_posonlyargcount,
+        code.co_kwonlyargcount,
+        code.co_nlocals,
+        code.co_stacksize,
+        code.co_flags,
+        code.co_code,
+        constants,
+        code.co_names,
+        code.co_varnames,
+        code.co_filename,
+        code.co_name,
+        code.co_qualname,
+        code.co_firstlineno,
+        tuple(code.co_lines()),
+        code.co_exceptiontable,
+        code.co_freevars,
+        code.co_cellvars,
+    )
 
 
 def _verify_cached_bytecode(
@@ -510,7 +526,10 @@ def _verify_cached_bytecode(
         raise UCNSAdapterConstructionError(
             f"UCNS cached bytecode is unverifiable: {installed_path.name}"
         ) from exc
-    if not isinstance(cached_code, CodeType) or cached_code != source_code:
+    if not isinstance(cached_code, CodeType) or (
+        _code_semantic_identity(cached_code)
+        != _code_semantic_identity(source_code)
+    ):
         raise UCNSAdapterConstructionError(
             f"UCNS cached bytecode does not match its hash-verified source: {installed_path.name}"
         )
