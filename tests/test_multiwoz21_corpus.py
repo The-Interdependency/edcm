@@ -1004,7 +1004,30 @@ def test_worker_output_failure_uses_output_io_receipt(
     monkeypatch.setattr(
         multiwoz21_module,
         "run_archive",
-        lambda *args, **kwargs: ({}, {}),
+        lambda *args, **kwargs: (
+            {},
+            {
+                "identities": {
+                    "archive_sha256": "fixture-archive",
+                    "edcm_tree": "fixture-edcm-tree",
+                    "ucns_commit": PINNED_UCNS_COMMIT,
+                },
+                "last_completed": {
+                    "dialogue_id": "fixture-final.json",
+                    "dialogue_index": 10437,
+                },
+                "next_or_active": {
+                    "dialogue_id": None,
+                    "dialogue_index": None,
+                    "turn_index": None,
+                },
+                "processed": {
+                    "adapter_turns": 143048,
+                    "dialogues": 10438,
+                    "source_turns": 143048,
+                },
+            },
+        ),
     )
 
     def fail_report_write(path, payload):
@@ -1035,10 +1058,51 @@ def test_worker_output_failure_uses_output_io_receipt(
     assert receipt["status"] == "incomplete"
     assert receipt["error"]["code"] == "OUTPUT_IO"
     assert "PermissionError" in receipt["error"]["reason"]
+    assert receipt["last_completed"] == {
+        "dialogue_id": "fixture-final.json",
+        "dialogue_index": 10437,
+    }
+    assert receipt["processed"] == {
+        "adapter_turns": 143048,
+        "dialogues": 10438,
+        "source_turns": 143048,
+    }
     assert receipt["receipt_digest"] == _canonical_digest_without(
         receipt,
         "receipt_digest",
     )
+
+
+def test_early_git_failure_receipt_retains_sealed_tree(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    sealed_tree = "a" * 40
+    monkeypatch.setenv(multiwoz21_module._SEALED_EDCM_TREE_ENV, sealed_tree)
+
+    def fail_git(*args, **kwargs):
+        raise CorpusRunError("fixture checkout changed", code="GIT_IDENTITY")
+
+    monkeypatch.setattr(multiwoz21_module, "_git_commit", fail_git)
+    receipt_path = tmp_path / "receipt.json"
+    exit_code = multiwoz21_module._sealed_main(
+        [
+            "--archive",
+            str(tmp_path / "archive.zip"),
+            "--ucns-source-root",
+            str(tmp_path / "ucns"),
+            "--output",
+            str(tmp_path / "report.json"),
+            "--receipt",
+            str(receipt_path),
+        ]
+    )
+
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert exit_code == 1
+    assert receipt["status"] == "incomplete"
+    assert receipt["error"]["code"] == "GIT_IDENTITY"
+    assert receipt["identities"]["edcm_tree"] == sealed_tree
 
 
 def _committed_edcm_fixture(tmp_path: Path) -> Path:

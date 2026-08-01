@@ -553,11 +553,33 @@ def _verify_cached_bytecode(
         )
     try:
         bytecode = installed_path.read_bytes()
-        if len(bytecode) < 16 or bytecode[:4] != importlib.util.MAGIC_NUMBER:
-            raise ValueError("invalid bytecode header")
+        source_bytes = source_path.read_bytes()
+        source_stat = source_path.stat()
+    except OSError as exc:
+        raise UCNSAdapterConstructionError(
+            f"UCNS cached bytecode is unreadable: {installed_path.name}"
+        ) from exc
+    if len(bytecode) < 16 or bytecode[:4] != importlib.util.MAGIC_NUMBER:
+        return
+    flags = int.from_bytes(bytecode[4:8], "little")
+    if flags & ~0b11:
+        return
+    if flags & 0b1:
+        if flags & 0b10 and bytecode[8:16] != importlib.util.source_hash(
+            source_bytes
+        ):
+            return
+    elif (
+        int.from_bytes(bytecode[8:12], "little")
+        != int(source_stat.st_mtime) & 0xFFFFFFFF
+        or int.from_bytes(bytecode[12:16], "little")
+        != source_stat.st_size & 0xFFFFFFFF
+    ):
+        return
+    try:
         cached_code = marshal.loads(bytecode[16:])
         source_code = compile(
-            source_path.read_bytes(),
+            source_bytes,
             str(source_path),
             "exec",
             dont_inherit=True,
@@ -710,12 +732,17 @@ def _verify_distribution_files(
             raise UCNSAdapterConstructionError(
                 f"UCNS installed file is missing: {record_path}"
             )
-        if installed_path.stat().st_size != recorded_size:
+        try:
+            if installed_path.stat().st_size != recorded_size:
+                raise UCNSAdapterConstructionError(
+                    f"UCNS installed file size mismatch: {record_path}"
+                )
+            with installed_path.open("rb") as handle:
+                digest = hashlib.file_digest(handle, "sha256").digest()
+        except OSError as exc:
             raise UCNSAdapterConstructionError(
-                f"UCNS installed file size mismatch: {record_path}"
-            )
-        with installed_path.open("rb") as handle:
-            digest = hashlib.file_digest(handle, "sha256").digest()
+                f"UCNS installed file is unreadable: {record_path}"
+            ) from exc
         encoded = base64.urlsafe_b64encode(digest).rstrip(b"=").decode("ascii")
         if not hmac.compare_digest(encoded, hash_value):
             raise UCNSAdapterConstructionError(

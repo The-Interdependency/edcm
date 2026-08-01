@@ -465,6 +465,102 @@ def test_distribution_identity_accepts_bytecode_without_debug_ranges(
     assert ActualUCNSAdapter(module).status.adapter_active is True
 
 
+def test_distribution_file_read_failure_is_typed(
+    monkeypatch,
+    tmp_path,
+):
+    distribution, module_path, _ = _vcs_distribution(
+        monkeypatch,
+        tmp_path / "pinned",
+        PINNED_UCNS_COMMIT,
+    )
+    module = _exact_identity_module()
+    del module.UCNS_PRODUCER_COMMIT
+    module.__file__ = str(module_path)
+    monkeypatch.setattr(
+        adapter_module.importlib_metadata,
+        "distribution",
+        lambda name: distribution,
+    )
+    real_open = Path.open
+
+    def fail_profile_read(path, *args, **kwargs):
+        if path.name == "profile.py":
+            raise PermissionError("fixture installed file became unreadable")
+        return real_open(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", fail_profile_read)
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="installed file is unreadable",
+    ):
+        ActualUCNSAdapter(module)
+
+
+@pytest.mark.parametrize(
+    "invalidation_mode",
+    [
+        py_compile.PycInvalidationMode.TIMESTAMP,
+        py_compile.PycInvalidationMode.CHECKED_HASH,
+    ],
+    ids=["timestamp", "checked-hash"],
+)
+def test_runtime_ignored_stale_cache_does_not_suspend(
+    tmp_path,
+    invalidation_mode,
+):
+    source = tmp_path / "profile.py"
+    trusted = b"VALUE = 'trusted'\n"
+    altered = b"VALUE = 'altered'\n"
+    source.write_bytes(altered)
+    cache = Path(importlib.util.cache_from_source(str(source)))
+    py_compile.compile(
+        str(source),
+        cfile=str(cache),
+        doraise=True,
+        invalidation_mode=invalidation_mode,
+    )
+    compiled_stat = source.stat()
+    source.write_bytes(trusted)
+    if invalidation_mode is py_compile.PycInvalidationMode.TIMESTAMP:
+        os.utime(
+            source,
+            ns=(
+                compiled_stat.st_atime_ns,
+                compiled_stat.st_mtime_ns + 2_000_000_000,
+            ),
+        )
+
+    adapter_module._verify_cached_bytecode(
+        cache,
+        verified_paths={source.resolve()},
+    )
+
+
+def test_unchecked_hash_cache_remains_executable_and_verified(tmp_path):
+    source = tmp_path / "profile.py"
+    trusted = b"VALUE = 'trusted'\n"
+    altered = b"VALUE = 'altered'\n"
+    source.write_bytes(altered)
+    cache = Path(importlib.util.cache_from_source(str(source)))
+    py_compile.compile(
+        str(source),
+        cfile=str(cache),
+        doraise=True,
+        invalidation_mode=py_compile.PycInvalidationMode.UNCHECKED_HASH,
+    )
+    source.write_bytes(trusted)
+
+    with pytest.raises(
+        UCNSAdapterConstructionError,
+        match="cached bytecode does not match",
+    ):
+        adapter_module._verify_cached_bytecode(
+            cache,
+            verified_paths={source.resolve()},
+        )
+
+
 def test_cached_bytecode_identity_is_relocatable(tmp_path):
     original_root = tmp_path / "original"
     original_root.mkdir()

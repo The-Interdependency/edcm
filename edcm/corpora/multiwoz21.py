@@ -2000,7 +2000,8 @@ def _sealed_main(argv: list[str] | None = None) -> int:
     sealed_commit = os.environ.get(_SEALED_EDCM_COMMIT_ENV)
     sealed_tree = os.environ.get(_SEALED_EDCM_TREE_ENV)
     sealed_snapshot_root = os.environ.get(_SEALED_SNAPSHOT_ROOT_ENV)
-    edcm_tree: str | None = None
+    edcm_tree: str | None = sealed_tree
+    completed_state: dict[str, Any] | None = None
 
     def emit_failure(error: CorpusRunError) -> int:
         receipt = _incomplete_receipt(
@@ -2089,6 +2090,25 @@ def _sealed_main(argv: list[str] | None = None) -> int:
             ),
             checkpoint_every=args.checkpoint_every,
         )
+        completed_state = {
+            "archive_sha256": receipt["identities"]["archive_sha256"],
+            "edcm_tree": receipt["identities"]["edcm_tree"],
+            "ucns_commit": receipt["identities"]["ucns_commit"],
+            "last_completed_dialogue_id": receipt["last_completed"][
+                "dialogue_id"
+            ],
+            "last_completed_dialogue_index": receipt["last_completed"][
+                "dialogue_index"
+            ],
+            "active_dialogue_id": receipt["next_or_active"]["dialogue_id"],
+            "active_dialogue_index": receipt["next_or_active"][
+                "dialogue_index"
+            ],
+            "active_turn_index": receipt["next_or_active"]["turn_index"],
+            "adapter_turns": receipt["processed"]["adapter_turns"],
+            "dialogues": receipt["processed"]["dialogues"],
+            "source_turns": receipt["processed"]["source_turns"],
+        }
         _write_json_atomic(args.output.resolve(), report)
         _write_json_atomic(args.receipt.resolve(), receipt)
         print(
@@ -2111,6 +2131,7 @@ def _sealed_main(argv: list[str] | None = None) -> int:
             CorpusRunError(
                 f"output storage failed: {type(exc).__name__}: {exc}",
                 code="OUTPUT_IO",
+                state={} if completed_state is None else completed_state,
             )
         )
 
