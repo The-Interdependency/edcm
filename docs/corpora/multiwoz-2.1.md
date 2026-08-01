@@ -169,7 +169,7 @@ NA != 0
 After the v0.19 source-coordinate boundary reached clean review, EDCM repinned
 the unchanged profile `0.2.0` and full-corpus gate `0.14.1` to exact UCNS commit
 `872f53571d5dc2f133ff1813b7bdffd3a9c309f8`. A clean EDCM commit
-`70f590084483cafe32a552071411e949d6ee2008`, reachable from the reviewed PR
+`d0a072c88448aa6e5d48413bca5848801d331c26`, reachable from the reviewed PR
 history, reran the admitted archive. A completed-checkpoint repeat produced
 byte-identical artifacts.
 
@@ -179,8 +179,8 @@ byte-identical artifacts.
 - source, adapter, UCNS-gate, and unit-support turns: `143,048`
 - exact UCNS source/observation stream SHA-256: `e94ba2e5e1e9d52b23fd5b9c33303be009dae32f4c3bc6a1d5186a353acb40b5`
 - UCNS receipt id: `921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c`
-- EDCM report digest: `ea554f0acc2598f8b81b1a9e228027a1bf9c005645c7f006c886594eafb95ad3`
-- EDCM receipt digest: `1bc73b5e478f9dda5505e6e477bd0abe499cb252744ec4f360d661b39e6bb269`
+- EDCM report digest: `ababd45630673e0f29db9e9e61edb90b4974efc685a395f0bd87a86452c4d766`
+- EDCM receipt digest: `a0dbcb62765aa285b81f0cad7dd782e3846181caa4bedc83cd61c3f45b648880`
 
 The source dialogue chain, turn-evidence chain, execution counts, failure-seeking
 aggregates, exact stream hash, and v0.14.1 gate receipt remain identical to the
