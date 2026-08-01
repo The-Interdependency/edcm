@@ -2,7 +2,8 @@
 
 **Status:** admitted; profile-0.2 sealed full-corpus rerun complete on
 2026-07-28; profile-0.1 SPACE interpretation superseded; UCNS v0.14.1
-completion-receipt rerun and exact v0.19-producer rerun sealed on 2026-07-31.
+completion-receipt rerun and exact v0.19-producer rerun sealed on 2026-07-31;
+merged v0.19-integrity producer reseal completed on 2026-08-01.
 **Evidence state:** current and historical represented evidence; no EDCM
 candidate measurement or joint-canon selection.
 
@@ -39,14 +40,15 @@ source-native evidence and do not silently enter the word-gonol observation.
 
 ## Usage guidance
 
-Keep the archive outside the repository and use a clean checkout of the exact
-UCNS v0.19 producer commit. The consumed profile remains version 0.2.0 and the
+Keep the archive outside the repository and use a clean checkout of merged
+UCNS v0.19 commit `a98c9e6c69804a8a08d0786b1d8b450bb2c49a97`, which includes the
+final integrity repairs. The consumed profile remains version 0.2.0 and the
 full-corpus completion schema remains version 0.14.1:
 
 ```bash
 python edcm/corpora/run_multiwoz21_seal.py \
   --archive /path/to/MULTIWOZ2.1.zip \
-  --ucns-source-root /path/to/ucns-at-872f53571d5dc2f133ff1813b7bdffd3a9c309f8 \
+  --ucns-source-root /path/to/ucns-at-a98c9e6c69804a8a08d0786b1d8b450bb2c49a97 \
   --output /tmp/multiwoz-2.1-ucns-v019.json \
   --receipt /tmp/multiwoz-2.1-ucns-v019-receipt.json \
   --checkpoint /tmp/multiwoz-2.1-ucns-v019.checkpoint.json
@@ -214,6 +216,32 @@ correctly bind the EDCM package tree and UCNS producer commit. UCNS v0.19's coor
 candidate is evidenced only over its fixed full producer demonstration; this
 corpus runner neither attaches nor consumes it. `canon_selection` remains null,
 candidate measurement remains `not-run`, and EDCM/METAPAT remain inactive.
+
+## Merged UCNS v0.19 integrity reseal
+
+After UCNS merged the reviewed v0.19 line with the final integrity repairs at
+`a98c9e6c69804a8a08d0786b1d8b450bb2c49a97`, EDCM repinned the unchanged
+profile `0.2.0` and full-corpus gate `0.14.1`. Published EDCM producer commit
+`7b93764377e92d4f2807170f58ba07535bb0c66c`, whose `edcm/` subtree is
+`f55ca30e16e1d45fb3b0b94794615f672edbbde6`, reran the complete admitted
+archive. A completed-checkpoint repeat produced byte-identical artifacts.
+
+- [aggregate report](../../experiments/corpora/results/2026-08-01-multiwoz-2.1-ucns-v0.19-integrated-full.json)
+- [completion receipt](../../experiments/corpora/receipts/2026-08-01-multiwoz-2.1-ucns-v0.19-integrated-complete.json)
+- dialogues: `10,438`
+- source, adapter, UCNS-gate, and unit-support turns: `143,048`
+- partitions: `8,438 / 1,000 / 1,000` train/validation/test
+- exact UCNS source/observation stream SHA-256: `e94ba2e5e1e9d52b23fd5b9c33303be009dae32f4c3bc6a1d5186a353acb40b5`
+- UCNS receipt id: `921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c`
+- EDCM report digest: `ddc0996126bd4903ca3ec08b043f2b949bcc3bed9077f01d7a609e3e54e3b03d`
+- EDCM receipt digest: `c74abbfaed4a0c18b0296d6245d59b436ad74c1eebc3d1cdd6e092f48534ff65`
+
+The source dialogue chain, turn-evidence chain, execution counts,
+failure-seeking aggregates, exact stream hash, and UCNS v0.14.1 receipt id
+remain identical to the prior v0.19 seal. Only the producer-bound EDCM and UCNS
+identities rotate. The source-coordinate candidate is still not attached or
+consumed; `canon_selection` remains null, candidate measurement remains
+`not-run`, formal geometry remains `NA`, and EDCM/METAPAT remain inactive.
 
 ## File plan
 

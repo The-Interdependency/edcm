@@ -757,6 +757,128 @@ def test_historical_report_is_superseded_by_exact_sealed_rerun() -> None:
         "ucns_commit": v019_identities["ucns_commit"],
     }
 
+    integrated_report_path = (
+        root
+        / "experiments/corpora/results/"
+        "2026-08-01-multiwoz-2.1-ucns-v0.19-integrated-full.json"
+    )
+    integrated_receipt_path = (
+        root
+        / "experiments/corpora/receipts/"
+        "2026-08-01-multiwoz-2.1-ucns-v0.19-integrated-complete.json"
+    )
+    integrated = json.loads(
+        integrated_report_path.read_text(encoding="utf-8")
+    )
+    integrated_receipt = json.loads(
+        integrated_receipt_path.read_text(encoding="utf-8")
+    )
+    consumer_status = json.loads(
+        (root / "handoffs/ucns-profile-consumer-status.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    integrated_handoff = consumer_status[
+        "sealed_ucns_v019_integrated_corpus_evidence"
+    ]
+
+    assert consumer_status["pinned_ucns_commit"] == (
+        "a98c9e6c69804a8a08d0786b1d8b450bb2c49a97"
+    )
+    assert integrated["report_digest"] == (
+        "ddc0996126bd4903ca3ec08b043f2b949bcc3bed9077f01d7a609e3e54e3b03d"
+    )
+    assert integrated_receipt["receipt_digest"] == (
+        "c74abbfaed4a0c18b0296d6245d59b436ad74c1eebc3d1cdd6e092f48534ff65"
+    )
+    assert integrated["report_digest"] == _canonical_digest_without(
+        integrated, "report_digest"
+    )
+    assert integrated_receipt["receipt_digest"] == _canonical_digest_without(
+        integrated_receipt, "receipt_digest"
+    )
+    assert sha256(integrated_report_path.read_bytes()).hexdigest() == (
+        "e228b9cb74c60ec4d6efb66f1d86c38069f613a875fa4c91f2973b46d20436f6"
+    )
+    assert sha256(integrated_receipt_path.read_bytes()).hexdigest() == (
+        "8d20f99f3f788e09e9edad40f7d28a2b97de9d634868652bd058e50d504fe9c9"
+    )
+    integrated_identities = {
+        "archive_sha256": (
+            "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e"
+        ),
+        "edcm_tree": "f55ca30e16e1d45fb3b0b94794615f672edbbde6",
+        "ucns_commit": "a98c9e6c69804a8a08d0786b1d8b450bb2c49a97",
+    }
+    assert integrated_receipt["identities"] == integrated_identities
+    assert integrated["identities"]["edcm_tree"] == (
+        integrated_identities["edcm_tree"]
+    )
+    assert integrated["identities"]["ucns_commit"] == (
+        integrated_identities["ucns_commit"]
+    )
+    assert integrated["profile"]["source_commit"] == (
+        integrated_identities["ucns_commit"]
+    )
+    assert integrated_receipt["report_digest"] == integrated["report_digest"]
+    assert integrated_receipt["report_sha256"] == sha256(
+        integrated_report_path.read_bytes()
+    ).hexdigest()
+
+    assert integrated["execution"] == v019["execution"]
+    assert integrated["failure_seeking_observations"] == (
+        v019["failure_seeking_observations"]
+    )
+    assert integrated["identities"]["source_dialogue_digest_chain"] == (
+        v019["identities"]["source_dialogue_digest_chain"]
+    )
+    assert integrated["identities"]["turn_evidence_digest_chain"] == (
+        v019["identities"]["turn_evidence_digest_chain"]
+    )
+    integrated_gate = integrated["ucns_full_corpus_gate"]
+    assert integrated_gate["status"] == "complete"
+    assert integrated_gate["processed_turn_count"] == 143048
+    assert integrated_gate["exact_source_stream_sha256"] == (
+        v019_gate["exact_source_stream_sha256"]
+    )
+    assert integrated_gate["exact_observation_stream_sha256"] == (
+        integrated_gate["exact_source_stream_sha256"]
+    )
+    assert integrated_gate["receipt"]["receipt_id"] == receipt_id
+    assert integrated_receipt["ucns_full_corpus"]["receipt_id"] == receipt_id
+    assert integrated_gate["activations"] == {
+        "edcm": "inactive",
+        "metapat": "inactive",
+        "selection_effect": "none",
+    }
+    assert integrated["canon_selection"] is None
+    assert integrated["information_boundaries"]["candidate_measurement"] == (
+        "not-run"
+    )
+    assert integrated["information_boundaries"]["formal_ucns_geometry"] == "NA"
+    assert integrated["information_boundaries"]["raw_source_committed"] is False
+
+    assert integrated_handoff == {
+        "corpus_id": "multiwoz-2.1",
+        "edcm_tree": integrated_identities["edcm_tree"],
+        "exact_stream_sha256": integrated_gate[
+            "exact_source_stream_sha256"
+        ],
+        "receipt_digest": integrated_receipt["receipt_digest"],
+        "receipt_id": receipt_id,
+        "receipt_path": str(integrated_receipt_path.relative_to(root)),
+        "receipt_sha256": sha256(
+            integrated_receipt_path.read_bytes()
+        ).hexdigest(),
+        "report_digest": integrated["report_digest"],
+        "report_path": str(integrated_report_path.relative_to(root)),
+        "report_sha256": sha256(
+            integrated_report_path.read_bytes()
+        ).hexdigest(),
+        "status": "complete",
+        "ucns_commit": integrated_identities["ucns_commit"],
+    }
+
 
 def test_full_fixture_run_preserves_order_exact_text_and_profile_counts(
     tmp_path: Path,

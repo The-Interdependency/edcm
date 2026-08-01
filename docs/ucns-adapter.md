@@ -5,7 +5,7 @@
 EDCM optionally consumes the exact EDCM-only observation profile at:
 
 ```text
-The-Interdependency/ucns@872f53571d5dc2f133ff1813b7bdffd3a9c309f8
+The-Interdependency/ucns@a98c9e6c69804a8a08d0786b1d8b450bb2c49a97
 profile: ucns.profile.edcm-word-gonol/0.2.0
 full-corpus gate: ucns.edcm.full-corpus-execution/0.14.1
 ```

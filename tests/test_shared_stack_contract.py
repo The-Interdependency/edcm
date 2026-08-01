@@ -96,7 +96,7 @@ def test_full_stack_fixture_uses_exact_profile_and_preserves_boundaries():
     assert contract["metapat_semantic_constraints"]["source_statements"] == envelope.source_statements
     observation = contract["ucns_profile_observation"]
     assert observation["profile_id"] == "ucns.profile.edcm-word-gonol"
-    assert observation["source_commit"] == "872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
+    assert observation["source_commit"] == "a98c9e6c69804a8a08d0786b1d8b450bb2c49a97"
     assert (
         observation["space_assignment_policy"]
         == "unicode-white-space-origin-v1"

@@ -4,7 +4,7 @@
     "0.2.0"
   ],
   "profile_scope": "edcm-only",
-  "pinned_ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
+  "pinned_ucns_commit": "a98c9e6c69804a8a08d0786b1d8b450bb2c49a97",
   "pinned_skill_lib_commit": "2b24be24947223b86440f59f1bd9766130f9cc11",
   "adapter_activation_status": "exact-profile-active-when-matching-package-is-installed",
   "ucns_full_corpus_gate": {
@@ -12,8 +12,8 @@
     "declared_turn_count": 143048,
     "runner_schema": "edcm.multiwoz21-full-corpus/1.3.0",
     "schema": "ucns.edcm.full-corpus-execution/0.14.1",
-    "sealed_edcm_commit": "973d4b314ee7fbcd35b2e207b889faf7366c3814",
-    "sealed_edcm_tree": "658767bc64936f152e19c2f1cebb9ae86c1932cb",
+    "sealed_edcm_commit": "7b93764377e92d4f2807170f58ba07535bb0c66c",
+    "sealed_edcm_tree": "f55ca30e16e1d45fb3b0b94794615f672edbbde6",
     "sealed_receipt_id": "921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c",
     "status": "sealed-complete"
   },
@@ -54,6 +54,20 @@
     "report_sha256": "2ba500a78bff3f805b26dd9505fc3305207a28c69ae420732ddba1176d14174d",
     "status": "complete",
     "ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
+  },
+  "sealed_ucns_v019_integrated_corpus_evidence": {
+    "corpus_id": "multiwoz-2.1",
+    "edcm_tree": "f55ca30e16e1d45fb3b0b94794615f672edbbde6",
+    "exact_stream_sha256": "e94ba2e5e1e9d52b23fd5b9c33303be009dae32f4c3bc6a1d5186a353acb40b5",
+    "receipt_digest": "c74abbfaed4a0c18b0296d6245d59b436ad74c1eebc3d1cdd6e092f48534ff65",
+    "receipt_id": "921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c",
+    "receipt_path": "experiments/corpora/receipts/2026-08-01-multiwoz-2.1-ucns-v0.19-integrated-complete.json",
+    "receipt_sha256": "8d20f99f3f788e09e9edad40f7d28a2b97de9d634868652bd058e50d504fe9c9",
+    "report_digest": "ddc0996126bd4903ca3ec08b043f2b949bcc3bed9077f01d7a609e3e54e3b03d",
+    "report_path": "experiments/corpora/results/2026-08-01-multiwoz-2.1-ucns-v0.19-integrated-full.json",
+    "report_sha256": "e228b9cb74c60ec4d6efb66f1d86c38069f613a875fa4c91f2973b46d20436f6",
+    "status": "complete",
+    "ucns_commit": "a98c9e6c69804a8a08d0786b1d8b450bb2c49a97"
   },
   "input_contract": "full ordered corpus as exact (speaker_id, text) tuples",
   "fixed_options": {
@@ -109,5 +123,5 @@
   "theorem_transfer": false,
   "measurement_validity": false,
   "metapat_validity": false,
-  "hmmm": "The sealed v0.19-producer MultiWOZ rerun verifies source-preserved SPACE-origin assignment plus bounded complete execution and preserves the historical exact stream and gate receipt. The reviewed v0.19 producer's coordinate candidate is limited to its fixed full demonstration, and EDCM does not attach that evidence or acquire measurement validity; neither result permits missing higher geometry or true non-SPACE coverage to collapse into a convenient bridge."
+  "hmmm": "The merged v0.19-integrity producer MultiWOZ reseal verifies source-preserved SPACE-origin assignment plus bounded complete execution and preserves the historical exact stream and gate receipt. The v0.19 coordinate candidate remains limited to its fixed full demonstration, and EDCM does not attach that evidence or acquire measurement validity; neither result permits missing higher geometry or true non-SPACE coverage to collapse into a convenient bridge."
 }
