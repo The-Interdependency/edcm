@@ -4,7 +4,7 @@
     "0.2.0"
   ],
   "profile_scope": "edcm-only",
-  "pinned_ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
+  "pinned_ucns_commit": "a98c9e6c69804a8a08d0786b1d8b450bb2c49a97",
   "pinned_skill_lib_commit": "2b24be24947223b86440f59f1bd9766130f9cc11",
   "adapter_activation_status": "exact-profile-active-when-matching-package-is-installed",
   "ucns_full_corpus_gate": {

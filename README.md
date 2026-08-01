@@ -150,7 +150,7 @@ zero; the exact source code point remains independently serialized.
 ```bash
 python edcm/corpora/run_multiwoz21_seal.py \
   --archive /path/to/MULTIWOZ2.1.zip \
-  --ucns-source-root /path/to/ucns-at-872f53571d5dc2f133ff1813b7bdffd3a9c309f8 \
+  --ucns-source-root /path/to/ucns-at-a98c9e6c69804a8a08d0786b1d8b450bb2c49a97 \
   --output /tmp/multiwoz-2.1-ucns-v019.json \
   --receipt /tmp/multiwoz-2.1-ucns-v019-receipt.json \
   --checkpoint /tmp/multiwoz-2.1-ucns-v019.checkpoint.json

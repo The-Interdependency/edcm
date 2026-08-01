@@ -86,8 +86,9 @@ Direct absence of `metapat` is typed unavailability. Transitive import errors, m
 
 EDCM owns the consumer adapter. UCNS owns the exact EDCM-only word-gonol
 profile and v0.14.1 full-corpus gate. EDCM consumes those unchanged surfaces
-from exact UCNS v0.19 producer
-`872f53571d5dc2f133ff1813b7bdffd3a9c309f8`.
+from merged UCNS v0.19 producer
+`a98c9e6c69804a8a08d0786b1d8b450bb2c49a97`, which includes the final
+integrity repairs.
 
 The adapter activates only for `ucns.profile.edcm-word-gonol/0.2.0` with all
 fourteen fixed options, `source_domain=unicode-scalar-values`, the exact

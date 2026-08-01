@@ -34,7 +34,7 @@ remain source-native noninputs to this profile run.
 # id: edcm_multiwoz21_corpus
 #   module_name: multiwoz21
 #   module_kind: adapter
-#   summary: verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate from the reviewed v0.19 producer without committing raw text
+#   summary: verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate from the merged v0.19 producer with final integrity repairs without committing raw text
 #   owner: Erin Spencer
 #   public_surface: AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive
 #   internal_surface: UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _git_tree_identity, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_worker_arguments, _sealed_main
@@ -46,7 +46,7 @@ remain source-native noninputs to this profile run.
 #   tests: tests.test_multiwoz21_corpus
 #   rollout: explicit admitted full-corpus command; no sampling and no default measurement or canon selection
 #   rollback: remove the adapter and supersede its aggregate receipts by identity; raw source remains outside Git
-#   requires: edcm_ucns_adapter, ucns.edcm and ucns.full_corpus at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8
+#   requires: edcm_ucns_adapter, ucns.edcm and ucns.full_corpus at a98c9e6c69804a8a08d0786b1d8b450bb2c49a97
 #   since: 2026-07-28
 #   unresolved: source-native semantic labels for correction, retraction, and unresolved reference; formal UCNS geometry and lawful EDCM projection
 # === END MODULE_BUILD ===

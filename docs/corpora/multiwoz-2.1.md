@@ -39,14 +39,15 @@ source-native evidence and do not silently enter the word-gonol observation.
 
 ## Usage guidance
 
-Keep the archive outside the repository and use a clean checkout of the exact
-UCNS v0.19 producer commit. The consumed profile remains version 0.2.0 and the
+Keep the archive outside the repository and use a clean checkout of merged
+UCNS v0.19 commit `a98c9e6c69804a8a08d0786b1d8b450bb2c49a97`, which includes the
+final integrity repairs. The consumed profile remains version 0.2.0 and the
 full-corpus completion schema remains version 0.14.1:
 
 ```bash
 python edcm/corpora/run_multiwoz21_seal.py \
   --archive /path/to/MULTIWOZ2.1.zip \
-  --ucns-source-root /path/to/ucns-at-872f53571d5dc2f133ff1813b7bdffd3a9c309f8 \
+  --ucns-source-root /path/to/ucns-at-a98c9e6c69804a8a08d0786b1d8b450bb2c49a97 \
   --output /tmp/multiwoz-2.1-ucns-v019.json \
   --receipt /tmp/multiwoz-2.1-ucns-v019-receipt.json \
   --checkpoint /tmp/multiwoz-2.1-ucns-v019.checkpoint.json

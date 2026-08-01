@@ -18,7 +18,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 # id: edcm_ucns_adapter
 #   module_name: ucns_adapter
 #   module_kind: adapter
-#   summary: fail-closed consumer for the exact EDCM-only UCNS word-gonol profile from the reviewed v0.19 producer, preserving full-corpus speaker-turn observations without coordinate, geometry, or proof transfer
+#   summary: fail-closed consumer for the exact EDCM-only UCNS word-gonol profile from the merged v0.19 producer with final integrity repairs, preserving full-corpus speaker-turn observations without coordinate, geometry, or proof transfer
 #   owner: Erin Spencer
 #   public_surface: ActualUCNSAdapter, UCNSProfileObservationEvidence, UCNSIntegrationStatus, UCNSAdapterSelection, select_ucns_adapter, inspect_ucns_adapter
 #   internal_surface: _canonical_bytes, _digest, _package_present, _run_git, _verify_checkout_package_tree, _source_checkout_commit, _code_semantic_identity, _is_runtime_cache, _verify_cached_bytecode, _verify_active_source_caches, _verify_pinned_package_tree, _verify_distribution_files, _reload_verified_ucns_module, _resolve_ucns_producer, _token_record, _segment_record, _turn_record
@@ -30,7 +30,7 @@ validity claim. The retired ordered-occurrence bridge input forms fail closed.
 #   tests: tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_shared_stack_contract
 #   rollout: optional exact-profile activation only when the pinned producer commit and profile surface match
 #   rollback: suspend the optional adapter; base EDCM measurement remains operational
-#   requires: ucns.edcm at 872f53571d5dc2f133ff1813b7bdffd3a9c309f8
+#   requires: ucns.edcm at a98c9e6c69804a8a08d0786b1d8b450bb2c49a97
 #   since: 2026-07-25
 #   unresolved: consumption of the upstream nonselected ordered source-coordinate candidate, higher-gonol composition, and projection policies remain outside this observation adapter
 # === END MODULE_BUILD ===
@@ -81,7 +81,7 @@ from urllib.request import url2pathname
 UCNS_SOURCE_REPOSITORY = "https://github.com/The-Interdependency/ucns"
 SUPPORTED_PROFILE = ("ucns.profile.edcm-word-gonol", "0.2.0")
 SUPPORTED_PROFILE_SCOPE = "edcm-only"
-PINNED_UCNS_COMMIT = "872f53571d5dc2f133ff1813b7bdffd3a9c309f8"
+PINNED_UCNS_COMMIT = "a98c9e6c69804a8a08d0786b1d8b450bb2c49a97"
 PINNED_UCNS_PACKAGE_SHA256 = {
     "__init__.py": "2a257f4d9d1cb883df791d236bb1312f48680d719b75580c53fbdc340b7bbc0c",
     "assignment_boundary.py": "bd5386d7d87eaf721e129d7becadf6cf46b5beba11a3ffb5cca86bf60234bc5b",
@@ -96,7 +96,7 @@ PINNED_UCNS_PACKAGE_SHA256 = {
     "envelope.py": "27666a6ff507347dbf0052c73ca41be6eb81a54cf3e034fce08237d06073ee09",
     "exact_coordinate.py": "9189834987003f3032c19c57ee4ce14ee352a082d89eebfc6b8502d9bdf443a8",
     "experiments.py": "553529a3d754789be1f9de808fc64ee42fb7c58042516434dd88a4a7c8a2a8de",
-    "explicit_geometric_assignment.py": "5791c09352d6283d4b25131f884daedd7803ac3af9fe55f9f0ab71d39dd711eb",
+    "explicit_geometric_assignment.py": "cdb08f80e6d98785a5786ffb99bb1249d3ff674fe2ddcc549103c490e82630e5",
     "full_carrier_attachment.py": "738e8f0631a2053a9a86eb1a7dbee45fc24052bc6aca647b4977be6a6cf1e8b2",
     "full_corpus.py": "e3a929a3c087970ef3266ba70980b8a09b0ca1f9584884469f1c54b172e10724",
     "gonol_initiation.py": "0a5e00091e0fbe2d740c707fcf7553fed0e2e0b3e69c5b2330e0789703c954b4",
