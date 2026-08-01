@@ -140,7 +140,7 @@ exact University of Cambridge archive and every logical member, streams all
 `10,438` dialogues in source order, observes every exact speaker turn through
 the pinned EDCM UCNS word-gonol profile, and independently repeats the exact
 turn stream through the UCNS v0.14.1 full-corpus completion gate from the
-exact v0.19 producer commit. Completion requires both passes and their
+merged v0.19 producer commit with final integrity repairs. Completion requires both passes and their
 source-native turn chains to reconcile. Only
 aggregate evidence and completion or incompletion receipts are emitted. Raw
 corpus bytes remain outside Git.
@@ -182,6 +182,15 @@ unchanged; the report and receipt identities bind the EDCM package tree and
 the UCNS producer commit.
 Measurement remains `not-run`, canon selection is null, and EDCM/METAPAT stay
 inactive.
+
+Merged UCNS v0.19 commit
+`a98c9e6c69804a8a08d0786b1d8b450bb2c49a97` was then freshly resealed in
+new immutable [aggregate report](experiments/corpora/results/2026-08-01-multiwoz-2.1-ucns-v0.19-integrated-full.json)
+and [completion receipt](experiments/corpora/receipts/2026-08-01-multiwoz-2.1-ucns-v0.19-integrated-complete.json).
+The completed-checkpoint repeat was byte-identical, all execution counts and
+source-native chains reconciled, and the exact stream hash plus UCNS receipt id
+remained unchanged. Measurement remains `not-run`, canon selection is null,
+and EDCM/METAPAT stay inactive.
 
 ## Integrity gate
 
