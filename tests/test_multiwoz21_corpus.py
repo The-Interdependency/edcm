@@ -650,10 +650,10 @@ def test_historical_report_is_superseded_by_exact_sealed_rerun() -> None:
     )["sealed_ucns_v019_corpus_evidence"]
 
     assert v019["report_digest"] == (
-        "9f1a463216cb2cc132cf70955ce974b79612df93c3eba0ad9de94669a157bc6d"
+        "e8ef63cc036182f0b8205a12c62082a4e1f2a8cb18dcda6feabca191d00b9a00"
     )
     assert v019_receipt["receipt_digest"] == (
-        "5686c5dac602f98f0b7cb112b287f4174b1da591fdbf9f5bb5be7909be38f5f5"
+        "849449fc6e1eaffa3690e39b232c793abfd731cd96af3e4afdbf5f4e0ef44ab4"
     )
     assert v019["schema_version"] == "1.3.0"
     assert v019_receipt["schema_version"] == "1.3.0"
@@ -664,16 +664,16 @@ def test_historical_report_is_superseded_by_exact_sealed_rerun() -> None:
         v019_receipt, "receipt_digest"
     )
     assert sha256(v019_report_path.read_bytes()).hexdigest() == (
-        "8f5e6fc9a17ed89acfdfbba331bc2277566de3e90e7438d749eccc66fb0a5325"
+        "3253e0703a65573275f1037a91a0c3f0bb65d67636d185e104f14e091691f8cc"
     )
     assert sha256(v019_receipt_path.read_bytes()).hexdigest() == (
-        "b7ab31dda5079ae68df42f32c8d940e88116c871a3877390774c634c55a4ba4c"
+        "fc0b9f7458b5aea9b852d92577e7332f07f3454d8d47344b32736a1f08eab34b"
     )
     v019_identities = {
         "archive_sha256": (
             "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e"
         ),
-        "edcm_tree": "5f2b3c40d28f030a77f83e3e0faa440a54915c90",
+        "edcm_tree": "fd614328df8439dc4d202a2945268a3c6542c002",
         "ucns_commit": "872f53571d5dc2f133ff1813b7bdffd3a9c309f8",
     }
     assert v019_receipt["identities"] == v019_identities
