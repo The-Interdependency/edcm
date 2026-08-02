@@ -88,6 +88,21 @@ standing: historical maintained baseline, not joint canon
 
 Its marker canon, parser, eleven-component round vector, and circuit recurrence remain available for comparison. Existing integrity gates preserve its identity; they do not confer empirical validity.
 
+## Compiled mathematical reference
+
+[`docs/EDCM_MATHEMATICS.md`](docs/EDCM_MATHEMATICS.md) is the complete
+human-readable index of the mathematics currently declared or implemented in
+this repository. It records the maintained baseline equations, auxiliary risks,
+agent-facing projections, signed-ternary construction, the implemented v0.3.1
+architecture layer, experiment candidates, identity functions, and explicit
+mathematical absences.
+
+The reference is a synchronized copy, not a separate authority and not a canon
+selection. The owning source modules and frozen data remain implementation
+authority; this file governs their epistemic status. The Interdependent Way
+textbook or website may reproduce a commit-pinned copy but may not silently
+redefine the equations or promote candidates.
+
 ## Experiment rules
 
 Every joint experiment must record:

@@ -34,6 +34,13 @@ NA -> 0: false
 See [`CANON.md`](CANON.md) and
 [`docs/UCNS_EDCM_EXPERIMENT_PROGRAM.md`](docs/UCNS_EDCM_EXPERIMENT_PROGRAM.md).
 
+The complete compiled mathematics currently declared or implemented by EDCM
+is indexed in [`docs/EDCM_MATHEMATICS.md`](docs/EDCM_MATHEMATICS.md). The
+reference separates the frozen baseline candidate, signed-axis construction,
+implemented v0.3.1 architecture layer, joint experiment candidates, controlled
+goal-vector candidate, and unresolved formal boundaries. A textbook or website
+may carry a source-pinned copy but is not the mathematical authority.
+
 ## First joint experiment
 
 The initial fixed corpus pressures four load-bearing distinctions:
