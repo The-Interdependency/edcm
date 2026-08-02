@@ -16,6 +16,9 @@ Circuit Model mathematics. Its scope is exact:
   frozen baseline candidate `edcm-measurement-v1`;
 - `edcm/ucns_objects.py` is the implemented EDCM signed-axis construction
   layer, not formal UCNS geometry;
+- `edcm/edcmucns/` is the implemented v0.3.1 EDCM architecture layer; its
+  historical “design canon” label does not override the current pre-canon
+  status in `CANON.md` or make its local carriers formal UCNS geometry;
 - `edcm/ucns_edcm_experiments*.py` contains noncanonical joint experiment
   candidates;
 - `edcm/goal_vector_experiment.py` contains the controlled goal-vector
@@ -604,11 +607,313 @@ All three share the same ordered transition parent
 identities. The field and transition hashes are deterministic content
 identifiers, not formal UCNS objects or signed authentication.
 
+The exact `ConstraintField` content identity is the first 16 hexadecimal
+characters of SHA-256 over the UTF-8 pipe-joined sequence
+
+$$
+(schema\_id,grain,raised\_field\_count,contact,contact\_magnitude,
+resolution,resolution\_magnitude,witness).
+$$
+
+The field reader retains `previous_field_hash->current_field_hash` and appends
+`#` plus the first 16 hexadecimal characters of SHA-256 over Python `repr` of
+the motion-presence flag and the three exact read tuples. This is a
+runtime-language identity contract, not a portable canonical-JSON signature.
+
 The axis registry also names $C,R,D,I,F,E,O_{scope},O_{confidence},L_{load},
 L_{loss},L_{resistance},N,P,\kappa$ and the six projections. Registration does
 not make an axis canonical.
 
-## 10. Controlled goal-vector candidate
+## 10. Implemented v0.3.1 architecture layer
+
+`edcm/edcmucns/` implements the v0.3.1 identity and composition architecture.
+Its source docstrings preserve the historical label “ratified as architecture
+(frozen design canon).” Under the repository-wide status authority in
+`CANON.md`, that label is scoped to this implemented architecture: it is not a
+joint UCNS–EDCM canon selection, formal UCNS geometry, or empirical
+measurement validation.
+
+The architecture declares the measurement dependency
+
+$$
+M_{EDCM}=\operatorname{readout}
+\left(G_{carrier},\Pi_{provenance},payloads,field\_state,policy\_manifest\right).
+$$
+
+`G_carrier` here is the EDCM-local `Window` construction described below. The
+implementation does not construct or validate the six-field formal UCNS
+object reproduced by the earlier design handoff.
+
+### Manifest and family gauge
+
+The exact v0.3.1 family-to-prime gauge is
+
+$$
+P\mapsto3,\qquad K\mapsto5,\qquad Q\mapsto7,\qquad
+T\mapsto13,\qquad S\mapsto29.
+$$
+
+`PolicyManifest` requires this exact gauge and the residue-rule identity
+`non_origin_residue_v031`. Its canonical JSON contains the gauge and seven
+policy-version fields. The manifest identity is
+
+$$
+h_{manifest}=\operatorname{SHA256}(\operatorname{UTF8}(J_{manifest})).
+$$
+
+The polarity, bone-emission, payload-governance, lens-readout, and
+training-update version strings are architecture identifiers. The contact
+predicate remains explicitly `v031-frontier-unimplemented`; the strings do
+not establish that the named empirical policies are validated.
+
+The ordered readout-bearing witness fields are `family`, `ordinal_m_f`,
+`residue_r_f`, `turn_id`, `speaker_or_source`, `surface_form`, `role`,
+`constraint_governance`, and `payload_attachment`. A witness hash is SHA-256
+over their sorted-key compact JSON object; an ordered bundle hash is SHA-256
+over the compact JSON array of those objects. Decorative witness fields never
+enter either identity. The bundle order is chronological and readout-bearing.
+
+### Non-origin residue and anchors
+
+For one-based ordinal $m\ge1$ and family prime $p\ge2$:
+
+$$
+r(m,p)=1+((m-1)\bmod(p-1)),
+$$
+
+$$
+\theta_{bone}(m,p)=\frac{r(m,p)}{p}
+$$
+
+as an exact fraction of a turn in $[0,1)$. Bone residues therefore cycle
+through $1,\ldots,p-1$ and never land at the origin. An origin anchor has
+
+$$
+\theta=0,\qquad face=0,\qquad lattice\_n=1,
+$$
+
+and carries no family, ordinal, or residue metadata. Bone faces are exactly
+$-1$ or $+1$.
+
+An explicitly caller-constructed cadence fixture uses
+
+$$
+\theta_{cadence}(m,n)=\frac{m\bmod n}{n}.
+$$
+
+Cadence admission from transcript text is not implemented. The source also
+retains an exact `hmmm`: when $m\bmod n=0$, the cadence helper returns the
+datum angle even though non-origin `Anchor` validation rejects that collision.
+
+### Mass, carriers, shares, and field load
+
+For a window $W$ with host anchors $A(W)$, bone anchors $B(W)$, cadence
+anchors $C(W)$, and payloads $P(W)$:
+
+$$
+L_{geo}(W)=|A(W)|,
+\qquad
+L_{op}(W)=|B(W)|.
+$$
+
+The implemented carrier functions are least common multiples over their
+declared scopes, with the empty least common multiple equal to one:
+
+$$
+n_{host}(W)=\operatorname{lcm}\{a.lattice\_n:a\in A(W)\},
+$$
+
+$$
+n_{family}(W)=\operatorname{lcm}\{a.lattice\_n:a\in B(W)\},
+$$
+
+$$
+n_{cadence}(W)=\operatorname{lcm}\{a.lattice\_n:a\in C(W)\},
+$$
+
+$$
+n_{payload}(W)=\operatorname{lcm}\{p.reduced\_carrier:p\in P(W)\}.
+$$
+
+Only $n_{family}$ carries the architecture's active-family factor claim.
+Payload carriers do not automatically enter $n_{host}$.
+
+For family $f$, the operator share is
+
+$$
+share_f(W)=
+\begin{cases}
+\text{absent from the returned map},&L_{op}(W)=0,\\
+\dfrac{|\{a\in B(W):a.family=f\}|}{L_{op}(W)},&L_{op}(W)>0.
+\end{cases}
+$$
+
+Shares after chronological append are derived from summed counts, never by
+averaging the two input share maps.
+
+Field load remains separate from both masses:
+
+$$
+\lambda_{field}(W)=
+\begin{cases}
+NA,&TOK(W)\le0,\\
+\dfrac{raised\_field\_count(W)}{TOK(W)},&TOK(W)>0.
+\end{cases}
+$$
+
+The Python value for this typed absence is `None`, not numeric zero.
+
+### Turn and payload absence
+
+The implemented turn sum type is
+
+$$
+OperatorTurn=Present(Window)\mid AbsentOperatorGeometry(ContentLensEvent).
+$$
+
+A no-bone turn emits `AbsentOperatorGeometry`. Its operator-presence readout
+is `NA`; a present turn emits $(+1,1)$. A no-bone turn is neither the geometric
+unit nor numeric zero and remains available to the content layer.
+
+For payload $p$:
+
+$$
+p.reduced\_carrier=
+\begin{cases}
+1,&p.status=closed,\\
+p.carrier\_n,&p.status=open.
+\end{cases}
+$$
+
+Its content identity is SHA-256 over the exact UTF-8 string
+
+$$
+payload\_id\;|\;carrier\_n\;|\;status\;|\;tension\;|\;content.
+$$
+
+This delimiter-based identity is the implemented contract; it is not silently
+re-described as canonical JSON.
+
+The architecture-only kappa ledger is
+
+$$
+\kappa_{balance}(W)=
+\sum_{p\in P(W):p.status\ne closed}p.tension.
+$$
+
+A nonzero balance emits a `kappa_leak` diagnostic. This placeholder is not the
+maintained baseline circuit recurrence in section 4 and makes no empirical
+stored-tension claim.
+
+### Chronological append and reserved interaction product
+
+For windows sealed under the same manifest, `SeqAppend` is exact tuple
+concatenation of anchors, witnesses, payloads, and field-chain entries, with
+token and raised-field counts added:
+
+$$
+L(A\boxplus B)=L(A)+L(B),
+\qquad
+F(A\boxplus B)=F(A)\mathbin{\|}F(B).
+$$
+
+Appending windows with different manifest hashes raises `EpochBreakError`.
+The reserved interaction product returns a non-window signature with
+
+$$
+L(A\boxtimes B)=L(A)L(B).
+$$
+
+The current implementation does not implement the earlier handoff's payload
+product, XOR face product, mirror construction, or external zero/unit algebra.
+Those equations therefore must not be reconstructed by a publication
+consumer as current EDCM implementation.
+
+### Exact implemented equivalence
+
+The local carrier-equivalence predicate is
+
+$$
+A\equiv_{carrier}B
+\iff
+n_{host}(A)=n_{host}(B)
+\land
+sort\{(\theta_a,face_a):a\in A\}
+=sort\{(\theta_b,face_b):b\in B\}.
+$$
+
+It ignores witnesses, payloads, and manifest identity. It compares sorted
+angle-face pairs rather than chronological anchor order. Chronological
+testimony order remains readout-bearing in the ordered witness-bundle hash.
+The module preserves this split as `hmmm`; a website must not silently replace
+it with a stronger ordered UCNS equivalence claim.
+
+EDCM measurement equivalence first requires carrier equivalence and equal
+manifest hashes. It then applies one closed readout scope:
+
+| Scope | Additional exact comparison |
+|---|---|
+| `operator_scope` | ordered readout-bearing witness-bundle hash |
+| `payload_scope` | sorted `(content_hash, reduced_carrier)` tuples |
+| `cadence_scope` | cadence carrier plus ordered cadence `(lattice_n, ordinal, theta)` tuples |
+| `field_scope` | exact field-chain tuple |
+| `bridge_scope` | no additional identity comparison; validator diagnostics remain observational |
+
+The `bridge_scope` diagnostic vocabulary remains unresolved and growing. No
+runtime scope-registration surface exists; extending the registry requires a
+manifest revision and epoch break.
+
+### Validation, polarity, and epochs
+
+`witness_geometry_consistent` checks origin constraints, nonzero bone phases,
+one-to-one bone/witness pairing, exact gauge and residue agreement, stable NFC
+canonicalization of turn/source ids, and existing payload targets. A mismatch
+emits a Bridge diagnostic rather than an alternate reading.
+
+`gauge_audit` considers bone faces only. No differences passes; a difference
+at every paired face is reported as `gauge_mismatch`; a partial difference or
+different face-sequence length is `measurement_divergence`. This is a
+diagnostic classification, not proof of empirical equivalence.
+
+The window identity used in epoch chains hashes, in order:
+
+- serialized anchor role, family, lattice, ordinal, angle, and face values;
+- the ordered witness-bundle hash;
+- sorted payload content hashes;
+- the exact field-chain tuple; and
+- the manifest hash.
+
+The five components are pipe-joined before SHA-256. Anchor records are
+semicolon-joined; payload content hashes are sorted then comma-joined; field
+chain entries retain their exact order. These identities detect implementation
+drift but do not authenticate a producer.
+
+A manifest rotation seals the old segment and records old manifest, new
+manifest, and optional boundary-window identities before opening the new
+segment. Cross-epoch comparison emits `cross_epoch_lens`; it is not a raw
+delta. Adoption of `non_origin_residue_v031` is itself recorded as an epoch
+break.
+
+### v0.3.1 unresolved boundary
+
+The following remain non-operational `NotImplementedError` surfaces with
+named falsifiers: contact convergence, residual-primality / $DA_{geom}$
+correlation, and cadence admission from transcript text. Corpus parallel-run
+conclusions and operating-state empirical validity also remain frontier.
+
+Additional source-level `hmmm` boundaries remain visible:
+
+- `constraint_governance` is an opaque readout-bearing string;
+- the cadence origin collision described above is unresolved;
+- `bridge_scope` compares manifest/carrier identity while its diagnostic
+  vocabulary is still growing;
+- the kappa ledger reads open-payload tension only;
+- bone emission from raw text is outside this encoder and is identified only
+  by the manifest's upstream emission-policy version; and
+- v0.3.1 carrier equivalence sorts angle-face pairs while witness identity
+  retains chronology.
+
+## 11. Controlled goal-vector candidate
 
 For a declared goal with $d$ components, each available component state is
 `toward` $(+1,1)$ or `away` $(-1,1)$. An unavailable component is `NA`; a turn
@@ -673,7 +978,7 @@ The sealed v0.1.0 fixture produced:
 This is controlled candidate-measured evidence: eight supported findings, zero
 falsified findings, and no canon selection.
 
-## 11. Initial joint experiment candidate
+## 12. Initial joint experiment candidate
 
 The historical v0.1 experiment also retains a transparent, noncanonical
 sequence candidate. For each turn $i$, phrase-hit signals
@@ -887,7 +1192,7 @@ versioned in `edcm/ucns_edcm_experiments_v2.py` through
 `edcm/ucns_edcm_experiments_v4.py` and `experiments/results/`. None replaces
 the maintained baseline equations or selects joint canon.
 
-## 12. Exact UCNS observation boundary
+## 13. Exact UCNS observation boundary
 
 The current profile supplies exact ordered word-gonol observations with one
 unit of support per speaker turn. It retains exact Unicode source values,
@@ -905,7 +1210,7 @@ Those quantities are `NA`, not zero. A UCNS observation digest establishes
 deterministic content identity under its schema; it is not signed producer
 authentication and transfers no theorem or proof status into EDCM.
 
-## 13. Identity and reproducibility mathematics
+## 14. Identity and reproducibility mathematics
 
 EDCM evidence records use canonical JSON bytes
 
@@ -925,7 +1230,15 @@ $d(x)$ and then attached to the report. The immutable evidence file also has a
 SHA-256 over its exact serialized bytes. These identities detect drift; they
 do not prove truth, authorship, or empirical validity.
 
-## 14. What is not yet mathematics
+For `edcm.shared-stack-result/1.2.0`, `epoch_identity` is $d(x)$ over the
+METAPAT canon/provenance digests, UCNS profile identity/scope/source/options,
+EDCM manifest hash, and selected semantic-authority, UCNS-profile, and
+measurement implementations. `result_identity` is $d(x)$ over that epoch
+identity plus source evidence, the complete UCNS profile observation, EDCM
+readouts, factorization evidence, and status evidence. Geometry absence remains
+a typed compartment and does not become a fabricated geometry identity.
+
+## 15. What is not yet mathematics
 
 The following are deliberately not filled with convenient equations:
 

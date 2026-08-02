@@ -37,9 +37,9 @@ See [`CANON.md`](CANON.md) and
 The complete compiled mathematics currently declared or implemented by EDCM
 is indexed in [`docs/EDCM_MATHEMATICS.md`](docs/EDCM_MATHEMATICS.md). The
 reference separates the frozen baseline candidate, signed-axis construction,
-joint experiment candidates, controlled goal-vector candidate, and unresolved
-formal boundaries. A textbook or website may carry a source-pinned copy but is
-not the mathematical authority.
+implemented v0.3.1 architecture layer, joint experiment candidates, controlled
+goal-vector candidate, and unresolved formal boundaries. A textbook or website
+may carry a source-pinned copy but is not the mathematical authority.
 
 ## First joint experiment
 
