@@ -501,6 +501,63 @@ export default defineMsdmdCollection({
       "id": "edcm_falsifiability_bridge"
     },
     {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a goal component has not received an explicit fixture claim",
+        "since": "2026-08-02",
+        "then": "its state is serialized as NA with no sign or magnitude and scalar projections retain a separate NA count"
+      },
+      "file": "edcm/goal_vector_experiment.py",
+      "id": "edcm_goal_vector_na_not_zero"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "the controlled candidate emits a contradiction ledger and goal-motion variance",
+        "since": "2026-08-02",
+        "then": "formal geometry, formal completion, empirical validity, METAPAT attachment, proof transfer, and canon selection remain absent or false"
+      },
+      "file": "edcm/goal_vector_experiment.py",
+      "id": "edcm_goal_vector_no_status_transfer"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "the fixed resolved and active-contradiction cases contain the same source occurrences in different orders",
+        "since": "2026-08-02",
+        "then": "occurrence multiset identity agrees while ordered identity, exact UCNS observation identity, terminal contradiction state, and candidate trajectory remain independently visible"
+      },
+      "file": "edcm/goal_vector_experiment.py",
+      "id": "edcm_goal_vector_same_occurrences_preserve_order"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_canonical_bytes, _digest, _fraction_record, _variance, _state_snapshot, _verify_requested_ucns_source_root, _observe_case, _evaluate_findings",
+        "module_kind": "experiment",
+        "module_name": "goal_vector_experiment",
+        "network_boundary": "none; exact UCNS producer must already be installed",
+        "owner": "Erin Spencer",
+        "public_surface": "GoalDimension, DeclaredGoal, GoalClaim, SourceOccurrence, GoalVectorCase, GoalVectorExperimentReport, build_goal_vector_program, evaluate_case, run_goal_vector_experiment, main",
+        "requires": "edcm_ucns_adapter",
+        "rollback": "remove this module, its test, workflow invocation, design note, and versioned evidence without changing the frozen measurement baseline",
+        "rollout": "explicit controlled candidate experiment; no default activation or canon selection",
+        "since": "2026-08-02",
+        "storage_boundary": "writes only caller-selected report path",
+        "summary": "runs a controlled same-occurrences/different-order contradiction experiment through the exact current UCNS observation profile and an inspectable EDCM goal-state candidate",
+        "tests": "tests/test_goal_vector_experiment.py",
+        "unresolved": "independent semantic annotation, real-dialogue goal authority, formal higher-gonol composition, calibration, holdout replication, and human outcome validation",
+        "user_data_boundary": "fixed synthetic utterances only"
+      },
+      "file": "edcm/goal_vector_experiment.py",
+      "id": "edcm_goal_vector_experiment"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
@@ -1445,6 +1502,58 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_resolved_and_active_contradictions_have_exact_candidate_variances",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_goal_vector_same_occurrences_preserve_order",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_goal_vector_experiment.py",
+      "id": "check_goal_vector_contradiction_and_variance"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_exact_ucns_report_is_deterministic_and_no_canon",
+        "cleanup": "pytest tmp_path",
+        "mutates": "temporary report only",
+        "proves": "edcm_goal_vector_same_occurrences_preserve_order, edcm_goal_vector_na_not_zero, edcm_goal_vector_no_status_transfer",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_goal_vector_experiment.py",
+      "id": "check_goal_vector_exact_ucns_report"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_na_is_typed_and_nonclaims_remain_absent",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_goal_vector_na_not_zero, edcm_goal_vector_no_status_transfer",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_goal_vector_experiment.py",
+      "id": "check_goal_vector_na_boundary"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_same_occurrences_different_order_preserve_distinct_trajectories",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_goal_vector_same_occurrences_preserve_order",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_goal_vector_experiment.py",
+      "id": "check_goal_vector_same_occurrences_order"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_archive_mutation_fails_before_dialogue_observation",
         "cleanup": "tempdir_teardown",
         "mutates": "filesystem",
@@ -2023,6 +2132,111 @@ export default defineMsdmdCollection({
       "to": "edcm_ucns_no_geometry_or_proof_transfer"
     },
     {
+      "from": "check_goal_vector_contradiction_and_variance",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_contradiction_and_variance",
+      "to": "self::test_resolved_and_active_contradictions_have_exact_candidate_variances"
+    },
+    {
+      "from": "check_goal_vector_contradiction_and_variance",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_contradiction_and_variance",
+      "to": "edcm_goal_vector_same_occurrences_preserve_order"
+    },
+    {
+      "from": "check_goal_vector_contradiction_and_variance",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_contradiction_and_variance",
+      "to": "python3"
+    },
+    {
+      "from": "check_goal_vector_exact_ucns_report",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_exact_ucns_report",
+      "to": "self::test_exact_ucns_report_is_deterministic_and_no_canon"
+    },
+    {
+      "from": "check_goal_vector_exact_ucns_report",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_exact_ucns_report",
+      "to": "edcm_goal_vector_na_not_zero"
+    },
+    {
+      "from": "check_goal_vector_exact_ucns_report",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_exact_ucns_report",
+      "to": "edcm_goal_vector_no_status_transfer"
+    },
+    {
+      "from": "check_goal_vector_exact_ucns_report",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_exact_ucns_report",
+      "to": "edcm_goal_vector_same_occurrences_preserve_order"
+    },
+    {
+      "from": "check_goal_vector_exact_ucns_report",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_exact_ucns_report",
+      "to": "python3"
+    },
+    {
+      "from": "check_goal_vector_na_boundary",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_na_boundary",
+      "to": "self::test_na_is_typed_and_nonclaims_remain_absent"
+    },
+    {
+      "from": "check_goal_vector_na_boundary",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_na_boundary",
+      "to": "edcm_goal_vector_na_not_zero"
+    },
+    {
+      "from": "check_goal_vector_na_boundary",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_na_boundary",
+      "to": "edcm_goal_vector_no_status_transfer"
+    },
+    {
+      "from": "check_goal_vector_na_boundary",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_na_boundary",
+      "to": "python3"
+    },
+    {
+      "from": "check_goal_vector_same_occurrences_order",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_same_occurrences_order",
+      "to": "self::test_same_occurrences_different_order_preserve_distinct_trajectories"
+    },
+    {
+      "from": "check_goal_vector_same_occurrences_order",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_same_occurrences_order",
+      "to": "edcm_goal_vector_same_occurrences_preserve_order"
+    },
+    {
+      "from": "check_goal_vector_same_occurrences_order",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_same_occurrences_order",
+      "to": "python3"
+    },
+    {
       "from": "check_joint_runner_preserves_no_canon",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -2469,6 +2683,20 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_falsifiability_bridge",
       "to": "edcm_energy_claims"
+    },
+    {
+      "from": "edcm_goal_vector_experiment",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_goal_vector_experiment",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_goal_vector_experiment",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_goal_vector_experiment",
+      "to": "edcm_ucns_adapter"
     },
     {
       "from": "edcm_integrity",
