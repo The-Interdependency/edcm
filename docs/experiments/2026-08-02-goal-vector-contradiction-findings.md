@@ -1,6 +1,6 @@
 # Goal-vector contradiction findings
 
-Date: 2026-08-02  
+Date: 2026-08-02
 Status: controlled candidate-measured evidence; no canon selection
 
 ## Result

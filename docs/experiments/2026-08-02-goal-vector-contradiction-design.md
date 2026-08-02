@@ -1,6 +1,6 @@
 # Goal-vector contradiction experiment
 
-Date: 2026-08-02  
+Date: 2026-08-02
 Status: controlled candidate-measurement design; no canon selection
 
 ## Question
