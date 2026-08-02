@@ -50,8 +50,17 @@ from __future__ import annotations
 #   timeout: 30
 #   mutates: none
 #   cleanup: none
+#
+# id: check_multiwoz_booking_outcome_sealed_evidence
+#   proves: multiwoz_booking_outcome_calibration_precedes_test, multiwoz_booking_outcome_report_is_aggregate_only, multiwoz_booking_outcome_hypothesis_failure_is_evidence, multiwoz_booking_outcome_status_does_not_transfer
+#   call: self::test_sealed_holdout_evidence_matches_exact_producer_and_receipt
+#   requires: python3
+#   timeout: 30
+#   mutates: none
+#   cleanup: none
 # === END CHECKS ===
 
+from hashlib import sha256
 import json
 from pathlib import Path
 from typing import Any
@@ -318,3 +327,43 @@ def test_represented_evidence_seal_is_pinned_to_merged_ucns_v019() -> None:
     seal = _verify_represented_evidence_seal(Path.cwd())
     assert seal["ucns_commit"] == "a98c9e6c69804a8a08d0786b1d8b450bb2c49a97"
     assert seal["source_turns"] == 143048
+
+
+def test_sealed_holdout_evidence_matches_exact_producer_and_receipt() -> None:
+    report_path = Path(
+        "experiments/corpora/results/2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0.json"
+    )
+    receipt_path = Path(
+        "experiments/corpora/receipts/2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0-complete.json"
+    )
+    report_bytes = report_path.read_bytes()
+    receipt_bytes = receipt_path.read_bytes()
+    report = json.loads(report_bytes)
+    receipt = json.loads(receipt_bytes)
+    assert sha256(report_bytes).hexdigest() == (
+        "4c7254cc2a2244eaf0e30e182153f803c9e2706774e9a743f7c22899bdcd64a3"
+    )
+    assert sha256(receipt_bytes).hexdigest() == (
+        "ea2db8bf06785b54ab67dfa01a236bbec2e1d8ec79a5f9808c949363cff4ffe5"
+    )
+    assert _digest(report) == receipt["report_digest"]
+    assert receipt["report_file_sha256"] == sha256(report_bytes).hexdigest()
+    assert receipt["receipt_digest"] == _digest(
+        {key: value for key, value in receipt.items() if key != "receipt_digest"}
+    )
+    assert receipt["status"] == "complete"
+    assert report["identities"]["edcm_commit"] == (
+        "c292430771b4dc76734522b580caa2be18ca04f9"
+    )
+    assert report["identities"]["edcm_tree"] == (
+        "04beb8d9c6f01f2ec00bb06e55f77bea21e9b14a"
+    )
+    assert report["test_evaluation"]["confusion_counts"] == {
+        "false_negative": 281,
+        "false_positive": 56,
+        "true_negative": 75,
+        "true_positive": 249,
+    }
+    findings = {item["finding_id"]: item["status"] for item in report["findings"]}
+    assert findings["test-sensitivity-at-least-half"] == "falsified"
+    assert report["canon_selection"] is None

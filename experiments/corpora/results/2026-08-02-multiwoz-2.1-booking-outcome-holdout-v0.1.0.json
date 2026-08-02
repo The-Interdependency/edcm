@@ -1,0 +1,445 @@
+{
+  "admission": {
+    "admission_digest": "dfe7b65a9f4af739a4d149e65e60674333e87f56ff9db3cd07c144b9cab85fc2",
+    "archive": {
+      "bytes": 13794372,
+      "filename": "MULTIWOZ2.1.zip",
+      "logical_members": [
+        {
+          "bytes": 2612,
+          "path": "MULTIWOZ2.1/README.json",
+          "sha256": "51ac55884008bdafa659359edafc2fc7f392e4d287732147e16ed3bbc1909534"
+        },
+        {
+          "bytes": 35731,
+          "path": "MULTIWOZ2.1/attraction_db.json",
+          "sha256": "2aacc620af4025f1eada5ec83057a866f8e8b72b529f71d2f8bf93bcdd8f8751"
+        },
+        {
+          "bytes": 276553203,
+          "path": "MULTIWOZ2.1/data.json",
+          "sha256": "cb88bd0070bf11b04974cee54c84ad16cfee723c86b096bea04d2cebad098d58"
+        },
+        {
+          "bytes": 24349109,
+          "path": "MULTIWOZ2.1/dialogue_acts.json",
+          "sha256": "54d02ef40aed0e00e5aa84b62ccf7f23df901d07f54c2376d5e8130909c2546f"
+        },
+        {
+          "bytes": 7291,
+          "path": "MULTIWOZ2.1/hospital_db.json",
+          "sha256": "51282ab30346d4e826fbdf6a668d346f4b1e72425190d62048a7c471ffba5020"
+        },
+        {
+          "bytes": 18229,
+          "path": "MULTIWOZ2.1/hotel_db.json",
+          "sha256": "972bbd65beada7c64f0b87322c694fd9173b46cf8e61ca3bbe951717ac1d1662"
+        },
+        {
+          "bytes": 44532,
+          "path": "MULTIWOZ2.1/ontology.json",
+          "sha256": "2281d078084004a8c1e888e96cb1cb069f53f10d4680911090da4462907395ca"
+        },
+        {
+          "bytes": 149,
+          "path": "MULTIWOZ2.1/police_db.json",
+          "sha256": "d9c2b200fa2dd61b04ce2fe520b0b79dfa68d8b895806cfec6e8a8d3cffa9193"
+        },
+        {
+          "bytes": 56391,
+          "path": "MULTIWOZ2.1/restaurant_db.json",
+          "sha256": "7864b4e36027af0907d6afe9ed962fecd6c6966cd626b8ae9341708a04ea201a"
+        },
+        {
+          "bytes": 203,
+          "path": "MULTIWOZ2.1/taxi_db.json",
+          "sha256": "8717d723f267e50e112a800d863ef0e3aa38a7c3a7af1756138b0da47112f5fa"
+        },
+        {
+          "bytes": 13497,
+          "path": "MULTIWOZ2.1/testListFile.json",
+          "sha256": "56fff5bf8c7b0a64fba8672241a7bdd947c3a58986bf06f46d37f33288f73ce0"
+        },
+        {
+          "bytes": 748675,
+          "path": "MULTIWOZ2.1/train_db.json",
+          "sha256": "4818e735bae20690f6d0d06bb2ae8eec1981c0b680258a970dc01c9073f3fec9"
+        },
+        {
+          "bytes": 13507,
+          "path": "MULTIWOZ2.1/valListFile.json",
+          "sha256": "8e19240b90576c3ed83a0d44ef5e7ca8916e47356662ed4621e6b39d8c327d80"
+        }
+      ],
+      "sha256": "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e"
+    },
+    "corpus_id": "multiwoz-2.1"
+  },
+  "calibration": {
+    "calibration_digest": "881cf6f629384958e1bae593cbc5323e5c34d437f7d9c787cc489fd99ab59d72",
+    "development_fit": {
+      "converged": true,
+      "intercept": 1.37779426310035,
+      "iterations": 4,
+      "ridge": 1e-06,
+      "score_mean": 0.4070603393895371,
+      "score_population_stddev": 0.10207709388134982,
+      "slope": 0.019040813646053385
+    },
+    "fit_partition": "development",
+    "operating_threshold": 0.799077245397563,
+    "selection_objective": "maximum-balanced-accuracy",
+    "selection_partition": "validation",
+    "threshold_candidate_count": 415,
+    "tie_break": [
+      "closest-to-0.5",
+      "lowest-threshold"
+    ],
+    "validation_confusion_counts": {
+      "false_negative": 285,
+      "false_positive": 49,
+      "true_negative": 64,
+      "true_positive": 258
+    }
+  },
+  "candidate": {
+    "candidate_id": "edcm.maintained-terminal-progress/0.1.0",
+    "candidate_measurement_status": "candidate-measured-evidence",
+    "input": "preceding-turns-only",
+    "metric": "terminal-P-progress-proxy",
+    "presentation_transform": "speaker-prefix; each CR and LF mapped to SPACE for maintained parser only",
+    "source_label_is_predictor_input": false,
+    "source_response_is_predictor_input": false
+  },
+  "canon_selection": null,
+  "findings": [
+    {
+      "expected": ">= 0.50",
+      "finding_id": "test-sensitivity-at-least-half",
+      "observed": 0.469811320754717,
+      "status": "falsified"
+    },
+    {
+      "expected": ">= 0.50",
+      "finding_id": "test-specificity-at-least-half",
+      "observed": 0.5725190839694656,
+      "status": "supported"
+    },
+    {
+      "expected": "> 0.50",
+      "finding_id": "test-balanced-accuracy-above-chance",
+      "observed": 0.5211652023620913,
+      "status": "supported"
+    },
+    {
+      "expected": "<= 0.10",
+      "finding_id": "test-ece-at-most-one-tenth",
+      "observed": 0.0046650871167368095,
+      "status": "supported"
+    },
+    {
+      "expected": "all frozen partition, class, exclusion, and input-boundary checks true",
+      "finding_id": "source-and-leakage-boundary-reconciled",
+      "observed": {
+        "development": {
+          "excluded_ambiguous": true,
+          "negative": true,
+          "positive": true
+        },
+        "test": {
+          "excluded_ambiguous": true,
+          "negative": true,
+          "positive": true
+        },
+        "validation": {
+          "excluded_ambiguous": true,
+          "negative": true,
+          "positive": true
+        }
+      },
+      "status": "supported"
+    },
+    {
+      "expected": "byte-identical aggregate serialization",
+      "finding_id": "byte-identical-render-repeat",
+      "observed": "two canonical render operations are byte-identical; full command repeat is a release gate",
+      "status": "supported"
+    }
+  ],
+  "hmmm": [
+    "The public test partition is identity-sealed but not hidden by an external custodian.",
+    "Dialogue acts are externally authored source labels, not independent human adjudications of universal task success.",
+    "The maintained progress proxy is lexical/statistical and may not discriminate booking outcomes.",
+    "Formal higher-gonol composition, signed producer authentication, independent replication, and joint canon authority remain unresolved."
+  ],
+  "identities": {
+    "edcm_commit": "c292430771b4dc76734522b580caa2be18ca04f9",
+    "edcm_tree": "04beb8d9c6f01f2ec00bb06e55f77bea21e9b14a",
+    "represented_evidence_seal": {
+      "profile_id": "ucns.profile.edcm-word-gonol",
+      "profile_version": "0.2.0",
+      "receipt_file_sha256": "8d20f99f3f788e09e9edad40f7d28a2b97de9d634868652bd058e50d504fe9c9",
+      "report_digest": "ddc0996126bd4903ca3ec08b043f2b949bcc3bed9077f01d7a609e3e54e3b03d",
+      "report_file_sha256": "e228b9cb74c60ec4d6efb66f1d86c38069f613a875fa4c91f2973b46d20436f6",
+      "source_turns": 143048,
+      "ucns_commit": "a98c9e6c69804a8a08d0786b1d8b450bb2c49a97",
+      "ucns_receipt_id": "921ceacad026de1d884eec3e049b090246014706c937c062bd32f40bbff01f0c"
+    },
+    "ucns_commit": "a98c9e6c69804a8a08d0786b1d8b450bb2c49a97"
+  },
+  "information_boundaries": {
+    "candidate_noninputs": [
+      "labelled-system-response",
+      "later-turns",
+      "dialogue-act-payload",
+      "goal",
+      "turn-metadata",
+      "ontology",
+      "domain-databases"
+    ],
+    "raw_corpus_in_git": false,
+    "written_event_locators": false,
+    "written_per_event_labels": false,
+    "written_per_event_scores": false,
+    "written_source_text": false
+  },
+  "partitions": {
+    "development": {
+      "candidate_input_digest_chain": "9174a57b63976a61be3f681cd655d22ff3dfc87ad0b388a7d8b61b14d354aee1",
+      "context_turns": 47398,
+      "dialogues": 8438,
+      "dialogues_with_events": 3700,
+      "excluded_ambiguous": 19,
+      "negative": 1050,
+      "positive": 4164,
+      "score_summary_by_source_class": {
+        "negative": {
+          "count": 1050,
+          "maximum": 0.7426993262124217,
+          "mean": 0.4055039239553487,
+          "minimum": 0.0,
+          "population_stddev": 0.09721891102808258
+        },
+        "positive": {
+          "count": 4164,
+          "maximum": 0.8515824929174289,
+          "mean": 0.40745280725838867,
+          "minimum": 0.0,
+          "population_stddev": 0.10326236011464078
+        }
+      },
+      "source_event_digest_chain": "93782f8d345d201dea97e7584d5079c752b67a564c8913184f20678bc464f53f"
+    },
+    "test": {
+      "candidate_input_digest_chain": "1fa24f651fd2fb70626f0e3d6a14a46c87c1c2f38aef5bab9f6c984309952542",
+      "context_turns": 6045,
+      "dialogues": 1000,
+      "dialogues_with_events": 483,
+      "excluded_ambiguous": 0,
+      "negative": 131,
+      "positive": 530,
+      "score_summary_by_source_class": {
+        "negative": {
+          "count": 131,
+          "maximum": 0.6,
+          "mean": 0.39227463787814804,
+          "minimum": 0.09999999999999999,
+          "population_stddev": 0.10825574922311405
+        },
+        "positive": {
+          "count": 530,
+          "maximum": 0.6807724146767297,
+          "mean": 0.4038963059972057,
+          "minimum": 0.0857142857142857,
+          "population_stddev": 0.0989598729928893
+        }
+      },
+      "source_event_digest_chain": "a1df80f41bb17eba23d51d48872f5253ba9eab12a0a67cb636ad7eb2a63841a9"
+    },
+    "validation": {
+      "candidate_input_digest_chain": "afc2f27db7149f185823314f4f3869ec4298bc9563e40b0b3be8f9196715c2be",
+      "context_turns": 5992,
+      "dialogues": 1000,
+      "dialogues_with_events": 495,
+      "excluded_ambiguous": 0,
+      "negative": 113,
+      "positive": 543,
+      "score_summary_by_source_class": {
+        "negative": {
+          "count": 113,
+          "maximum": 0.6021014242108306,
+          "mean": 0.4033641732828638,
+          "minimum": 0.09230769230769231,
+          "population_stddev": 0.10555508281347245
+        },
+        "positive": {
+          "count": 543,
+          "maximum": 0.7212940177411475,
+          "mean": 0.40741532495214494,
+          "minimum": 0.049999999999999996,
+          "population_stddev": 0.101986718803556
+        }
+      },
+      "source_event_digest_chain": "11790941a50343c70dcb0ad2a728a5c48ed0ecff6ee4c1cc45182de8e5c23b8a"
+    }
+  },
+  "reconciliation": {
+    "checks": {
+      "development": {
+        "excluded_ambiguous": true,
+        "negative": true,
+        "positive": true
+      },
+      "test": {
+        "excluded_ambiguous": true,
+        "negative": true,
+        "positive": true
+      },
+      "validation": {
+        "excluded_ambiguous": true,
+        "negative": true,
+        "positive": true
+      }
+    },
+    "complete": true,
+    "freeze_order": [
+      "development-fit",
+      "validation-threshold",
+      "calibration-digest",
+      "test-evaluation"
+    ]
+  },
+  "schema_id": "edcm.multiwoz21-booking-outcome-holdout",
+  "schema_version": "0.1.0",
+  "source_label_policy": {
+    "ambiguous_both_labels": "exclude-and-count",
+    "negative": "Booking-NoBook",
+    "positive": "Booking-Book",
+    "response_log_index": "2 * source_dialogue_act_turn_id - 1",
+    "scope": "source-native-booking-action-outcome-not-universal-task-success"
+  },
+  "status_boundaries": {
+    "certification_status_transfer": false,
+    "edcm_production_activation": "inactive",
+    "empirical_status_transfer": false,
+    "formal_higher_gonol_composition": "NA",
+    "formal_ucns_geometry": "NA",
+    "measurement_status_transfer": false,
+    "measurement_validity_claim": false,
+    "metapat_production_activation": "inactive",
+    "proof_status_transfer": false,
+    "semantic_authority_transfer": false,
+    "theorem_status_transfer": false
+  },
+  "test_evaluation": {
+    "balanced_accuracy": {
+      "estimate": 0.5211652023620913,
+      "interval": {
+        "cluster_count": 483,
+        "confidence": 0.95,
+        "high": 0.5739376739379676,
+        "low": 0.4656057510819316,
+        "method": "dialogue-cluster-percentile-bootstrap",
+        "replicates_requested": 2000,
+        "replicates_valid": 2000,
+        "seed": 20260802
+      }
+    },
+    "brier_score": {
+      "estimate": 0.15881603686336873,
+      "interval": {
+        "cluster_count": 483,
+        "confidence": 0.95,
+        "high": 0.18140869471310486,
+        "low": 0.1366648288909829,
+        "method": "dialogue-cluster-percentile-bootstrap",
+        "replicates_requested": 2000,
+        "replicates_valid": 2000,
+        "seed": 20260802
+      }
+    },
+    "calibration_error": {
+      "bins": 10,
+      "estimate": 0.0046650871167368095,
+      "interval": {
+        "cluster_count": 483,
+        "confidence": 0.95,
+        "high": 0.04802398724644034,
+        "low": 0.0034261762054707107,
+        "method": "dialogue-cluster-percentile-bootstrap",
+        "replicates_requested": 2000,
+        "replicates_valid": 2000,
+        "seed": 20260802
+      },
+      "metric": "expected-calibration-error"
+    },
+    "confusion_counts": {
+      "false_negative": 281,
+      "false_positive": 56,
+      "true_negative": 75,
+      "true_positive": 249
+    },
+    "sensitivity": {
+      "estimate": 0.469811320754717,
+      "interval": {
+        "confidence": 0.95,
+        "high": 0.51236599762268,
+        "low": 0.42769111208421506,
+        "method": "wilson-score",
+        "support": 530
+      }
+    },
+    "specificity": {
+      "estimate": 0.5725190839694656,
+      "interval": {
+        "confidence": 0.95,
+        "high": 0.6539792870147065,
+        "low": 0.486926931044424,
+        "method": "wilson-score",
+        "support": 131
+      }
+    }
+  },
+  "work_graph": {
+    "boundaries": {
+      "agent_scope": "edcm-only-booking-outcome-holdout",
+      "authority_transfer": false,
+      "hmmm": [
+        "content digests are not producer signatures",
+        "public test membership is not independently hidden custody"
+      ],
+      "measurement_status_transfer": false,
+      "proof_status_transfer": false,
+      "semantic_mapping": "external-provenance"
+    },
+    "repositories": [
+      {
+        "authority": "candidate measurement implementation and aggregate evidence",
+        "commit": "c292430771b4dc76734522b580caa2be18ca04f9",
+        "relation": "producer edcm-tree=04beb8d9c6f01f2ec00bb06e55f77bea21e9b14a",
+        "repository": "The-Interdependency/edcm"
+      },
+      {
+        "authority": "exact word-gonol observation profile and full-corpus receipt",
+        "commit": "a98c9e6c69804a8a08d0786b1d8b450bb2c49a97",
+        "relation": "represented-evidence provenance only; no candidate-score authority",
+        "repository": "The-Interdependency/ucns"
+      },
+      {
+        "authority": "build, metadata, contract, and evidence discipline",
+        "commit": "2b24be24947223b86440f59f1bd9766130f9cc11",
+        "relation": "pinned consumer doctrine",
+        "repository": "The-Interdependency/skill-lib"
+      },
+      {
+        "authority": "source text, outcome labels, and partition membership",
+        "commit": "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e",
+        "relation": "admitted Cambridge MultiWOZ 2.1 archive identity",
+        "repository": "doi:10.17863/CAM.41572"
+      }
+    ],
+    "schema": "the-interdependency.stack-manifest",
+    "version": "1.0.0",
+    "work_graph_sha256": "2253031d1c44c61533b0efd5348817171e2ed0ff2311a650ed48f7d8976f53dc"
+  }
+}

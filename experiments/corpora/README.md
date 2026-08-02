@@ -51,10 +51,32 @@ carrier-unassigned occurrences fall from `4,094` to `0`, SPACE boundaries rise
 from `1,779,585` to `1,783,679`, and the source-dialogue and exact-turn digest
 chains remain unchanged.
 
+## Booking-outcome holdout
+
+The 2026-08-02 derived experiment binds the merged UCNS v0.19 full-corpus seal
+and evaluates externally authored `Booking-Book` / `Booking-NoBook` outcome
+events without committing raw source text.
+
+| Events | Status | Report | Receipt |
+|---:|---|---|---|
+| 6,531 | complete; candidate-measured holdout evidence | [`2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0.json`](results/2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0.json) | [`2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0-complete.json`](receipts/2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0-complete.json) |
+
+Development has 5,214 included events, validation 656, and sealed test 661.
+Nineteen development events containing both source labels are excluded and
+counted. Test sensitivity is `0.4698`, specificity `0.5725`, balanced accuracy
+`0.5212`, and ten-bin ECE `0.0047`. The sensitivity hypothesis is falsified.
+A complete repeat produced byte-identical report and receipt files.
+
+This derived measurement does not rewrite the represented-evidence profile
+seal. UCNS supplies exact observation provenance only; formal geometry,
+higher-gonol composition, measurement validity, production activation, and
+canon selection remain absent.
+
 ## hmmm
 
-The SPACE-origin classification is now sealed represented evidence, not an EDCM
-measurement-validity or formal-geometry claim. Only MultiWOZ 2.1 has an admitted
-executable adapter in this tree. The remaining six sources require their own
-license/privacy review, immutable source identity, source-native adapter, and
-full-run reconciliation before admission.
+The SPACE-origin classification is sealed represented evidence, and the
+booking-outcome run is bounded candidate-measured evidence; neither is an EDCM
+measurement-validity or formal-geometry claim. Only MultiWOZ 2.1 has an
+admitted executable adapter in this tree. The remaining six sources require
+their own license/privacy review, immutable source identity, source-native
+adapter, and full-run reconciliation before admission.

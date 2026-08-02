@@ -1210,7 +1210,77 @@ Those quantities are `NA`, not zero. A UCNS observation digest establishes
 deterministic content identity under its schema; it is not signed producer
 authentication and transfers no theorem or proof status into EDCM.
 
-## 14. Identity and reproducibility mathematics
+## 14. Booking-outcome holdout calibration
+
+For each admitted MultiWOZ booking outcome event, the candidate score is the
+maintained terminal progress proxy $s=P_{terminal}\in[0,1]$ over context turns
+strictly preceding the labelled response. Source dialogue-act labels are
+targets only:
+
+$$
+y=\begin{cases}
+1 & \text{for Booking-Book},\\
+0 & \text{for Booking-NoBook}.
+\end{cases}
+$$
+
+On development events only, scores are standardized using population moments
+
+$$
+z=\frac{s-\mu_{dev}}{\sigma_{dev}},
+$$
+
+and the candidate probability is a two-parameter Platt map
+
+$$
+\hat p(y=1\mid s)=\frac{1}{1+\exp[-(a+bz)]}.
+$$
+
+The sealed v0.1.0 fit uses a slope ridge of $10^{-6}$ and deterministic Newton
+updates. Validation chooses one probability threshold $\theta$ by maximum
+balanced accuracy, with ties resolved first by proximity to $0.5$ and then by
+the lower threshold. Development and validation freeze $(\mu_{dev},
+\sigma_{dev},a,b,\theta)$ before test evaluation.
+
+For confusion counts $TP,FP,FN,TN$,
+
+$$
+\operatorname{sensitivity}=\frac{TP}{TP+FN},\qquad
+\operatorname{specificity}=\frac{TN}{TN+FP},
+$$
+
+$$
+\operatorname{balanced\ accuracy}
+=\frac{\operatorname{sensitivity}+\operatorname{specificity}}{2}.
+$$
+
+Probability error is reported as
+
+$$
+\operatorname{Brier}=\frac1n\sum_{i=1}^{n}(\hat p_i-y_i)^2
+$$
+
+and ten-bin expected calibration error
+
+$$
+\operatorname{ECE}_{10}
+=\sum_{j=1}^{10}\frac{|B_j|}{n}
+\left|\operatorname{mean}_{i\in B_j}(\hat p_i)
+-\operatorname{mean}_{i\in B_j}(y_i)\right|.
+$$
+
+Sensitivity and specificity receive 95% Wilson intervals. Balanced accuracy,
+Brier score, and ECE receive deterministic 2,000-replicate percentile
+intervals resampling whole dialogue clusters with seed `20260802`.
+
+The sealed test values are $TP=249$, $FP=56$, $FN=281$, and $TN=75$.
+Sensitivity is $0.4698$, specificity $0.5725$, and balanced accuracy $0.5212$;
+the cluster interval for balanced accuracy is $[0.4656,0.5739]$. The
+sensitivity hypothesis is falsified. These equations and fitted values belong
+only to candidate `edcm.maintained-terminal-progress/0.1.0`; they are not a
+canonical baseline change or production threshold.
+
+## 15. Identity and reproducibility mathematics
 
 EDCM evidence records use canonical JSON bytes
 
@@ -1238,7 +1308,7 @@ identity plus source evidence, the complete UCNS profile observation, EDCM
 readouts, factorization evidence, and status evidence. Geometry absence remains
 a typed compartment and does not become a fabricated geometry identity.
 
-## 15. What is not yet mathematics
+## 16. What is not yet mathematics
 
 The following are deliberately not filled with convenient equations:
 
@@ -1273,6 +1343,17 @@ python -m edcm.goal_vector_experiment \
   --output /tmp/goal-vector.json
 ```
 
+For the externally labelled booking-outcome holdout:
+
+```bash
+python -m edcm.corpora.multiwoz21_booking_holdout \
+  --archive /path/to/MULTIWOZ2.1.zip \
+  --edcm-repository-root /path/to/edcm \
+  --edcm-commit "$(git -C /path/to/edcm rev-parse HEAD)" \
+  --output /tmp/multiwoz-booking-holdout.json \
+  --receipt /tmp/multiwoz-booking-holdout-complete.json
+```
+
 When changing any equation, coefficient, threshold, state domain, tokenizer,
 marker source, round boundary, or projection:
 
@@ -1288,8 +1369,9 @@ from which it was copied and must label itself non-authoritative.
 
 ## hmmm
 
-The maintained baseline now has one complete mathematical reference, but its
-coefficients remain candidate policy and the Layer-1 matrix still duplicates
-runtime equations. Independent semantic annotation, calibrated outcome data,
-formal higher-gonol composition, signed producer records, external holdout
-custody, and the first joint canon decision remain unresolved.
+The maintained baseline now has one complete mathematical reference and one
+bounded externally labelled calibration, but its coefficients remain candidate
+policy and the Layer-1 matrix still duplicates runtime equations. Independent
+human task-success adjudication, formal higher-gonol composition, signed
+producer records, externally hidden holdout custody, and the first joint canon
+decision remain unresolved.

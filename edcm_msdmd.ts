@@ -1709,6 +1709,19 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_sealed_holdout_evidence_matches_exact_producer_and_receipt",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "multiwoz_booking_outcome_calibration_precedes_test, multiwoz_booking_outcome_report_is_aggregate_only, multiwoz_booking_outcome_hypothesis_failure_is_evidence, multiwoz_booking_outcome_status_does_not_transfer",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_booking_holdout.py",
+      "id": "check_multiwoz_booking_outcome_sealed_evidence"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_report_schema_retains_aggregate_boundaries_without_event_locators",
         "cleanup": "none",
         "mutates": "none",
@@ -2702,6 +2715,48 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "CHECKS",
       "source_id": "check_multiwoz_booking_outcome_report_is_aggregate_only",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_sealed_evidence",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_sealed_evidence",
+      "to": "self::test_sealed_holdout_evidence_matches_exact_producer_and_receipt"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_sealed_evidence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_sealed_evidence",
+      "to": "multiwoz_booking_outcome_calibration_precedes_test"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_sealed_evidence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_sealed_evidence",
+      "to": "multiwoz_booking_outcome_hypothesis_failure_is_evidence"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_sealed_evidence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_sealed_evidence",
+      "to": "multiwoz_booking_outcome_report_is_aggregate_only"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_sealed_evidence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_sealed_evidence",
+      "to": "multiwoz_booking_outcome_status_does_not_transfer"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_sealed_evidence",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_sealed_evidence",
       "to": "python3"
     },
     {

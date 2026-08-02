@@ -38,6 +38,14 @@ These states may not be collapsed:
 
 The repository currently permits states 1–3. State 4 does not yet exist for the joint surface.
 
+The 2026-08-02 MultiWOZ 2.1 booking-outcome run is the first bounded
+externally labelled holdout on the current maintained EDCM baseline. It uses
+source-native booking action labels, development-only calibration,
+validation-only threshold selection, and a sealed test evaluation. One frozen
+sensitivity relation was falsified; the balanced-accuracy uncertainty interval
+spans chance. This evidence advances neither the baseline nor the UCNS profile
+to state 4.
+
 ## Experiment generations
 
 The joint program currently retains four immutable evidence generations.
@@ -87,6 +95,12 @@ standing: historical maintained baseline, not joint canon
 ```
 
 Its marker canon, parser, eleven-component round vector, and circuit recurrence remain available for comparison. Existing integrity gates preserve its identity; they do not confer empirical validity.
+
+The booking-outcome holdout adds a versioned calibration and operating
+threshold for one narrowly scoped source action outcome. Those fitted values
+belong to `edcm.maintained-terminal-progress/0.1.0`; they do not alter the
+maintained baseline equations, define a default production threshold, or
+become joint canon.
 
 ## Compiled mathematical reference
 
