@@ -1554,6 +1554,19 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_sealed_goal_vector_evidence_matches_exact_producer",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_goal_vector_same_occurrences_preserve_order, edcm_goal_vector_na_not_zero, edcm_goal_vector_no_status_transfer",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_goal_vector_experiment.py",
+      "id": "check_goal_vector_sealed_evidence"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_archive_mutation_fails_before_dialogue_observation",
         "cleanup": "tempdir_teardown",
         "mutates": "filesystem",
@@ -2234,6 +2247,41 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "CHECKS",
       "source_id": "check_goal_vector_same_occurrences_order",
+      "to": "python3"
+    },
+    {
+      "from": "check_goal_vector_sealed_evidence",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_sealed_evidence",
+      "to": "self::test_sealed_goal_vector_evidence_matches_exact_producer"
+    },
+    {
+      "from": "check_goal_vector_sealed_evidence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_sealed_evidence",
+      "to": "edcm_goal_vector_na_not_zero"
+    },
+    {
+      "from": "check_goal_vector_sealed_evidence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_sealed_evidence",
+      "to": "edcm_goal_vector_no_status_transfer"
+    },
+    {
+      "from": "check_goal_vector_sealed_evidence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_sealed_evidence",
+      "to": "edcm_goal_vector_same_occurrences_preserve_order"
+    },
+    {
+      "from": "check_goal_vector_sealed_evidence",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_goal_vector_sealed_evidence",
       "to": "python3"
     },
     {

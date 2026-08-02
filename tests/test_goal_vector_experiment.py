@@ -30,9 +30,18 @@
 #   timeout: 30
 #   mutates: temporary report only
 #   cleanup: pytest tmp_path
+#
+# id: check_goal_vector_sealed_evidence
+#   proves: edcm_goal_vector_same_occurrences_preserve_order, edcm_goal_vector_na_not_zero, edcm_goal_vector_no_status_transfer
+#   call: self::test_sealed_goal_vector_evidence_matches_exact_producer
+#   requires: python3
+#   timeout: 10
+#   mutates: none
+#   cleanup: none
 # === END CHECKS ===
 
 from fractions import Fraction
+from hashlib import sha256
 import json
 import os
 from pathlib import Path
@@ -41,6 +50,7 @@ import pytest
 
 from edcm.goal_vector_experiment import (
     PROGRAM_SCHEMA,
+    _digest,
     build_goal_vector_program,
     evaluate_case,
     main,
@@ -185,3 +195,36 @@ def test_exact_ucns_report_is_deterministic_and_no_canon(tmp_path: Path) -> None
     payload = json.loads(first_path.read_text(encoding="utf-8"))
     assert payload["report_digest"]
     assert payload["canon_selection"] is None
+
+
+def test_sealed_goal_vector_evidence_matches_exact_producer() -> None:
+    path = Path("experiments/results/2026-08-02-goal-vector-contradiction-v0.1.0.json")
+    raw = path.read_bytes()
+    assert sha256(raw).hexdigest() == (
+        "03b35230c22724b908d3d8733376da035b9b748ef54513dab1e8f2466a3519ee"
+    )
+    payload = json.loads(raw)
+    report_digest = payload.pop("report_digest")
+    assert report_digest == (
+        "8a1e3d4548b6b6ee4b3df4f55769b8707a42264450223cdcc88e64f9119c0e30"
+    )
+    assert _digest(payload) == report_digest
+    assert payload["edcm_commit"] == (
+        "14c87440eedd213c1533b0cf9633c0286f09cb09"
+    )
+    assert payload["ucns_commit"] == (
+        "a98c9e6c69804a8a08d0786b1d8b450bb2c49a97"
+    )
+    assert payload["canon_selection"] is None
+    assert payload["ucns_geometry_identity"]["state"] == "NA"
+    assert payload["metapat_semantic_constraints"]["state"] == "NA"
+    assert payload["formal_completion"]["state"] == "NA"
+    assert {item["status"] for item in payload["findings"]} == {"supported"}
+
+    cases = {item["case_id"]: item for item in payload["case_results"]}
+    assert cases["contradiction-resolved"]["terminal_goal_projection"]["exact"] == "1/1"
+    assert cases["contradiction-resolved"]["goal_motion_variance"]["exact"] == "1/8"
+    assert cases["contradiction-resolved"]["terminal_active_contradictions"] == []
+    assert cases["contradiction-active"]["terminal_goal_projection"]["exact"] == "1/2"
+    assert cases["contradiction-active"]["goal_motion_variance"]["exact"] == "9/64"
+    assert len(cases["contradiction-active"]["terminal_active_contradictions"]) == 1

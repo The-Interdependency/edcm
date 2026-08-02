@@ -88,6 +88,34 @@ The repository currently supports the first three. The experiment report always 
 canon_selection = null
 ```
 
+## First controlled goal-vector measurement
+
+The current exact UCNS observation profile now feeds one bounded EDCM
+candidate-measurement experiment. Two dialogues contain the same four exact
+utterance occurrences in different orders: one resolves an availability
+contradiction and one leaves it active. Every source word, turn, declared
+fixture relation, component state, contradiction, and scalar information-loss
+record remains inspectable.
+
+The sealed 2026-08-02 [report](experiments/results/2026-08-02-goal-vector-contradiction-v0.1.0.json)
+supports all eight declared findings. The resolved order ends at candidate
+projection `1/1`, motion variance `1/8`, and zero active contradictions; the
+reordered case ends at projection `1/2`, motion variance `9/64`, and one active
+contradiction. The cases share one occurrence-multiset identity but have
+different ordered and UCNS-observation identities.
+
+```bash
+python -m edcm.goal_vector_experiment \
+  --ucns-source-root /path/to/ucns-at-a98c9e6c69804a8a08d0786b1d8b450bb2c49a97 \
+  --output /tmp/goal-vector.json
+```
+
+This is controlled candidate-measured evidence, not empirical validation.
+METAPAT constraints, formal UCNS geometry, formal completion, higher-gonol
+composition, proof transfer, and canon selection remain absent. The existing
+MultiWOZ seals remain represented evidence with candidate measurement
+`not-run`; this synthetic run does not retroactively change them.
+
 ## Frozen maintained baseline
 
 `edcm/measurement/` consolidates the reviewed structural-measurement lineage from:
