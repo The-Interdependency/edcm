@@ -97,6 +97,38 @@ Design and interpretation:
 - [`../docs/experiments/2026-07-21-ucns-edcm-v0.4-design.md`](../docs/experiments/2026-07-21-ucns-edcm-v0.4-design.md)
 - [`../docs/experiments/2026-07-21-ucns-edcm-v0.4-findings.md`](../docs/experiments/2026-07-21-ucns-edcm-v0.4-findings.md)
 
-The reports record verified UCNS Git and package-byte identities, all candidate readouts, every structural signature, supported/falsified/errored relations, and `canon_selection = null`.
+## Controlled goal-vector contradiction v0.1.0
+
+```text
+program:       edcm.goal-vector-contradiction-experiment/0.1.0
+EDCM producer: 14c87440eedd213c1533b0cf9633c0286f09cb09
+UCNS producer: a98c9e6c69804a8a08d0786b1d8b450bb2c49a97
+report digest: 8a1e3d4548b6b6ee4b3df4f55769b8707a42264450223cdcc88e64f9119c0e30
+file sha256:   03b35230c22724b908d3d8733376da035b9b748ef54513dab1e8f2466a3519ee
+supported:     8
+falsified:     0
+canon:         not selected
+```
+
+Evidence file:
+
+- [`results/2026-08-02-goal-vector-contradiction-v0.1.0.json`](results/2026-08-02-goal-vector-contradiction-v0.1.0.json)
+
+Design and interpretation:
+
+- [`../docs/experiments/2026-08-02-goal-vector-contradiction-design.md`](../docs/experiments/2026-08-02-goal-vector-contradiction-design.md)
+- [`../docs/experiments/2026-08-02-goal-vector-contradiction-findings.md`](../docs/experiments/2026-08-02-goal-vector-contradiction-findings.md)
+
+The controlled cases contain the same exact occurrence multiset in different
+orders. The resolved order ends with candidate goal projection `1/1`, motion
+variance `1/8`, and no active contradiction. The reordered case ends at
+projection `1/2`, motion variance `9/64`, and one active contradiction. Full
+component states and exact UCNS word/turn observations remain attached.
+
+The reports record verified UCNS Git and package-byte identities, candidate
+readouts, source evidence, and `canon_selection = null`. The historical
+v0.1–v0.4 reports use their recorded UCNS experiment epoch; the controlled
+goal-vector report uses the current exact word-gonol profile and does not
+rewrite those earlier results.
 
 Do not edit a result file in place. A changed corpus, candidate, policy, expected relation, comparison rule, or report schema requires a new versioned result.

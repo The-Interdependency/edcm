@@ -125,6 +125,7 @@ jobs:
           python -m pip install -e ".[dev,full-stack]"
       - run: |
           python -m pytest -q \
+            tests/test_goal_vector_experiment.py \
             tests/test_metapat_adapter.py \
             tests/test_ucns_adapter.py \
             tests/test_multiwoz21_corpus.py \
@@ -177,6 +178,15 @@ jobs:
           assert contract["status_evidence"]["ucns_theorem_status_attached"] is False
           assert contract["status_evidence"]["proof_status_transfers_to_measurement_validity"] is False
           PY
+      - name: Run the controlled goal-vector contradiction experiment twice
+        run: |
+          python -m edcm.goal_vector_experiment \
+            --edcm-commit "${GITHUB_SHA}" \
+            --output /tmp/goal-vector.json
+          python -m edcm.goal_vector_experiment \
+            --edcm-commit "${GITHUB_SHA}" \
+            --output /tmp/goal-vector-repeat.json
+          diff -u /tmp/goal-vector.json /tmp/goal-vector-repeat.json
 
   build-and-wheel-smoke:
     name: Build, metadata, and clean-wheel smoke
