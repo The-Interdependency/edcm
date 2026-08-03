@@ -87,6 +87,14 @@ receipt file SHA-256   ea2db8bf06785b54ab67dfa01a236bbec2e1d8ec79a5f9808c949363c
 A second complete command run produced byte-identical report and receipt
 files.
 
+Post-review integrity note (2026-08-03): the immutable producer report records
+that repeat relation as supported, but the producer serialized the status
+before the external release-gate comparison. The repaired runner therefore
+leaves this finding `not-evaluated` in every single-run report. A repeat claim
+requires separately generated complete output; the historical report and
+receipt bytes remain unchanged. Repaired future output uses report and receipt
+schema version `0.1.1`; it does not replace the sealed `0.1.0` evidence.
+
 ## Interpretation boundary
 
 This is the first EDCM-only holdout here with source outcome labels not

@@ -58,23 +58,54 @@ from __future__ import annotations
 #   timeout: 30
 #   mutates: none
 #   cleanup: none
+#
+# id: check_multiwoz_booking_outcome_runtime_matches_recorded_checkout
+#   proves: multiwoz_booking_outcome_runtime_matches_recorded_checkout
+#   call: self::test_runtime_binding_rejects_a_mixed_measurement_import
+#   requires: python3
+#   timeout: 30
+#   mutates: none
+#   cleanup: none
+#
+# id: check_multiwoz_booking_outcome_repeat_requires_complete_execution
+#   proves: multiwoz_booking_outcome_repeat_requires_complete_execution
+#   call: self::test_single_run_leaves_complete_repeat_not_evaluated
+#   requires: python3
+#   timeout: 30
+#   mutates: none
+#   cleanup: none
+#
+# id: check_multiwoz_booking_outcome_destinations_do_not_collide
+#   proves: multiwoz_booking_outcome_destinations_do_not_collide
+#   call: self::test_output_destinations_reject_aliases_before_any_write
+#   requires: python3
+#   timeout: 30
+#   mutates: none
+#   cleanup: none
 # === END CHECKS ===
 
 from hashlib import sha256
 import json
 from pathlib import Path
+import subprocess
 from typing import Any
 
+import pytest
+
+import edcm.corpora.multiwoz21_booking_holdout as holdout
 from edcm.corpora.multiwoz21_booking_holdout import (
     ARCHIVE_SHA256,
     BOOTSTRAP_REPLICATES,
+    OutcomeHoldoutError,
     OutcomeEvent,
     PlattCalibration,
     _build_report,
     _digest,
     _extract_partition,
     _finding,
+    _require_distinct_output_destinations,
     _verify_represented_evidence_seal,
+    _verify_runtime_checkout,
     evaluate_outcomes,
     fit_platt_calibration,
     select_operating_threshold,
@@ -100,6 +131,45 @@ def _calibration_fixture() -> list[OutcomeEvent]:
         _event("d5", 1, 0.75),
         _event("d6", 1, 0.90),
     ]
+
+
+def test_runtime_binding_authenticates_the_loaded_package_tree(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    observed: dict[str, Any] = {}
+
+    def verify_tree(root: Path, pathspec: str, **kwargs: Any) -> None:
+        observed.update({"pathspec": pathspec, "root": root, **kwargs})
+
+    monkeypatch.setattr(holdout, "_verify_git_tree", verify_tree)
+    _verify_runtime_checkout(Path.cwd(), "a" * 40)
+    assert observed["root"] == Path.cwd()
+    assert observed["pathspec"] == "edcm"
+    assert observed["treeish"] == "a" * 40
+    assert observed["producer_name"] == "EDCM_RUNTIME"
+    assert observed["observed_root"] == Path(holdout.__file__).resolve().parents[2]
+
+
+def test_runtime_binding_accepts_the_exact_recorded_checkout() -> None:
+    commit = subprocess.run(
+        ["git", "rev-parse", "--verify", "HEAD^{commit}"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    _verify_runtime_checkout(Path.cwd(), commit)
+
+
+def test_runtime_binding_rejects_a_mixed_measurement_import(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def foreign_compute(*args: Any, **kwargs: Any) -> list[Any]:
+        return []
+
+    monkeypatch.setattr(holdout, "compute_transcript", foreign_compute)
+    with pytest.raises(OutcomeHoldoutError) as raised:
+        _verify_runtime_checkout(Path.cwd(), "a" * 40)
+    assert raised.value.code == "RUNTIME_CHECKOUT_IDENTITY"
 
 
 def test_source_outcome_response_and_later_turns_are_withheld() -> None:
@@ -312,6 +382,83 @@ def test_report_schema_retains_aggregate_boundaries_without_event_locators() -> 
         assert private_value not in rendered
 
 
+def test_single_run_leaves_complete_repeat_not_evaluated() -> None:
+    report = _aggregate_report_fixture()
+    repeat = next(
+        finding
+        for finding in report["findings"]
+        if finding["finding_id"] == "byte-identical-render-repeat"
+    )
+    assert repeat == {
+        "expected": "a separate complete execution produces the same aggregate report",
+        "finding_id": "byte-identical-render-repeat",
+        "observed": None,
+        "status": "not-evaluated",
+    }
+
+
+def test_output_destinations_reject_aliases_before_any_write(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    ordinary_report = tmp_path / "report.json"
+    ordinary_receipt = tmp_path / "receipt.json"
+    _require_distinct_output_destinations(ordinary_report, ordinary_receipt)
+
+    with pytest.raises(OutcomeHoldoutError) as identical:
+        _require_distinct_output_destinations(ordinary_report, ordinary_report)
+    assert identical.value.code == "OUTPUT_DESTINATION_COLLISION"
+
+    hard_report = tmp_path / "hard-report.json"
+    hard_receipt = tmp_path / "hard-receipt.json"
+    hard_report.write_text("preserve", encoding="utf-8")
+    hard_receipt.hardlink_to(hard_report)
+    with pytest.raises(OutcomeHoldoutError) as hard_linked:
+        _require_distinct_output_destinations(hard_report, hard_receipt)
+    assert hard_linked.value.code == "OUTPUT_DESTINATION_COLLISION"
+
+    symbolic_report = tmp_path / "symbolic-report.json"
+    symbolic_receipt = tmp_path / "symbolic-receipt.json"
+    symbolic_report.write_text("preserve", encoding="utf-8")
+    symbolic_receipt.symlink_to(symbolic_report.name)
+    with pytest.raises(OutcomeHoldoutError) as symbolic_linked:
+        _require_distinct_output_destinations(symbolic_report, symbolic_receipt)
+    assert symbolic_linked.value.code == "OUTPUT_DESTINATION_COLLISION"
+
+    atomic_receipt = tmp_path / "atomic-receipt.json"
+    atomic_report = tmp_path / ".atomic-receipt.json.tmp"
+    with pytest.raises(OutcomeHoldoutError) as atomic_alias:
+        _require_distinct_output_destinations(atomic_report, atomic_receipt)
+    assert atomic_alias.value.code == "OUTPUT_DESTINATION_COLLISION"
+
+    def forbidden_run(**kwargs: Any) -> tuple[dict[str, Any], dict[str, Any]]:
+        raise AssertionError("colliding destinations must fail before evaluation")
+
+    monkeypatch.setattr(holdout, "run_holdout", forbidden_run)
+    command_path = tmp_path / "command-collision.json"
+    exit_code = holdout.main(
+        [
+            "--archive",
+            str(tmp_path / "unused.zip"),
+            "--edcm-repository-root",
+            str(tmp_path),
+            "--edcm-commit",
+            "b" * 40,
+            "--output",
+            str(command_path),
+            "--receipt",
+            str(command_path),
+        ]
+    )
+    assert exit_code == 2
+    assert not command_path.exists()
+    assert json.loads(capsys.readouterr().out) == {
+        "failure": "OUTPUT_DESTINATION_COLLISION",
+        "status": "incomplete",
+    }
+
+
 def test_falsified_finding_is_serialized_without_raising() -> None:
     finding = _finding(
         "candidate-failure",
@@ -366,4 +513,6 @@ def test_sealed_holdout_evidence_matches_exact_producer_and_receipt() -> None:
     }
     findings = {item["finding_id"]: item["status"] for item in report["findings"]}
     assert findings["test-sensitivity-at-least-half"] == "falsified"
+    # Historical producer c2924307 was externally repeated before release.
+    assert findings["byte-identical-render-repeat"] == "supported"
     assert report["canon_selection"] is None
