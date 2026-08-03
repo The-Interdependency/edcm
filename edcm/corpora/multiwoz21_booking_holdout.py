@@ -17,6 +17,10 @@ are targets only. The labelled response, later turns, goals, metadata,
 dialogue acts, ontology, and databases never enter the candidate measurement.
 Only aggregate evidence and content identities are written; raw dialogue text
 stays outside Git.
+
+One command evaluates one complete run. Its repeat finding remains
+``not-evaluated``; compare two separately generated report files before making
+any external byte-repeat claim.
 """
 
 # === MODULE_BUILD ===
@@ -26,7 +30,7 @@ stays outside Git.
 #   summary: evaluates the maintained EDCM terminal-progress candidate against externally authored MultiWOZ 2.1 booking outcome events after development calibration and validation threshold freeze
 #   owner: Erin Spencer
 #   public_surface: OutcomeEvent, PlattCalibration, fit_platt_calibration, select_operating_threshold, evaluate_outcomes, run_holdout, main
-#   internal_surface: _bootstrap_intervals, _build_report, _candidate_score, _confusion, _ece10, _extract_partition, _verify_represented_evidence_seal, _wilson_interval
+#   internal_surface: _bootstrap_intervals, _build_report, _candidate_score, _confusion, _ece10, _extract_partition, _require_distinct_output_destinations, _verify_represented_evidence_seal, _verify_runtime_checkout, _wilson_interval
 #   auth_boundary: none
 #   storage_boundary: reads a caller-held admitted archive plus tracked represented-evidence seals and writes caller-selected aggregate report and receipt paths
 #   network_boundary: none; source acquisition and publication are separate
@@ -76,13 +80,33 @@ stays outside Git.
 #   then: canon selection remains null, formal geometry and higher-gonol composition remain NA, production activation remains inactive, and proof, theorem, measurement-validity, semantic-authority, certification, and empirical status do not transfer
 #   class: doctrine
 #   since: 2026-08-02
+#
+# id: multiwoz_booking_outcome_runtime_matches_recorded_checkout
+#   given: a caller supplies a clean EDCM repository and expected producer commit
+#   then: every loaded experiment and measurement module is inside one runtime package tree whose bytes match the recorded commit before source scoring begins
+#   class: safety
+#   since: 2026-08-03
+#
+# id: multiwoz_booking_outcome_repeat_requires_complete_execution
+#   given: one holdout execution renders its aggregate report deterministically
+#   then: the complete-run repeat hypothesis remains not-evaluated until evidence from a separate complete execution is compared outside that single run
+#   class: evidence
+#   since: 2026-08-03
+#
+# id: multiwoz_booking_outcome_destinations_do_not_collide
+#   given: caller-selected report and receipt destinations including their atomic temporary paths and existing filesystem aliases
+#   then: any cross-artifact collision fails before archive evaluation or artifact writes begin
+#   class: safety
+#   since: 2026-08-03
 # === END CONTRACTS ===
 
 from __future__ import annotations
 
 import argparse
+import inspect
 import json
 import math
+import os
 import random
 import statistics
 from collections import Counter, defaultdict
@@ -93,8 +117,8 @@ from pathlib import Path
 from typing import Any
 from zipfile import ZipFile
 
-from edcm.measurement.metrics.compute import compute_transcript
-from edcm.measurement.parser.turns_rounds import parse_transcript
+import edcm.measurement.metrics.compute as _measurement_compute_module
+import edcm.measurement.parser.turns_rounds as _measurement_parser_module
 
 from .multiwoz21 import (
     CorpusRunError,
@@ -102,15 +126,20 @@ from .multiwoz21 import (
     _git_commit,
     _git_tree_identity,
     _load_partition_ids,
+    _verify_git_tree,
     _write_json_atomic,
     load_admission_manifest,
 )
 
 
+compute_transcript = _measurement_compute_module.compute_transcript
+parse_transcript = _measurement_parser_module.parse_transcript
+
+
 SCHEMA_ID = "edcm.multiwoz21-booking-outcome-holdout"
-SCHEMA_VERSION = "0.1.0"
+SCHEMA_VERSION = "0.1.1"
 RECEIPT_SCHEMA_ID = "edcm.multiwoz21-booking-outcome-holdout-receipt"
-RECEIPT_SCHEMA_VERSION = "0.1.0"
+RECEIPT_SCHEMA_VERSION = "0.1.1"
 CANDIDATE_ID = "edcm.maintained-terminal-progress/0.1.0"
 POSITIVE_LABEL = "Booking-Book"
 NEGATIVE_LABEL = "Booking-NoBook"
@@ -171,6 +200,96 @@ def _file_sha256(path: Path) -> str:
         while block := handle.read(1024 * 1024):
             digest.update(block)
     return digest.hexdigest()
+
+
+def _verify_runtime_checkout(repository_root: Path, observed_commit: str) -> None:
+    """Bind loaded experiment and measurement bytes to ``observed_commit``."""
+
+    runtime_module = Path(__file__).resolve()
+    try:
+        runtime_root = runtime_module.parents[2]
+        callable_sources = {
+            Path("edcm/corpora/multiwoz21.py"): inspect.getsourcefile(_git_commit),
+            Path("edcm/measurement/metrics/compute.py"): inspect.getsourcefile(
+                compute_transcript
+            ),
+            Path(
+                "edcm/measurement/parser/turns_rounds.py"
+            ): inspect.getsourcefile(parse_transcript),
+        }
+    except (IndexError, TypeError) as exc:
+        raise OutcomeHoldoutError(
+            "loaded EDCM runtime source identity is unavailable",
+            code="RUNTIME_CHECKOUT_IDENTITY",
+        ) from exc
+
+    expected_runtime_module = (
+        runtime_root / "edcm/corpora/multiwoz21_booking_holdout.py"
+    ).resolve()
+    if runtime_module != expected_runtime_module:
+        raise OutcomeHoldoutError(
+            "loaded holdout module is outside one EDCM runtime tree",
+            code="RUNTIME_CHECKOUT_IDENTITY",
+        )
+    for relative_path, source in callable_sources.items():
+        expected_source = (runtime_root / relative_path).resolve()
+        if source is None or Path(source).resolve() != expected_source:
+            raise OutcomeHoldoutError(
+                "loaded EDCM measurement surface is outside the holdout runtime tree",
+                code="RUNTIME_CHECKOUT_IDENTITY",
+            )
+
+    environment = {
+        name: value
+        for name, value in os.environ.items()
+        if not name.startswith("GIT_")
+    }
+    environment["GIT_NO_REPLACE_OBJECTS"] = "1"
+    try:
+        _verify_git_tree(
+            repository_root,
+            "edcm",
+            environment=environment,
+            treeish=observed_commit,
+            producer_name="EDCM_RUNTIME",
+            observed_root=runtime_root,
+        )
+    except CorpusRunError as exc:
+        raise OutcomeHoldoutError(
+            "loaded EDCM runtime bytes do not match the recorded checkout",
+            code="RUNTIME_CHECKOUT_IDENTITY",
+        ) from exc
+
+
+def _atomic_destination_paths(path: Path) -> tuple[Path, Path]:
+    expanded = path.expanduser()
+    return (
+        expanded.resolve(),
+        expanded.with_name(f".{expanded.name}.tmp").resolve(),
+    )
+
+
+def _require_distinct_output_destinations(report_path: Path, receipt_path: Path) -> None:
+    """Reject final, temporary, symlink, and hard-link cross-artifact aliases."""
+
+    try:
+        report_paths = _atomic_destination_paths(report_path)
+        receipt_paths = _atomic_destination_paths(receipt_path)
+        collision = any(
+            left == right or (left.exists() and right.exists() and left.samefile(right))
+            for left in report_paths
+            for right in receipt_paths
+        )
+    except (OSError, RuntimeError) as exc:
+        raise OutcomeHoldoutError(
+            "output destination identity cannot be verified",
+            code="OUTPUT_DESTINATION_IDENTITY",
+        ) from exc
+    if collision:
+        raise OutcomeHoldoutError(
+            "report and receipt destinations must be distinct",
+            code="OUTPUT_DESTINATION_COLLISION",
+        )
 
 
 def _sigmoid(value: float) -> float:
@@ -829,7 +948,7 @@ def _work_graph(edcm_commit: str, edcm_tree: str) -> dict[str, Any]:
 
 def _finding(
     finding_id: str,
-    supported: bool,
+    supported: bool | None,
     *,
     observed: Any,
     expected: str,
@@ -838,7 +957,9 @@ def _finding(
         "expected": expected,
         "finding_id": finding_id,
         "observed": observed,
-        "status": "supported" if supported else "falsified",
+        "status": "not-evaluated"
+        if supported is None
+        else ("supported" if supported else "falsified"),
     }
 
 
@@ -909,9 +1030,9 @@ def _build_report(
         ),
         _finding(
             "byte-identical-render-repeat",
-            True,
-            observed="two canonical render operations are byte-identical; full command repeat is a release gate",
-            expected="byte-identical aggregate serialization",
+            None,
+            observed=None,
+            expected="a separate complete execution produces the same aggregate report",
         ),
     ]
     report = {
@@ -1036,6 +1157,7 @@ def run_holdout(
         verify_tree="edcm",
         expected_commit=edcm_commit,
     )
+    _verify_runtime_checkout(repository_root, observed_commit)
     edcm_tree = _git_tree_identity(repository_root, "edcm", treeish=observed_commit)
     represented_seal = _verify_represented_evidence_seal(repository_root)
     manifest = load_admission_manifest()
@@ -1134,6 +1256,10 @@ def run_holdout(
             "hypotheses_falsified": sum(
                 finding["status"] == "falsified" for finding in report["findings"]
             ),
+            "hypotheses_not_evaluated": sum(
+                finding["status"] == "not-evaluated"
+                for finding in report["findings"]
+            ),
             "hypotheses_supported": sum(
                 finding["status"] == "supported" for finding in report["findings"]
             ),
@@ -1188,6 +1314,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--receipt", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
+        _require_distinct_output_destinations(args.output, args.receipt)
+    except (OutcomeHoldoutError, OSError) as exc:
+        code = exc.code if isinstance(exc, OutcomeHoldoutError) else "FILESYSTEM"
+        print(json.dumps({"failure": code, "status": "incomplete"}, sort_keys=True))
+        return 2
+    try:
         report, receipt = run_holdout(
             archive_path=args.archive,
             repository_root=args.edcm_repository_root,
@@ -1224,6 +1356,9 @@ def main(argv: list[str] | None = None) -> int:
             {
                 "canon_selection": None,
                 "falsified": receipt["completion"]["hypotheses_falsified"],
+                "not_evaluated": receipt["completion"][
+                    "hypotheses_not_evaluated"
+                ],
                 "output": str(args.output),
                 "report_digest": receipt["report_digest"],
                 "status": "complete",

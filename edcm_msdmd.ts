@@ -154,6 +154,17 @@ export default defineMsdmdCollection({
     {
       "block": "CONTRACTS",
       "fields": {
+        "class": "safety",
+        "given": "caller-selected report and receipt destinations including their atomic temporary paths and existing filesystem aliases",
+        "since": "2026-08-03",
+        "then": "any cross-artifact collision fails before archive evaluation or artifact writes begin"
+      },
+      "file": "edcm/corpora/multiwoz21_booking_holdout.py",
+      "id": "multiwoz_booking_outcome_destinations_do_not_collide"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
         "class": "evidence",
         "given": "a frozen sensitivity, specificity, discrimination, or calibration hypothesis is not met",
         "since": "2026-08-02",
@@ -176,6 +187,17 @@ export default defineMsdmdCollection({
     {
       "block": "CONTRACTS",
       "fields": {
+        "class": "evidence",
+        "given": "one holdout execution renders its aggregate report deterministically",
+        "since": "2026-08-03",
+        "then": "the complete-run repeat hypothesis remains not-evaluated until evidence from a separate complete execution is compared outside that single run"
+      },
+      "file": "edcm/corpora/multiwoz21_booking_holdout.py",
+      "id": "multiwoz_booking_outcome_repeat_requires_complete_execution"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
         "class": "privacy",
         "given": "the holdout run completes or fails",
         "since": "2026-08-02",
@@ -183,6 +205,17 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/corpora/multiwoz21_booking_holdout.py",
       "id": "multiwoz_booking_outcome_report_is_aggregate_only"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a caller supplies a clean EDCM repository and expected producer commit",
+        "since": "2026-08-03",
+        "then": "every loaded experiment and measurement module is inside one runtime package tree whose bytes match the recorded commit before source scoring begins"
+      },
+      "file": "edcm/corpora/multiwoz21_booking_holdout.py",
+      "id": "multiwoz_booking_outcome_runtime_matches_recorded_checkout"
     },
     {
       "block": "CONTRACTS",
@@ -211,7 +244,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_bootstrap_intervals, _build_report, _candidate_score, _confusion, _ece10, _extract_partition, _verify_represented_evidence_seal, _wilson_interval",
+        "internal_surface": "_bootstrap_intervals, _build_report, _candidate_score, _confusion, _ece10, _extract_partition, _require_distinct_output_destinations, _verify_represented_evidence_seal, _verify_runtime_checkout, _wilson_interval",
         "module_kind": "experiment",
         "module_name": "multiwoz21_booking_holdout",
         "network_boundary": "none; source acquisition and publication are separate",
@@ -1670,6 +1703,19 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_output_destinations_reject_aliases_before_any_write",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "multiwoz_booking_outcome_destinations_do_not_collide",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_booking_holdout.py",
+      "id": "check_multiwoz_booking_outcome_destinations_do_not_collide"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_falsified_finding_is_serialized_without_raising",
         "cleanup": "none",
         "mutates": "none",
@@ -1696,6 +1742,19 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_single_run_leaves_complete_repeat_not_evaluated",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "multiwoz_booking_outcome_repeat_requires_complete_execution",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_booking_holdout.py",
+      "id": "check_multiwoz_booking_outcome_repeat_requires_complete_execution"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_report_schema_retains_aggregate_boundaries_without_event_locators",
         "cleanup": "none",
         "mutates": "none",
@@ -1705,6 +1764,19 @@ export default defineMsdmdCollection({
       },
       "file": "tests/test_multiwoz21_booking_holdout.py",
       "id": "check_multiwoz_booking_outcome_report_is_aggregate_only"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_runtime_binding_rejects_a_mixed_measurement_import",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "multiwoz_booking_outcome_runtime_matches_recorded_checkout",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_booking_holdout.py",
+      "id": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout"
     },
     {
       "block": "CHECKS",
@@ -2655,6 +2727,27 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
+      "from": "check_multiwoz_booking_outcome_destinations_do_not_collide",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_destinations_do_not_collide",
+      "to": "self::test_output_destinations_reject_aliases_before_any_write"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_destinations_do_not_collide",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_destinations_do_not_collide",
+      "to": "multiwoz_booking_outcome_destinations_do_not_collide"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_destinations_do_not_collide",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_destinations_do_not_collide",
+      "to": "python3"
+    },
+    {
       "from": "check_multiwoz_booking_outcome_hypothesis_failure_is_evidence",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -2697,6 +2790,27 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
+      "from": "check_multiwoz_booking_outcome_repeat_requires_complete_execution",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_repeat_requires_complete_execution",
+      "to": "self::test_single_run_leaves_complete_repeat_not_evaluated"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_repeat_requires_complete_execution",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_repeat_requires_complete_execution",
+      "to": "multiwoz_booking_outcome_repeat_requires_complete_execution"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_repeat_requires_complete_execution",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_repeat_requires_complete_execution",
+      "to": "python3"
+    },
+    {
       "from": "check_multiwoz_booking_outcome_report_is_aggregate_only",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -2715,6 +2829,27 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "CHECKS",
       "source_id": "check_multiwoz_booking_outcome_report_is_aggregate_only",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout",
+      "to": "self::test_runtime_binding_rejects_a_mixed_measurement_import"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout",
+      "to": "multiwoz_booking_outcome_runtime_matches_recorded_checkout"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout",
       "to": "python3"
     },
     {
