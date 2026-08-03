@@ -114,6 +114,7 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from hashlib import sha256
 from pathlib import Path
+from types import MemberDescriptorType
 from typing import Any
 from zipfile import ZipFile
 
@@ -238,34 +239,187 @@ def _verify_runtime_checkout(repository_root: Path, observed_commit: str) -> Non
                 _measurement_compute_module.Round,
             ),
         )
-        loaded_sources += tuple(
-            (Path("edcm/measurement/metrics/stats.py"), getattr(_measurement_compute_module, name))
-            for name in (
-                "clamp",
-                "tokenize",
-                "ttr",
-                "repetition_ratio",
-                "shannon_entropy",
-                "novelty",
-                "cosine_sim",
-                "rep_ngram_density",
-                "pattern_density",
-            )
+        compute_stats_names = (
+            "clamp",
+            "tokenize",
+            "ttr",
+            "repetition_ratio",
+            "shannon_entropy",
+            "novelty",
+            "cosine_sim",
+            "rep_ngram_density",
+            "pattern_density",
         )
         loaded_sources += tuple(
+            (Path("edcm/measurement/metrics/stats.py"), getattr(_measurement_compute_module, name))
+            for name in compute_stats_names
+        )
+        compute_risk_names = ("fixation_risk", "loop_risk")
+        loaded_sources += tuple(
             (Path("edcm/measurement/metrics/risk.py"), getattr(_measurement_compute_module, name))
-            for name in ("fixation_risk", "loop_risk")
+            for name in compute_risk_names
+        )
+        risk_stats_names = (
+            "clamp",
+            "cosine_sim",
+            "jaccard",
+            "novelty",
+            "rep_ngram_density",
+            "repetition_ratio",
         )
         loaded_sources += tuple(
             (Path("edcm/measurement/metrics/stats.py"), getattr(_measurement_risk_module, name))
-            for name in (
-                "clamp",
-                "cosine_sim",
-                "jaccard",
-                "novelty",
-                "rep_ngram_density",
-                "repetition_ratio",
+            for name in risk_stats_names
+        )
+        compute_internal_names = (
+            "_build_phrase_patterns",
+            "_count_marker_hits",
+            "energy_step",
+            "_compute_R",
+            "_compute_F",
+            "_compute_L",
+            "_compute_N",
+            "_compute_P",
+            "_compute_O",
+            "_compute_I",
+            "_compute_C",
+            "_compute_D",
+            "_compute_E",
+            "compute_round",
+            "compute_transcript",
+        )
+        loaded_sources += tuple(
+            (
+                Path("edcm/measurement/metrics/compute.py"),
+                getattr(_measurement_compute_module, name),
             )
+            for name in compute_internal_names
+        )
+        loaded_sources += (
+            (
+                Path("edcm/measurement/metrics/compute.py"),
+                _measurement_compute_module.RoundMetrics,
+            ),
+        )
+        round_metrics_method_names = (
+            "__init__",
+            "as_dict",
+            "vector",
+            "__repr__",
+        )
+        round_metrics_slots = (
+            "C",
+            "R",
+            "F",
+            "E",
+            "D",
+            "N",
+            "I",
+            "O",
+            "L",
+            "P",
+            "kappa",
+            "dissonance_energy",
+            "round_index",
+            "token_count",
+            "bone_count",
+        )
+        loaded_sources += tuple(
+            (
+                Path("edcm/measurement/metrics/compute.py"),
+                getattr(_measurement_compute_module.RoundMetrics, name),
+            )
+            for name in round_metrics_method_names
+        )
+        loaded_global_bindings = (
+            (compute_transcript, _measurement_compute_module),
+            (parse_transcript, _measurement_parser_module),
+        )
+        loaded_global_bindings += tuple(
+            (getattr(_measurement_compute_module, name), _measurement_compute_module)
+            for name in compute_internal_names
+        )
+        loaded_global_bindings += tuple(
+            (
+                getattr(_measurement_compute_module.RoundMetrics, name),
+                _measurement_compute_module,
+            )
+            for name in round_metrics_method_names
+        )
+        loaded_global_bindings += tuple(
+            (getattr(_measurement_compute_module, name), _measurement_stats_module)
+            for name in compute_stats_names
+        )
+        loaded_global_bindings += tuple(
+            (getattr(_measurement_compute_module, name), _measurement_risk_module)
+            for name in compute_risk_names
+        )
+        loaded_global_bindings += tuple(
+            (getattr(_measurement_risk_module, name), _measurement_stats_module)
+            for name in risk_stats_names
+        )
+        loaded_binding_identities = (
+            (CanonLoader, _measurement_canon_module.CanonLoader),
+            (compute_transcript, _measurement_compute_module.compute_transcript),
+            (parse_transcript, _measurement_parser_module.parse_transcript),
+            (_measurement_compute_module.CanonLoader, _measurement_canon_module.CanonLoader),
+            (_measurement_parser_module.CanonLoader, _measurement_canon_module.CanonLoader),
+            (_measurement_compute_module.Round, _measurement_parser_module.Round),
+        )
+        loaded_binding_identities += tuple(
+            (
+                getattr(_measurement_compute_module, name),
+                getattr(_measurement_stats_module, name),
+            )
+            for name in compute_stats_names
+        )
+        loaded_binding_identities += tuple(
+            (
+                getattr(_measurement_compute_module, name),
+                getattr(_measurement_risk_module, name),
+            )
+            for name in compute_risk_names
+        )
+        loaded_binding_identities += tuple(
+            (
+                getattr(_measurement_risk_module, name),
+                getattr(_measurement_stats_module, name),
+            )
+            for name in risk_stats_names
+        )
+        loaded_binding_names = tuple(
+            (
+                getattr(_measurement_compute_module, name),
+                name,
+                name,
+            )
+            for name in compute_internal_names
+        )
+        loaded_binding_names += (
+            (
+                _measurement_compute_module.RoundMetrics,
+                "RoundMetrics",
+                "RoundMetrics",
+            ),
+        )
+        loaded_binding_names += tuple(
+            (
+                getattr(_measurement_compute_module.RoundMetrics, name),
+                name,
+                f"RoundMetrics.{name}",
+            )
+            for name in round_metrics_method_names
+        )
+        stats_binding_names = tuple(
+            dict.fromkeys(compute_stats_names + risk_stats_names)
+        )
+        loaded_binding_names += tuple(
+            (getattr(_measurement_stats_module, name), name, name)
+            for name in stats_binding_names
+        )
+        loaded_binding_names += tuple(
+            (getattr(_measurement_risk_module, name), name, name)
+            for name in compute_risk_names
         )
     except (AttributeError, IndexError, TypeError) as exc:
         raise OutcomeHoldoutError(
@@ -293,6 +447,55 @@ def _verify_runtime_checkout(repository_root: Path, observed_commit: str) -> Non
         if source is None or Path(source).resolve() != expected_source:
             raise OutcomeHoldoutError(
                 "loaded EDCM measurement surface is outside the holdout runtime tree",
+                code="RUNTIME_CHECKOUT_IDENTITY",
+            )
+    for loaded_callable, expected_module in loaded_global_bindings:
+        if getattr(loaded_callable, "__globals__", None) is not vars(expected_module):
+            raise OutcomeHoldoutError(
+                "loaded EDCM measurement bindings do not share the authenticated module globals",
+                code="RUNTIME_CHECKOUT_IDENTITY",
+            )
+    for loaded_binding, expected_binding in loaded_binding_identities:
+        if loaded_binding is not expected_binding:
+            raise OutcomeHoldoutError(
+                "loaded EDCM measurement import identity is not the authenticated export",
+                code="RUNTIME_CHECKOUT_IDENTITY",
+            )
+    for loaded_binding, expected_name, expected_qualname in loaded_binding_names:
+        if (
+            getattr(loaded_binding, "__name__", None) != expected_name
+            or getattr(loaded_binding, "__qualname__", None) != expected_qualname
+        ):
+            raise OutcomeHoldoutError(
+                "loaded EDCM measurement binding name does not match its authenticated slot",
+                code="RUNTIME_CHECKOUT_IDENTITY",
+            )
+    round_metrics = _measurement_compute_module.RoundMetrics
+    expected_round_metrics_keys = {
+        "__module__",
+        "__doc__",
+        "__slots__",
+        *round_metrics_method_names,
+        *round_metrics_slots,
+    }
+    if (
+        type(round_metrics.__slots__) is not tuple
+        or round_metrics.__slots__ != round_metrics_slots
+        or set(vars(round_metrics)) != expected_round_metrics_keys
+    ):
+        raise OutcomeHoldoutError(
+            "loaded EDCM RoundMetrics layout is not the authenticated class surface",
+            code="RUNTIME_CHECKOUT_IDENTITY",
+        )
+    for slot_name in round_metrics_slots:
+        descriptor = vars(round_metrics)[slot_name]
+        if (
+            type(descriptor) is not MemberDescriptorType
+            or descriptor.__objclass__ is not round_metrics
+            or descriptor.__name__ != slot_name
+        ):
+            raise OutcomeHoldoutError(
+                "loaded EDCM RoundMetrics slot is not its authenticated descriptor",
                 code="RUNTIME_CHECKOUT_IDENTITY",
             )
 

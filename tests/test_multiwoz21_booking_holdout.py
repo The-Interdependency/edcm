@@ -174,24 +174,123 @@ def test_runtime_binding_rejects_a_mixed_measurement_import(
 
 
 @pytest.mark.parametrize(
-    ("module_name", "helper_name"),
+    ("module_name", "helper_name", "class_name"),
     (
-        ("_measurement_compute_module", "novelty"),
-        ("_measurement_compute_module", "fixation_risk"),
-        ("_measurement_risk_module", "clamp"),
+        ("_measurement_compute_module", "novelty", None),
+        ("_measurement_compute_module", "fixation_risk", None),
+        ("_measurement_risk_module", "clamp", None),
+        ("_measurement_compute_module", "compute_round", None),
+        ("_measurement_compute_module", "_compute_P", None),
+        ("_measurement_compute_module", "_build_phrase_patterns", None),
+        ("_measurement_compute_module", "__init__", "RoundMetrics"),
     ),
-    ids=("compute-stats", "compute-risk", "risk-stats"),
+    ids=(
+        "compute-stats",
+        "compute-risk",
+        "risk-stats",
+        "compute-round",
+        "compute-internal",
+        "compute-second-level",
+        "round-metrics-init",
+    ),
 )
 def test_runtime_binding_rejects_a_foreign_score_helper(
     monkeypatch: pytest.MonkeyPatch,
     module_name: str,
     helper_name: str,
+    class_name: str | None,
 ) -> None:
     def foreign_helper(*args: Any, **kwargs: Any) -> float:
         return 0.0
 
     module = getattr(holdout, module_name)
-    monkeypatch.setattr(module, helper_name, foreign_helper)
+    target = getattr(module, class_name) if class_name else module
+    monkeypatch.setattr(target, helper_name, foreign_helper)
+    with pytest.raises(OutcomeHoldoutError) as raised:
+        _verify_runtime_checkout(Path.cwd(), "a" * 40)
+    assert raised.value.code == "RUNTIME_CHECKOUT_IDENTITY"
+
+
+@pytest.mark.parametrize(
+    ("target_module", "target_name", "replacement_module", "replacement_name"),
+    (
+        (
+            holdout._measurement_compute_module,
+            "_compute_P",
+            holdout._measurement_compute_module,
+            "_compute_N",
+        ),
+        (
+            holdout._measurement_compute_module,
+            "novelty",
+            holdout._measurement_stats_module,
+            "cosine_sim",
+        ),
+        (
+            holdout,
+            "compute_transcript",
+            holdout._measurement_compute_module,
+            "compute_round",
+        ),
+        (
+            holdout._measurement_compute_module.RoundMetrics,
+            "__init__",
+            holdout._measurement_compute_module.RoundMetrics,
+            "as_dict",
+        ),
+    ),
+    ids=(
+        "compute-local-swap",
+        "compute-import-swap",
+        "holdout-alias-swap",
+        "round-metrics-method-swap",
+    ),
+)
+def test_runtime_binding_rejects_a_same_origin_score_helper_swap(
+    monkeypatch: pytest.MonkeyPatch,
+    target_module: Any,
+    target_name: str,
+    replacement_module: Any,
+    replacement_name: str,
+) -> None:
+    monkeypatch.setattr(
+        target_module,
+        target_name,
+        getattr(replacement_module, replacement_name),
+    )
+    with pytest.raises(OutcomeHoldoutError) as raised:
+        _verify_runtime_checkout(Path.cwd(), "a" * 40)
+    assert raised.value.code == "RUNTIME_CHECKOUT_IDENTITY"
+
+
+def test_runtime_binding_rejects_a_foreign_round_metrics_slot(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class ForcedProgress:
+        def __get__(self, instance: Any, owner: Any = None) -> float:
+            return 1.0
+
+        def __set__(self, instance: Any, value: Any) -> None:
+            return None
+
+    monkeypatch.setattr(
+        holdout._measurement_compute_module.RoundMetrics,
+        "P",
+        ForcedProgress(),
+    )
+    with pytest.raises(OutcomeHoldoutError) as raised:
+        _verify_runtime_checkout(Path.cwd(), "a" * 40)
+    assert raised.value.code == "RUNTIME_CHECKOUT_IDENTITY"
+
+
+def test_runtime_binding_rejects_a_coordinated_source_export_swap(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    replacement = holdout._measurement_stats_module.cosine_sim
+    monkeypatch.setattr(holdout._measurement_stats_module, "novelty", replacement)
+    monkeypatch.setattr(holdout._measurement_compute_module, "novelty", replacement)
+    monkeypatch.setattr(holdout._measurement_risk_module, "novelty", replacement)
+
     with pytest.raises(OutcomeHoldoutError) as raised:
         _verify_runtime_checkout(Path.cwd(), "a" * 40)
     assert raised.value.code == "RUNTIME_CHECKOUT_IDENTITY"
