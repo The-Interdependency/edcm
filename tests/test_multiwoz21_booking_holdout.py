@@ -88,6 +88,7 @@ from hashlib import sha256
 import json
 from pathlib import Path
 import subprocess
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
@@ -170,6 +171,110 @@ def test_runtime_binding_rejects_a_mixed_measurement_import(
     with pytest.raises(OutcomeHoldoutError) as raised:
         _verify_runtime_checkout(Path.cwd(), "a" * 40)
     assert raised.value.code == "RUNTIME_CHECKOUT_IDENTITY"
+
+
+def test_run_holdout_reverifies_one_in_memory_canon_after_scoring(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    events: list[str] = []
+    loaded_canon = object()
+
+    monkeypatch.setattr(holdout, "_git_commit", lambda *args, **kwargs: "a" * 40)
+    monkeypatch.setattr(
+        holdout,
+        "_verify_runtime_checkout",
+        lambda *args, **kwargs: events.append("verify"),
+    )
+
+    def load_canon() -> object:
+        events.append("canon-load")
+        return loaded_canon
+
+    monkeypatch.setattr(holdout, "CanonLoader", load_canon)
+    monkeypatch.setattr(holdout, "_git_tree_identity", lambda *args, **kwargs: "b" * 40)
+    monkeypatch.setattr(holdout, "_verify_represented_evidence_seal", lambda root: {})
+    monkeypatch.setattr(
+        holdout,
+        "load_admission_manifest",
+        lambda: SimpleNamespace(
+            digest="c" * 64,
+            source={
+                "data_member": "data.json",
+                "test_member": "test.txt",
+                "validation_member": "validation.txt",
+            },
+        ),
+    )
+
+    class FakeArchive:
+        def close(self) -> None:
+            events.append("archive-close")
+
+    monkeypatch.setattr(
+        holdout,
+        "_archive_identity",
+        lambda *args, **kwargs: ({"sha256": "d" * 64}, FakeArchive()),
+    )
+    monkeypatch.setattr(holdout, "_load_partition_ids", lambda *args: set())
+    source_rows = {str(index): {} for index in range(10438)}
+    monkeypatch.setattr(holdout, "_load_json_member", lambda *args: source_rows)
+
+    def candidate_score(context: tuple[str, ...], *, canon: object) -> float:
+        assert context == ("turn",)
+        assert canon is loaded_canon
+        events.append("score")
+        return 0.5
+
+    monkeypatch.setattr(holdout, "_candidate_score", candidate_score)
+
+    def extract(*, partition: str, score_fn: Any, **kwargs: Any) -> tuple[Any, Any]:
+        score = score_fn(("turn",))
+        return (
+            [_event(f"{partition}-dialogue", 1, score)],
+            {
+                "candidate_input_digest_chain": "e" * 64,
+                "source_event_digest_chain": "f" * 64,
+            },
+        )
+
+    monkeypatch.setattr(holdout, "_extract_partition", extract)
+    monkeypatch.setattr(holdout, "_require_expected_inventory", lambda *args: None)
+    calibration = PlattCalibration(0.5, 0.1, 0.0, 1.0, 1, True)
+    monkeypatch.setattr(holdout, "fit_platt_calibration", lambda rows: calibration)
+    monkeypatch.setattr(
+        holdout,
+        "select_operating_threshold",
+        lambda rows, fitted: (0.5, {}, 1),
+    )
+    monkeypatch.setattr(holdout, "evaluate_outcomes", lambda *args: {})
+    monkeypatch.setattr(
+        holdout,
+        "_build_report",
+        lambda **kwargs: {
+            "findings": [],
+            "work_graph": {"work_graph_sha256": "1" * 64},
+        },
+    )
+
+    report, receipt = holdout.run_holdout(
+        archive_path=tmp_path / "source.zip",
+        repository_root=tmp_path,
+        edcm_commit="a" * 40,
+    )
+
+    assert report["findings"] == []
+    assert receipt["status"] == "complete"
+    assert events == [
+        "verify",
+        "canon-load",
+        "verify",
+        "archive-close",
+        "score",
+        "score",
+        "score",
+        "verify",
+    ]
 
 
 def test_source_outcome_response_and_later_turns_are_withheld() -> None:
@@ -404,7 +509,13 @@ def test_output_destinations_reject_aliases_before_any_write(
 ) -> None:
     ordinary_report = tmp_path / "report.json"
     ordinary_receipt = tmp_path / "receipt.json"
-    _require_distinct_output_destinations(ordinary_report, ordinary_receipt)
+    ordinary_archive = tmp_path / "source.zip"
+    ordinary_archive.write_bytes(b"source archive")
+    _require_distinct_output_destinations(
+        ordinary_report,
+        ordinary_receipt,
+        archive_path=ordinary_archive,
+    )
 
     with pytest.raises(OutcomeHoldoutError) as identical:
         _require_distinct_output_destinations(ordinary_report, ordinary_report)
@@ -432,6 +543,44 @@ def test_output_destinations_reject_aliases_before_any_write(
         _require_distinct_output_destinations(atomic_report, atomic_receipt)
     assert atomic_alias.value.code == "OUTPUT_DESTINATION_COLLISION"
 
+    with pytest.raises(OutcomeHoldoutError) as source_output:
+        _require_distinct_output_destinations(
+            ordinary_archive,
+            ordinary_receipt,
+            archive_path=ordinary_archive,
+        )
+    assert source_output.value.code == "OUTPUT_SOURCE_COLLISION"
+
+    hard_source_output = tmp_path / "hard-source-output.json"
+    hard_source_output.hardlink_to(ordinary_archive)
+    with pytest.raises(OutcomeHoldoutError) as hard_source:
+        _require_distinct_output_destinations(
+            hard_source_output,
+            ordinary_receipt,
+            archive_path=ordinary_archive,
+        )
+    assert hard_source.value.code == "OUTPUT_SOURCE_COLLISION"
+
+    symbolic_source_receipt = tmp_path / "symbolic-source-receipt.json"
+    symbolic_source_receipt.symlink_to(ordinary_archive.name)
+    with pytest.raises(OutcomeHoldoutError) as symbolic_source:
+        _require_distinct_output_destinations(
+            ordinary_report,
+            symbolic_source_receipt,
+            archive_path=ordinary_archive,
+        )
+    assert symbolic_source.value.code == "OUTPUT_SOURCE_COLLISION"
+
+    temporary_source = tmp_path / ".temporary-source-report.json.tmp"
+    temporary_source.write_bytes(b"temporary source archive")
+    with pytest.raises(OutcomeHoldoutError) as temporary_source_alias:
+        _require_distinct_output_destinations(
+            tmp_path / "temporary-source-report.json",
+            ordinary_receipt,
+            archive_path=temporary_source,
+        )
+    assert temporary_source_alias.value.code == "OUTPUT_SOURCE_COLLISION"
+
     def forbidden_run(**kwargs: Any) -> tuple[dict[str, Any], dict[str, Any]]:
         raise AssertionError("colliding destinations must fail before evaluation")
 
@@ -455,6 +604,30 @@ def test_output_destinations_reject_aliases_before_any_write(
     assert not command_path.exists()
     assert json.loads(capsys.readouterr().out) == {
         "failure": "OUTPUT_DESTINATION_COLLISION",
+        "status": "incomplete",
+    }
+
+    source_receipt = tmp_path / "source-collision-receipt.json"
+    source_bytes = ordinary_archive.read_bytes()
+    exit_code = holdout.main(
+        [
+            "--archive",
+            str(ordinary_archive),
+            "--edcm-repository-root",
+            str(tmp_path),
+            "--edcm-commit",
+            "b" * 40,
+            "--output",
+            str(ordinary_archive),
+            "--receipt",
+            str(source_receipt),
+        ]
+    )
+    assert exit_code == 2
+    assert ordinary_archive.read_bytes() == source_bytes
+    assert not source_receipt.exists()
+    assert json.loads(capsys.readouterr().out) == {
+        "failure": "OUTPUT_SOURCE_COLLISION",
         "status": "incomplete",
     }
 

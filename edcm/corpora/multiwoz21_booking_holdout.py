@@ -83,7 +83,7 @@ any external byte-repeat claim.
 #
 # id: multiwoz_booking_outcome_runtime_matches_recorded_checkout
 #   given: a caller supplies a clean EDCM repository and expected producer commit
-#   then: every loaded experiment and measurement module is inside one runtime package tree whose bytes match the recorded commit before source scoring begins
+#   then: every loaded experiment and measurement module is inside one runtime package tree, one authenticated in-memory canon is used throughout scoring, and the runtime bytes match the recorded commit before canon load and after scoring
 #   class: safety
 #   since: 2026-08-03
 #
@@ -94,8 +94,8 @@ any external byte-repeat claim.
 #   since: 2026-08-03
 #
 # id: multiwoz_booking_outcome_destinations_do_not_collide
-#   given: caller-selected report and receipt destinations including their atomic temporary paths and existing filesystem aliases
-#   then: any cross-artifact collision fails before archive evaluation or artifact writes begin
+#   given: a caller-held source archive plus report and receipt destinations including their atomic temporary paths and existing filesystem aliases
+#   then: any cross-artifact or artifact-to-archive collision fails before archive evaluation or artifact writes begin
 #   class: safety
 #   since: 2026-08-03
 # === END CONTRACTS ===
@@ -117,6 +117,7 @@ from pathlib import Path
 from typing import Any
 from zipfile import ZipFile
 
+import edcm.measurement.canon.loader as _measurement_canon_module
 import edcm.measurement.metrics.compute as _measurement_compute_module
 import edcm.measurement.parser.turns_rounds as _measurement_parser_module
 
@@ -132,6 +133,7 @@ from .multiwoz21 import (
 )
 
 
+CanonLoader = _measurement_canon_module.CanonLoader
 compute_transcript = _measurement_compute_module.compute_transcript
 parse_transcript = _measurement_parser_module.parse_transcript
 
@@ -210,6 +212,9 @@ def _verify_runtime_checkout(repository_root: Path, observed_commit: str) -> Non
         runtime_root = runtime_module.parents[2]
         callable_sources = {
             Path("edcm/corpora/multiwoz21.py"): inspect.getsourcefile(_git_commit),
+            Path("edcm/measurement/canon/loader.py"): inspect.getsourcefile(
+                CanonLoader
+            ),
             Path("edcm/measurement/metrics/compute.py"): inspect.getsourcefile(
                 compute_transcript
             ),
@@ -269,26 +274,48 @@ def _atomic_destination_paths(path: Path) -> tuple[Path, Path]:
     )
 
 
-def _require_distinct_output_destinations(report_path: Path, receipt_path: Path) -> None:
-    """Reject final, temporary, symlink, and hard-link cross-artifact aliases."""
+def _require_distinct_output_destinations(
+    report_path: Path,
+    receipt_path: Path,
+    *,
+    archive_path: Path | None = None,
+) -> None:
+    """Reject cross-artifact aliases and any overwrite of the source archive."""
 
     try:
         report_paths = _atomic_destination_paths(report_path)
         receipt_paths = _atomic_destination_paths(receipt_path)
-        collision = any(
+        output_collision = any(
             left == right or (left.exists() and right.exists() and left.samefile(right))
             for left in report_paths
             for right in receipt_paths
         )
+        archive_collision = False
+        if archive_path is not None:
+            archive_identity = archive_path.expanduser().resolve()
+            archive_collision = any(
+                artifact == archive_identity
+                or (
+                    artifact.exists()
+                    and archive_identity.exists()
+                    and artifact.samefile(archive_identity)
+                )
+                for artifact in (*report_paths, *receipt_paths)
+            )
     except (OSError, RuntimeError) as exc:
         raise OutcomeHoldoutError(
             "output destination identity cannot be verified",
             code="OUTPUT_DESTINATION_IDENTITY",
         ) from exc
-    if collision:
+    if output_collision:
         raise OutcomeHoldoutError(
             "report and receipt destinations must be distinct",
             code="OUTPUT_DESTINATION_COLLISION",
+        )
+    if archive_collision:
+        raise OutcomeHoldoutError(
+            "report and receipt destinations must not alias the source archive",
+            code="OUTPUT_SOURCE_COLLISION",
         )
 
 
@@ -640,14 +667,20 @@ def evaluate_outcomes(
     }
 
 
-def _candidate_score(context_turns: Sequence[str]) -> float:
+def _candidate_score(
+    context_turns: Sequence[str],
+    *,
+    canon: Any | None = None,
+) -> float:
+    if canon is None:
+        canon = CanonLoader()
     lines = []
     for turn_index, text in enumerate(context_turns):
         speaker = "USER" if turn_index % 2 == 0 else "SYSTEM"
         presentation = text.replace("\r", " ").replace("\n", " ")
         lines.append(f"{speaker}: {presentation}")
-    parsed = parse_transcript("\n".join(lines), round_strategy="cycle")
-    metrics = compute_transcript(parsed)
+    parsed = parse_transcript("\n".join(lines), round_strategy="cycle", canon=canon)
+    metrics = compute_transcript(parsed, canon=canon)
     if not metrics:
         raise OutcomeHoldoutError(
             "candidate context produced no EDCM rounds",
@@ -1158,6 +1191,12 @@ def run_holdout(
         expected_commit=edcm_commit,
     )
     _verify_runtime_checkout(repository_root, observed_commit)
+    canon = CanonLoader()
+    _verify_runtime_checkout(repository_root, observed_commit)
+
+    def score_context(context_turns: Sequence[str]) -> float:
+        return _candidate_score(context_turns, canon=canon)
+
     edcm_tree = _git_tree_identity(repository_root, "edcm", treeish=observed_commit)
     represented_seal = _verify_represented_evidence_seal(repository_root)
     manifest = load_admission_manifest()
@@ -1190,6 +1229,7 @@ def run_holdout(
         dialogue_acts=dialogue_acts,
         test_ids=test_ids,
         validation_ids=validation_ids,
+        score_fn=score_context,
     )
     rows["development"] = development_rows
     inventories["development"] = development_inventory
@@ -1202,6 +1242,7 @@ def run_holdout(
         dialogue_acts=dialogue_acts,
         test_ids=test_ids,
         validation_ids=validation_ids,
+        score_fn=score_context,
     )
     rows["validation"] = validation_rows
     inventories["validation"] = validation_inventory
@@ -1227,11 +1268,13 @@ def run_holdout(
         dialogue_acts=dialogue_acts,
         test_ids=test_ids,
         validation_ids=validation_ids,
+        score_fn=score_context,
     )
     rows["test"] = test_rows
     inventories["test"] = test_inventory
     _require_expected_inventory("test", test_inventory)
     test_evaluation = evaluate_outcomes(test_rows, calibration, threshold)
+    _verify_runtime_checkout(repository_root, observed_commit)
     report = _build_report(
         archive_identity=archive_identity,
         manifest_digest=manifest.digest,
@@ -1314,7 +1357,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--receipt", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
-        _require_distinct_output_destinations(args.output, args.receipt)
+        _require_distinct_output_destinations(
+            args.output,
+            args.receipt,
+            archive_path=args.archive,
+        )
     except (OutcomeHoldoutError, OSError) as exc:
         code = exc.code if isinstance(exc, OutcomeHoldoutError) else "FILESYSTEM"
         print(json.dumps({"failure": code, "status": "incomplete"}, sort_keys=True))
