@@ -296,6 +296,29 @@ def test_runtime_binding_rejects_a_coordinated_source_export_swap(
     assert raised.value.code == "RUNTIME_CHECKOUT_IDENTITY"
 
 
+def test_runtime_binding_accepts_python_313_class_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    observed: list[str] = []
+    round_metrics = holdout._measurement_compute_module.RoundMetrics
+    monkeypatch.setattr(round_metrics, "__firstlineno__", 1, raising=False)
+    monkeypatch.setattr(
+        round_metrics,
+        "__static_attributes__",
+        ("C", "P"),
+        raising=False,
+    )
+    monkeypatch.setattr(
+        holdout,
+        "_verify_git_tree",
+        lambda *args, **kwargs: observed.append("verified"),
+    )
+
+    _verify_runtime_checkout(Path.cwd(), "a" * 40)
+
+    assert observed == ["verified"]
+
+
 def test_run_holdout_reverifies_one_in_memory_canon_after_scoring(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

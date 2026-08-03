@@ -478,13 +478,38 @@ def _verify_runtime_checkout(repository_root: Path, observed_commit: str) -> Non
         *round_metrics_method_names,
         *round_metrics_slots,
     }
+    round_metrics_keys = set(vars(round_metrics))
+    optional_interpreter_metadata = {
+        "__firstlineno__",
+        "__static_attributes__",
+    }
     if (
         type(round_metrics.__slots__) is not tuple
         or round_metrics.__slots__ != round_metrics_slots
-        or set(vars(round_metrics)) != expected_round_metrics_keys
+        or round_metrics_keys - optional_interpreter_metadata
+        != expected_round_metrics_keys
     ):
         raise OutcomeHoldoutError(
             "loaded EDCM RoundMetrics layout is not the authenticated class surface",
+            code="RUNTIME_CHECKOUT_IDENTITY",
+        )
+    if "__firstlineno__" in round_metrics_keys and (
+        type(vars(round_metrics)["__firstlineno__"]) is not int
+        or vars(round_metrics)["__firstlineno__"] <= 0
+    ):
+        raise OutcomeHoldoutError(
+            "loaded EDCM RoundMetrics line metadata is invalid",
+            code="RUNTIME_CHECKOUT_IDENTITY",
+        )
+    if "__static_attributes__" in round_metrics_keys and (
+        type(vars(round_metrics)["__static_attributes__"]) is not tuple
+        or not all(
+            type(name) is str
+            for name in vars(round_metrics)["__static_attributes__"]
+        )
+    ):
+        raise OutcomeHoldoutError(
+            "loaded EDCM RoundMetrics static-attribute metadata is invalid",
             code="RUNTIME_CHECKOUT_IDENTITY",
         )
     for slot_name in round_metrics_slots:
