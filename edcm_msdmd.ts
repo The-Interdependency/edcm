@@ -141,6 +141,129 @@ export default defineMsdmdCollection({
       "id": "edcm_multiwoz21_corpus"
     },
     {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "admitted development, validation, and test outcome events",
+        "since": "2026-08-02",
+        "then": "development alone fits the Platt map, validation alone selects the threshold, and the frozen calibration digest exists before test evaluation"
+      },
+      "file": "edcm/corpora/multiwoz21_booking_holdout.py",
+      "id": "multiwoz_booking_outcome_calibration_precedes_test"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a caller-held source archive plus report and receipt destinations including their atomic temporary paths and existing filesystem aliases",
+        "since": "2026-08-03",
+        "then": "any cross-artifact or artifact-to-archive collision fails before archive evaluation or artifact writes begin"
+      },
+      "file": "edcm/corpora/multiwoz21_booking_holdout.py",
+      "id": "multiwoz_booking_outcome_destinations_do_not_collide"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a frozen sensitivity, specificity, discrimination, or calibration hypothesis is not met",
+        "since": "2026-08-02",
+        "then": "the report records a falsified finding without converting that scientific result into an execution failure"
+      },
+      "file": "edcm/corpora/multiwoz21_booking_holdout.py",
+      "id": "multiwoz_booking_outcome_hypothesis_failure_is_evidence"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a source dialogue-act turn contains exactly one admitted booking outcome label",
+        "since": "2026-08-02",
+        "then": "candidate measurement consumes only exact preceding data.json turns and never the labelled system response, later text, labels, goals, metadata, ontology, or databases"
+      },
+      "file": "edcm/corpora/multiwoz21_booking_holdout.py",
+      "id": "multiwoz_booking_outcome_labelled_response_is_withheld"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "one holdout execution renders its aggregate report deterministically",
+        "since": "2026-08-03",
+        "then": "the complete-run repeat hypothesis remains not-evaluated until evidence from a separate complete execution is compared outside that single run"
+      },
+      "file": "edcm/corpora/multiwoz21_booking_holdout.py",
+      "id": "multiwoz_booking_outcome_repeat_requires_complete_execution"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "privacy",
+        "given": "the holdout run completes or fails",
+        "since": "2026-08-02",
+        "then": "written report and receipt contain aggregate counts, metrics, boundaries, and identities but no dialogue ids, source turns, normalized turns, per-event scores, or slot values"
+      },
+      "file": "edcm/corpora/multiwoz21_booking_holdout.py",
+      "id": "multiwoz_booking_outcome_report_is_aggregate_only"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a caller supplies a clean EDCM repository and expected producer commit",
+        "since": "2026-08-03",
+        "then": "every loaded experiment and score-affecting measurement module and helper binding is inside one runtime package tree, one authenticated in-memory canon is used throughout scoring, and the runtime bytes match the recorded commit before canon load and after scoring"
+      },
+      "file": "edcm/corpora/multiwoz21_booking_holdout.py",
+      "id": "multiwoz_booking_outcome_runtime_matches_recorded_checkout"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "the admitted archive, exact UCNS represented-evidence seal, and candidate EDCM report reconcile",
+        "since": "2026-08-02",
+        "then": "canon selection remains null, formal geometry and higher-gonol composition remain NA, production activation remains inactive, and proof, theorem, measurement-validity, semantic-authority, certification, and empirical status do not transfer"
+      },
+      "file": "edcm/corpora/multiwoz21_booking_holdout.py",
+      "id": "multiwoz_booking_outcome_status_does_not_transfer"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "repeated source outcome events may share one dialogue",
+        "since": "2026-08-02",
+        "then": "sensitivity and specificity carry Wilson intervals while balanced accuracy, Brier score, and ECE carry deterministic dialogue-cluster bootstrap intervals"
+      },
+      "file": "edcm/corpora/multiwoz21_booking_holdout.py",
+      "id": "multiwoz_booking_outcome_uncertainty_is_cluster_aware"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_bootstrap_intervals, _build_report, _candidate_score, _confusion, _ece10, _extract_partition, _require_distinct_output_destinations, _verify_represented_evidence_seal, _verify_runtime_checkout, _wilson_interval",
+        "module_kind": "experiment",
+        "module_name": "multiwoz21_booking_holdout",
+        "network_boundary": "none; source acquisition and publication are separate",
+        "owner": "Erin Spencer",
+        "public_surface": "OutcomeEvent, PlattCalibration, fit_platt_calibration, select_operating_threshold, evaluate_outcomes, run_holdout, main",
+        "requires": "edcm_multiwoz21_corpus, edcmbone_parser_turns_rounds, edcmbone_metrics_compute, ucns.profile.edcm-word-gonol at a98c9e6c69804a8a08d0786b1d8b450bb2c49a97",
+        "rollback": "remove the experiment module and supersede its aggregate evidence by identity; raw source remains outside Git",
+        "rollout": "explicit sealed experiment command only; no default measurement, production activation, or canon selection",
+        "since": "2026-08-02",
+        "storage_boundary": "reads a caller-held admitted archive plus tracked represented-evidence seals and writes caller-selected aggregate report and receipt paths",
+        "summary": "evaluates the maintained EDCM terminal-progress candidate against externally authored MultiWOZ 2.1 booking outcome events after development calibration and validation threshold freeze",
+        "tests": "tests.test_multiwoz21_booking_holdout",
+        "unresolved": "externally hidden holdout custody, independent human task-success adjudication, formal higher-gonol composition, independent replication, and joint canon authority",
+        "user_data_boundary": "exact source turns and dialogue ids are processed in memory but written outputs contain only aggregates and cryptographic chains"
+      },
+      "file": "edcm/corpora/multiwoz21_booking_holdout.py",
+      "id": "edcm_multiwoz21_booking_outcome_holdout"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
@@ -1567,6 +1690,136 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_calibration_and_threshold_depend_only_on_development_and_validation",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "multiwoz_booking_outcome_calibration_precedes_test",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_booking_holdout.py",
+      "id": "check_multiwoz_booking_outcome_calibration_precedes_test"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_output_destinations_reject_aliases_before_any_write",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "multiwoz_booking_outcome_destinations_do_not_collide",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_booking_holdout.py",
+      "id": "check_multiwoz_booking_outcome_destinations_do_not_collide"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_falsified_finding_is_serialized_without_raising",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "multiwoz_booking_outcome_hypothesis_failure_is_evidence",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_booking_holdout.py",
+      "id": "check_multiwoz_booking_outcome_hypothesis_failure_is_evidence"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_source_outcome_response_and_later_turns_are_withheld",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "multiwoz_booking_outcome_labelled_response_is_withheld",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_booking_holdout.py",
+      "id": "check_multiwoz_booking_outcome_labelled_response_is_withheld"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_single_run_leaves_complete_repeat_not_evaluated",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "multiwoz_booking_outcome_repeat_requires_complete_execution",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_booking_holdout.py",
+      "id": "check_multiwoz_booking_outcome_repeat_requires_complete_execution"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_report_schema_retains_aggregate_boundaries_without_event_locators",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "multiwoz_booking_outcome_report_is_aggregate_only",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_booking_holdout.py",
+      "id": "check_multiwoz_booking_outcome_report_is_aggregate_only"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_runtime_binding_rejects_a_foreign_score_helper",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "multiwoz_booking_outcome_runtime_matches_recorded_checkout",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_booking_holdout.py",
+      "id": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_sealed_holdout_evidence_matches_exact_producer_and_receipt",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "multiwoz_booking_outcome_calibration_precedes_test, multiwoz_booking_outcome_report_is_aggregate_only, multiwoz_booking_outcome_hypothesis_failure_is_evidence, multiwoz_booking_outcome_status_does_not_transfer",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_booking_holdout.py",
+      "id": "check_multiwoz_booking_outcome_sealed_evidence"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_report_schema_retains_aggregate_boundaries_without_event_locators",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "multiwoz_booking_outcome_status_does_not_transfer",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_booking_holdout.py",
+      "id": "check_multiwoz_booking_outcome_status_does_not_transfer"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_evaluation_reports_confusion_wilson_and_cluster_intervals",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "multiwoz_booking_outcome_uncertainty_is_cluster_aware",
+        "requires": "python3",
+        "timeout": "30"
+      },
+      "file": "tests/test_multiwoz21_booking_holdout.py",
+      "id": "check_multiwoz_booking_outcome_uncertainty_is_cluster_aware"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_archive_mutation_fails_before_dialogue_observation",
         "cleanup": "tempdir_teardown",
         "mutates": "filesystem",
@@ -2453,6 +2706,237 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
+      "from": "check_multiwoz_booking_outcome_calibration_precedes_test",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_calibration_precedes_test",
+      "to": "self::test_calibration_and_threshold_depend_only_on_development_and_validation"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_calibration_precedes_test",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_calibration_precedes_test",
+      "to": "multiwoz_booking_outcome_calibration_precedes_test"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_calibration_precedes_test",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_calibration_precedes_test",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_destinations_do_not_collide",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_destinations_do_not_collide",
+      "to": "self::test_output_destinations_reject_aliases_before_any_write"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_destinations_do_not_collide",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_destinations_do_not_collide",
+      "to": "multiwoz_booking_outcome_destinations_do_not_collide"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_destinations_do_not_collide",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_destinations_do_not_collide",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_hypothesis_failure_is_evidence",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_hypothesis_failure_is_evidence",
+      "to": "self::test_falsified_finding_is_serialized_without_raising"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_hypothesis_failure_is_evidence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_hypothesis_failure_is_evidence",
+      "to": "multiwoz_booking_outcome_hypothesis_failure_is_evidence"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_hypothesis_failure_is_evidence",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_hypothesis_failure_is_evidence",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_labelled_response_is_withheld",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_labelled_response_is_withheld",
+      "to": "self::test_source_outcome_response_and_later_turns_are_withheld"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_labelled_response_is_withheld",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_labelled_response_is_withheld",
+      "to": "multiwoz_booking_outcome_labelled_response_is_withheld"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_labelled_response_is_withheld",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_labelled_response_is_withheld",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_repeat_requires_complete_execution",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_repeat_requires_complete_execution",
+      "to": "self::test_single_run_leaves_complete_repeat_not_evaluated"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_repeat_requires_complete_execution",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_repeat_requires_complete_execution",
+      "to": "multiwoz_booking_outcome_repeat_requires_complete_execution"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_repeat_requires_complete_execution",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_repeat_requires_complete_execution",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_report_is_aggregate_only",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_report_is_aggregate_only",
+      "to": "self::test_report_schema_retains_aggregate_boundaries_without_event_locators"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_report_is_aggregate_only",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_report_is_aggregate_only",
+      "to": "multiwoz_booking_outcome_report_is_aggregate_only"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_report_is_aggregate_only",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_report_is_aggregate_only",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout",
+      "to": "self::test_runtime_binding_rejects_a_foreign_score_helper"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout",
+      "to": "multiwoz_booking_outcome_runtime_matches_recorded_checkout"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_sealed_evidence",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_sealed_evidence",
+      "to": "self::test_sealed_holdout_evidence_matches_exact_producer_and_receipt"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_sealed_evidence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_sealed_evidence",
+      "to": "multiwoz_booking_outcome_calibration_precedes_test"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_sealed_evidence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_sealed_evidence",
+      "to": "multiwoz_booking_outcome_hypothesis_failure_is_evidence"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_sealed_evidence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_sealed_evidence",
+      "to": "multiwoz_booking_outcome_report_is_aggregate_only"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_sealed_evidence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_sealed_evidence",
+      "to": "multiwoz_booking_outcome_status_does_not_transfer"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_sealed_evidence",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_sealed_evidence",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_status_does_not_transfer",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_status_does_not_transfer",
+      "to": "self::test_report_schema_retains_aggregate_boundaries_without_event_locators"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_status_does_not_transfer",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_status_does_not_transfer",
+      "to": "multiwoz_booking_outcome_status_does_not_transfer"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_status_does_not_transfer",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_status_does_not_transfer",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_uncertainty_is_cluster_aware",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_uncertainty_is_cluster_aware",
+      "to": "self::test_evaluation_reports_confusion_wilson_and_cluster_intervals"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_uncertainty_is_cluster_aware",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_uncertainty_is_cluster_aware",
+      "to": "multiwoz_booking_outcome_uncertainty_is_cluster_aware"
+    },
+    {
+      "from": "check_multiwoz_booking_outcome_uncertainty_is_cluster_aware",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz_booking_outcome_uncertainty_is_cluster_aware",
+      "to": "python3"
+    },
+    {
       "from": "check_occurrence_coverage_candidate",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -3053,6 +3537,41 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_metapat_adapter",
       "to": "optional metapat package"
+    },
+    {
+      "from": "edcm_multiwoz21_booking_outcome_holdout",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_booking_outcome_holdout",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_multiwoz21_booking_outcome_holdout",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_booking_outcome_holdout",
+      "to": "edcm_multiwoz21_corpus"
+    },
+    {
+      "from": "edcm_multiwoz21_booking_outcome_holdout",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_booking_outcome_holdout",
+      "to": "edcmbone_metrics_compute"
+    },
+    {
+      "from": "edcm_multiwoz21_booking_outcome_holdout",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_booking_outcome_holdout",
+      "to": "edcmbone_parser_turns_rounds"
+    },
+    {
+      "from": "edcm_multiwoz21_booking_outcome_holdout",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_multiwoz21_booking_outcome_holdout",
+      "to": "ucns.profile.edcm-word-gonol at a98c9e6c69804a8a08d0786b1d8b450bb2c49a97"
     },
     {
       "from": "edcm_multiwoz21_corpus",

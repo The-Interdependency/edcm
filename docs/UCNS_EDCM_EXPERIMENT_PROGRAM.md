@@ -196,4 +196,11 @@ A successful hypothesis means only that one candidate behaved as declared on thi
 
 ## hmmm
 
-The first externally meaningful canon decision requires independent corpus review, sealed holdout custody, and outcome labels not authored by the candidate implementer.
+The 2026-08-02 MultiWOZ booking-outcome run now supplies one bounded holdout
+with source labels not authored by the candidate implementer. Its public test
+membership is identity-sealed but not independently hidden, its balanced
+accuracy interval spans chance, and the source actions are not independent
+human adjudications of universal task success. The first externally meaningful
+canon decision still requires independent corpus review and replication,
+externally held test custody, human outcome authority, and an explicit joint
+decision packet.

@@ -1,0 +1,36 @@
+{
+  "calibration_digest": "881cf6f629384958e1bae593cbc5323e5c34d437f7d9c787cc489fd99ab59d72",
+  "canon_selection": null,
+  "completion": {
+    "development_events": 5214,
+    "hypotheses_falsified": 1,
+    "hypotheses_supported": 5,
+    "test_events": 661,
+    "validation_events": 656
+  },
+  "identities": {
+    "archive_sha256": "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e",
+    "candidate_input_digest_chains": {
+      "development": "9174a57b63976a61be3f681cd655d22ff3dfc87ad0b388a7d8b61b14d354aee1",
+      "test": "1fa24f651fd2fb70626f0e3d6a14a46c87c1c2f38aef5bab9f6c984309952542",
+      "validation": "afc2f27db7149f185823314f4f3869ec4298bc9563e40b0b3be8f9196715c2be"
+    },
+    "edcm_commit": "c292430771b4dc76734522b580caa2be18ca04f9",
+    "edcm_tree": "04beb8d9c6f01f2ec00bb06e55f77bea21e9b14a",
+    "represented_receipt_file_sha256": "8d20f99f3f788e09e9edad40f7d28a2b97de9d634868652bd058e50d504fe9c9",
+    "represented_report_file_sha256": "e228b9cb74c60ec4d6efb66f1d86c38069f613a875fa4c91f2973b46d20436f6",
+    "source_event_digest_chains": {
+      "development": "93782f8d345d201dea97e7584d5079c752b67a564c8913184f20678bc464f53f",
+      "test": "a1df80f41bb17eba23d51d48872f5253ba9eab12a0a67cb636ad7eb2a63841a9",
+      "validation": "11790941a50343c70dcb0ad2a728a5c48ed0ecff6ee4c1cc45182de8e5c23b8a"
+    },
+    "ucns_commit": "a98c9e6c69804a8a08d0786b1d8b450bb2c49a97",
+    "work_graph_sha256": "2253031d1c44c61533b0efd5348817171e2ed0ff2311a650ed48f7d8976f53dc"
+  },
+  "receipt_digest": "ba936824314d825952752e51b5fc2f0ebbaedb354f02fb4053e136b5bfde5bd3",
+  "report_digest": "a726434a533395e7e3bd7d72ba3e9ce68f58c5b62f3b6b10d2b0556b09e85e61",
+  "report_file_sha256": "4c7254cc2a2244eaf0e30e182153f803c9e2706774e9a743f7c22899bdcd64a3",
+  "schema_id": "edcm.multiwoz21-booking-outcome-holdout-receipt",
+  "schema_version": "0.1.0",
+  "status": "complete"
+}

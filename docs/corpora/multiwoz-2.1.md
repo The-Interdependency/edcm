@@ -243,6 +243,43 @@ identities rotate. The source-coordinate candidate is still not attached or
 consumed; `canon_selection` remains null, candidate measurement remains
 `not-run`, formal geometry remains `NA`, and EDCM/METAPAT remain inactive.
 
+## Externally labelled booking-outcome holdout
+
+The frozen 2026-08-02 design derives outcome events from source-native
+`dialogue_acts.json` annotations. An event is positive for `Booking-Book` and
+negative for `Booking-NoBook`. The labelled system response at log index
+`2k-1`, later turns, dialogue acts, goals, metadata, ontology, and databases
+remain outside candidate input. Exact source turns remain outside Git and are
+bound only through aggregate digest chains.
+
+Development fits a Platt map over the maintained terminal progress proxy;
+validation selects one balanced-accuracy threshold; the test partition is
+evaluated after the calibration digest freezes. Counts reconcile as:
+
+| Partition | Positive | Negative | Ambiguous excluded |
+|---|---:|---:|---:|
+| development | 4,164 | 1,050 | 19 |
+| validation | 543 | 113 | 0 |
+| test | 530 | 131 | 0 |
+
+The test produced `TP=249`, `FP=56`, `FN=281`, and `TN=75`. Sensitivity is
+`0.4698` (95% Wilson `0.4277–0.5124`); specificity is `0.5725` (`0.4869–0.6540`);
+balanced accuracy is `0.5212` with a 2,000-replicate dialogue-cluster interval
+of `0.4656–0.5739`. The declared sensitivity hypothesis is falsified. Low ECE
+(`0.0047`) accompanies a very small fitted slope and does not establish useful
+discrimination.
+
+- [frozen design](../experiments/2026-08-02-multiwoz-booking-outcome-holdout-design.md)
+- [findings](../experiments/2026-08-02-multiwoz-booking-outcome-holdout-findings.md)
+- [aggregate report](../../experiments/corpora/results/2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0.json)
+- [completion receipt](../../experiments/corpora/receipts/2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0-complete.json)
+
+A complete repeat produced byte-identical report and receipt files. This
+derived report advances only the admitted outcome events to bounded
+candidate-measured evidence. The underlying profile seal remains represented
+evidence; formal geometry, higher-gonol composition, production activation,
+measurement-validity transfer, and canon selection remain absent.
+
 ## File plan
 
 | Path | Change | Purpose | Risk | Required test |
@@ -254,6 +291,8 @@ consumed; `canon_selection` remains null, candidate measurement remains
 | `experiments/corpora/` | sealed evidence added | aggregate report and receipt only | accidental raw inclusion | tracked-file inspection, digest reconciliation, and byte-identical checkpoint repeat |
 | `experiments/corpora/supersessions/2026-07-28-multiwoz-2.1-space-origin.json` | created | preserve the old evidence identity and bind the sealed replacement | replacement mismatch or historical rewrite | supersession identity, file digest, and source-chain reconciliation |
 | `edcm_msdmd.ts` | regenerated | skill-lib metadata collection | stale contract graph | pinned skill-lib diff |
+| `edcm/corpora/multiwoz21_booking_holdout.py` | created | frozen calibration, validation threshold, sealed test evaluation, uncertainty, and receipts | response leakage, test tuning, or false completion | `tests/test_multiwoz21_booking_holdout.py` plus byte-identical full repeat |
+| `experiments/corpora/results/2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0.json` | sealed evidence added | aggregate externally labelled holdout result | raw source leakage or post-hoc result editing | report/receipt digest and producer-tree checks |
 
 ## hmmm
 

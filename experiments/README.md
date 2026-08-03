@@ -131,4 +131,34 @@ v0.1–v0.4 reports use their recorded UCNS experiment epoch; the controlled
 goal-vector report uses the current exact word-gonol profile and does not
 rewrite those earlier results.
 
+## MultiWOZ 2.1 booking-outcome holdout v0.1.0
+
+```text
+program:       edcm.multiwoz21-booking-outcome-holdout/0.1.0
+EDCM producer: c292430771b4dc76734522b580caa2be18ca04f9
+EDCM tree:     04beb8d9c6f01f2ec00bb06e55f77bea21e9b14a
+UCNS producer: a98c9e6c69804a8a08d0786b1d8b450bb2c49a97
+report digest: a726434a533395e7e3bd7d72ba3e9ce68f58c5b62f3b6b10d2b0556b09e85e61
+file sha256:   4c7254cc2a2244eaf0e30e182153f803c9e2706774e9a743f7c22899bdcd64a3
+supported:     5
+falsified:     1
+canon:         not selected
+```
+
+Evidence files:
+
+- [`corpora/results/2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0.json`](corpora/results/2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0.json)
+- [`corpora/receipts/2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0-complete.json`](corpora/receipts/2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0-complete.json)
+
+Design and interpretation:
+
+- [`../docs/experiments/2026-08-02-multiwoz-booking-outcome-holdout-design.md`](../docs/experiments/2026-08-02-multiwoz-booking-outcome-holdout-design.md)
+- [`../docs/experiments/2026-08-02-multiwoz-booking-outcome-holdout-findings.md`](../docs/experiments/2026-08-02-multiwoz-booking-outcome-holdout-findings.md)
+
+The source-labelled test confusion counts are `TP=249`, `FP=56`, `FN=281`,
+and `TN=75`. The declared sensitivity hypothesis is falsified. Balanced
+accuracy is `0.5212`, but its dialogue-cluster interval spans chance. The
+failure is preserved as evidence; no production activation or canon selection
+follows.
+
 Do not edit a result file in place. A changed corpus, candidate, policy, expected relation, comparison rule, or report schema requires a new versioned result.

@@ -119,9 +119,42 @@ python -m edcm.goal_vector_experiment \
 
 This is controlled candidate-measured evidence, not empirical validation.
 METAPAT constraints, formal UCNS geometry, formal completion, higher-gonol
-composition, proof transfer, and canon selection remain absent. The existing
-MultiWOZ seals remain represented evidence with candidate measurement
-`not-run`; this synthetic run does not retroactively change them.
+composition, proof transfer, and canon selection remain absent.
+
+## First externally labelled booking-outcome holdout
+
+The sealed MultiWOZ 2.1 booking-outcome experiment evaluates the maintained
+terminal progress proxy before source-annotated `Booking-Book` and
+`Booking-NoBook` responses. Development alone fits calibration, validation
+alone selects the threshold, and the 661-event test partition is evaluated
+after that freeze. The labelled response and all later turns remain outside
+candidate input.
+
+The test produced `TP=249`, `FP=56`, `FN=281`, and `TN=75`: sensitivity
+`0.4698`, specificity `0.5725`, and balanced accuracy `0.5212`. The 95%
+dialogue-cluster interval for balanced accuracy is `0.4656–0.5739`, so the
+small above-chance point estimate is weak evidence. The declared sensitivity
+hypothesis is falsified and remains in the report.
+
+- [frozen design](docs/experiments/2026-08-02-multiwoz-booking-outcome-holdout-design.md)
+- [findings](docs/experiments/2026-08-02-multiwoz-booking-outcome-holdout-findings.md)
+- [aggregate report](experiments/corpora/results/2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0.json)
+- [completion receipt](experiments/corpora/receipts/2026-08-02-multiwoz-2.1-booking-outcome-holdout-v0.1.0-complete.json)
+
+```bash
+python -m edcm.corpora.multiwoz21_booking_holdout \
+  --archive /path/to/MULTIWOZ2.1.zip \
+  --edcm-repository-root /path/to/edcm \
+  --edcm-commit "$(git -C /path/to/edcm rev-parse HEAD)" \
+  --output /tmp/multiwoz-booking-holdout.json \
+  --receipt /tmp/multiwoz-booking-holdout-complete.json
+```
+
+The historical MultiWOZ profile seals remain represented evidence. The new
+derived report is bounded candidate-measured holdout evidence; it does not
+retroactively turn the profile observation into formal geometry or empirical
+validation. `canon_selection` remains null, and EDCM/METAPAT activation remains
+inactive.
 
 ## Frozen maintained baseline
 
