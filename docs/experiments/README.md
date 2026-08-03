@@ -3,26 +3,27 @@
 ## Current frozen packet
 
 The only current response-tension-release packet is
-[v0.1.3](2026-08-03-response-tension-release-design-v0.1.3.md).
+[v0.1.4](2026-08-03-response-tension-release-design-v0.1.4.md).
 
 | Identity | Current value |
 |---|---|
-| Schema | `edcm.response-tension-release-experiment/0.1.3` |
+| Schema | `edcm.response-tension-release-experiment/0.1.4` |
 | Candidate | `edcm.response-tension-release/0.1.0` |
-| Packet SHA-256 | `3e3167da26d0d89b2acfc54b6f98e08220e0858c4e450e819efd366a4d6527e9` |
-| Packet Git blob | `2f77e534b9357b34ea7437506b09b448fef63f46` |
+| Packet SHA-256 | `7f84af9c13e20d07069db186ca32d7284b0bbc849ca3b24db755b42e4285fd40` |
+| Packet Git blob | `9dbdfa55507f0b24e663b89fb641991360e161d3` |
 | Design status | **FROZEN** |
 | Execution status | **BLOCKED** |
 
-Only v0.1.3 may govern a later separately authorized implementation or
+Only v0.1.4 may govern a later separately authorized implementation or
 execution. This pointer does not itself authorize either action.
 
 The unversioned
 [`2026-08-03-response-tension-release-design.md`](2026-08-03-response-tension-release-design.md)
 is immutable historical v0.1.0, not the current protocol. Versions
 [v0.1.1](2026-08-03-response-tension-release-design-v0.1.1.md) and
-[v0.1.2](2026-08-03-response-tension-release-design-v0.1.2.md) are likewise
-immutable and superseded. None of those three packets was executed. Do not use
+[v0.1.2](2026-08-03-response-tension-release-design-v0.1.2.md), and
+[v0.1.3](2026-08-03-response-tension-release-design-v0.1.3.md) are likewise
+immutable and superseded. None of those four packets was executed. Do not use
 them for implementation or execution.
 
 The predecessor's falsified sensitivity hypothesis and chance-spanning

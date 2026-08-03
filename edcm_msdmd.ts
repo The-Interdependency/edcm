@@ -212,7 +212,7 @@ export default defineMsdmdCollection({
         "class": "safety",
         "given": "a caller supplies a clean EDCM repository and expected producer commit",
         "since": "2026-08-03",
-        "then": "every loaded experiment and measurement module is inside one runtime package tree, one authenticated in-memory canon is used throughout scoring, and the runtime bytes match the recorded commit before canon load and after scoring"
+        "then": "every loaded experiment and score-affecting measurement module and helper binding is inside one runtime package tree, one authenticated in-memory canon is used throughout scoring, and the runtime bytes match the recorded commit before canon load and after scoring"
       },
       "file": "edcm/corpora/multiwoz21_booking_holdout.py",
       "id": "multiwoz_booking_outcome_runtime_matches_recorded_checkout"
@@ -1768,7 +1768,7 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
-        "call": "self::test_runtime_binding_rejects_a_mixed_measurement_import",
+        "call": "self::test_runtime_binding_rejects_a_foreign_score_helper",
         "cleanup": "none",
         "mutates": "none",
         "proves": "multiwoz_booking_outcome_runtime_matches_recorded_checkout",
@@ -2836,7 +2836,7 @@ export default defineMsdmdCollection({
       "kind": "calls",
       "source_block": "CHECKS",
       "source_id": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout",
-      "to": "self::test_runtime_binding_rejects_a_mixed_measurement_import"
+      "to": "self::test_runtime_binding_rejects_a_foreign_score_helper"
     },
     {
       "from": "check_multiwoz_booking_outcome_runtime_matches_recorded_checkout",

@@ -61,7 +61,7 @@ from __future__ import annotations
 #
 # id: check_multiwoz_booking_outcome_runtime_matches_recorded_checkout
 #   proves: multiwoz_booking_outcome_runtime_matches_recorded_checkout
-#   call: self::test_runtime_binding_rejects_a_mixed_measurement_import
+#   call: self::test_runtime_binding_rejects_a_foreign_score_helper
 #   requires: python3
 #   timeout: 30
 #   mutates: none
@@ -168,6 +168,30 @@ def test_runtime_binding_rejects_a_mixed_measurement_import(
         return []
 
     monkeypatch.setattr(holdout, "compute_transcript", foreign_compute)
+    with pytest.raises(OutcomeHoldoutError) as raised:
+        _verify_runtime_checkout(Path.cwd(), "a" * 40)
+    assert raised.value.code == "RUNTIME_CHECKOUT_IDENTITY"
+
+
+@pytest.mark.parametrize(
+    ("module_name", "helper_name"),
+    (
+        ("_measurement_compute_module", "novelty"),
+        ("_measurement_compute_module", "fixation_risk"),
+        ("_measurement_risk_module", "clamp"),
+    ),
+    ids=("compute-stats", "compute-risk", "risk-stats"),
+)
+def test_runtime_binding_rejects_a_foreign_score_helper(
+    monkeypatch: pytest.MonkeyPatch,
+    module_name: str,
+    helper_name: str,
+) -> None:
+    def foreign_helper(*args: Any, **kwargs: Any) -> float:
+        return 0.0
+
+    module = getattr(holdout, module_name)
+    monkeypatch.setattr(module, helper_name, foreign_helper)
     with pytest.raises(OutcomeHoldoutError) as raised:
         _verify_runtime_checkout(Path.cwd(), "a" * 40)
     assert raised.value.code == "RUNTIME_CHECKOUT_IDENTITY"
