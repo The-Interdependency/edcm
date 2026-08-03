@@ -83,7 +83,7 @@ any external byte-repeat claim.
 #
 # id: multiwoz_booking_outcome_runtime_matches_recorded_checkout
 #   given: a caller supplies a clean EDCM repository and expected producer commit
-#   then: every loaded experiment and measurement module is inside one runtime package tree, one authenticated in-memory canon is used throughout scoring, and the runtime bytes match the recorded commit before canon load and after scoring
+#   then: every loaded experiment and score-affecting measurement module and helper binding is inside one runtime package tree, one authenticated in-memory canon is used throughout scoring, and the runtime bytes match the recorded commit before canon load and after scoring
 #   class: safety
 #   since: 2026-08-03
 #
@@ -119,6 +119,8 @@ from zipfile import ZipFile
 
 import edcm.measurement.canon.loader as _measurement_canon_module
 import edcm.measurement.metrics.compute as _measurement_compute_module
+import edcm.measurement.metrics.risk as _measurement_risk_module
+import edcm.measurement.metrics.stats as _measurement_stats_module
 import edcm.measurement.parser.turns_rounds as _measurement_parser_module
 
 from .multiwoz21 import (
@@ -210,19 +212,62 @@ def _verify_runtime_checkout(repository_root: Path, observed_commit: str) -> Non
     runtime_module = Path(__file__).resolve()
     try:
         runtime_root = runtime_module.parents[2]
-        callable_sources = {
-            Path("edcm/corpora/multiwoz21.py"): inspect.getsourcefile(_git_commit),
-            Path("edcm/measurement/canon/loader.py"): inspect.getsourcefile(
-                CanonLoader
+        loaded_sources = (
+            (Path("edcm/corpora/multiwoz21.py"), _git_commit),
+            (Path("edcm/measurement/canon/loader.py"), _measurement_canon_module),
+            (Path("edcm/measurement/canon/loader.py"), CanonLoader),
+            (
+                Path("edcm/measurement/canon/loader.py"),
+                _measurement_compute_module.CanonLoader,
             ),
-            Path("edcm/measurement/metrics/compute.py"): inspect.getsourcefile(
-                compute_transcript
+            (
+                Path("edcm/measurement/canon/loader.py"),
+                _measurement_parser_module.CanonLoader,
             ),
-            Path(
-                "edcm/measurement/parser/turns_rounds.py"
-            ): inspect.getsourcefile(parse_transcript),
-        }
-    except (IndexError, TypeError) as exc:
+            (Path("edcm/measurement/metrics/compute.py"), _measurement_compute_module),
+            (Path("edcm/measurement/metrics/compute.py"), compute_transcript),
+            (Path("edcm/measurement/metrics/risk.py"), _measurement_risk_module),
+            (Path("edcm/measurement/metrics/stats.py"), _measurement_stats_module),
+            (
+                Path("edcm/measurement/parser/turns_rounds.py"),
+                _measurement_parser_module,
+            ),
+            (Path("edcm/measurement/parser/turns_rounds.py"), parse_transcript),
+            (
+                Path("edcm/measurement/parser/turns_rounds.py"),
+                _measurement_compute_module.Round,
+            ),
+        )
+        loaded_sources += tuple(
+            (Path("edcm/measurement/metrics/stats.py"), getattr(_measurement_compute_module, name))
+            for name in (
+                "clamp",
+                "tokenize",
+                "ttr",
+                "repetition_ratio",
+                "shannon_entropy",
+                "novelty",
+                "cosine_sim",
+                "rep_ngram_density",
+                "pattern_density",
+            )
+        )
+        loaded_sources += tuple(
+            (Path("edcm/measurement/metrics/risk.py"), getattr(_measurement_compute_module, name))
+            for name in ("fixation_risk", "loop_risk")
+        )
+        loaded_sources += tuple(
+            (Path("edcm/measurement/metrics/stats.py"), getattr(_measurement_risk_module, name))
+            for name in (
+                "clamp",
+                "cosine_sim",
+                "jaccard",
+                "novelty",
+                "rep_ngram_density",
+                "repetition_ratio",
+            )
+        )
+    except (AttributeError, IndexError, TypeError) as exc:
         raise OutcomeHoldoutError(
             "loaded EDCM runtime source identity is unavailable",
             code="RUNTIME_CHECKOUT_IDENTITY",
@@ -236,8 +281,15 @@ def _verify_runtime_checkout(repository_root: Path, observed_commit: str) -> Non
             "loaded holdout module is outside one EDCM runtime tree",
             code="RUNTIME_CHECKOUT_IDENTITY",
         )
-    for relative_path, source in callable_sources.items():
+    for relative_path, loaded_source in loaded_sources:
         expected_source = (runtime_root / relative_path).resolve()
+        try:
+            source = inspect.getsourcefile(loaded_source)
+        except TypeError as exc:
+            raise OutcomeHoldoutError(
+                "loaded EDCM runtime source identity is unavailable",
+                code="RUNTIME_CHECKOUT_IDENTITY",
+            ) from exc
         if source is None or Path(source).resolve() != expected_source:
             raise OutcomeHoldoutError(
                 "loaded EDCM measurement surface is outside the holdout runtime tree",
