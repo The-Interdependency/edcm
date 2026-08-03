@@ -155,9 +155,9 @@ export default defineMsdmdCollection({
       "block": "CONTRACTS",
       "fields": {
         "class": "safety",
-        "given": "caller-selected report and receipt destinations including their atomic temporary paths and existing filesystem aliases",
+        "given": "a caller-held source archive plus report and receipt destinations including their atomic temporary paths and existing filesystem aliases",
         "since": "2026-08-03",
-        "then": "any cross-artifact collision fails before archive evaluation or artifact writes begin"
+        "then": "any cross-artifact or artifact-to-archive collision fails before archive evaluation or artifact writes begin"
       },
       "file": "edcm/corpora/multiwoz21_booking_holdout.py",
       "id": "multiwoz_booking_outcome_destinations_do_not_collide"
@@ -212,7 +212,7 @@ export default defineMsdmdCollection({
         "class": "safety",
         "given": "a caller supplies a clean EDCM repository and expected producer commit",
         "since": "2026-08-03",
-        "then": "every loaded experiment and measurement module is inside one runtime package tree whose bytes match the recorded commit before source scoring begins"
+        "then": "every loaded experiment and measurement module is inside one runtime package tree, one authenticated in-memory canon is used throughout scoring, and the runtime bytes match the recorded commit before canon load and after scoring"
       },
       "file": "edcm/corpora/multiwoz21_booking_holdout.py",
       "id": "multiwoz_booking_outcome_runtime_matches_recorded_checkout"
