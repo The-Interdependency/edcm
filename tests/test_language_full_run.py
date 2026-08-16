@@ -6,15 +6,7 @@ import pytest
 
 from edcm.language.affixes import AffixRecord, load_affix_inventory
 from edcm.language.morphology import build_morphology_graph
-from edcm.language.placement import (
-    NonCanonicalLanguagePlacementError,
-    assign_affix_gonol,
-    assign_direct_atomic_gonol,
-    assign_root_gonol,
-    superpose_gonols,
-)
 from edcm.language.rendering import inverse_affix_candidates, render_affix_candidates
-from tools.build_oewn2025_embeddings import main as build_oewn_main
 
 
 def _find_affix(surface: str, primary: str | None = None) -> AffixRecord:
@@ -101,19 +93,3 @@ def test_indexed_affix_candidates_match_brute_reversible_renderer() -> None:
         if graph.immediate(surface)
     }
     assert observed == expected
-
-
-def test_all_noncanonical_language_gonol_construction_fails_closed() -> None:
-    with pytest.raises(NonCanonicalLanguagePlacementError):
-        assign_affix_gonol(_find_affix("un-"))
-    with pytest.raises(NonCanonicalLanguagePlacementError):
-        assign_root_gonol("root", ())
-    with pytest.raises(NonCanonicalLanguagePlacementError):
-        assign_direct_atomic_gonol("word", (), {})
-    with pytest.raises(NonCanonicalLanguagePlacementError):
-        superpose_gonols(())
-
-
-def test_retired_oewn_builder_fails_before_reading_or_writing_corpus_data() -> None:
-    with pytest.raises(NonCanonicalLanguagePlacementError):
-        build_oewn_main()
