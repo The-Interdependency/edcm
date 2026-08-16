@@ -1,0 +1,60 @@
+{
+  "schema": "edcm.tarot-ocr-run-receipt",
+  "version": "4.0.0",
+  "status": "FALSIFIED",
+  "protocol_commit": "5d20d70a3b2b9d91fefbfc5142294b262a125223",
+  "protocol_sha256": "b88716261761726af44b02ce135f897122e154b2d1d91bef363b18ac0c384565",
+  "reference_commit": "aed1cf7de3df80da104daf2b3c46246ff5c3fe39",
+  "reference_sha256": "2832183c54b34f8275057faf61d20b6139d54dbb140bd38ae9c89b4583dc1e4e",
+  "runner_commit": "e94579bfdf085769d5ba27bca8c8d599edfcbccb",
+  "artifacts": {
+    "location": "artifacts/tarot/ocr-v4/run-a",
+    "total_bytes": 276746762,
+    "manifest_sha256": "7d66f9bfa45734efc6e699fb5f0d801f521f6d65a87b6539d8e4a2d1d7edd751",
+    "validation_sha256": "201b0b54b5cd5a3a67aad5c8cc142e63857b595b9407afb4a6e31c419051149a",
+    "checkpoint_sha256": "d7b311a116d42bc4beb0b366cb53100e26d6a81cf6b7011e666c398308f62dde"
+  },
+  "sources": [
+    {
+      "source_id": "wellcome_etteilla_1783_1785",
+      "pages": 401,
+      "empty_txt_pages": 397,
+      "png_bytes": 272945880,
+      "txt_bytes": 5814,
+      "tsv_bytes": 119501,
+      "detected_words": 603,
+      "validation_cer": 1.0,
+      "validation_wer": 1.0
+    },
+    {
+      "source_id": "wellcome_etteilla_tableau_1780s",
+      "pages": 6,
+      "empty_txt_pages": 3,
+      "png_bytes": 3271756,
+      "txt_bytes": 1049,
+      "tsv_bytes": 13554,
+      "detected_words": 163,
+      "validation_cer": 0.07628865979381444,
+      "validation_wer": 0.21768707482993196
+    }
+  ],
+  "aggregate": {
+    "reference_characters": 3144,
+    "character_distance": 2248,
+    "cer": 0.7150127226463104,
+    "reference_words": 534,
+    "word_distance": 419,
+    "wer": 0.7846441947565543
+  },
+  "replay": "not-run-terminal-accuracy-failure",
+  "trusted_transcription_corpus": "not-produced",
+  "sources_rejected": false,
+  "ontology_selected": false,
+  "semantic_normalization": false,
+  "geometry_attached": false,
+  "measurement_attached": false,
+  "canon_selection": null,
+  "hmmm": [
+    "any new preprocessing, segmentation, or historical-type model requires a new preregistration and independent justification"
+  ]
+}

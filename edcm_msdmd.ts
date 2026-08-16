@@ -2029,6 +2029,50 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_normalization_distance_and_empty_page_rule",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v4_applies_frozen_accuracy_rule"
+      },
+      "file": "tests/test_tarot_ocr_v4.py",
+      "id": "check_tarot_ocr_v4_accuracy"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_canonical_serialization_is_byte_deterministic",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v4_serialization_is_deterministic"
+      },
+      "file": "tests/test_tarot_ocr_v4.py",
+      "id": "check_tarot_ocr_v4_determinism"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_frozen_identity_constants_and_record_verification",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_ocr_v4_verifies_every_frozen_identity, tarot_ocr_v4_resume_fails_closed"
+      },
+      "file": "tests/test_tarot_ocr_v4.py",
+      "id": "check_tarot_ocr_v4_identity_and_resume"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_record_preserves_hashes_confidence_and_page_identity",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_ocr_v4_preserves_raw_page_evidence"
+      },
+      "file": "tests/test_tarot_ocr_v4.py",
+      "id": "check_tarot_ocr_v4_raw_evidence"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_frozen_thresholds_accept_only_adequate_pages",
         "cleanup": "none",
         "mutates": "none",
@@ -2639,6 +2683,78 @@ export default defineMsdmdCollection({
       },
       "file": "tools/evaluate_tarot_pdf_text_layer.py",
       "id": "edcm_tarot_pdf_text_layer_gate"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "the sealed independent reference and complete OCR outputs",
+        "then": "inherited normalization, CER/WER thresholds, replacement check, and exact-empty rule produce only FALSIFIED, UNRESOLVED, or BLOCKED for one run"
+      },
+      "file": "tools/run_tarot_ocr_v4.py",
+      "id": "tarot_ocr_v4_applies_frozen_accuracy_rule"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "an admitted PDF page",
+        "then": "exact grayscale PNG, raw UTF-8 TXT, raw TSV, hashes, bytes, confidences, page identity, and typed unavailable alternatives are retained"
+      },
+      "file": "tools/run_tarot_ocr_v4.py",
+      "id": "tarot_ocr_v4_preserves_raw_page_evidence"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "an interrupted or completed output directory",
+        "then": "only checkpoint-bound exact files are reused and any missing, injected, or changed file blocks continuation"
+      },
+      "file": "tools/run_tarot_ocr_v4.py",
+      "id": "tarot_ocr_v4_resume_fails_closed"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "identical producer outputs and inputs",
+        "then": "canonical manifest, checkpoint, and evaluation bytes are identical"
+      },
+      "file": "tools/run_tarot_ocr_v4.py",
+      "id": "tarot_ocr_v4_serialization_is_deterministic"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a protocol execution request",
+        "then": "both PDFs, renderer, OCR executable, French model, versions, page counts, and reference bytes must match before a producer runs"
+      },
+      "file": "tools/run_tarot_ocr_v4.py",
+      "id": "tarot_ocr_v4_verifies_every_frozen_identity"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "producer verification, render/OCR execution, checkpoint verification, TSV reconstruction, CER/WER scoring",
+        "module_kind": "experiment",
+        "module_name": "tarot_ocr_v4_runner",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "command-line interface",
+        "requires": "edcm_tarot_corpus_acquirer",
+        "rollback": "remove this runner without altering frozen protocol or result receipts",
+        "rollout": "explicit CLI only after validation reference commit aed1cf7de3df80da104daf2b3c46246ff5c3fe39",
+        "storage_boundary": "write",
+        "summary": "executes the frozen Tarot OCR v4 protocol with exact producer identities, resumable raw outputs, deterministic manifests, and independent-reference scoring",
+        "tests": "tests.test_tarot_ocr_v4",
+        "user_data_boundary": "none"
+      },
+      "file": "tools/run_tarot_ocr_v4.py",
+      "id": "edcm_tarot_ocr_v4_runner"
     }
   ],
   "edges": [
@@ -3665,6 +3781,69 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
+      "from": "check_tarot_ocr_v4_accuracy",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_accuracy",
+      "to": "self::test_normalization_distance_and_empty_page_rule"
+    },
+    {
+      "from": "check_tarot_ocr_v4_accuracy",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_accuracy",
+      "to": "tarot_ocr_v4_applies_frozen_accuracy_rule"
+    },
+    {
+      "from": "check_tarot_ocr_v4_determinism",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_determinism",
+      "to": "self::test_canonical_serialization_is_byte_deterministic"
+    },
+    {
+      "from": "check_tarot_ocr_v4_determinism",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_determinism",
+      "to": "tarot_ocr_v4_serialization_is_deterministic"
+    },
+    {
+      "from": "check_tarot_ocr_v4_identity_and_resume",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_identity_and_resume",
+      "to": "self::test_frozen_identity_constants_and_record_verification"
+    },
+    {
+      "from": "check_tarot_ocr_v4_identity_and_resume",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_identity_and_resume",
+      "to": "tarot_ocr_v4_resume_fails_closed"
+    },
+    {
+      "from": "check_tarot_ocr_v4_identity_and_resume",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_identity_and_resume",
+      "to": "tarot_ocr_v4_verifies_every_frozen_identity"
+    },
+    {
+      "from": "check_tarot_ocr_v4_raw_evidence",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_raw_evidence",
+      "to": "self::test_record_preserves_hashes_confidence_and_page_identity"
+    },
+    {
+      "from": "check_tarot_ocr_v4_raw_evidence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_raw_evidence",
+      "to": "tarot_ocr_v4_preserves_raw_page_evidence"
+    },
+    {
       "from": "check_tarot_text_gate_frozen_thresholds",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -4538,6 +4717,20 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_tarot_corpus_acquirer",
       "to": "none"
+    },
+    {
+      "from": "edcm_tarot_ocr_v4_runner",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v4_runner",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_ocr_v4_runner",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v4_runner",
+      "to": "edcm_tarot_corpus_acquirer"
     },
     {
       "from": "edcm_tarot_pdf_text_layer_gate",
