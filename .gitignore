@@ -22,5 +22,12 @@ experiments/corpora/checkpoints/
 # experiments/ after byte-identical replay; large branch carriers stay cached).
 generated/
 
+# Generated corpus/artifact materializations; keep only directory guidance.
+/artifacts/*
+!/artifacts/README.md
+!/artifacts/tarot/
+/artifacts/tarot/*
+!/artifacts/tarot/README.md
+
 # OS / editor cruft
 .DS_Store
