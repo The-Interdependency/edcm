@@ -121,7 +121,7 @@ This is controlled candidate-measured evidence, not empirical validation.
 METAPAT constraints, formal UCNS geometry, formal completion, higher-gonol
 composition, proof transfer, and canon selection remain absent.
 
-## First externally labelled booking-outcome holdout
+## Deprecated booking-outcome proxy and its sealed holdout
 
 The sealed MultiWOZ 2.1 booking-outcome experiment evaluates the maintained
 terminal progress proxy before source-annotated `Booking-Book` and
@@ -135,6 +135,14 @@ The test produced `TP=249`, `FP=56`, `FN=281`, and `TN=75`: sensitivity
 dialogue-cluster interval for balanced accuracy is `0.4656–0.5739`, so the
 small above-chance point estimate is weak evidence. The declared sensitivity
 hypothesis is falsified and remains in the report.
+
+The candidate `edcm.maintained-terminal-progress/0.1.0` is now
+**DEPRECATED for outcome discrimination**. It must not drive production,
+content generation, balance decisions, or a successor experiment. The sealed
+result and receipt remain unchanged as falsifier evidence. No replacement
+candidate has been selected; that boundary remains `hmmm`.
+
+- [deprecation record](docs/deprecations/2026-08-16-maintained-terminal-progress.md)
 
 - [frozen design](docs/experiments/2026-08-02-multiwoz-booking-outcome-holdout-design.md)
 - [findings](docs/experiments/2026-08-02-multiwoz-booking-outcome-holdout-findings.md)

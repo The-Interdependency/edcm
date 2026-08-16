@@ -3,6 +3,9 @@
 Date: 2026-08-02
 Status: sealed externally labelled candidate-measurement evidence; no canon selection
 
+Current disposition (2026-08-16): the candidate is **DEPRECATED for outcome
+discrimination**. This disposition does not alter the sealed result or receipt.
+
 ## Outcome
 
 The maintained EDCM terminal progress proxy did not meet the frozen
