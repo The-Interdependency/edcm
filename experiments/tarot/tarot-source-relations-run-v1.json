@@ -1,0 +1,82 @@
+{
+  "schema": "edcm.tarot-source-envelope-relations-run-receipt",
+  "version": "1.0.0",
+  "run_date": "2026-08-16",
+  "work_graph_sha256": "087174d2675ee4f59dd6d40efa64716c9eee54335b33f45078fcab29aad7a7ca",
+  "implementation": {
+    "repository": "The-Interdependency/edcm",
+    "commit": "f968b3287950ff0af925ef09fa6faf2f319738c5",
+    "algorithm": "exact-source-envelope-relations-v1"
+  },
+  "acquisition": {
+    "manifest_file_sha256": "077fb65a2fdbb2e0d0816caf26eeea5792066edc5658a7376d41b56bc8eff685",
+    "manifest_canonical_sha256": "d157b2dc0d8773a378f95b33c0118c0dff3d72f2b87d4a0286cddc660c36e218",
+    "receipt_sha256": "b39ddeacea57581ec9c7fc54a05885b8cad24e241e9c005cabb419ec97f2cfd4",
+    "evidence_index_sha256": "c7d1a2ce415a71c6a82a324584cfb6d9d0fc958fdfd6c814f0355c13e7b86ac3",
+    "source_count": 17,
+    "fetched_count": 2,
+    "artifacts": [
+      {
+        "source_id": "wellcome_etteilla_1783_1785",
+        "bytes": 77852106,
+        "sha256": "d44fc8bf81e5356fa1f05d11a9e92723ee36efe94b3af2def5c1c97e80ff5c0f"
+      },
+      {
+        "source_id": "wellcome_etteilla_tableau_1780s",
+        "bytes": 869817,
+        "sha256": "d3a2e8e82c79e9a109e662e53ff034dcabc7f2902c52dcde10fec9d3529f5381"
+      }
+    ]
+  },
+  "discovery": {
+    "status": "UNRESOLVED",
+    "report_sha256": "b4878bbfe1aeb3f9fe8bff61a57a7c77afad4173b6f50ebccb94e6f867813f9d",
+    "sources": 17,
+    "assertions": 180,
+    "typed_absences": 75,
+    "adjacency_relations": 16,
+    "artifact_bindings": 2,
+    "exact_value_agreements": 12,
+    "normalization": "none",
+    "ocr": "not-run",
+    "image_interpretation": "not-run"
+  },
+  "independent_replay": {
+    "status": "SURVIVED",
+    "report_bytes_identical": true,
+    "comparison": "cmp over two independently written reports",
+    "runs": [
+      "artifacts/tarot/relations-v1-a.json",
+      "artifacts/tarot/relations-v1-b.json"
+    ]
+  },
+  "validation": {
+    "tarot_acquisition_and_discovery_suite": "9 passed",
+    "edcm_full_suite": "253 passed, 25 optional-dependency skips",
+    "edcm_integrity": "passed",
+    "edcm_metadata_contract_graph": "closed",
+    "canonical_msdmd_collection": "regenerated",
+    "edcm_build_and_twine": "passed"
+  },
+  "status": "SURVIVED",
+  "survived_scope": "deterministic exact source-envelope relation discovery only",
+  "ontology_selected": false,
+  "cross_source_card_identity_inferred": false,
+  "geometry_attached": false,
+  "measurement_attached": false,
+  "canon_selection": null,
+  "nonclaims": [
+    "Tarot ontology",
+    "cross-source card identity",
+    "semantic equivalence",
+    "historical truth",
+    "UCNS recursive representation or geometry",
+    "EDCM measurement validity"
+  ],
+  "hmmm": [
+    "PDF content extraction and OCR are not run",
+    "image regions and card boundaries are not interpreted",
+    "same-field exact value is identity evidence rather than semantic equivalence",
+    "cross-source Tarot relations beyond source envelopes remain unresolved"
+  ]
+}
