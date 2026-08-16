@@ -1,0 +1,51 @@
+name: temporary fix tarot msdmd
+
+on:
+  push:
+    branches: [agent/tarot-corpus-acquisition]
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out EDCM head branch
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: agent/tarot-corpus-acquisition
+
+      - name: Check out pinned canonical skill-lib
+        uses: actions/checkout@v7.0.1
+        with:
+          repository: The-Interdependency/skill-lib
+          ref: 2b24be24947223b86440f59f1bd9766130f9cc11
+          path: _skill-lib
+
+      - name: Set up Python
+        uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Generate canonical EDCM-only collection
+        run: |
+          rm -rf /tmp/skill-lib
+          cp -a _skill-lib /tmp/skill-lib
+          rm -rf _skill-lib
+          PYTHONPATH=/tmp/skill-lib python /tmp/skill-lib/msdmd/collect.py \
+            --root . \
+            --repo The-Interdependency/edcm \
+            --out /tmp/edcm_msdmd.ts
+
+      - name: Commit generated collection if changed
+        run: |
+          if cmp -s edcm_msdmd.ts /tmp/edcm_msdmd.ts; then
+            exit 0
+          fi
+          cp /tmp/edcm_msdmd.ts edcm_msdmd.ts
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add edcm_msdmd.ts
+          git commit -m "chore: correct Tarot msdmd collection"
+          git push origin HEAD:agent/tarot-corpus-acquisition
