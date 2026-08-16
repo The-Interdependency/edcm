@@ -3,6 +3,270 @@ import { defineMsdmdCollection } from "./.agents/skills/msdmd/collection";
 export default defineMsdmdCollection({
   "declarations": [
     {
+      "block": "LLMS",
+      "fields": {
+        "content": "- Skills live as root directories with SKILL.md files and optional helpers."
+      },
+      "file": "_skill-lib/llms/metadata.py",
+      "id": "architecture_summary"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "msdmd": "Module Self-Declared Metadata in Markdown \u2014 the foundational convention where each source module declares its own structured metadata in a fenced comment block."
+      },
+      "file": "_skill-lib/llms/metadata.py",
+      "id": "key_definitions"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "content": "skill-lib is the canonical organization-wide source for reusable agent skills in The Interdependency."
+      },
+      "file": "_skill-lib/llms/metadata.py",
+      "id": "project_overview"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "content": "- Read AGENTS.md, skills.json, and the relevant skill file before changing a skill."
+      },
+      "file": "_skill-lib/llms/metadata.py",
+      "id": "usage_rules"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "`loto clear` on a scar",
+        "then": "refused on dirty tree; on clean tree produces a commit touching zero files, carrying scar trailers, and deletes the scar"
+      },
+      "file": "_skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_clear_is_empty_commit"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "one in-scope mutation commit and passing test evidence; `loto close`",
+        "then": ".loto/ is empty and HEAD carries Loto-* trailers; git is the only archive"
+      },
+      "file": "_skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_close_deletes_tag"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a failing run of a test command followed by a passing run of the identical command",
+        "then": "close proceeds; a distinct command whose latest run failed still blocks close"
+      },
+      "file": "_skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_latest_test_wins"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "more than one commit between base and HEAD at close",
+        "then": "close refuses (v0.1 invariant: one session, one mutation commit)"
+      },
+      "file": "_skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_one_commit_per_session"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "clean working tree; `loto open` succeeds",
+        "then": "working tree is still clean; exclusion went to .git/info/exclude, never .gitignore"
+      },
+      "file": "_skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_open_never_dirties"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "an unacknowledged SCAR-*.json in .loto/",
+        "then": "`loto open` refuses and `loto guard` exits nonzero"
+      },
+      "file": "_skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_scar_blocks_work"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "files touched outside the declared --files globs",
+        "then": "close refuses with the violating paths named"
+      },
+      "file": "_skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "loto_scope_enforced"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_load, _save, _touched_files, _scope_violations, _trailers, _digest, _commit, _git, _ensure_gitignored",
+        "module_kind": "instrument",
+        "module_name": "repo_loto",
+        "network_boundary": "none",
+        "owner": "Way Seer Erin",
+        "public_surface": "loto open, loto run, loto test, loto close, loto fail, loto clear, loto status, loto guard, loto install-hook",
+        "rollback": "rm -rf .loto/ and remove hook line",
+        "rollout": "manual invocation; pre-push hook calls `loto guard`",
+        "storage_boundary": "write",
+        "summary": "delete-on-completion session gate for repo mutation; presence of state means open work, absence means clean",
+        "tests": "tests/test_repo_loto.py (CHECKS-declared, reconciled via --audit)",
+        "unresolved": "credential-gate integration, ratios bookends",
+        "user_data_boundary": "none"
+      },
+      "file": "_skill-lib/skill_lib/safety/repo_loto.py",
+      "id": "repo_mutation_gate"
+    },
+    {
+      "block": "DOCS",
+      "fields": {
+        "source": "docs/module.md",
+        "status": "current",
+        "summary": "module docs"
+      },
+      "file": "_skill-lib/tests/test_collect.py",
+      "id": "module_docs"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "content": "example only"
+      },
+      "file": "_skill-lib/tests/test_llms_build.py",
+      "id": "project_overview"
+    },
+    {
+      "block": "LLMS",
+      "fields": {
+        "content": "real declaration"
+      },
+      "file": "_skill-lib/tests/test_llms_build.py",
+      "id": "project_overview"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_clear_is_empty_commit",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_clear_is_empty_commit",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "_skill-lib/tests/test_repo_loto.py",
+      "id": "check_clear_is_empty_commit"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_close_deletes_tag",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_close_deletes_tag",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "_skill-lib/tests/test_repo_loto.py",
+      "id": "check_close_deletes_tag"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_latest_test_wins",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_latest_test_wins",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "_skill-lib/tests/test_repo_loto.py",
+      "id": "check_latest_test_wins"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_one_commit_per_session",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_one_commit_per_session",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "_skill-lib/tests/test_repo_loto.py",
+      "id": "check_one_commit_per_session"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_open_never_dirties",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_open_never_dirties",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "_skill-lib/tests/test_repo_loto.py",
+      "id": "check_open_never_dirties"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_scar_blocks_work",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_scar_blocks_work",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "_skill-lib/tests/test_repo_loto.py",
+      "id": "check_scar_blocks_work"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_scope_enforced",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "loto_scope_enforced",
+        "requires": "git, python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "_skill-lib/tests/test_repo_loto.py",
+      "id": "check_scope_enforced"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "internal_surface": "_mk_repo, _run, _loto, _parse_block, _resolve_call, _requires_met",
+        "module_kind": "checks",
+        "module_name": "test_repo_loto",
+        "owner": "Way Seer Erin",
+        "public_surface": "test_* functions, main, --audit",
+        "summary": "evidentiary procedures for repo_loto CONTRACTS; standalone or pytest; --audit reconciles the declared graph without execution",
+        "tests": "self",
+        "unresolved": "mutation-level verification that checks actually exercise their contracts"
+      },
+      "file": "_skill-lib/tests/test_repo_loto.py",
+      "id": "repo_loto_evidence"
+    },
+    {
+      "block": "DOCS",
+      "fields": {
+        "summary": "second"
+      },
+      "file": "_skill-lib/tests/test_universal_parser.py",
+      "id": "second_docs"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
@@ -1911,6 +2175,71 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_manifest_rejects_auto_fetch_without_public_domain_rights",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_acquisition_fetches_only_authorized_public_domain_bytes",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_auto_fetch_rights_gate"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_completed_resume_reuses_exact_state_and_rejects_tamper",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_acquisition_resume_fails_closed",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_completed_resume_fails_closed"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_acquisition_fetches_only_public_domain_and_seals_source_identity",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_acquisition_fetches_only_authorized_public_domain_bytes, tarot_metadata_only_sources_are_not_downloaded, tarot_acquisition_preserves_source_identity",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_fetch_authority_and_metadata_only_boundary"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_interrupted_resume_keeps_verified_completed_sources",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_acquisition_resume_fails_closed, tarot_acquisition_preserves_source_identity",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_interrupted_resume_checkpoint"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_committed_manifest_validates_without_tarot_ontology",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_manifest_preserves_preontology_boundary",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_manifest_preserves_preontology_boundary"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_exact_profile_activates_and_option_drift_suspends",
         "cleanup": "none",
         "mutates": "none",
@@ -2184,6 +2513,85 @@ export default defineMsdmdCollection({
       },
       "file": "tests/test_ucns_fork_lint.py",
       "id": "check_edcm_fork_status_firewall"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a source requests automatic byte acquisition",
+        "since": "2026-08-16",
+        "then": "the source must declare an HTTPS content URL, a safe artifact name, expected media type, and public-domain or Public Domain Mark rights before any network request occurs"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_acquisition_fetches_only_authorized_public_domain_bytes"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a Tarot source is admitted to an acquisition run",
+        "since": "2026-08-16",
+        "then": "its exact manifest entry digest, locator, retrieval policy, rights state, and any fetched byte digest are recorded without semantic normalization"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_acquisition_preserves_source_identity"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a completed or interrupted Tarot acquisition is resumed",
+        "since": "2026-08-16",
+        "then": "manifest identity, checkpoint entries, byte digests, and the exact output file set are validated; altered, missing, stale, or injected state is rejected"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_acquisition_resume_fails_closed"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a Tarot corpus manifest is loaded",
+        "since": "2026-08-16",
+        "then": "only the frozen evidence-envelope schema is accepted and ontology, canonical-deck, canonical-card-count, cross-source card identity, and I Ching inclusion remain explicitly unselected"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_manifest_preserves_preontology_boundary"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a source is metadata_only or manual_review",
+        "since": "2026-08-16",
+        "then": "no content request is issued and the source remains a provenance-bearing locator in the evidence index"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_metadata_only_sources_are_not_downloaded"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_fetch_https, _write_checkpoint, _validate_completed_run, _canonical_bytes",
+        "module_kind": "instrument",
+        "module_name": "tarot_corpus_acquirer",
+        "network_boundary": "external",
+        "owner": "Erin Spencer",
+        "public_surface": "validate_manifest, acquire_manifest, main",
+        "requires": "none",
+        "rollback": "remove this tool and its corpus/artifact documentation; generated artifacts are reproducible caches and remain noncanonical",
+        "rollout": "explicit CLI only; no automatic embedding or corpus download",
+        "since": "2026-08-16",
+        "storage_boundary": "write",
+        "summary": "validates a provenance-only Tarot source manifest, acquires only explicitly authorized public-domain bytes, and seals deterministic evidence receipts without defining Tarot ontology",
+        "tests": "tests.test_tarot_corpus_acquisition",
+        "unresolved": "source-specific item licensing and child-object identities beyond pinned public-domain downloads; OCR, transcription, semantic extraction, and EDCM embedding remain separate stages",
+        "user_data_boundary": "none; public cultural and archival evidence only"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "edcm_tarot_corpus_acquirer"
     }
   ],
   "edges": [
@@ -2221,6 +2629,76 @@ export default defineMsdmdCollection({
       "source_block": "CAPABILITIES",
       "source_id": "edcm_fail_closed_ucns_fork_lint",
       "to": "user_data:semantic provenance only"
+    },
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "self::test_clear_is_empty_commit"
+    },
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "loto_clear_is_empty_commit"
+    },
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "git"
+    },
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_clear_is_empty_commit",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_clear_is_empty_commit",
+      "to": "python3"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "self::test_close_deletes_tag"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "loto_close_deletes_tag"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "git"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_close_deletes_tag",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_close_deletes_tag",
+      "to": "python3"
     },
     {
       "from": "check_contrastive_order_multiplicity_resolution",
@@ -2556,6 +3034,41 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "CHECKS",
       "source_id": "check_joint_runner_preserves_no_canon",
+      "to": "python3"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
+      "to": "self::test_latest_test_wins"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
+      "to": "loto_latest_test_wins"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
+      "to": "git"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_latest_test_wins",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_latest_test_wins",
       "to": "python3"
     },
     {
@@ -2958,6 +3471,111 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
+      "from": "check_one_commit_per_session",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "self::test_one_commit_per_session"
+    },
+    {
+      "from": "check_one_commit_per_session",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "loto_one_commit_per_session"
+    },
+    {
+      "from": "check_one_commit_per_session",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "git"
+    },
+    {
+      "from": "check_one_commit_per_session",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_one_commit_per_session",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_one_commit_per_session",
+      "to": "python3"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "self::test_open_never_dirties"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "loto_open_never_dirties"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "git"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_open_never_dirties",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_open_never_dirties",
+      "to": "python3"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "self::test_scar_blocks_work"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "loto_scar_blocks_work"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "git"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_scar_blocks_work",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scar_blocks_work",
+      "to": "python3"
+    },
+    {
       "from": "check_scope_assertion_candidate",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -2976,6 +3594,167 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "CHECKS",
       "source_id": "check_scope_assertion_candidate",
+      "to": "python3"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "self::test_scope_enforced"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "loto_scope_enforced"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "git"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_scope_enforced",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_enforced",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_auto_fetch_rights_gate",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_auto_fetch_rights_gate",
+      "to": "self::test_manifest_rejects_auto_fetch_without_public_domain_rights"
+    },
+    {
+      "from": "check_tarot_auto_fetch_rights_gate",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_auto_fetch_rights_gate",
+      "to": "tarot_acquisition_fetches_only_authorized_public_domain_bytes"
+    },
+    {
+      "from": "check_tarot_auto_fetch_rights_gate",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_auto_fetch_rights_gate",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_completed_resume_fails_closed",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_completed_resume_fails_closed",
+      "to": "self::test_completed_resume_reuses_exact_state_and_rejects_tamper"
+    },
+    {
+      "from": "check_tarot_completed_resume_fails_closed",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_completed_resume_fails_closed",
+      "to": "tarot_acquisition_resume_fails_closed"
+    },
+    {
+      "from": "check_tarot_completed_resume_fails_closed",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_completed_resume_fails_closed",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "self::test_acquisition_fetches_only_public_domain_and_seals_source_identity"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "tarot_acquisition_fetches_only_authorized_public_domain_bytes"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "tarot_acquisition_preserves_source_identity"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "tarot_metadata_only_sources_are_not_downloaded"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_interrupted_resume_checkpoint",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_interrupted_resume_checkpoint",
+      "to": "self::test_interrupted_resume_keeps_verified_completed_sources"
+    },
+    {
+      "from": "check_tarot_interrupted_resume_checkpoint",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_interrupted_resume_checkpoint",
+      "to": "tarot_acquisition_preserves_source_identity"
+    },
+    {
+      "from": "check_tarot_interrupted_resume_checkpoint",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_interrupted_resume_checkpoint",
+      "to": "tarot_acquisition_resume_fails_closed"
+    },
+    {
+      "from": "check_tarot_interrupted_resume_checkpoint",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_interrupted_resume_checkpoint",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_manifest_preserves_preontology_boundary",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_manifest_preserves_preontology_boundary",
+      "to": "self::test_committed_manifest_validates_without_tarot_ontology"
+    },
+    {
+      "from": "check_tarot_manifest_preserves_preontology_boundary",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_manifest_preserves_preontology_boundary",
+      "to": "tarot_manifest_preserves_preontology_boundary"
+    },
+    {
+      "from": "check_tarot_manifest_preserves_preontology_boundary",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_manifest_preserves_preontology_boundary",
       "to": "python3"
     },
     {
@@ -3742,6 +4521,20 @@ export default defineMsdmdCollection({
       "to": "edcmucns_manifest"
     },
     {
+      "from": "edcm_tarot_corpus_acquirer",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_corpus_acquirer",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_corpus_acquirer",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_corpus_acquirer",
+      "to": "none"
+    },
+    {
       "from": "edcm_ucns_adapter",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
@@ -4356,6 +5149,20 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcmucns_validation",
       "to": "edcmucns_types"
+    },
+    {
+      "from": "repo_loto_evidence",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "repo_loto_evidence",
+      "to": "Way Seer Erin"
+    },
+    {
+      "from": "repo_mutation_gate",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "repo_mutation_gate",
+      "to": "Way Seer Erin"
     }
   ],
   "gaps": [],
