@@ -14,8 +14,21 @@ python tools/acquire_tarot_corpus.py --output artifacts/tarot/acquisition-v1
 python tools/acquire_tarot_corpus.py --output artifacts/tarot/acquisition-v1 --resume
 ```
 
+Then discover only the exact source-envelope relations:
+
+```bash
+python tools/discover_tarot_relations.py \
+  --manifest corpus/tarot/sources.v1.json \
+  --acquisition artifacts/tarot/acquisition-v1 \
+  --output artifacts/tarot/relations-v1.json
+```
+
 Only entries explicitly marked `fetch_bytes` with public-domain authority are downloaded. `metadata_only` and `manual_review` entries remain source locators until exact object identity and rights are resolved.
 
-After acquisition, EDCM may consume the evidence index and raw bytes to discover distinctions and relations. UCNS construction comes after those distinctions exist; neither this manifest nor the acquisition runner creates the Platonic Tarot card.
+The first discovery runner consumes the evidence index but does not inspect raw
+PDF content. It retains source order, exact values, typed absence, artifact
+bindings, and byte-exact same-field agreement. UCNS construction comes after
+the distinctions exist; neither this manifest nor either runner creates the
+Platonic Tarot card.
 
 hmmm: source coverage, image-level acquisition, modern deck rights, transcription/OCR, and downstream multimodal EDCM ingestion remain open.

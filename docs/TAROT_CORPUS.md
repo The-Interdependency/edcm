@@ -70,11 +70,29 @@ python tools/check_metadata_contracts.py
 
 ## Next stage
 
-The acquisition output is an input boundary for EDCM, not an embedding itself:
+The acquisition output is an input boundary for EDCM, not an embedding itself.
+The first bounded discovery stage is now executable:
+
+```bash
+python tools/discover_tarot_relations.py \
+  --manifest corpus/tarot/sources.v1.json \
+  --acquisition artifacts/tarot/acquisition-v1 \
+  --output artifacts/tarot/relations-v1.json
+```
+
+This stage validates the complete sealed acquisition, preserves manifest order
+and exact field values, records typed absence, binds fetched artifacts, and
+reports only same-field byte-exact agreement. It does not inspect PDF content,
+tokenize or normalize language, infer card identity, select an ontology, build
+UCNS objects, or run EDCM measurement. A single result remains `UNRESOLVED`;
+repeat-run byte identity is determinism evidence only.
+
+The wider path remains:
 
 ```text
 Tarot evidence snapshot
-    -> EDCM distinction/relation discovery
+    -> EDCM source-envelope distinction/relation discovery [implemented]
+    -> content extraction and semantic discovery [not implemented]
     -> provenance-bearing recovered relations
     -> UCNS recursive objects
     -> reconstruction/adversarial tests
@@ -89,5 +107,5 @@ EDCM should be allowed to discover that two sources agree, disagree, split, merg
 - item-level IIIF and reuse identities remain unresolved for several major collections;
 - modern commercial decks and guidebooks need source-specific lawful acquisition;
 - multimodal image extraction, OCR, transcription, and language normalization remain separate evidence transformations;
-- the EDCM embedding/discovery runner has not yet been defined against this snapshot;
+- PDF content extraction, OCR, image segmentation, and semantic discovery remain undefined;
 - the Platonic Tarot card remains a target of discovery, not an input schema.
