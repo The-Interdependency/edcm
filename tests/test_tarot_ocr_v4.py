@@ -44,6 +44,15 @@ from tools.run_tarot_ocr_v4 import (
 )
 
 
+def test_installed_mutool_version_probe_shape() -> None:
+    import subprocess
+
+    result = subprocess.run(["/usr/bin/mutool", "version"], capture_output=True, text=True)
+    assert result.returncode == 1
+    assert result.stdout == ""
+    assert result.stderr.splitlines()[0] == "mutool version 1.23.10"
+
+
 def test_frozen_identity_constants_and_record_verification(tmp_path: Path) -> None:
     assert len({MUTOOL_SHA256, TESSERACT_SHA256, MODEL_SHA256, REFERENCE_SHA256}) == 4
     source = SOURCES[0]

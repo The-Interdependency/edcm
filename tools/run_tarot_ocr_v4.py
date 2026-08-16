@@ -144,7 +144,8 @@ def verify_inputs(acquisition: Path, reference: Path) -> tuple[Path, Path, dict[
     if not reference.is_file() or digest(reference) != REFERENCE_SHA256:
         raise ProtocolBlocked("validation reference identity mismatch")
     mutool_version = subprocess.run([str(mutool), "version"], capture_output=True, text=True, timeout=5)
-    if mutool_version.returncode or mutool_version.stdout or mutool_version.stderr.strip() != "mutool version 1.23.10":
+    mutool_lines = mutool_version.stderr.splitlines()
+    if mutool_version.returncode != 1 or mutool_version.stdout or not mutool_lines or mutool_lines[0] != "mutool version 1.23.10":
         raise ProtocolBlocked("MuPDF version output mismatch")
     tess_version = subprocess.run([str(tesseract), "--version"], capture_output=True, text=True, timeout=5)
     lines = tess_version.stdout.splitlines()
