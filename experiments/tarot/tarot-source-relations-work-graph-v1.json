@@ -1,0 +1,31 @@
+{
+  "schema": "the-interdependency.stack-manifest",
+  "version": "1.0.0",
+  "work_graph_sha256": "087174d2675ee4f59dd6d40efa64716c9eee54335b33f45078fcab29aad7a7ca",
+  "repositories": [
+    {
+      "repository": "The-Interdependency/skill-lib",
+      "commit": "2b24be24947223b86440f59f1bd9766130f9cc11",
+      "authority": "build, test, evidence, canon, and cross-repository discipline",
+      "relation": "doctrine-source"
+    },
+    {
+      "repository": "The-Interdependency/edcm",
+      "commit": "f968b3287950ff0af925ef09fa6faf2f319738c5",
+      "authority": "Tarot source manifest, acquisition policy, source-envelope relation discovery, and evidence sealing",
+      "relation": "corpus-manifest-consumer-and-artifact-producer"
+    }
+  ],
+  "boundaries": {
+    "authority_transfer": false,
+    "proof_status_transfer": false,
+    "measurement_status_transfer": false,
+    "semantic_mapping": "external-provenance",
+    "agent_scope": "cross-repository-work-graph",
+    "hmmm": [
+      "Wellcome content digests are identities rather than producer signatures",
+      "PDF content extraction and multimodal interpretation are unresolved",
+      "cross-source card identity and Tarot ontology are unresolved"
+    ]
+  }
+}

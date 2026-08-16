@@ -2029,6 +2029,58 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_discovery_requires_sealed_acquisition_and_is_byte_deterministic",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_discovery_consumes_only_complete_sealed_acquisition, tarot_discovery_is_byte_deterministic",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_relation_discovery.py",
+      "id": "check_tarot_discovery_complete_acquisition_and_determinism"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_documented_direct_cli_executes",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_discovery_is_byte_deterministic",
+        "requires": "python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_relation_discovery.py",
+      "id": "check_tarot_discovery_documented_cli"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_discovery_preserves_order_exact_values_and_typed_absence",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_discovery_preserves_exact_source_order_and_values, tarot_discovery_preserves_typed_absence_and_nonclaims",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_relation_discovery.py",
+      "id": "check_tarot_discovery_exact_order_values_and_absence"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_discovery_emits_only_frozen_relations_and_enforces_bounds",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_discovery_relations_are_mechanical_and_bounded",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_relation_discovery.py",
+      "id": "check_tarot_discovery_mechanical_bounds"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_exact_profile_activates_and_option_drift_suspends",
         "cleanup": "none",
         "mutates": "none",
@@ -2438,6 +2490,85 @@ export default defineMsdmdCollection({
       },
       "file": "tools/build_oewn2025_embeddings.py",
       "id": "edcm_oewn2025_lexical_floor_builder"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "Tarot relation discovery is requested",
+        "since": "2026-08-16",
+        "then": "the exact acquisition receipt, manifest identities, evidence index digest, every listed artifact digest, and complete file set validate before discovery"
+      },
+      "file": "tools/discover_tarot_relations.py",
+      "id": "tarot_discovery_consumes_only_complete_sealed_acquisition"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "the same validated acquisition and frozen algorithm identity are processed twice",
+        "since": "2026-08-16",
+        "then": "canonical report bytes are identical"
+      },
+      "file": "tools/discover_tarot_relations.py",
+      "id": "tarot_discovery_is_byte_deterministic"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a validated evidence index is discovered",
+        "since": "2026-08-16",
+        "then": "every source remains in manifest order and every admitted field value remains exact without case folding, tokenization, OCR, or semantic normalization"
+      },
+      "file": "tools/discover_tarot_relations.py",
+      "id": "tarot_discovery_preserves_exact_source_order_and_values"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "a source field is absent or the report completes",
+        "since": "2026-08-16",
+        "then": "absence remains explicit and the report selects no ontology, card identity, geometry, measurement, or canon"
+      },
+      "file": "tools/discover_tarot_relations.py",
+      "id": "tarot_discovery_preserves_typed_absence_and_nonclaims"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "source-envelope relations are emitted",
+        "since": "2026-08-16",
+        "then": "relations are limited to ordered adjacency, exact field assertions, fetched-artifact binding, and same-field exact-value agreement within declared resource bounds"
+      },
+      "file": "tools/discover_tarot_relations.py",
+      "id": "tarot_discovery_relations_are_mechanical_and_bounded"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_canonical_bytes, _digest, _value_identity, _load_validated_acquisition",
+        "module_kind": "instrument",
+        "module_name": "tarot_relation_discovery",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "discover_relations, validate_discovery, main",
+        "requires": "edcm_tarot_corpus_acquirer",
+        "rollback": "remove this tool, its tests, docs, and generated discovery reports without altering acquisition evidence",
+        "rollout": "explicit CLI after a complete tarot corpus acquisition; no automatic UCNS or EDCM measurement activation",
+        "since": "2026-08-16",
+        "storage_boundary": "read sealed acquisition and write one caller-selected report",
+        "summary": "validates a sealed Tarot acquisition and discovers only ordered source-envelope assertions and exact-value agreements without selecting Tarot ontology",
+        "tests": "tests.test_tarot_relation_discovery",
+        "unresolved": "OCR, image interpretation, cross-source card identity, semantic relation discovery, UCNS recursive representation, and EDCM measurement",
+        "user_data_boundary": "none; public cultural and archival evidence only"
+      },
+      "file": "tools/discover_tarot_relations.py",
+      "id": "edcm_tarot_relation_discovery"
     }
   ],
   "edges": [
@@ -3272,6 +3403,111 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "CHECKS",
       "source_id": "check_tarot_completed_resume_fails_closed",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "to": "self::test_discovery_requires_sealed_acquisition_and_is_byte_deterministic"
+    },
+    {
+      "from": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "to": "tarot_discovery_consumes_only_complete_sealed_acquisition"
+    },
+    {
+      "from": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "to": "tarot_discovery_is_byte_deterministic"
+    },
+    {
+      "from": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_discovery_documented_cli",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_documented_cli",
+      "to": "self::test_documented_direct_cli_executes"
+    },
+    {
+      "from": "check_tarot_discovery_documented_cli",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_documented_cli",
+      "to": "tarot_discovery_is_byte_deterministic"
+    },
+    {
+      "from": "check_tarot_discovery_documented_cli",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_documented_cli",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_tarot_discovery_documented_cli",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_documented_cli",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_discovery_exact_order_values_and_absence",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_exact_order_values_and_absence",
+      "to": "self::test_discovery_preserves_order_exact_values_and_typed_absence"
+    },
+    {
+      "from": "check_tarot_discovery_exact_order_values_and_absence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_exact_order_values_and_absence",
+      "to": "tarot_discovery_preserves_exact_source_order_and_values"
+    },
+    {
+      "from": "check_tarot_discovery_exact_order_values_and_absence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_exact_order_values_and_absence",
+      "to": "tarot_discovery_preserves_typed_absence_and_nonclaims"
+    },
+    {
+      "from": "check_tarot_discovery_exact_order_values_and_absence",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_exact_order_values_and_absence",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_discovery_mechanical_bounds",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_mechanical_bounds",
+      "to": "self::test_discovery_emits_only_frozen_relations_and_enforces_bounds"
+    },
+    {
+      "from": "check_tarot_discovery_mechanical_bounds",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_mechanical_bounds",
+      "to": "tarot_discovery_relations_are_mechanical_and_bounded"
+    },
+    {
+      "from": "check_tarot_discovery_mechanical_bounds",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_mechanical_bounds",
       "to": "python3"
     },
     {
@@ -4204,6 +4440,20 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_tarot_corpus_acquirer",
       "to": "none"
+    },
+    {
+      "from": "edcm_tarot_relation_discovery",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_relation_discovery",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_relation_discovery",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_relation_discovery",
+      "to": "edcm_tarot_corpus_acquirer"
     },
     {
       "from": "edcm_ucns_adapter",
