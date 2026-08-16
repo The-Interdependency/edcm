@@ -18,5 +18,12 @@ experiments/corpora/raw/
 experiments/corpora/checkpoints/
 *.corpus-checkpoint.json
 
+# Generated corpus/artifact materializations; keep only directory guidance.
+/artifacts/*
+!/artifacts/README.md
+!/artifacts/tarot/
+/artifacts/tarot/*
+!/artifacts/tarot/README.md
+
 # OS / editor cruft
 .DS_Store
