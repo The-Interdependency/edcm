@@ -4,8 +4,8 @@
 #   module_kind: adapter
 #   summary: independently constructs direct-atomic and molecular OEWN relation inputs for the UCNS metadata-free relational carrier and freezes external identity bindings before comparison
 #   owner: Erin Spencer
-#   public_surface: UCNS_RELATIONAL_COMMIT, DirectAtomicFreeze, MolecularFreeze, build_direct_atomic, build_molecular, freeze_branch, compare_frozen_branches, canonical_json_bytes
-#   internal_surface: _ucns_api, _digest, _relation_codes
+#   public_surface: UCNS_RELATIONAL_COMMIT, UCNSProducerVerification, DirectAtomicFreeze, MolecularFreeze, verify_ucns_producer, build_direct_atomic, build_molecular, freeze_branch, validate_frozen_branch, compare_frozen_branches, canonical_json_bytes
+#   internal_surface: _ucns_api, _digest, _relation_codes, _git
 #   auth_boundary: exact UCNS producer commit is pinned by package profile and work-graph artifact
 #   storage_boundary: writes caller-selected frozen artifacts only
 #   network_boundary: none
@@ -32,6 +32,24 @@
 #   class: safety
 #   since: 2026-08-16
 #
+# id: lexical_relation_multiplicity_is_preserved
+#   given: direct semantic evidence or molecular alternatives contain repeated relation occurrences
+#   then: every occurrence remains in supplied order in the UCNS relational input without deduplication
+#   class: correctness
+#   since: 2026-08-16
+#
+# id: lexical_pre_replay_status_is_unresolved
+#   given: one branch freeze or within-run branch comparison completes
+#   then: its status is UNRESOLVED until a separately recorded clean independent replay agrees byte-for-byte
+#   class: doctrine
+#   since: 2026-08-16
+#
+# id: lexical_ucns_producer_is_exactly_verified
+#   given: EDCM opens the UCNS relational construction API
+#   then: the checkout HEAD equals the merged producer commit and the imported producer module is the exact source-root file whose bytes match the verification receipt
+#   class: safety
+#   since: 2026-08-16
+#
 # id: comparison_requires_two_prior_freezes
 #   given: a branch comparison is requested
 #   then: both immutable branch files and their recorded digests are validated before any comparison is emitted
@@ -47,6 +65,7 @@ from dataclasses import asdict, dataclass
 from hashlib import sha256
 import json
 from pathlib import Path
+import subprocess
 from typing import Any, Iterable, Mapping
 
 from .affixes import AffixRecord
@@ -54,7 +73,7 @@ from .morphology import MorphologyGraph
 from .rendering import normalize_lemma
 from .source import WordnetSnapshot
 
-UCNS_RELATIONAL_COMMIT = "d74b8d8139bd1f41a60afc454809edeae641d1e1"
+UCNS_RELATIONAL_COMMIT = "d7c6f51304ed6c32d48badf63132bea6de8af497"
 BRANCH_SCHEMA = "edcm.english-lexical-relational-branch"
 BRANCH_VERSION = "1.0.0"
 
@@ -74,17 +93,65 @@ def _digest(payload: bytes) -> str:
     return sha256(payload).hexdigest()
 
 
-def _ucns_api():
+def _git(repo: Path, *arguments: str) -> str:
     try:
-        from ucns.relational_carrier import (
-            build_relational_carrier,
-            relational_carrier_bytes,
-        )
+        return subprocess.check_output(
+            ["git", "-C", str(repo), *arguments],
+            text=True,
+            stderr=subprocess.STDOUT,
+        ).strip()
+    except subprocess.CalledProcessError as exc:
+        raise LexicalBridgeError("UCNS producer checkout verification failed") from exc
+
+
+@dataclass(frozen=True, slots=True)
+class UCNSProducerVerification:
+    source_root: str
+    commit: str
+    module_sha256: str
+
+
+def verify_ucns_producer(source_root: str | Path) -> UCNSProducerVerification:
+    """Bind the imported API to the exact merged UCNS checkout bytes."""
+
+    root = Path(source_root).resolve()
+    if _git(root, "rev-parse", "HEAD") != UCNS_RELATIONAL_COMMIT:
+        raise LexicalBridgeError("UCNS producer checkout commit mismatch")
+    module_path = (root / "src" / "ucns" / "relational_carrier.py").resolve()
+    if not module_path.is_file():
+        raise LexicalBridgeError("UCNS relational carrier module is missing")
+    try:
+        import ucns.relational_carrier as module
+    except ImportError as exc:
+        raise LexicalBridgeError("exact UCNS relational producer is not importable") from exc
+    imported_path = Path(module.__file__ or "").resolve()
+    if imported_path != module_path:
+        raise LexicalBridgeError("imported UCNS producer does not come from the verified checkout")
+    return UCNSProducerVerification(
+        source_root=str(root),
+        commit=UCNS_RELATIONAL_COMMIT,
+        module_sha256=_digest(module_path.read_bytes()),
+    )
+
+
+def _ucns_api(verification: UCNSProducerVerification):
+    if not isinstance(verification, UCNSProducerVerification):
+        raise LexicalBridgeError("an exact UCNS producer verification is required")
+    if verification.commit != UCNS_RELATIONAL_COMMIT:
+        raise LexicalBridgeError("UCNS producer verification commit mismatch")
+    try:
+        import ucns.relational_carrier as module
     except ImportError as exc:
         raise LexicalBridgeError(
             "install the exact EDCM lexical-floor UCNS profile before construction"
         ) from exc
-    return build_relational_carrier, relational_carrier_bytes
+    expected_path = (
+        Path(verification.source_root) / "src" / "ucns" / "relational_carrier.py"
+    ).resolve()
+    imported_path = Path(module.__file__ or "").resolve()
+    if imported_path != expected_path or _digest(imported_path.read_bytes()) != verification.module_sha256:
+        raise LexicalBridgeError("UCNS producer bytes changed after verification")
+    return module.build_relational_carrier, module.relational_carrier_bytes
 
 
 def _relation_codes(labels: Iterable[str]) -> tuple[dict[str, int], list[dict[str, object]]]:
@@ -187,12 +254,17 @@ def build_molecular(
     )
 
 
-def freeze_branch(path: str | Path, branch: str, value: DirectAtomicFreeze | MolecularFreeze) -> dict[str, object]:
+def freeze_branch(
+    path: str | Path,
+    branch: str,
+    value: DirectAtomicFreeze | MolecularFreeze,
+    verification: UCNSProducerVerification,
+) -> dict[str, object]:
     """Freeze intrinsic bytes and external bindings as separate sibling files."""
 
     if branch not in {"direct-atomic", "molecular"}:
         raise LexicalBridgeError("unknown lexical branch")
-    build_carrier, carrier_bytes = _ucns_api()
+    build_carrier, carrier_bytes = _ucns_api(verification)
     target = Path(path)
     target.mkdir(parents=True, exist_ok=True)
     intrinsic = carrier_bytes(build_carrier(len(value.node_binding), value.edges))
@@ -201,6 +273,7 @@ def freeze_branch(path: str | Path, branch: str, value: DirectAtomicFreeze | Mol
         "version": BRANCH_VERSION,
         "branch": branch,
         "ucns_commit": UCNS_RELATIONAL_COMMIT,
+        "ucns_module_sha256": verification.module_sha256,
         "node_binding": list(value.node_binding),
         "relation_binding": list(value.relation_binding),
     })
@@ -213,30 +286,66 @@ def freeze_branch(path: str | Path, branch: str, value: DirectAtomicFreeze | Mol
         "version": "1.0.0",
         "branch": branch,
         "ucns_commit": UCNS_RELATIONAL_COMMIT,
+        "ucns_module_sha256": verification.module_sha256,
         "node_count": len(value.node_binding),
         "edge_count": len(value.edges),
         "intrinsic_sha256": _digest(intrinsic),
         "binding_sha256": _digest(binding),
         "geometry_attached": False,
         "measurement_attached": False,
-        "status": "SURVIVED",
+        "status": "UNRESOLVED",
     }
     (target / f"{branch}.receipt.json").write_bytes(canonical_json_bytes(receipt))
     return receipt
 
 
-def compare_frozen_branches(path: str | Path) -> dict[str, object]:
+def validate_frozen_branch(
+    path: str | Path,
+    branch: str,
+    verification: UCNSProducerVerification,
+) -> dict[str, object]:
+    """Validate a resumable branch freeze completely or fail closed."""
+
+    _ucns_api(verification)
+    root = Path(path)
+    receipt_bytes = (root / f"{branch}.receipt.json").read_bytes()
+    receipt = json.loads(receipt_bytes)
+    if canonical_json_bytes(receipt) != receipt_bytes:
+        raise LexicalBridgeError(f"{branch} receipt is not canonical")
+    if receipt.get("branch") != branch or receipt.get("ucns_commit") != UCNS_RELATIONAL_COMMIT:
+        raise LexicalBridgeError(f"{branch} receipt identity mismatch")
+    if receipt.get("ucns_module_sha256") != verification.module_sha256:
+        raise LexicalBridgeError(f"{branch} producer module mismatch")
+    if receipt.get("status") != "UNRESOLVED":
+        raise LexicalBridgeError(f"{branch} pre-replay status mismatch")
+    intrinsic = (root / f"{branch}.ucns.json").read_bytes()
+    binding_bytes = (root / f"{branch}.binding.json").read_bytes()
+    if _digest(intrinsic) != receipt.get("intrinsic_sha256") or _digest(binding_bytes) != receipt.get("binding_sha256"):
+        raise LexicalBridgeError(f"{branch} freeze digest mismatch")
+    binding = json.loads(binding_bytes)
+    if canonical_json_bytes(binding) != binding_bytes:
+        raise LexicalBridgeError(f"{branch} binding is not canonical")
+    if binding.get("branch") != branch or binding.get("ucns_commit") != UCNS_RELATIONAL_COMMIT:
+        raise LexicalBridgeError(f"{branch} binding identity mismatch")
+    if binding.get("ucns_module_sha256") != verification.module_sha256:
+        raise LexicalBridgeError(f"{branch} binding producer mismatch")
+    if len(binding.get("node_binding", ())) != receipt.get("node_count"):
+        raise LexicalBridgeError(f"{branch} node count mismatch")
+    return receipt
+
+
+def compare_frozen_branches(
+    path: str | Path,
+    verification: UCNSProducerVerification,
+) -> dict[str, object]:
     """Compare only already-frozen and digest-validated branch artifacts."""
 
     root = Path(path)
     receipts: dict[str, Mapping[str, Any]] = {}
     bindings: dict[str, Mapping[str, Any]] = {}
     for branch in ("direct-atomic", "molecular"):
-        receipt = json.loads((root / f"{branch}.receipt.json").read_bytes())
-        intrinsic = (root / f"{branch}.ucns.json").read_bytes()
+        receipt = validate_frozen_branch(root, branch, verification)
         binding_bytes = (root / f"{branch}.binding.json").read_bytes()
-        if _digest(intrinsic) != receipt["intrinsic_sha256"] or _digest(binding_bytes) != receipt["binding_sha256"]:
-            raise LexicalBridgeError(f"{branch} freeze digest mismatch")
         receipts[branch] = receipt
         bindings[branch] = json.loads(binding_bytes)
     direct_surfaces = {
@@ -257,7 +366,7 @@ def compare_frozen_branches(path: str | Path) -> dict[str, object]:
         "molecular_only_surface_count": len(molecular_surfaces - direct_surfaces),
         "intrinsic_equal": receipts["direct-atomic"]["intrinsic_sha256"] == receipts["molecular"]["intrinsic_sha256"],
         "interpretation": "preserved-disagreement; no structural equivalence or measurement claim",
-        "status": "SURVIVED",
+        "status": "UNRESOLVED",
     }
     (root / "comparison.json").write_bytes(canonical_json_bytes(result))
     return result
@@ -265,6 +374,8 @@ def compare_frozen_branches(path: str | Path) -> dict[str, object]:
 
 __all__ = [
     "DirectAtomicFreeze", "LexicalBridgeError", "MolecularFreeze",
+    "UCNSProducerVerification",
     "UCNS_RELATIONAL_COMMIT", "build_direct_atomic", "build_molecular",
     "canonical_json_bytes", "compare_frozen_branches", "freeze_branch",
+    "validate_frozen_branch", "verify_ucns_producer",
 ]

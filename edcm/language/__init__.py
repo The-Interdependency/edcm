@@ -27,8 +27,9 @@ from .model import Attestation, CompositionNode, LexicalEvidence, Soundness
 from .morphology import Decomposition, MorphologyGraph, build_morphology_graph
 from .relational_bridge import (
     DirectAtomicFreeze, LexicalBridgeError, MolecularFreeze,
-    UCNS_RELATIONAL_COMMIT, build_direct_atomic, build_molecular,
+    UCNSProducerVerification, UCNS_RELATIONAL_COMMIT, build_direct_atomic, build_molecular,
     canonical_json_bytes, compare_frozen_branches, freeze_branch,
+    validate_frozen_branch, verify_ucns_producer,
 )
 from .rendering import (
     TransformationRule, compound_candidates, inverse_affix_candidates,
@@ -46,10 +47,12 @@ __all__ = [
     "MorphologyGraph", "OEWN_COMMIT", "OEWN_LICENSE", "OEWN_REPOSITORY",
     "OEWN_TAG", "SOURCE_DICTIONARY", "SenseRecord", "Soundness",
     "SynsetRecord", "TransformationRule", "UCNS_RELATIONAL_COMMIT",
+    "UCNSProducerVerification",
     "WordnetSnapshot", "affix_inventory_record", "build_direct_atomic",
     "build_molecular", "build_morphology_graph", "canonical_json_bytes",
     "compare_frozen_branches", "compound_candidates", "embedding_manifest",
     "freeze_branch", "inverse_affix_candidates", "load_affix_inventory",
     "load_oewn_2025", "normalize_lemma", "render_affix_candidates",
-    "transformation_inventory",
+    "transformation_inventory", "validate_frozen_branch",
+    "verify_ucns_producer",
 ]

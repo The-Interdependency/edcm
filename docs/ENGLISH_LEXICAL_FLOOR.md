@@ -10,7 +10,7 @@ mathematical, geometric, empirical, or architectural claim.
   owns build, evidence, claim, and cross-repository work discipline.
 - `globalwordnet/english-wordnet@dc343f2683279ecbb13fab4e2fd778d7b162d287`
   is the licensed OEWN 2025 lexical evidence source.
-- `The-Interdependency/ucns@d74b8d8139bd1f41a60afc454809edeae641d1e1`
+- `The-Interdependency/ucns@d7c6f51304ed6c32d48badf63132bea6de8af497`
   owns the metadata-free ordered relational representation.
 - this EDCM commit owns English source ingestion, affix inventory, reversible
   rendering candidates, decomposition evidence, identity bindings, freezing,
@@ -28,7 +28,7 @@ Install EDCM with `lexical-floor`, then install UCNS at the exact commit above
 ```bash
 python -m pip install -e '.[lexical-floor]'
 python -m pip install \
-  'ucns @ git+https://github.com/The-Interdependency/ucns.git@d74b8d8139bd1f41a60afc454809edeae641d1e1'
+  'ucns @ git+https://github.com/The-Interdependency/ucns.git@d7c6f51304ed6c32d48badf63132bea6de8af497'
 ```
 
 The builder can acquire the exact OEWN checkout into a persistent cache:
@@ -36,14 +36,20 @@ The builder can acquire the exact OEWN checkout into a persistent cache:
 ```bash
 python tools/build_oewn2025_embeddings.py \
   --source-repo /path/to/cache/oewn-2025 \
+  --ucns-source-root /path/to/ucns-at-d7c6f513 \
   --output /path/to/oewn2025-lexical-floor \
   --acquire --resume
 ```
 
 Acquisition checks the exact Git commit and release tag. Ingestion freezes the
 license, source-tree digest, file and evidence counts. A valid completed branch
-receipt may be reused with `--resume`; comparison still revalidates both branch
-digests.
+receipt may be reused with `--resume` only after every manifest-listed file,
+branch receipt, external binding, intrinsic carrier, producer commit, and
+producer-module digest is revalidated. Partial or altered state fails closed.
+
+Single construction and comparison outputs remain `UNRESOLVED`. Only the
+separate two-clean-run seal may record `SURVIVED` after byte identity is
+observed.
 
 The direct-atomic branch is constructed from whole-word, sense, synset, and
 OEWN relation evidence without reading molecular output. The molecular branch

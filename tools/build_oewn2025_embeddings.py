@@ -25,7 +25,7 @@
 # === CONTRACTS ===
 # id: oewn_source_is_exact_pinned_and_resumable
 #   given: the lexical-floor builder consumes or acquires OEWN
-#   then: exact repository commit, tag, counts, tree digest, license, and provenance are frozen and completed valid branch receipts may be reused without recomputation
+#   then: exact repository commit, tag, counts, tree digest, license, and provenance are frozen and a complete run may be reused only after every listed artifact, branch, producer, status, and comparison identity validates
 #   class: evidence
 #   since: 2026-08-16
 #
@@ -33,6 +33,12 @@
 #   given: a complete lexical-floor build runs
 #   then: direct and molecular artifacts are written and receipted before the comparison function reads them
 #   class: correctness
+#   since: 2026-08-16
+#
+# id: incomplete_or_altered_lexical_resume_fails_closed
+#   given: resume state is partial, noncanonical, stale, producer-mismatched, status-promoted, missing, or digest-altered
+#   then: no completed run is reused and altered complete state raises an explicit error
+#   class: safety
 #   since: 2026-08-16
 # === END CONTRACTS ===
 
@@ -53,6 +59,8 @@ from edcm.language.relational_bridge import (
     canonical_json_bytes,
     compare_frozen_branches,
     freeze_branch,
+    validate_frozen_branch,
+    verify_ucns_producer,
 )
 from edcm.language.rendering import normalize_lemma, transformation_inventory
 from edcm.language.source import (
@@ -91,8 +99,39 @@ def _verified_snapshot(source_repo: Path):
     return snapshot
 
 
-def build(source_repo: Path, output: Path, *, resume: bool = False) -> dict[str, object]:
+def _resume_complete(
+    output: Path,
+    source_manifest: dict[str, object],
+    verification,
+) -> dict[str, object]:
+    manifest_bytes = (output / "manifest.json").read_bytes()
+    manifest = json.loads(manifest_bytes)
+    if canonical_json_bytes(manifest) != manifest_bytes:
+        raise RuntimeError("resumable manifest is not canonical")
+    if manifest.get("source") != source_manifest or manifest.get("status") != "UNRESOLVED":
+        raise RuntimeError("resumable manifest identity or status mismatch")
+    for record in manifest.get("files", ()):
+        path = output / record["path"]
+        payload = path.read_bytes()
+        if len(payload) != record["bytes"] or sha256(payload).hexdigest() != record["sha256"]:
+            raise RuntimeError(f"resumable artifact mismatch: {record['path']}")
+    for branch in ("direct-atomic", "molecular"):
+        validate_frozen_branch(output, branch, verification)
+    comparison = compare_frozen_branches(output, verification)
+    if comparison != manifest.get("comparison"):
+        raise RuntimeError("resumable comparison mismatch")
+    return manifest
+
+
+def build(
+    source_repo: Path,
+    ucns_source_root: Path,
+    output: Path,
+    *,
+    resume: bool = False,
+) -> dict[str, object]:
     snapshot = _verified_snapshot(source_repo.resolve())
+    verification = verify_ucns_producer(ucns_source_root)
     output.mkdir(parents=True, exist_ok=True)
     source_manifest = {
         "schema": "edcm.oewn-2025-source",
@@ -111,34 +150,36 @@ def build(source_repo: Path, output: Path, *, resume: bool = False) -> dict[str,
         "release_reported_relation_count": OEWN_EXPECTED_RELATION_COUNT,
         "ucns_commit": UCNS_RELATIONAL_COMMIT,
     }
+    if resume and (output / "manifest.json").is_file():
+        return _resume_complete(output, source_manifest, verification)
     (output / "source-manifest.json").write_bytes(canonical_json_bytes(source_manifest))
 
-    direct_receipt = output / "direct-atomic.receipt.json"
-    if not (resume and direct_receipt.is_file()):
-        freeze_branch(output, "direct-atomic", build_direct_atomic(snapshot))
+    freeze_branch(
+        output, "direct-atomic", build_direct_atomic(snapshot), verification
+    )
 
-    molecular_receipt = output / "molecular.receipt.json"
-    if not (resume and molecular_receipt.is_file()):
-        surfaces = {
-            normalize_lemma(value)
-            for lexeme in snapshot.lexemes
-            for value in (lexeme.lemma, *lexeme.forms)
-            if normalize_lemma(value)
-        }
-        affixes = load_affix_inventory()
-        graph = build_morphology_graph(surfaces, affixes)
-        (output / "affix-inventory.json").write_bytes(
-            canonical_json_bytes(affix_inventory_record(affixes))
-        )
-        (output / "transformations.json").write_bytes(
-            canonical_json_bytes(transformation_inventory())
-        )
-        (output / "morphology-evidence.json").write_bytes(
-            canonical_json_bytes(graph.metadata_record())
-        )
-        freeze_branch(output, "molecular", build_molecular(graph, affixes))
+    surfaces = {
+        normalize_lemma(value)
+        for lexeme in snapshot.lexemes
+        for value in (lexeme.lemma, *lexeme.forms)
+        if normalize_lemma(value)
+    }
+    affixes = load_affix_inventory()
+    graph = build_morphology_graph(surfaces, affixes)
+    (output / "affix-inventory.json").write_bytes(
+        canonical_json_bytes(affix_inventory_record(affixes))
+    )
+    (output / "transformations.json").write_bytes(
+        canonical_json_bytes(transformation_inventory())
+    )
+    (output / "morphology-evidence.json").write_bytes(
+        canonical_json_bytes(graph.metadata_record())
+    )
+    freeze_branch(
+        output, "molecular", build_molecular(graph, affixes), verification
+    )
 
-    comparison = compare_frozen_branches(output)
+    comparison = compare_frozen_branches(output, verification)
     files = []
     for path in sorted(output.iterdir()):
         if path.is_file() and path.name != "manifest.json":
@@ -150,7 +191,7 @@ def build(source_repo: Path, output: Path, *, resume: bool = False) -> dict[str,
         "source": source_manifest,
         "comparison": comparison,
         "files": files,
-        "status": "SURVIVED",
+        "status": "UNRESOLVED",
         "nonclaims": ["canonical English morphology", "UCNS geometry", "EDCM measurement validity", "phrase or discourse semantics"],
     }
     (output / "manifest.json").write_bytes(canonical_json_bytes(manifest))
@@ -160,13 +201,19 @@ def build(source_repo: Path, output: Path, *, resume: bool = False) -> dict[str,
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-repo", type=Path, required=True)
+    parser.add_argument("--ucns-source-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--acquire", action="store_true")
     parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
     if args.acquire:
         _acquire(args.source_repo)
-    result = build(args.source_repo, args.output, resume=args.resume)
+    result = build(
+        args.source_repo,
+        args.ucns_source_root,
+        args.output,
+        resume=args.resume,
+    )
     print(json.dumps(result["comparison"], indent=2, sort_keys=True))
     return 0
 
