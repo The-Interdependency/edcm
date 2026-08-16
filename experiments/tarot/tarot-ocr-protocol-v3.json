@@ -1,0 +1,24 @@
+{
+  "schema": "edcm.tarot-ocr-protocol",
+  "version": "3.0.0",
+  "status": "frozen-before-additional-tableau-inspection-or-ocr",
+  "inherits": {
+    "schema": "edcm.tarot-ocr-protocol",
+    "version": "2.0.0",
+    "commit": "45025ca4e8ad3ac36bf103ca2596509cb661256c",
+    "sha256": "067851c170e19bd0c4ffe8f20ab8e385b35fa3dbbb40ac402ba585a2db7ecadd"
+  },
+  "merged_parent": "ae25f7b48e6272ef385f933278494c6a18469dc1",
+  "override": {
+    "field": "validation.tableau",
+    "old": "pages 2 and 5; normalized crop",
+    "new": "all complete pages 1 through 6; no crop",
+    "reference_order": "page order then top-to-bottom left-to-right textual reading order",
+    "pictorial_content": "excluded-without-description-or-interpretation",
+    "reason": "exhaustive source coverage removes post-result text-region selection"
+  },
+  "book_validation": "identical-to-v2",
+  "minimum_decidable_reference_characters_per_source": 100,
+  "all_other_fields": "identical-to-inherited-v2",
+  "outcomes": ["FALSIFIED", "SURVIVED", "UNRESOLVED", "BLOCKED"]
+}
