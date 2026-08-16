@@ -75,7 +75,12 @@ import json
 from pathlib import Path
 from typing import Any
 
-from tools.acquire_tarot_corpus import TarotCorpusError, acquire_manifest
+try:
+    from tools.acquire_tarot_corpus import TarotCorpusError, acquire_manifest
+except ModuleNotFoundError as exc:  # direct ``python tools/...`` execution
+    if exc.name != "tools":
+        raise
+    from acquire_tarot_corpus import TarotCorpusError, acquire_manifest
 
 DISCOVERY_SCHEMA = "edcm.tarot-source-envelope-relations"
 DISCOVERY_VERSION = "1.0.0"

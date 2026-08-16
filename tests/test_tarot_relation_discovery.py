@@ -22,6 +22,14 @@
 #   timeout: 20
 #   mutates: filesystem
 #   cleanup: tempdir_teardown
+#
+# id: check_tarot_discovery_documented_cli
+#   proves: tarot_discovery_is_byte_deterministic
+#   call: self::test_documented_direct_cli_executes
+#   requires: python3, posix_shell
+#   timeout: 20
+#   mutates: filesystem
+#   cleanup: tempdir_teardown
 # === END CHECKS ===
 
 from __future__ import annotations
@@ -30,6 +38,8 @@ from copy import deepcopy
 from hashlib import sha256
 import json
 from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 
@@ -142,3 +152,24 @@ def test_discovery_emits_only_frozen_relations_and_enforces_bounds(tmp_path: Pat
         discover_relations(manifest, acquisition, max_sources=1)
     with pytest.raises(TarotRelationDiscoveryError, match="assertion resource bound"):
         discover_relations(manifest, acquisition, max_assertions=1)
+
+
+def test_documented_direct_cli_executes(tmp_path: Path) -> None:
+    manifest, acquisition = _seal(tmp_path, [_source("first", title="One")])
+    output = tmp_path / "relations.json"
+    subprocess.run(
+        [
+            sys.executable,
+            "tools/discover_tarot_relations.py",
+            "--manifest",
+            str(manifest),
+            "--acquisition",
+            str(acquisition),
+            "--output",
+            str(output),
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert json.loads(output.read_bytes())["counts"]["sources"] == 1

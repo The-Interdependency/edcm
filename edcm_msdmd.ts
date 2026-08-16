@@ -2042,6 +2042,19 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_documented_direct_cli_executes",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_discovery_is_byte_deterministic",
+        "requires": "python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_relation_discovery.py",
+      "id": "check_tarot_discovery_documented_cli"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_discovery_preserves_order_exact_values_and_typed_absence",
         "cleanup": "tempdir_teardown",
         "mutates": "filesystem",
@@ -3418,6 +3431,34 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "CHECKS",
       "source_id": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_discovery_documented_cli",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_documented_cli",
+      "to": "self::test_documented_direct_cli_executes"
+    },
+    {
+      "from": "check_tarot_discovery_documented_cli",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_documented_cli",
+      "to": "tarot_discovery_is_byte_deterministic"
+    },
+    {
+      "from": "check_tarot_discovery_documented_cli",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_documented_cli",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_tarot_discovery_documented_cli",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_documented_cli",
       "to": "python3"
     },
     {
