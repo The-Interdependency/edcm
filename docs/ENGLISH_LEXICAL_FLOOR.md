@@ -22,13 +22,16 @@ are identities, not producer signatures.
 
 ## Reproducible run
 
-Install EDCM with `lexical-floor`, then install UCNS at the exact commit above
-(in a dedicated environment because EDCM retains other historical UCNS pins):
+Install EDCM with `lexical-floor`, then clone the exact UCNS producer and install
+that same checkout editable (in a dedicated environment because EDCM retains
+other historical UCNS pins):
 
 ```bash
 python -m pip install -e '.[lexical-floor]'
-python -m pip install \
-  'ucns @ git+https://github.com/The-Interdependency/ucns.git@d7c6f51304ed6c32d48badf63132bea6de8af497'
+git clone https://github.com/The-Interdependency/ucns.git /path/to/ucns-at-d7c6f513
+git -C /path/to/ucns-at-d7c6f513 checkout --detach \
+  d7c6f51304ed6c32d48badf63132bea6de8af497
+python -m pip install -e /path/to/ucns-at-d7c6f513
 ```
 
 The builder can acquire the exact OEWN checkout into a persistent cache:

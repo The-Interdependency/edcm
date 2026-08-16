@@ -29,7 +29,7 @@ from edcm.language.relational_bridge import (
     validate_frozen_branch, verify_ucns_producer,
 )
 from edcm.language.source import LexemeRecord, SenseRecord, SynsetRecord, WordnetSnapshot
-from tools.build_oewn2025_embeddings import _resume_complete
+from tools.build_oewn2025_embeddings import REQUIRED_ARTIFACT_FILES, _resume_complete
 
 
 UCNS_ROOT = Path(__file__).resolve().parents[2] / "ucns"
@@ -112,6 +112,24 @@ def test_relation_multiplicity_is_preserved_in_both_independent_branches() -> No
     ]
 
 
+def test_sense_owned_edges_are_not_duplicated_by_surface_forms() -> None:
+    snapshot = WordnetSnapshot(
+        lexemes=(
+            LexemeRecord(
+                "run", "v", ("running",),
+                (SenseRecord("run%1", "run-v", ()),),
+            ),
+        ),
+        synsets=(SynsetRecord("run-v", "v", ("run",), (), ()),),
+        source_tree_sha256="0" * 64,
+        source_file_count=1,
+    )
+    direct = build_direct_atomic(snapshot)
+    labels = {row["code"]: row["label"] for row in direct.relation_binding}
+    assert sum(labels[edge[1]] == "has-sense" for edge in direct.edges) == 2
+    assert sum(labels[edge[1]] == "in-synset" for edge in direct.edges) == 1
+
+
 def test_producer_verification_rejects_stale_identity(tmp_path: Path) -> None:
     pytest.importorskip("ucns.relational_carrier")
     verification = verify_ucns_producer(UCNS_ROOT)
@@ -124,6 +142,17 @@ def test_producer_verification_rejects_stale_identity(tmp_path: Path) -> None:
         freeze_branch(tmp_path, "direct-atomic", build_direct_atomic(_snapshot()), stale)
 
 
+def test_freeze_rejects_mislabeled_branch_value(tmp_path: Path) -> None:
+    pytest.importorskip("ucns.relational_carrier")
+    verification = verify_ucns_producer(UCNS_ROOT)
+    direct = build_direct_atomic(_snapshot())
+    molecular = build_molecular(build_morphology_graph(("kind",), ()), ())
+    with pytest.raises(LexicalBridgeError, match="value type mismatch"):
+        freeze_branch(tmp_path, "direct-atomic", molecular, verification)
+    with pytest.raises(LexicalBridgeError, match="value type mismatch"):
+        freeze_branch(tmp_path, "molecular", direct, verification)
+
+
 def test_resume_revalidates_every_frozen_file_and_fails_closed(tmp_path: Path) -> None:
     pytest.importorskip("ucns.relational_carrier")
     verification = verify_ucns_producer(UCNS_ROOT)
@@ -134,6 +163,8 @@ def test_resume_revalidates_every_frozen_file_and_fails_closed(tmp_path: Path) -
     freeze_branch(tmp_path, "molecular", molecular, verification)
     comparison = compare_frozen_branches(tmp_path, verification)
     source = {"fixture": "exact"}
+    for name in REQUIRED_ARTIFACT_FILES - {path.name for path in tmp_path.iterdir()}:
+        (tmp_path / name).write_bytes(canonical_json_bytes({}))
     files = []
     for path in sorted(tmp_path.iterdir()):
         payload = path.read_bytes()
@@ -145,6 +176,38 @@ def test_resume_revalidates_every_frozen_file_and_fails_closed(tmp_path: Path) -
     binding.write_bytes(binding.read_bytes() + b" ")
     with pytest.raises(RuntimeError, match="resumable artifact mismatch"):
         _resume_complete(tmp_path, source, verification)
+
+
+def test_resume_rejects_truncated_or_injected_file_inventory(tmp_path: Path) -> None:
+    pytest.importorskip("ucns.relational_carrier")
+    verification = verify_ucns_producer(UCNS_ROOT)
+    direct = build_direct_atomic(_snapshot())
+    molecular = build_molecular(build_morphology_graph(("kind", "kindness"), ()), ())
+    freeze_branch(tmp_path, "direct-atomic", direct, verification)
+    freeze_branch(tmp_path, "molecular", molecular, verification)
+    comparison = compare_frozen_branches(tmp_path, verification)
+    for name in REQUIRED_ARTIFACT_FILES - {path.name for path in tmp_path.iterdir()}:
+        (tmp_path / name).write_bytes(canonical_json_bytes({}))
+    records = []
+    for path in sorted(tmp_path.iterdir()):
+        payload = path.read_bytes()
+        records.append({"path": path.name, "bytes": len(payload), "sha256": sha256(payload).hexdigest()})
+    source = {"fixture": "exact"}
+    manifest = {"source": source, "status": "UNRESOLVED", "comparison": comparison, "files": records[:-1]}
+    (tmp_path / "manifest.json").write_bytes(canonical_json_bytes(manifest))
+    with pytest.raises(RuntimeError, match="file set mismatch"):
+        _resume_complete(tmp_path, source, verification)
+    manifest["files"] = records
+    (tmp_path / "manifest.json").write_bytes(canonical_json_bytes(manifest))
+    (tmp_path / "injected.json").write_bytes(canonical_json_bytes({}))
+    with pytest.raises(RuntimeError, match="file set mismatch"):
+        _resume_complete(tmp_path, source, verification)
+
+
+def test_glyph_floor_compatibility_module_imports() -> None:
+    import edcm.language.glyph_floor as glyph_floor
+
+    assert glyph_floor.PUBLIC_GLYPH_FLOOR_157 is not None
 
 
 def test_builder_contract_is_pinned_and_freeze_order_is_explicit() -> None:

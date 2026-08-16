@@ -74,6 +74,7 @@ from .rendering import normalize_lemma
 from .source import WordnetSnapshot
 
 UCNS_RELATIONAL_COMMIT = "d7c6f51304ed6c32d48badf63132bea6de8af497"
+UCNS_RELATIONAL_MODULE_SHA256 = "b839d29c79b43d29faf6f5d9a39b7a1485f39a0f071b525fd1848cf18f061cdd"
 BRANCH_SCHEMA = "edcm.english-lexical-relational-branch"
 BRANCH_VERSION = "1.0.0"
 
@@ -120,6 +121,19 @@ def verify_ucns_producer(source_root: str | Path) -> UCNSProducerVerification:
     module_path = (root / "src" / "ucns" / "relational_carrier.py").resolve()
     if not module_path.is_file():
         raise LexicalBridgeError("UCNS relational carrier module is missing")
+    working_bytes = module_path.read_bytes()
+    try:
+        committed_bytes = subprocess.check_output(
+            ["git", "-C", str(root), "show", "HEAD:src/ucns/relational_carrier.py"],
+            stderr=subprocess.STDOUT,
+        )
+    except subprocess.CalledProcessError as exc:
+        raise LexicalBridgeError("UCNS producer module commit verification failed") from exc
+    if working_bytes != committed_bytes:
+        raise LexicalBridgeError("UCNS relational carrier has uncommitted changes")
+    module_digest = _digest(committed_bytes)
+    if module_digest != UCNS_RELATIONAL_MODULE_SHA256:
+        raise LexicalBridgeError("UCNS relational carrier committed digest mismatch")
     try:
         import ucns.relational_carrier as module
     except ImportError as exc:
@@ -130,7 +144,7 @@ def verify_ucns_producer(source_root: str | Path) -> UCNSProducerVerification:
     return UCNSProducerVerification(
         source_root=str(root),
         commit=UCNS_RELATIONAL_COMMIT,
-        module_sha256=_digest(module_path.read_bytes()),
+        module_sha256=module_digest,
     )
 
 
@@ -199,12 +213,14 @@ def build_direct_atomic(snapshot: WordnetSnapshot) -> DirectAtomicFreeze:
         for lexeme in sorted(surface_records[surface], key=lambda item: (item.lemma, item.part_of_speech)):
             for sense in lexeme.senses:
                 raw_edges.append((address[("surface", surface)], "has-sense", address[("sense", sense.sense_id)]))
-                raw_edges.append((address[("sense", sense.sense_id)], "in-synset", address[("synset", sense.synset_id)]))
-                for relation, targets in sense.relations:
-                    for target in targets:
-                        target_key = ("sense", target)
-                        if target_key in address:
-                            raw_edges.append((address[("sense", sense.sense_id)], f"sense:{relation}", address[target_key]))
+    for lexeme in snapshot.lexemes:
+        for sense in lexeme.senses:
+            raw_edges.append((address[("sense", sense.sense_id)], "in-synset", address[("synset", sense.synset_id)]))
+            for relation, targets in sense.relations:
+                for target in targets:
+                    target_key = ("sense", target)
+                    if target_key in address:
+                        raw_edges.append((address[("sense", sense.sense_id)], f"sense:{relation}", address[target_key]))
     for synset in snapshot.synsets:
         for relation, targets in synset.relations:
             for target in targets:
@@ -262,8 +278,14 @@ def freeze_branch(
 ) -> dict[str, object]:
     """Freeze intrinsic bytes and external bindings as separate sibling files."""
 
-    if branch not in {"direct-atomic", "molecular"}:
+    branch_types = {
+        "direct-atomic": DirectAtomicFreeze,
+        "molecular": MolecularFreeze,
+    }
+    if branch not in branch_types:
         raise LexicalBridgeError("unknown lexical branch")
+    if not isinstance(value, branch_types[branch]):
+        raise LexicalBridgeError(f"{branch} branch value type mismatch")
     build_carrier, carrier_bytes = _ucns_api(verification)
     target = Path(path)
     target.mkdir(parents=True, exist_ok=True)
@@ -375,7 +397,8 @@ def compare_frozen_branches(
 __all__ = [
     "DirectAtomicFreeze", "LexicalBridgeError", "MolecularFreeze",
     "UCNSProducerVerification",
-    "UCNS_RELATIONAL_COMMIT", "build_direct_atomic", "build_molecular",
+    "UCNS_RELATIONAL_COMMIT", "UCNS_RELATIONAL_MODULE_SHA256",
+    "build_direct_atomic", "build_molecular",
     "canonical_json_bytes", "compare_frozen_branches", "freeze_branch",
     "validate_frozen_branch", "verify_ucns_producer",
 ]

@@ -68,6 +68,20 @@ from edcm.language.source import (
     OEWN_LICENSE, OEWN_RELEASE_DATE, OEWN_REPOSITORY, OEWN_TAG, load_oewn_2025,
 )
 
+REQUIRED_ARTIFACT_FILES = frozenset({
+    "affix-inventory.json",
+    "comparison.json",
+    "direct-atomic.binding.json",
+    "direct-atomic.receipt.json",
+    "direct-atomic.ucns.json",
+    "molecular.binding.json",
+    "molecular.receipt.json",
+    "molecular.ucns.json",
+    "morphology-evidence.json",
+    "source-manifest.json",
+    "transformations.json",
+})
+
 
 def _git(repo: Path, *args: str) -> str:
     return subprocess.check_output(["git", "-C", str(repo), *args], text=True).strip()
@@ -147,7 +161,16 @@ def _resume_complete(
         raise RuntimeError("resumable manifest is not canonical")
     if manifest.get("source") != source_manifest or manifest.get("status") != "UNRESOLVED":
         raise RuntimeError("resumable manifest identity or status mismatch")
-    for record in manifest.get("files", ()):
+    records = manifest.get("files")
+    if not isinstance(records, list) or any(not isinstance(record, dict) for record in records):
+        raise RuntimeError("resumable artifact inventory is invalid")
+    listed_files = {record.get("path") for record in records}
+    actual_files = {path.name for path in output.iterdir() if path.is_file()}
+    if listed_files != REQUIRED_ARTIFACT_FILES or actual_files != REQUIRED_ARTIFACT_FILES | {"manifest.json"}:
+        raise RuntimeError("resumable artifact file set mismatch")
+    if len(records) != len(REQUIRED_ARTIFACT_FILES):
+        raise RuntimeError("resumable artifact inventory contains duplicates")
+    for record in records:
         path = output / record["path"]
         payload = path.read_bytes()
         if len(payload) != record["bytes"] or sha256(payload).hexdigest() != record["sha256"]:

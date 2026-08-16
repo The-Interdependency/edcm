@@ -708,22 +708,22 @@ export default defineMsdmdCollection({
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
-        "auth_boundary": "none",
+        "auth_boundary": "exact OEWN and UCNS producer commits",
         "internal_surface": "none",
         "module_kind": "engine",
         "module_name": "language",
-        "network_boundary": "optional_package_import",
+        "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "EnglishEmbeddingManifest, embedding_manifest, PUBLIC_GLYPH_FLOOR_157, UCNSPublicGonolDependencyError, UCNSPublicGonolContractError, NonCanonicalLanguagePlacementError, require_canonical_language_placement, CompositionNode, Attestation, Soundness, LexicalEvidence, AtomicForkRelation, AtomicForkResult, GonolRegistry, compose_gonols, materialize, compare_atomic_fork, intrinsic_gonol_record, metadata_free_jsonl, write_metadata_free_gonol_list, AffixRecord, load_affix_inventory, TransformationRule, transformation_inventory, render_affix_candidates, inverse_affix_candidates, compound_candidates, normalize_lemma, Decomposition, MorphologyGraph, build_morphology_graph, OEWN_REPOSITORY, OEWN_TAG, OEWN_COMMIT, OEWN_LICENSE, LexemeRecord, SenseRecord, SynsetRecord, WordnetSnapshot, load_oewn_2025, assign_affix_gonol, assign_root_gonol, assign_direct_atomic_gonol, superpose_gonols, compare_gonols, gonol_sha256",
-        "requires": "edcm_language_manifest, edcm_language_glyph_floor, edcm_language_model, edcm_language_composition, edcm_language_artifacts, edcm_language_oewn_source, edcm_language_affixes, edcm_language_rendering, edcm_language_morphology, edcm_language_placement",
-        "rollback": "restore active placement only after an Erin-ratified UCNS public-gonol bridge exists",
-        "rollout": "fail_closed_pending_canonical_bridge",
-        "since": "2026-07-16",
-        "storage_boundary": "read",
-        "summary": "exposes OEWN source, morphology and rendering evidence while consuming UCNS public-gonol authority lazily and retiring noncanonical placement",
-        "tests": "tests.test_language_embeddings, tests.test_language_full_run",
-        "unresolved": "public-gonol to EDCM language-object bridge remains hmmm",
-        "user_data_boundary": "none"
+        "public_surface": "source, affix, rendering, morphology, model, manifest, and relational-bridge names listed in __all__",
+        "requires": "edcm_language_manifest, edcm_language_model, edcm_language_oewn_source, edcm_language_affixes, edcm_language_rendering, edcm_language_morphology, edcm_language_relational_bridge",
+        "rollback": "remove relational bridge while retaining EDCM evidence modules",
+        "rollout": "explicit lexical-floor construction; no measurement or higher-language activation",
+        "since": "2026-08-16",
+        "storage_boundary": "caller-selected lexical artifact directory",
+        "summary": "exposes exact OEWN evidence, reversible lexical candidates, and independent EDCM-to-UCNS relational branch construction without EDCM-owned geometry",
+        "tests": "tests.test_language_full_run, tests.test_language_relational_bridge",
+        "unresolved": "UCNS geometry and higher-gonol composition remain absent; lexical decomposition remains dictionary-and-inventory bounded evidence",
+        "user_data_boundary": "public licensed lexical evidence only"
       },
       "file": "edcm/language/__init__.py",
       "id": "edcm_language_package"
@@ -757,54 +757,6 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_anchor_record",
-        "module_kind": "adapter",
-        "module_name": "artifacts",
-        "network_boundary": "none",
-        "owner": "Erin Spencer",
-        "public_surface": "intrinsic_gonol_record, metadata_free_jsonl, write_metadata_free_gonol_list",
-        "requires": "edcmbone_ucns_v04",
-        "rollback": "remove language embedding package before any published artifact depends on this serialization",
-        "rollout": "default_enabled",
-        "since": "2026-07-13",
-        "storage_boundary": "write",
-        "summary": "serializes ordered UCNS gonols as intrinsic-only canonical JSONL with no words, labels, evidence, source ids, or embedding classifications",
-        "tests": "tests.test_language_embeddings",
-        "unresolved": "producer signatures and authenticated transport remain outside intrinsic gonol serialization",
-        "user_data_boundary": "none"
-      },
-      "file": "edcm/language/artifacts.py",
-      "id": "edcm_language_artifacts"
-    },
-    {
-      "block": "MODULE_BUILD",
-      "fields": {
-        "admin_only": "false",
-        "auth_boundary": "none",
-        "internal_surface": "none",
-        "module_kind": "engine",
-        "module_name": "composition",
-        "network_boundary": "none",
-        "owner": "Erin Spencer",
-        "public_surface": "GonolRegistry, compose_gonols, materialize, compare_atomic_fork, MissingGonolError",
-        "requires": "edcm_language_model, edcmbone_ucns_v04",
-        "rollback": "remove language embedding package before any published artifact depends on this composer",
-        "rollout": "default_enabled",
-        "since": "2026-07-13",
-        "storage_boundary": "none",
-        "summary": "materializes explicit language composition trees through one UCNS product and compares independent direct atomic gonols with molecularly generated atomic views",
-        "tests": "tests.test_language_embeddings",
-        "unresolved": "the maintained local UCNS engine is associative while explicit language grouping remains preserved as independent provenance for comparison",
-        "user_data_boundary": "none"
-      },
-      "file": "edcm/language/composition.py",
-      "id": "edcm_language_composition"
-    },
-    {
-      "block": "MODULE_BUILD",
-      "fields": {
-        "admin_only": "false",
-        "auth_boundary": "none",
         "internal_surface": "_load_ucns_public_gonol, _PublicGonolProxy",
         "module_kind": "adapter",
         "module_name": "glyph_floor",
@@ -825,24 +777,35 @@ export default defineMsdmdCollection({
       "id": "edcm_language_glyph_floor"
     },
     {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "the English lexical-floor manifest is inspected",
+        "since": "2026-08-16",
+        "then": "EDCM owns English evidence, UCNS owns representation, and geometry, proof, measurement, empirical, and canon transfer remain false"
+      },
+      "file": "edcm/language/manifest.py",
+      "id": "lexical_manifest_preserves_authority_firewall"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
-        "auth_boundary": "none",
+        "auth_boundary": "exact producer commits",
         "internal_surface": "none",
         "module_kind": "policy",
         "module_name": "manifest",
         "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "EnglishEmbeddingManifest, embedding_manifest, SOURCE_DICTIONARY, PUBLIC_GLYPH_FLOOR_SOURCE",
-        "requires": "none",
-        "rollback": "restore active placement only after an Erin-ratified UCNS public-gonol bridge exists",
-        "rollout": "fail_closed_pending_canonical_bridge",
-        "since": "2026-07-16",
+        "public_surface": "EnglishEmbeddingManifest, embedding_manifest, SOURCE_DICTIONARY",
+        "requires": "edcm_language_oewn_source, ucns_relational_carrier",
+        "rollback": "restore fail-closed bridge state without restoring retired placement",
+        "rollout": "active lexical-floor bridge",
+        "since": "2026-08-16",
         "storage_boundary": "none",
-        "summary": "pins OEWN input provenance while recording that public-gonol authority belongs to UCNS and legacy placement is retired",
-        "tests": "tests.test_language_embeddings",
-        "unresolved": "public-gonol to EDCM language-object bridge remains hmmm",
+        "summary": "pins OEWN evidence and the exact UCNS relational producer while forbidding geometry and status transfer",
+        "tests": "tests.test_language_relational_bridge",
+        "unresolved": "geometry, canonical English decomposition, measurement validity, and producer signatures",
         "user_data_boundary": "none"
       },
       "file": "edcm/language/manifest.py",
@@ -897,28 +860,94 @@ export default defineMsdmdCollection({
       "id": "edcm_language_morphology"
     },
     {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a branch comparison is requested",
+        "since": "2026-08-16",
+        "then": "both immutable branch files and their recorded digests are validated before any comparison is emitted"
+      },
+      "file": "edcm/language/relational_bridge.py",
+      "id": "comparison_requires_two_prior_freezes"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "either branch is frozen",
+        "since": "2026-08-16",
+        "then": "English labels and provenance appear only in the external binding while intrinsic bytes are produced by the pinned UCNS carrier API"
+      },
+      "file": "edcm/language/relational_bridge.py",
+      "id": "english_metadata_is_external_to_ucns_carrier"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "direct-atomic and molecular branch builders run",
+        "since": "2026-08-16",
+        "then": "the direct builder consumes only OEWN lexical and semantic evidence while the molecular builder independently consumes surfaces, declared affixes, and reversible decompositions"
+      },
+      "file": "edcm/language/relational_bridge.py",
+      "id": "lexical_branches_are_independently_constructed"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "one branch freeze or within-run branch comparison completes",
+        "since": "2026-08-16",
+        "then": "its status is UNRESOLVED until a separately recorded clean independent replay agrees byte-for-byte"
+      },
+      "file": "edcm/language/relational_bridge.py",
+      "id": "lexical_pre_replay_status_is_unresolved"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "direct semantic evidence or molecular alternatives contain repeated relation occurrences",
+        "since": "2026-08-16",
+        "then": "every occurrence remains in supplied order in the UCNS relational input without deduplication"
+      },
+      "file": "edcm/language/relational_bridge.py",
+      "id": "lexical_relation_multiplicity_is_preserved"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "EDCM opens the UCNS relational construction API",
+        "since": "2026-08-16",
+        "then": "the checkout HEAD equals the merged producer commit and the imported producer module is the exact source-root file whose bytes match the verification receipt"
+      },
+      "file": "edcm/language/relational_bridge.py",
+      "id": "lexical_ucns_producer_is_exactly_verified"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
-        "auth_boundary": "none",
-        "internal_surface": "_update_intrinsic_hash, _payload_depth, _theta_set",
+        "auth_boundary": "exact UCNS producer commit is pinned by package profile and work-graph artifact",
+        "internal_surface": "_ucns_api, _digest, _relation_codes, _git",
         "module_kind": "adapter",
-        "module_name": "placement",
+        "module_name": "relational_bridge",
         "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "NonCanonicalLanguagePlacementError, require_canonical_language_placement, assign_affix_gonol, assign_root_gonol, assign_direct_atomic_gonol, superpose_gonols, compare_gonols, gonol_sha256",
-        "requires": "edcm_language_manifest",
-        "rollback": "restore placement only after an Erin-ratified UCNS public-gonol bridge and migration plan exist",
-        "rollout": "fail_closed",
-        "since": "2026-07-16",
-        "storage_boundary": "none",
-        "summary": "retires noncanonical hash/evidence-derived language placement while retaining read-only compatibility inspection of existing objects",
-        "tests": "tests.test_language_embeddings, tests.test_language_full_run",
-        "unresolved": "public-gonol to EDCM language-object bridge remains hmmm",
-        "user_data_boundary": "none"
+        "public_surface": "UCNS_RELATIONAL_COMMIT, UCNSProducerVerification, DirectAtomicFreeze, MolecularFreeze, verify_ucns_producer, build_direct_atomic, build_molecular, freeze_branch, validate_frozen_branch, compare_frozen_branches, canonical_json_bytes",
+        "requires": "ucns_relational_carrier, edcm_language_oewn_source, edcm_language_affixes, edcm_language_morphology",
+        "rollback": "remove adapter and generated lexical artifacts while preserving source evidence modules",
+        "rollout": "explicit lexical-floor builder; no geometry, measurement, canon, or higher-language activation",
+        "since": "2026-08-16",
+        "storage_boundary": "writes caller-selected frozen artifacts only",
+        "summary": "independently constructs direct-atomic and molecular OEWN relation inputs for the UCNS metadata-free relational carrier and freezes external identity bindings before comparison",
+        "tests": "tests.test_language_relational_bridge",
+        "unresolved": "geometric placement, canonical English morphology, closed compounds, pronunciation, phrase and higher semantics",
+        "user_data_boundary": "OEWN evidence remains in external bindings and never enters intrinsic UCNS bytes"
       },
-      "file": "edcm/language/placement.py",
-      "id": "edcm_language_placement"
+      "file": "edcm/language/relational_bridge.py",
+      "id": "edcm_language_relational_bridge"
     },
     {
       "block": "MODULE_BUILD",
@@ -1690,6 +1719,30 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_independent_branches_freeze_before_comparison",
+        "cleanup": "pytest tmp_path",
+        "mutates": "tmp_path only",
+        "proves": "lexical_branches_are_independently_constructed, english_metadata_is_external_to_ucns_carrier, lexical_ucns_producer_is_exactly_verified, lexical_relation_multiplicity_is_preserved, lexical_pre_replay_status_is_unresolved, comparison_requires_two_prior_freezes, lexical_manifest_preserves_authority_firewall",
+        "timeout": "30"
+      },
+      "file": "tests/test_language_relational_bridge.py",
+      "id": "language_relational_branch_check"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_builder_contract_is_pinned_and_freeze_order_is_explicit",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "oewn_source_is_exact_pinned_and_resumable, incomplete_or_altered_lexical_resume_fails_closed, lexical_comparison_occurs_after_freeze",
+        "timeout": "30"
+      },
+      "file": "tests/test_language_relational_bridge.py",
+      "id": "oewn_builder_order_check"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_calibration_and_threshold_depend_only_on_development_and_validation",
         "cleanup": "none",
         "mutates": "none",
@@ -2184,6 +2237,63 @@ export default defineMsdmdCollection({
       },
       "file": "tests/test_ucns_fork_lint.py",
       "id": "check_edcm_fork_status_firewall"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "resume state is partial, noncanonical, stale, producer-mismatched, status-promoted, missing, or digest-altered",
+        "since": "2026-08-16",
+        "then": "no completed run is reused and altered complete state raises an explicit error"
+      },
+      "file": "tools/build_oewn2025_embeddings.py",
+      "id": "incomplete_or_altered_lexical_resume_fails_closed"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a complete lexical-floor build runs",
+        "since": "2026-08-16",
+        "then": "direct and molecular artifacts are written and receipted before the comparison function reads them"
+      },
+      "file": "tools/build_oewn2025_embeddings.py",
+      "id": "lexical_comparison_occurs_after_freeze"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "the lexical-floor builder consumes or acquires OEWN",
+        "since": "2026-08-16",
+        "then": "exact repository commit, tag, counts, tree digest, license, and provenance are frozen and a complete run may be reused only after every listed artifact, branch, producer, status, and comparison identity validates"
+      },
+      "file": "tools/build_oewn2025_embeddings.py",
+      "id": "oewn_source_is_exact_pinned_and_resumable"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "verifies exact OEWN and UCNS commits",
+        "internal_surface": "_git, _acquire, _source_manifest",
+        "module_kind": "instrument",
+        "module_name": "build_oewn2025_embeddings",
+        "network_boundary": "git clone only when --acquire is explicitly supplied",
+        "owner": "Erin Spencer",
+        "public_surface": "command line, build",
+        "requires": "edcm_language_relational_bridge",
+        "rollback": "remove builder and generated artifacts",
+        "rollout": "explicit builder",
+        "since": "2026-08-16",
+        "storage_boundary": "caller-selected cache and output directories",
+        "summary": "acquires or verifies the pinned OEWN source and independently freezes direct-atomic and molecular UCNS relational artifacts before comparison",
+        "tests": "tests.test_language_relational_bridge",
+        "unresolved": "upstream cryptographic signatures are unavailable; Git and tree digests are identity, not authentication",
+        "user_data_boundary": "public licensed lexical evidence only"
+      },
+      "file": "tools/build_oewn2025_embeddings.py",
+      "id": "edcm_oewn2025_lexical_floor_builder"
     }
   ],
   "edges": [
@@ -3147,6 +3257,90 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
+      "from": "language_relational_branch_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "self::test_independent_branches_freeze_before_comparison"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "comparison_requires_two_prior_freezes"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "english_metadata_is_external_to_ucns_carrier"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_branches_are_independently_constructed"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_manifest_preserves_authority_firewall"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_pre_replay_status_is_unresolved"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_relation_multiplicity_is_preserved"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_ucns_producer_is_exactly_verified"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "self::test_builder_contract_is_pinned_and_freeze_order_is_explicit"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "incomplete_or_altered_lexical_resume_fails_closed"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "lexical_comparison_occurs_after_freeze"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "oewn_source_is_exact_pinned_and_resumable"
+    },
+    {
       "from": "edcm_ucns_fork_lint_docs",
       "kind": "covers",
       "source_block": "DOCS",
@@ -3266,41 +3460,6 @@ export default defineMsdmdCollection({
       "to": "edcm measurement canon bones_affixes_v1.json"
     },
     {
-      "from": "edcm_language_artifacts",
-      "kind": "owns",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_artifacts",
-      "to": "Erin Spencer"
-    },
-    {
-      "from": "edcm_language_artifacts",
-      "kind": "requires",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_artifacts",
-      "to": "edcmbone_ucns_v04"
-    },
-    {
-      "from": "edcm_language_composition",
-      "kind": "owns",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_composition",
-      "to": "Erin Spencer"
-    },
-    {
-      "from": "edcm_language_composition",
-      "kind": "requires",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_composition",
-      "to": "edcm_language_model"
-    },
-    {
-      "from": "edcm_language_composition",
-      "kind": "requires",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_composition",
-      "to": "edcmbone_ucns_v04"
-    },
-    {
       "from": "edcm_language_glyph_floor",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
@@ -3326,7 +3485,14 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_language_manifest",
-      "to": "none"
+      "to": "edcm_language_oewn_source"
+    },
+    {
+      "from": "edcm_language_manifest",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_manifest",
+      "to": "ucns_relational_carrier"
     },
     {
       "from": "edcm_language_model",
@@ -3403,27 +3569,6 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_language_package",
-      "to": "edcm_language_artifacts"
-    },
-    {
-      "from": "edcm_language_package",
-      "kind": "requires",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_package",
-      "to": "edcm_language_composition"
-    },
-    {
-      "from": "edcm_language_package",
-      "kind": "requires",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_package",
-      "to": "edcm_language_glyph_floor"
-    },
-    {
-      "from": "edcm_language_package",
-      "kind": "requires",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_package",
       "to": "edcm_language_manifest"
     },
     {
@@ -3452,7 +3597,7 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_language_package",
-      "to": "edcm_language_placement"
+      "to": "edcm_language_relational_bridge"
     },
     {
       "from": "edcm_language_package",
@@ -3462,18 +3607,39 @@ export default defineMsdmdCollection({
       "to": "edcm_language_rendering"
     },
     {
-      "from": "edcm_language_placement",
+      "from": "edcm_language_relational_bridge",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_placement",
+      "source_id": "edcm_language_relational_bridge",
       "to": "Erin Spencer"
     },
     {
-      "from": "edcm_language_placement",
+      "from": "edcm_language_relational_bridge",
       "kind": "requires",
       "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_placement",
-      "to": "edcm_language_manifest"
+      "source_id": "edcm_language_relational_bridge",
+      "to": "edcm_language_affixes"
+    },
+    {
+      "from": "edcm_language_relational_bridge",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_relational_bridge",
+      "to": "edcm_language_morphology"
+    },
+    {
+      "from": "edcm_language_relational_bridge",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_relational_bridge",
+      "to": "edcm_language_oewn_source"
+    },
+    {
+      "from": "edcm_language_relational_bridge",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_relational_bridge",
+      "to": "ucns_relational_carrier"
     },
     {
       "from": "edcm_language_rendering",
@@ -3621,6 +3787,20 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_multiwoz21_seal_launcher",
       "to": "python3"
+    },
+    {
+      "from": "edcm_oewn2025_lexical_floor_builder",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_oewn2025_lexical_floor_builder",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_oewn2025_lexical_floor_builder",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_oewn2025_lexical_floor_builder",
+      "to": "edcm_language_relational_bridge"
     },
     {
       "from": "edcm_package",

@@ -35,6 +35,9 @@ from .relational_bridge import UCNS_RELATIONAL_COMMIT
 from .source import OEWN_COMMIT, OEWN_REPOSITORY, OEWN_TAG
 
 SOURCE_DICTIONARY = "Open English WordNet 2025"
+# Retained solely for the lazy public-gonol compatibility adapter. It does not
+# activate or authorize the retired EDCM lexical placement mechanism.
+PUBLIC_GLYPH_FLOOR_SHA256 = "20d6ed51fdff5505ed9696c38d6dcc82f982eba166d9b712bee68c4521b751ac"
 
 
 @dataclass(frozen=True, slots=True)
@@ -62,4 +65,7 @@ def embedding_manifest() -> EnglishEmbeddingManifest:
     return EnglishEmbeddingManifest()
 
 
-__all__ = ["EnglishEmbeddingManifest", "SOURCE_DICTIONARY", "embedding_manifest"]
+__all__ = [
+    "EnglishEmbeddingManifest", "PUBLIC_GLYPH_FLOOR_SHA256",
+    "SOURCE_DICTIONARY", "embedding_manifest",
+]
