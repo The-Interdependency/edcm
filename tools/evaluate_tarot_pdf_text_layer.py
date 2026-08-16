@@ -95,7 +95,13 @@ def run_gate(raw_dir: Path) -> dict[str, Any]:
     if backend is None:
         return {"schema": "edcm.tarot-pdf-text-layer-gate", "version": "1.0.0", "status": "BLOCKED", "failure": "mutool missing"}
     backend_path = Path(backend)
-    version = subprocess.run([backend, "-v"], check=True, capture_output=True, text=True).stdout.strip()
+    version = subprocess.run(
+        [backend, "-v"],
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+    ).stdout.strip()
     if version != BACKEND_VERSION or _sha(backend_path) != BACKEND_SHA256:
         return {"schema": "edcm.tarot-pdf-text-layer-gate", "version": "1.0.0", "status": "BLOCKED", "failure": "backend identity mismatch"}
     results = []
