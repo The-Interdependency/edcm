@@ -1,0 +1,40 @@
+{
+  "candidate_a": {
+    "direction": "higher-means-more-recovery",
+    "formula": "max(kappa_t)-kappa_final",
+    "id": "edcm.recovered-dissonance.absolute/0.1.0"
+  },
+  "candidate_b": {
+    "admission": "candidate-a-falsified-only-by-global-gap-after-all-matched-directions-pass",
+    "direction": "higher-means-more-recovery",
+    "formula": "(max(kappa_t)-kappa_final)/sum_t(max(kappa_t-kappa_(t-1),0))",
+    "id": "edcm.recovered-dissonance.normalized-positive-pressure/0.1.0",
+    "zero_denominator": "UNRESOLVED"
+  },
+  "canon_selection": null,
+  "controls": [
+    {"construction_label": "resolved", "kappa": [0, 1, 0], "pair_id": "low-pressure"},
+    {"construction_label": "unresolved", "kappa": [0, 1, 1], "pair_id": "low-pressure"},
+    {"construction_label": "resolved", "kappa": [0, 10, 0], "pair_id": "high-pressure"},
+    {"construction_label": "unresolved", "kappa": [0, 10, 8], "pair_id": "high-pressure"}
+  ],
+  "decision_status_values": ["SURVIVED", "FALSIFIED", "UNRESOLVED", "BLOCKED"],
+  "external_evaluation": {
+    "allowed_only_after_controlled_survival": true,
+    "harness": "The-Interdependency/ucns#196@1234950",
+    "transport_does_not_establish_measurement_validity_or_canon": true
+  },
+  "frozen_parent": "The-Interdependency/edcm@29cc5997c2c8cf7b7a145a9d4d59659054ffba41",
+  "prior_multiwoz": {
+    "report_digest": "a726434a533395e7e3bd7d72ba3e9ce68f58c5b62f3b6b10d2b0556b09e85e61",
+    "sensitivity_hypothesis": "FALSIFIED"
+  },
+  "schema": "edcm.recovered-dissonance-preregistration/0.1.0",
+  "separation": {
+    "matched": "resolved>unresolved-for-every-pair",
+    "threshold": "midpoint(min(resolved),max(unresolved))",
+    "threshold_admission": "min(resolved)>max(unresolved)"
+  },
+  "skill_lib": "The-Interdependency/skill-lib@6ef2e4c123225f9db20e5230e5894c9c86b42ee6",
+  "stopping_rule": "stop-after-candidate-b; no-feature-search"
+}
