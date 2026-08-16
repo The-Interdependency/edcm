@@ -1,0 +1,90 @@
+{
+  "schema": "edcm.tarot-ocr-validation-reference",
+  "version": "4.0.0",
+  "protocol_commit": "5d20d70a3b2b9d91fefbfc5142294b262a125223",
+  "producer": "literal manual transcription from preregistered images before any Tesseract invocation",
+  "rules": {
+    "order": "top-to-bottom then left-to-right textual reading order",
+    "line_breaks": "source-visible",
+    "uncertain_or_illegible_contiguous_region": "U+FFFD",
+    "empty_page": "empty string",
+    "pictorial_content": "excluded without description or interpretation"
+  },
+  "book": [
+    {
+      "page": 25,
+      "crop_sha256": "c43146709a66d6d283e84f530efdb64857ab94da8f438f9b8665dd678352cade",
+      "text": "» & furent quatre jours en marche ;\n» alors elles virent une lumiere. Le\n» treizieme jour, elles recommence-\n» rent leur marche ; & enfin le quator-\n» zieme jour, chacun fut rendu à ſa\n» deſtination ». Peut-on, lorſqu’on a\nles plus légeres notions de la lecture"
+    },
+    {
+      "page": 75,
+      "crop_sha256": "a18bf31e7c6abf70713c935de2a0bf4b29834f580d8340d72fdf2309088c5a01",
+      "text": "on a recours aux Médecins des corps :\nMédecins qui, lorſqu’ils ſont ſages,\ncomme il en eſt une infinité, donnent,\npour toute ordonnance, de ſe bien\ngarder d’embarbouiller encore le phy-\nſique par des médecines épaiſſes ou\nſpiritueuſes, qui occaſionnent des hauts"
+    },
+    {
+      "page": 125,
+      "crop_sha256": "af059e7d11d21aa0f92187b1b71c4da1e54992a6162d61b7424264361ad220e1",
+      "text": "Sageſſe, dans leur réunion, ſont le vrai\n& unique bonheur des Mortels ; pour-\nquoi la ſanté & la fortune, qui en ſont\nles attributs, leur ont-ils corrompu\nl’eſprit ?\nIl faut des Adeptes ; mais il les faut\ntels qu’ils ſont produits, élevés & nour-"
+    },
+    {
+      "page": 175,
+      "crop_sha256": "a65f8a8c1a64281f9d92f1bba3f84efb4c57b68b81489f4d9115cf15415cb5ba",
+      "text": "des hiéroglyphes tout modernes.\nMais M. Gébelin a reconnu le\nLivre être Egyptien ; & en en appor-\ntant des preuves irréfutables, il\nen a laiſſé couler de fauſſes ; ce que\nce Savant n’eût point fait, s’il eût\nregardé le Tarots, ou livre de"
+    },
+    {
+      "page": 225,
+      "crop_sha256": "f506a35a616250598a5adbcedaa3c5837a922e80a33907e491c9e0c9a5212881",
+      "text": "dans une eſpéce de ſolitude, au Levant,\n& à environ trois lieues de Memphis.\nRien n’eſt plus facile que de prouver\nque le Mercure producteur & rédacteur\nde cet Ouvrage, eſt le quatrieme deſcen-\ndant de Zoroaſtre (1) : le quatrieme\nfeuillet du Livre de Thot le prouve évi-"
+    },
+    {
+      "page": 275,
+      "crop_sha256": "f5cae53a99fa7b4e8737dd3bc5426988f9ef60d3ec0469538d99f023dbaaec00",
+      "text": "ſophes, tels que Pythagore, Socrate,\nPlaton, Thalès, oui, tous ceux qui ont\nparlé des nombres, ont conçu le com-\nble du péché par 8 fois 7, au-deſſus\nde 7 fois 7, qui revient en retrogra-\ndant à ces terribles nombres, ſeptante &\nſept fois ſept fois ſept, qu’on retrouve"
+    },
+    {
+      "page": 325,
+      "crop_sha256": "16959d214e9b387ab9cbf3d0f0d0abb34a69d737eb47eadc34db39e69f308c03",
+      "text": "Pour ſervir de premier Cahier. Tout\nl’ouvrage auroit pu être compoſé en un ;\nmais il faut de longs détours, non pour\nſe mieux faire entendre, mais pour écrire\nlibrement tout ce qu’une longue narra-\ntion doit néceſſairement embrouiller,\nlorſqu’on ne veut lire que pour ſoi,\n& non pour être utile aux autres."
+    },
+    {
+      "page": 375,
+      "crop_sha256": "30f6d4af80b5328078fd1789bf6f7570650d551c26e6ee0d5ef0bc2bfdcbc0d4",
+      "text": "toutes les Sciences & les Arts, mais ils\nne s’entretenoient de la politique de ces\nSciences & de ces Arts qu’avec ceux qui\nméritoient d’en être inſtruits : enfin ſans\nl’ignorance qui a perſécuté ces grands\nPhiloſophes, à l’exemple des Platon,\nThalès, Démocrite, Empédocle & mille\nautres qui ont été recevoir leurs leçons,"
+    }
+  ],
+  "tableau": [
+    {
+      "page": 1,
+      "page_sha256": "d4087ce9238743726a7e43f0bedb3c9282e54f2a1b7d215ba43c77ab1f2ce48a",
+      "text": "The Tarot, in the form of leaves of the book of Thoth placed in the temple of\nFire at Memphis, Egypt. Mixed media by J.B. Alliette (Etteilla), 178-.\nContributors\nAlliette, active 18th century.\nPublication/Creation\n[Paris?], [between 1780 and 1789?]\nPersistent URL\nhttps://wellcomecollection.org/works/kj5hdaaw\nLicense and attribution\nThis work has been identified as being free of known restrictions under\ncopyright law, including all related and neighbouring rights and is being made\navailable under the Creative Commons, Public Domain Mark.\nYou can copy, modify, distribute and perform the work, even for commercial\npurposes, without asking permission.\nWellcome Collection\n183 Euston Road\nLondon NW1 2BE UK\nT +44 (0)20 7611 8722\nE library@wellcomecollection.org\nhttps://wellcomecollection.org"
+    },
+    {
+      "page": 2,
+      "page_sha256": "06f5324ee0745b7ab2c4368e423306b5f7954a37141e13302a3dd89229582ad7",
+      "text": "TABLEAU\nDES LAMES DU LIVRE DE THOT QUI ETOIT PLACE DANS LE TEMPLE DU FEU A MEMPHIS.\n�"
+    },
+    {
+      "page": 3,
+      "page_sha256": "1596e994e268e07d1ac874f660a75ed75ee67e123ab6c40a6ab64af646f8ac47",
+      "text": "TABLEAU\nDES LAMES DU LIVRE DE THOT QUI ETOIT PLACE DANS LE TEMPLE DU FEU A MEMPHIS.\n�"
+    },
+    {
+      "page": 4,
+      "page_sha256": "cb53e84c0dec0836ce8ddd88a9866da5b574cf0762b640809fa682a2797304b3",
+      "text": ""
+    },
+    {
+      "page": 5,
+      "page_sha256": "aa599117f743da05c1dcceaeb757f21f59814b2f4647eaa89bf3ddbd81b2c2b1",
+      "text": ""
+    },
+    {
+      "page": 6,
+      "page_sha256": "979bd111c7f38839386d4d2c930d288f829b5fd562d9d1f4af701937a4fd4a79",
+      "text": "584857"
+    }
+  ],
+  "ocr": "not-run",
+  "ontology_selected": false,
+  "semantic_normalization": false
+}
