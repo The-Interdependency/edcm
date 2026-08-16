@@ -113,6 +113,7 @@ def test_relation_multiplicity_is_preserved_in_both_independent_branches() -> No
 
 
 def test_producer_verification_rejects_stale_identity(tmp_path: Path) -> None:
+    pytest.importorskip("ucns.relational_carrier")
     verification = verify_ucns_producer(UCNS_ROOT)
     stale = UCNSProducerVerification(
         verification.source_root,
