@@ -151,6 +151,9 @@ def test_builder_contract_is_pinned_and_freeze_order_is_explicit() -> None:
     assert "OEWN_COMMIT" in source and "UCNS_RELATIONAL_COMMIT" in source
     assert "--ucns-source-root" in source and "verify_ucns_producer" in source
     build_source = source[source.index("def build(") :]
+    assert build_source.index("if resume and") < build_source.index(
+        "snapshot = _verified_snapshot"
+    )
     comparison = build_source.index("comparison = compare_frozen_branches")
     assert build_source.index('"direct-atomic", build_direct_atomic') < comparison
     assert build_source.index('"molecular", build_molecular') < comparison

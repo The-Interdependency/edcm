@@ -99,6 +99,43 @@ def _verified_snapshot(source_repo: Path):
     return snapshot
 
 
+def _resume_source_tree_digest(source_repo: Path) -> tuple[str, int]:
+    root = source_repo / "src" / "yaml"
+    paths = tuple(sorted(root.rglob("*.yaml")))
+    digest = sha256()
+    for path in paths:
+        relative = path.relative_to(root).as_posix().encode("utf-8")
+        payload = path.read_bytes()
+        digest.update(len(relative).to_bytes(4, "big"))
+        digest.update(relative)
+        digest.update(len(payload).to_bytes(8, "big"))
+        digest.update(payload)
+    return digest.hexdigest(), len(paths)
+
+
+def _verify_resumable_source(source_repo: Path, source: object) -> dict[str, object]:
+    if not isinstance(source, dict):
+        raise RuntimeError("resumable source manifest is missing")
+    if _git(source_repo, "rev-parse", "HEAD") != OEWN_COMMIT:
+        raise RuntimeError("OEWN checkout commit mismatch")
+    if _git(source_repo, "rev-list", "-n", "1", OEWN_TAG) != OEWN_COMMIT:
+        raise RuntimeError("OEWN release tag mismatch")
+    digest, file_count = _resume_source_tree_digest(source_repo)
+    expected = {
+        "repository": OEWN_REPOSITORY,
+        "tag": OEWN_TAG,
+        "commit": OEWN_COMMIT,
+        "release_date": OEWN_RELEASE_DATE,
+        "license": OEWN_LICENSE,
+        "source_tree_sha256": digest,
+        "source_file_count": file_count,
+        "ucns_commit": UCNS_RELATIONAL_COMMIT,
+    }
+    if any(source.get(key) != value for key, value in expected.items()):
+        raise RuntimeError("resumable OEWN source identity mismatch")
+    return source
+
+
 def _resume_complete(
     output: Path,
     source_manifest: dict[str, object],
@@ -130,9 +167,17 @@ def build(
     *,
     resume: bool = False,
 ) -> dict[str, object]:
-    snapshot = _verified_snapshot(source_repo.resolve())
+    source_repo = source_repo.resolve()
     verification = verify_ucns_producer(ucns_source_root)
     output.mkdir(parents=True, exist_ok=True)
+    if resume and (output / "manifest.json").is_file():
+        existing = json.loads((output / "manifest.json").read_bytes())
+        source_manifest = _verify_resumable_source(
+            source_repo, existing.get("source") if isinstance(existing, dict) else None
+        )
+        return _resume_complete(output, source_manifest, verification)
+
+    snapshot = _verified_snapshot(source_repo)
     source_manifest = {
         "schema": "edcm.oewn-2025-source",
         "version": "1.0.0",
@@ -150,8 +195,6 @@ def build(
         "release_reported_relation_count": OEWN_EXPECTED_RELATION_COUNT,
         "ucns_commit": UCNS_RELATIONAL_COMMIT,
     }
-    if resume and (output / "manifest.json").is_file():
-        return _resume_complete(output, source_manifest, verification)
     (output / "source-manifest.json").write_bytes(canonical_json_bytes(source_manifest))
 
     freeze_branch(
