@@ -2029,6 +2029,19 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_frozen_thresholds_accept_only_adequate_pages",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_text_gate_applies_frozen_adequacy_rule, tarot_text_gate_retains_nonclaims_and_failure",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_pdf_text_layer_gate.py",
+      "id": "check_tarot_text_gate_frozen_thresholds"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_discovery_requires_sealed_acquisition_and_is_byte_deterministic",
         "cleanup": "tempdir_teardown",
         "mutates": "filesystem",
@@ -2569,6 +2582,63 @@ export default defineMsdmdCollection({
       },
       "file": "tools/discover_tarot_relations.py",
       "id": "edcm_tarot_relation_discovery"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "exact per-page text bytes are extracted",
+        "since": "2026-08-16",
+        "then": "only preregistered non-whitespace, alphanumeric, replacement, coverage, and total thresholds determine the verdict"
+      },
+      "file": "tools/evaluate_tarot_pdf_text_layer.py",
+      "id": "tarot_text_gate_applies_frozen_adequacy_rule"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "the gate completes or fails",
+        "since": "2026-08-16",
+        "then": "FALSIFIED, SURVIVED, or BLOCKED is recorded without OCR fallback, semantic inspection, ontology, geometry, measurement, or canon escalation"
+      },
+      "file": "tools/evaluate_tarot_pdf_text_layer.py",
+      "id": "tarot_text_gate_retains_nonclaims_and_failure"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "the embedded-text gate runs",
+        "since": "2026-08-16",
+        "then": "both PDF digests, page counts, MuPDF version, executable digest, command, and timeout match the preregistration"
+      },
+      "file": "tools/evaluate_tarot_pdf_text_layer.py",
+      "id": "tarot_text_gate_uses_exact_frozen_inputs_and_backend"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_verify_backend, _extract_pages, _canonical_bytes",
+        "module_kind": "experiment",
+        "module_name": "tarot_pdf_text_layer_gate",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "evaluate_pages, run_gate, main",
+        "requires": "edcm_tarot_corpus_acquirer",
+        "rollback": "remove experiment tool, tests, reports, and protocol without changing source evidence",
+        "rollout": "explicit CLI after frozen preregistration only",
+        "since": "2026-08-16",
+        "storage_boundary": "read exact acquired PDFs, temporary extracted pages, and one caller-selected report",
+        "summary": "executes the frozen MuPDF embedded-text adequacy gate over the two exact acquired Wellcome PDFs without OCR or semantic inspection",
+        "tests": "tests.test_tarot_pdf_text_layer_gate",
+        "unresolved": "OCR backend and accuracy law if embedded text is insufficient",
+        "user_data_boundary": "none; public-domain archival evidence only"
+      },
+      "file": "tools/evaluate_tarot_pdf_text_layer.py",
+      "id": "edcm_tarot_pdf_text_layer_gate"
     }
   ],
   "edges": [
@@ -3595,6 +3665,34 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
+      "from": "check_tarot_text_gate_frozen_thresholds",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_text_gate_frozen_thresholds",
+      "to": "self::test_frozen_thresholds_accept_only_adequate_pages"
+    },
+    {
+      "from": "check_tarot_text_gate_frozen_thresholds",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_text_gate_frozen_thresholds",
+      "to": "tarot_text_gate_applies_frozen_adequacy_rule"
+    },
+    {
+      "from": "check_tarot_text_gate_frozen_thresholds",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_text_gate_frozen_thresholds",
+      "to": "tarot_text_gate_retains_nonclaims_and_failure"
+    },
+    {
+      "from": "check_tarot_text_gate_frozen_thresholds",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_text_gate_frozen_thresholds",
+      "to": "python3"
+    },
+    {
       "from": "check_ucns_edcm_program_structure",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -4440,6 +4538,20 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_tarot_corpus_acquirer",
       "to": "none"
+    },
+    {
+      "from": "edcm_tarot_pdf_text_layer_gate",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_pdf_text_layer_gate",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_pdf_text_layer_gate",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_pdf_text_layer_gate",
+      "to": "edcm_tarot_corpus_acquirer"
     },
     {
       "from": "edcm_tarot_relation_discovery",
