@@ -28,6 +28,9 @@ from __future__ import annotations
 
 from hashlib import sha256
 from pathlib import Path
+import shutil
+
+import pytest
 
 from tools.run_tarot_ocr_v4 import (
     MODEL_SHA256,
@@ -44,6 +47,7 @@ from tools.run_tarot_ocr_v4 import (
 )
 
 
+@pytest.mark.skipif(shutil.which("mutool") is None, reason="MuPDF producer is not installed in the base-package CI profile")
 def test_installed_mutool_version_probe_shape() -> None:
     import subprocess
 
