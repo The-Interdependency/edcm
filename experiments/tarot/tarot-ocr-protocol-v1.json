@@ -1,0 +1,81 @@
+{
+  "schema": "edcm.tarot-ocr-protocol",
+  "version": "1.0.0",
+  "status": "frozen-before-rendering-transcription-or-ocr",
+  "inputs": [
+    {
+      "source_id": "wellcome_etteilla_1783_1785",
+      "artifact": "wellcome_etteilla_1783_1785.pdf",
+      "pages": 401,
+      "bytes": 77852106,
+      "sha256": "d44fc8bf81e5356fa1f05d11a9e92723ee36efe94b3af2def5c1c97e80ff5c0f"
+    },
+    {
+      "source_id": "wellcome_etteilla_tableau_1780s",
+      "artifact": "wellcome_etteilla_tableau_1780s.pdf",
+      "pages": 6,
+      "bytes": 869817,
+      "sha256": "d3a2e8e82c79e9a109e662e53ff034dcabc7f2902c52dcde10fec9d3529f5381"
+    }
+  ],
+  "renderer": {
+    "package": "mupdf-tools 1.23.10+ds1-1build3",
+    "version": "mutool version 1.23.10",
+    "path": "/usr/bin/mutool",
+    "bytes": 44735344,
+    "sha256": "9203440040cc38ee412aeedbfe57f452d6b85709c5b1600ca6ab2aa05478ab73",
+    "command": "mutool draw -q -r 300 -c gray -F png -o page-%04d.png INPUT.pdf 1-N",
+    "dpi": 300,
+    "color": "8-bit-grayscale-png",
+    "license": "AGPL-3+ with separately identified bundled-component licenses; external tool not redistributed"
+  },
+  "ocr": {
+    "package": "tesseract-ocr 5.3.4-1build5",
+    "version_prefixes": ["tesseract 5.3.4", "leptonica-1.82.0"],
+    "path": "/usr/bin/tesseract",
+    "bytes": 39320,
+    "sha256": "9f831cab7525c3dab04af41bda35182af7ea1df9dceeaaa2f3bf207ac45c06a5",
+    "command": "OMP_THREAD_LIMIT=1 tesseract PAGE.png OUT -l fra --oem 1 --psm 3 txt tsv",
+    "segmentation": "psm-3-auto-without-orientation-script-detection",
+    "orientation": "source-orientation-no-rotation",
+    "license": "Apache-2.0; external tool not redistributed"
+  },
+  "language_model": {
+    "package": "tesseract-ocr-fra 1:4.1.0-2",
+    "upstream": "tessdata_fast",
+    "path": "/usr/share/tesseract-ocr/5/tessdata/fra.traineddata",
+    "bytes": 1130365,
+    "sha256": "ced037562e8c80c13122dece28dd477d399af80911a28791a66a63ac1e3445ca",
+    "license": "Apache-2.0; external model not redistributed"
+  },
+  "validation": {
+    "book_pages": [25, 75, 125, 175, 225, 275, 325, 375],
+    "tableau_pages": [2, 5],
+    "crop": "floor(0.10*w),floor(0.30*h),ceil(0.90*w),ceil(0.55*h); right/bottom exclusive",
+    "reference_producer": "literal manual transcription before any Tesseract invocation",
+    "minimum_decidable_reference_characters_per_source": 100,
+    "aggregate_cer_max": 0.08,
+    "aggregate_wer_max": 0.20,
+    "source_cer_max": 0.10,
+    "crop_cer_max": 0.20,
+    "ocr_replacement_characters_max": 0
+  },
+  "resources": {
+    "maximum_pages": 407,
+    "maximum_rendered_bytes": 2147483648,
+    "maximum_ocr_bytes": 1073741824,
+    "render_seconds_per_page": 20,
+    "ocr_seconds_per_page": 60,
+    "complete_run_seconds": 28800,
+    "ocr_threads": 1
+  },
+  "outcomes": ["FALSIFIED", "SURVIVED", "UNRESOLVED", "BLOCKED"],
+  "nonclaims": [
+    "Tarot ontology or card equivalence",
+    "semantic normalization or historical truth",
+    "Platonic card construction",
+    "UCNS geometry",
+    "EDCM interpretation or measurement",
+    "canon selection"
+  ]
+}

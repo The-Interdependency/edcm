@@ -1,0 +1,26 @@
+{
+  "schema": "edcm.tarot-ocr-run-receipt",
+  "version": "1.0.0",
+  "protocol_commit": "d46f4ad849694b738b5211f9bcc3dadb49c2c9c1",
+  "protocol_sha256": "e45712fe7140338e2b37135453b5f0cc6edbbe82d206018d26c131e7a29e0678",
+  "status": "BLOCKED",
+  "stage": "validation-page-rendering",
+  "renderer": {
+    "command": "mutool draw -q -r 300 -c gray -F png -o page-%04d.png INPUT.pdf SELECTED_PAGES",
+    "version": "mutool version 1.23.10",
+    "sha256": "9203440040cc38ee412aeedbfe57f452d6b85709c5b1600ca6ab2aa05478ab73",
+    "stderr": "warning: ICC support is not available\n"
+  },
+  "failure": "the frozen protocol classifies any renderer warning as BLOCKED",
+  "validation_reference": "not-produced",
+  "ocr": "not-run",
+  "semantic_inspection": "not-run",
+  "sources_rejected": false,
+  "ontology_selected": false,
+  "geometry_attached": false,
+  "measurement_attached": false,
+  "canon_selection": null,
+  "hmmm": [
+    "a separately preregistered protocol may add MuPDF -N to disable ICC workflow"
+  ]
+}
