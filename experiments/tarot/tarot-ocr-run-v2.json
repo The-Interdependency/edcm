@@ -1,0 +1,36 @@
+{
+  "schema": "edcm.tarot-ocr-run-receipt",
+  "version": "2.0.0",
+  "protocol_commit": "45025ca4e8ad3ac36bf103ca2596509cb661256c",
+  "protocol_sha256": "067851c170e19bd0c4ffe8f20ab8e385b35fa3dbbb40ac402ba585a2db7ecadd",
+  "status": "BLOCKED",
+  "stage": "independent-validation-reference",
+  "renderer": {
+    "command": "mutool draw -q -N -r 300 -c gray -F png -o page-%04d.png INPUT.pdf SELECTED_PAGES",
+    "version": "mutool version 1.23.10",
+    "sha256": "9203440040cc38ee412aeedbfe57f452d6b85709c5b1600ca6ab2aa05478ab73",
+    "stdout_bytes": 0,
+    "stderr_bytes": 0,
+    "exit_status": 0
+  },
+  "validation_crop_manifest_sha256": "f78554ea2452fdf1e626cf1d15c3366486d8d1606425372e18f0715922fed6ad",
+  "reference_observation": {
+    "book": "eight frozen crops contain decidable printed French text",
+    "tableau": "two frozen crops contain fewer than 100 decidable reference characters",
+    "tableau_page_0002": "predominantly visual arrangement and symbols in the crop",
+    "tableau_page_0005": "blank in the crop"
+  },
+  "failure": "the frozen protocol requires at least 100 decidable reference characters per source and forbids sample replacement after inspection",
+  "validation_reference": "not-produced-because-minimum-failed",
+  "ocr": "not-run",
+  "accuracy": "not-evaluated",
+  "semantic_inspection": "validation-crops-only",
+  "sources_rejected": false,
+  "ontology_selected": false,
+  "geometry_attached": false,
+  "measurement_attached": false,
+  "canon_selection": null,
+  "hmmm": [
+    "the next validation design must preserve the tableau as a visual source without post-result text-region selection"
+  ]
+}
