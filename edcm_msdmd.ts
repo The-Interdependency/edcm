@@ -1257,6 +1257,52 @@ export default defineMsdmdCollection({
       "id": "edcm_metapat_adapter"
     },
     {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "the controlled recovered-dissonance gate runs",
+        "since": "2026-08-16",
+        "then": "formulas, controls, direction, escalation, and stopping rules match the committed preregistration exactly"
+      },
+      "file": "edcm/recovered_dissonance_experiment.py",
+      "id": "recovered_dissonance_gate_executes_only_frozen_candidates"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a controlled report is emitted",
+        "since": "2026-08-16",
+        "then": "the prior MultiWOZ sensitivity result remains FALSIFIED and no transport, validity, or canon promotion is claimed"
+      },
+      "file": "edcm/recovered_dissonance_experiment.py",
+      "id": "recovered_dissonance_gate_preserves_prior_falsification"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "canonical JSON and frozen-design validation helpers",
+        "module_kind": "experiment",
+        "module_name": "recovered_dissonance_experiment",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "CandidateStatus, recovered_dissonance, accumulated_positive_pressure, normalized_recovered_dissonance, run_controlled_gate, main",
+        "requires": "maintained EDCM baseline identity and committed recovered-dissonance preregistration",
+        "rollback": "remove this module, its tests, and generated controlled report without changing the frozen baseline or historical MultiWOZ evidence",
+        "rollout": "controlled candidate falsification only; external evaluation requires separate UCNS PR #196 transport",
+        "since": "2026-08-16",
+        "storage_boundary": "reads the committed preregistration and writes one aggregate report path selected by the caller",
+        "summary": "executes the frozen absolute-recovery scale falsifier and its sole normalized-positive-pressure escalation without external labels",
+        "tests": "tests/test_recovered_dissonance_experiment.py",
+        "unresolved": "external outcome validity, temporal sampling comparability, independent replication, and canon authority",
+        "user_data_boundary": "hand-authored synthetic kappa trajectories only; sealed and external outcome labels are forbidden"
+      },
+      "file": "edcm/recovered_dissonance_experiment.py",
+      "id": "recovered_dissonance_controlled_gate"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
@@ -4356,6 +4402,20 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcmucns_validation",
       "to": "edcmucns_types"
+    },
+    {
+      "from": "recovered_dissonance_controlled_gate",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "recovered_dissonance_controlled_gate",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "recovered_dissonance_controlled_gate",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "recovered_dissonance_controlled_gate",
+      "to": "maintained EDCM baseline identity and committed recovered-dissonance preregistration"
     }
   ],
   "gaps": [],
