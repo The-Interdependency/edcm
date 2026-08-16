@@ -1,0 +1,36 @@
+{
+  "schema": "the-interdependency.stack-manifest",
+  "version": "1.0.0",
+  "work_graph_sha256": "fa2045760c0eb3a237f8238e941f790994a54770d51aef3b430cc13e7cc50059",
+  "repositories": [
+    {
+      "repository": "The-Interdependency/skill-lib",
+      "commit": "2b24be24947223b86440f59f1bd9766130f9cc11",
+      "authority": "build, evidence, preregistration, and claim discipline",
+      "relation": "doctrine-source"
+    },
+    {
+      "repository": "The-Interdependency/edcm",
+      "commit": "85c9985b6b2a3f0434fd6e328f0715bd46115f89",
+      "authority": "frozen embedded-text protocol, evaluator, and result sealing",
+      "relation": "experiment-and-artifact-producer"
+    },
+    {
+      "repository": "mupdf.com/mupdf",
+      "commit": "9203440040cc38ee412aeedbfe57f452d6b85709c5b1600ca6ab2aa05478ab73",
+      "authority": "MuPDF 1.23.10 text extraction executable bytes",
+      "relation": "exact-extraction-backend"
+    }
+  ],
+  "boundaries": {
+    "authority_transfer": false,
+    "proof_status_transfer": false,
+    "measurement_status_transfer": false,
+    "semantic_mapping": "external-provenance",
+    "agent_scope": "cross-repository-work-graph",
+    "hmmm": [
+      "MuPDF executable digest is identity rather than a producer signature",
+      "OCR backend, rendering law, language model, and validation controls are unresolved"
+    ]
+  }
+}
