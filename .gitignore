@@ -18,6 +18,10 @@ experiments/corpora/raw/
 experiments/corpora/checkpoints/
 *.corpus-checkpoint.json
 
+# Reproducible full lexical-floor materializations (receipts are copied to
+# experiments/ after byte-identical replay; large branch carriers stay cached).
+generated/
+
 # Generated corpus/artifact materializations; keep only directory guidance.
 /artifacts/*
 !/artifacts/README.md

@@ -1,5 +1,13 @@
 # EDCM public-gonol canon correction
 
+Status: retirement completed; lawful non-geometric replacement active.
+
+The replacement is the exact UCNS-owned metadata-free relational carrier pinned
+in [`ENGLISH_LEXICAL_FLOOR.md`](ENGLISH_LEXICAL_FLOOR.md). It is representation,
+not placement: no fractional angle, hash coordinate, evidence-derived geometry,
+or local `UCNSObject` was restored. The retired active modules were removed once
+the replacement branch tests passed.
+
 ## Decision
 
 EDCM does not own the public gonol.
