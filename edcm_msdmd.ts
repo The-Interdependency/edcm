@@ -1911,6 +1911,71 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_manifest_rejects_auto_fetch_without_public_domain_rights",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_acquisition_fetches_only_authorized_public_domain_bytes",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_auto_fetch_rights_gate"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_completed_resume_reuses_exact_state_and_rejects_tamper",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_acquisition_resume_fails_closed",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_completed_resume_fails_closed"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_acquisition_fetches_only_public_domain_and_seals_source_identity",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_acquisition_fetches_only_authorized_public_domain_bytes, tarot_metadata_only_sources_are_not_downloaded, tarot_acquisition_preserves_source_identity",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_fetch_authority_and_metadata_only_boundary"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_interrupted_resume_keeps_verified_completed_sources",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_acquisition_resume_fails_closed, tarot_acquisition_preserves_source_identity",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_interrupted_resume_checkpoint"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_committed_manifest_validates_without_tarot_ontology",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_manifest_preserves_preontology_boundary",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_manifest_preserves_preontology_boundary"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_exact_profile_activates_and_option_drift_suspends",
         "cleanup": "none",
         "mutates": "none",
@@ -2184,6 +2249,85 @@ export default defineMsdmdCollection({
       },
       "file": "tests/test_ucns_fork_lint.py",
       "id": "check_edcm_fork_status_firewall"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a source requests automatic byte acquisition",
+        "since": "2026-08-16",
+        "then": "the source must declare an HTTPS content URL, a safe artifact name, expected media type, and public-domain or Public Domain Mark rights before any network request occurs"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_acquisition_fetches_only_authorized_public_domain_bytes"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a Tarot source is admitted to an acquisition run",
+        "since": "2026-08-16",
+        "then": "its exact manifest entry digest, locator, retrieval policy, rights state, and any fetched byte digest are recorded without semantic normalization"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_acquisition_preserves_source_identity"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a completed or interrupted Tarot acquisition is resumed",
+        "since": "2026-08-16",
+        "then": "manifest identity, checkpoint entries, byte digests, and the exact output file set are validated; altered, missing, stale, or injected state is rejected"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_acquisition_resume_fails_closed"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a Tarot corpus manifest is loaded",
+        "since": "2026-08-16",
+        "then": "only the frozen evidence-envelope schema is accepted and ontology, canonical-deck, canonical-card-count, cross-source card identity, and I Ching inclusion remain explicitly unselected"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_manifest_preserves_preontology_boundary"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a source is metadata_only or manual_review",
+        "since": "2026-08-16",
+        "then": "no content request is issued and the source remains a provenance-bearing locator in the evidence index"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_metadata_only_sources_are_not_downloaded"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_fetch_https, _write_checkpoint, _validate_completed_run, _canonical_bytes",
+        "module_kind": "instrument",
+        "module_name": "tarot_corpus_acquirer",
+        "network_boundary": "external",
+        "owner": "Erin Spencer",
+        "public_surface": "validate_manifest, acquire_manifest, main",
+        "requires": "none",
+        "rollback": "remove this tool and its corpus/artifact documentation; generated artifacts are reproducible caches and remain noncanonical",
+        "rollout": "explicit CLI only; no automatic embedding or corpus download",
+        "since": "2026-08-16",
+        "storage_boundary": "write",
+        "summary": "validates a provenance-only Tarot source manifest, acquires only explicitly authorized public-domain bytes, and seals deterministic evidence receipts without defining Tarot ontology",
+        "tests": "tests.test_tarot_corpus_acquisition",
+        "unresolved": "source-specific item licensing and child-object identities beyond pinned public-domain downloads; OCR, transcription, semantic extraction, and EDCM embedding remain separate stages",
+        "user_data_boundary": "none; public cultural and archival evidence only"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "edcm_tarot_corpus_acquirer"
     }
   ],
   "edges": [
@@ -2979,6 +3123,132 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
+      "from": "check_tarot_auto_fetch_rights_gate",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_auto_fetch_rights_gate",
+      "to": "self::test_manifest_rejects_auto_fetch_without_public_domain_rights"
+    },
+    {
+      "from": "check_tarot_auto_fetch_rights_gate",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_auto_fetch_rights_gate",
+      "to": "tarot_acquisition_fetches_only_authorized_public_domain_bytes"
+    },
+    {
+      "from": "check_tarot_auto_fetch_rights_gate",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_auto_fetch_rights_gate",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_completed_resume_fails_closed",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_completed_resume_fails_closed",
+      "to": "self::test_completed_resume_reuses_exact_state_and_rejects_tamper"
+    },
+    {
+      "from": "check_tarot_completed_resume_fails_closed",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_completed_resume_fails_closed",
+      "to": "tarot_acquisition_resume_fails_closed"
+    },
+    {
+      "from": "check_tarot_completed_resume_fails_closed",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_completed_resume_fails_closed",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "self::test_acquisition_fetches_only_public_domain_and_seals_source_identity"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "tarot_acquisition_fetches_only_authorized_public_domain_bytes"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "tarot_acquisition_preserves_source_identity"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "tarot_metadata_only_sources_are_not_downloaded"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_interrupted_resume_checkpoint",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_interrupted_resume_checkpoint",
+      "to": "self::test_interrupted_resume_keeps_verified_completed_sources"
+    },
+    {
+      "from": "check_tarot_interrupted_resume_checkpoint",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_interrupted_resume_checkpoint",
+      "to": "tarot_acquisition_preserves_source_identity"
+    },
+    {
+      "from": "check_tarot_interrupted_resume_checkpoint",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_interrupted_resume_checkpoint",
+      "to": "tarot_acquisition_resume_fails_closed"
+    },
+    {
+      "from": "check_tarot_interrupted_resume_checkpoint",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_interrupted_resume_checkpoint",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_manifest_preserves_preontology_boundary",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_manifest_preserves_preontology_boundary",
+      "to": "self::test_committed_manifest_validates_without_tarot_ontology"
+    },
+    {
+      "from": "check_tarot_manifest_preserves_preontology_boundary",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_manifest_preserves_preontology_boundary",
+      "to": "tarot_manifest_preserves_preontology_boundary"
+    },
+    {
+      "from": "check_tarot_manifest_preserves_preontology_boundary",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_manifest_preserves_preontology_boundary",
+      "to": "python3"
+    },
+    {
       "from": "check_ucns_edcm_program_structure",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -3740,6 +4010,20 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_shared_stack",
       "to": "edcmucns_manifest"
+    },
+    {
+      "from": "edcm_tarot_corpus_acquirer",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_corpus_acquirer",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_corpus_acquirer",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_corpus_acquirer",
+      "to": "none"
     },
     {
       "from": "edcm_ucns_adapter",
