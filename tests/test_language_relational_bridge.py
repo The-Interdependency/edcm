@@ -44,6 +44,7 @@ def _snapshot() -> WordnetSnapshot:
 
 
 def test_independent_branches_freeze_before_comparison(tmp_path: Path) -> None:
+    pytest.importorskip("ucns.relational_carrier")
     manifest = embedding_manifest()
     assert manifest.ucns_owns_representation and manifest.edcm_owns_english_evidence
     assert manifest.legacy_placement_present is False and manifest.geometry_attached is False

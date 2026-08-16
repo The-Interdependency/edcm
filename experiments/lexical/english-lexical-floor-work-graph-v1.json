@@ -1,0 +1,43 @@
+{
+  "schema": "the-interdependency.stack-manifest",
+  "version": "1.0.0",
+  "work_graph_sha256": "96fbc795783904d7cad8e0640e244038248674f89f4c4f586423b9c81d4a1288",
+  "repositories": [
+    {
+      "repository": "The-Interdependency/skill-lib",
+      "commit": "6ef2e4c123225f9db20e5230e5894c9c86b42ee6",
+      "authority": "build and evidence discipline",
+      "relation": "doctrine-source"
+    },
+    {
+      "repository": "globalwordnet/english-wordnet",
+      "commit": "dc343f2683279ecbb13fab4e2fd778d7b162d287",
+      "authority": "OEWN 2025 lexical evidence",
+      "relation": "evidence-source"
+    },
+    {
+      "repository": "The-Interdependency/ucns",
+      "commit": "d74b8d8139bd1f41a60afc454809edeae641d1e1",
+      "authority": "metadata-free relational representation",
+      "relation": "producer"
+    },
+    {
+      "repository": "The-Interdependency/edcm",
+      "commit": "f93592cd945c6cf56b6a47527dbbfff8ac37c249",
+      "authority": "English evidence adaptation, freezing, and comparison",
+      "relation": "consumer-and-artifact-producer"
+    }
+  ],
+  "boundaries": {
+    "authority_transfer": false,
+    "proof_status_transfer": false,
+    "measurement_status_transfer": false,
+    "semantic_mapping": "external-provenance",
+    "agent_scope": "cross-repository-work-graph",
+    "hmmm": [
+      "producer signatures unavailable",
+      "UCNS geometry unresolved",
+      "canonical English morphology unresolved"
+    ]
+  }
+}

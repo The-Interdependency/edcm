@@ -1,0 +1,73 @@
+{
+  "schema": "edcm.english-lexical-floor-run-receipt",
+  "version": "1.0.0",
+  "run_date": "2026-08-16",
+  "work_graph_sha256": "96fbc795783904d7cad8e0640e244038248674f89f4c4f586423b9c81d4a1288",
+  "source": {
+    "repository": "globalwordnet/english-wordnet",
+    "tag": "2025-edition",
+    "commit": "dc343f2683279ecbb13fab4e2fd778d7b162d287",
+    "license": "Princeton WordNet License plus CC BY 4.0",
+    "source_tree_sha256": "3a46546a1ffbb4aed98990535ad5155c69be12ad09fdf093701b257d2a3e468f",
+    "source_file_count": 73,
+    "lexical_entry_count": 135969,
+    "sense_count": 185129,
+    "synset_count": 107519,
+    "observed_relation_count": 244727,
+    "release_reported_relation_count": 355064,
+    "materialized_surface_count": 131094
+  },
+  "direct_atomic": {
+    "node_count": 423742,
+    "edge_count": 651919,
+    "intrinsic_sha256": "ba069685fdbf37c3644c73c3dfd040da6395f6a160bfcffbf0a4f50d0c0ca312",
+    "binding_sha256": "be043215237e3cb47d580143b2861d320f631a3d948d1479b2699653eb199e4b",
+    "receipt_sha256": "e16f91b49b187dd97fe1eee67d31f8293c37beaf7f6c0d580c22e64706e52058"
+  },
+  "molecular": {
+    "node_count": 190626,
+    "edge_count": 224715,
+    "intrinsic_sha256": "84143d072b52d8ddb9694b42d9c9737ae180dac74cb4944f0b475e1217a05bb7",
+    "binding_sha256": "3e0ac76b68348b9b16cd0bcbb8110b725d03e76129e624565b2218f7f51ab80c",
+    "receipt_sha256": "281ee15e966120b134be0ba9fe9d769919d27d59c2d82a57d1537482240b23dc"
+  },
+  "evidence_artifacts": {
+    "affix_inventory_sha256": "802cf6d2d43942758c43184b69b141d96391f0f8a0b816a290c4e5dd29b45cb6",
+    "transformations_sha256": "c13143b2dd12e26a2527597cf979daae5ace53f25cf2170461825eaed8905807",
+    "morphology_evidence_sha256": "db619bf2ca3b21d6b285d7573d8c9342d6fef5d9a4d53d648e0c8e49f8273b72",
+    "comparison_sha256": "0112587a96795d2aa92ff10400987ed1d811de75ae7d4ea899f103bf08fedbc5",
+    "artifact_manifest_sha256": "98652dcc87f1f0ca78946450cd72c9f9ba7a9467d84644302dd288ce108a936f"
+  },
+  "comparison": {
+    "shared_surface_count": 131094,
+    "direct_only_surface_count": 0,
+    "molecular_only_surface_count": 0,
+    "intrinsic_equal": false,
+    "interpretation": "preserved-disagreement; no structural equivalence or measurement claim"
+  },
+  "independent_replay": {
+    "complete_artifact_set_byte_identical": true,
+    "file_count": 12,
+    "comparison": "diff -qr over two clean output directories"
+  },
+  "validation": {
+    "edcm_integrity": "passed",
+    "edcm_metadata_contract_graph": "closed",
+    "edcm_full_suite": "241 passed, 21 optional-dependency skips",
+    "lexical_bridge_with_exact_ucns": "7 passed",
+    "edcm_build_and_twine": "passed",
+    "ucns_contract_graph": "closed",
+    "ucns_full_suite": "passed",
+    "ucns_build_and_twine": "passed"
+  },
+  "status": "SURVIVED",
+  "geometry_attached": false,
+  "measurement_attached": false,
+  "canon_selection": null,
+  "hmmm": [
+    "UCNS geometric assignment remains unresolved",
+    "canonical English morphology remains unresolved",
+    "observed parser relation count and release-reported relation count use different declared counting scopes",
+    "Git and content digests do not authenticate producers"
+  ]
+}
