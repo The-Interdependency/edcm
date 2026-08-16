@@ -1,0 +1,26 @@
+{
+  "schema": "edcm.tarot-ocr-protocol",
+  "version": "2.0.0",
+  "status": "frozen-before-rendering-transcription-or-ocr",
+  "inherits": {
+    "schema": "edcm.tarot-ocr-protocol",
+    "version": "1.0.0",
+    "commit": "d46f4ad849694b738b5211f9bcc3dadb49c2c9c1",
+    "sha256": "e45712fe7140338e2b37135453b5f0cc6edbbe82d206018d26c131e7a29e0678"
+  },
+  "predecessor_result": {
+    "status": "BLOCKED",
+    "commit": "f4922fcabcd5797fc68201b6e777ddccdbb8edef",
+    "reason": "MuPDF emitted an ICC-support warning forbidden by v1"
+  },
+  "override": {
+    "field": "renderer.command",
+    "old": "mutool draw -q -r 300 -c gray -F png -o page-%04d.png INPUT.pdf 1-N",
+    "new": "mutool draw -q -N -r 300 -c gray -F png -o page-%04d.png INPUT.pdf 1-N",
+    "reason": "MuPDF 1.23.10 documents -N as disabling the unsupported ICC workflow"
+  },
+  "all_other_fields": "identical-to-inherited-v1",
+  "producer_output_rule": "any stdout, stderr, or nonzero exit is BLOCKED",
+  "semantic_inspection_before_freeze": "not-run",
+  "ocr_before_freeze": "not-run"
+}
