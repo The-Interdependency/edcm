@@ -98,6 +98,7 @@ Tarot evidence snapshot
     -> OCR v3 [BLOCKED: empty-reference scoring undefined]
     -> OCR v4 [FALSIFIED: eighteenth-century book typography undetected]
     -> OCR v5 [FALSIFIED: detection recovered, source-wide accuracy failed]
+    -> OCR v6 [BLOCKED: custom tessdata directory hid TXT/TSV configs]
     -> source-faithful historical-type/multimodal transcription design [hmmm]
     -> semantic discovery [not run]
     -> provenance-bearing recovered relations
