@@ -102,6 +102,8 @@ def render_and_ocr(
     output: Path,
     source: core.Source,
     page: int,
+    *,
+    command_builder=ocr_command,
 ) -> dict[str, object]:
     png, txt, tsv = core.page_paths(output, source, page)
     png.parent.mkdir(parents=True, exist_ok=True)
@@ -115,7 +117,7 @@ def render_and_ocr(
     environment = dict(os.environ)
     environment["OMP_THREAD_LIMIT"] = "1"
     ocr = subprocess.run(
-        ocr_command(tesseract, png, txt.with_suffix(""), model),
+        command_builder(tesseract, png, txt.with_suffix(""), model),
         capture_output=True,
         timeout=core.OCR_TIMEOUT,
         env=environment,

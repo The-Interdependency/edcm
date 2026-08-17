@@ -2128,6 +2128,28 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_v7_protocol_and_model_are_frozen",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v7_retains_v6_instrument"
+      },
+      "file": "tests/test_tarot_ocr_v7.py",
+      "id": "check_tarot_ocr_v7_inherited_identity"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v7_command_uses_explicit_renderer_flags",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v7_repairs_only_renderer_activation"
+      },
+      "file": "tests/test_tarot_ocr_v7.py",
+      "id": "check_tarot_ocr_v7_renderer_repair"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_frozen_thresholds_accept_only_adequate_pages",
         "cleanup": "none",
         "mutates": "none",
@@ -2904,6 +2926,48 @@ export default defineMsdmdCollection({
       },
       "file": "tools/run_tarot_ocr_v6.py",
       "id": "edcm_tarot_ocr_v6_runner"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a v7 page OCR request",
+        "then": "explicit TXT and TSV booleans replace only the unavailable config filenames"
+      },
+      "file": "tools/run_tarot_ocr_v7.py",
+      "id": "tarot_ocr_v7_repairs_only_renderer_activation"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a complete or resumed v7 run",
+        "then": "the exact historic model and all inherited source, OCR, validation, evidence, and failure contracts remain active"
+      },
+      "file": "tools/run_tarot_ocr_v7.py",
+      "id": "tarot_ocr_v7_retains_v6_instrument"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "explicit TXT/TSV flags and v6 historic-model page producer",
+        "module_kind": "experiment",
+        "module_name": "tarot_ocr_v7_runner",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "command-line interface",
+        "requires": "edcm_tarot_ocr_v6_runner",
+        "rollback": "remove this adapter without altering prior evidence or protocols",
+        "rollout": "explicit CLI only after protocol commit f57f639",
+        "storage_boundary": "write",
+        "summary": "executes the frozen Tarot OCR v7 renderer-flag repair with the unchanged historic-print instrument",
+        "tests": "tests.test_tarot_ocr_v7",
+        "user_data_boundary": "none"
+      },
+      "file": "tools/run_tarot_ocr_v7.py",
+      "id": "edcm_tarot_ocr_v7_runner"
     }
   ],
   "edges": [
@@ -4063,6 +4127,34 @@ export default defineMsdmdCollection({
       "to": "tarot_ocr_v6_changes_only_frozen_model"
     },
     {
+      "from": "check_tarot_ocr_v7_inherited_identity",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v7_inherited_identity",
+      "to": "self::test_v7_protocol_and_model_are_frozen"
+    },
+    {
+      "from": "check_tarot_ocr_v7_inherited_identity",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v7_inherited_identity",
+      "to": "tarot_ocr_v7_retains_v6_instrument"
+    },
+    {
+      "from": "check_tarot_ocr_v7_renderer_repair",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v7_renderer_repair",
+      "to": "self::test_v7_command_uses_explicit_renderer_flags"
+    },
+    {
+      "from": "check_tarot_ocr_v7_renderer_repair",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v7_renderer_repair",
+      "to": "tarot_ocr_v7_repairs_only_renderer_activation"
+    },
+    {
       "from": "check_tarot_text_gate_frozen_thresholds",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -4978,6 +5070,20 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_tarot_ocr_v6_runner",
       "to": "edcm_tarot_ocr_v4_runner"
+    },
+    {
+      "from": "edcm_tarot_ocr_v7_runner",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v7_runner",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_ocr_v7_runner",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v7_runner",
+      "to": "edcm_tarot_ocr_v6_runner"
     },
     {
       "from": "edcm_tarot_pdf_text_layer_gate",
