@@ -7,11 +7,12 @@
     "sha256": "43a1568c68ffad1052fa382b08ee8af7793cdc8ef289971707dc27aa0479eccd"
   },
   "implementation_commit": "76e2cfecda50bdb8ac9e834a6eb47ed2fcba805b",
+  "manifest_identity_correction_commit": "7d07c0a546ef9181301622f83af277f23c908df6",
   "run": {
     "path": "artifacts/tarot/ocr-v7/run-a",
     "pages": 407,
     "bytes": 282001402,
-    "manifest_sha256": "520157565f70168daf651b5b76313e503905f1b83931a29d1e8e2a8930688dc3",
+    "manifest_sha256": "ceaf5c964e33b1a79a13e8e44f60ee8168e71c22fe846fc463073c39bc8dbff8",
     "validation_sha256": "b77244363faa76d70b449174afc1bdee3052d51f1fd09858df30531fc1a1221a",
     "checkpoint_sha256": "da6de5edc15fc995cc8eff304458d62b8dab22611c2f8827d53bfd5eae8a2845"
   },
