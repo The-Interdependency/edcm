@@ -58,8 +58,7 @@ If the optional canonical UCNS package is absent, accessing the public gonol
 raises `UCNSPublicGonolDependencyError`. If the source commit, origin, required
 surface, or digest drifts, it raises `UCNSPublicGonolContractError`.
 
-All previous EDCM language-placement entry points now raise
-`NonCanonicalLanguagePlacementError`:
+The retired EDCM language-placement modules and their entry points were deleted:
 
 ```text
 assign_affix_gonol
@@ -68,11 +67,15 @@ assign_direct_atomic_gonol
 superpose_gonols
 ```
 
-The OEWN corpus workflows and artifact finalizer are removed. The retained
-builder command fails before reading OEWN or writing artifacts.
+Importing those old modules or names is therefore unavailable; there is no
+compatibility stub that can accidentally look like an active placement API.
 
-Read-only inspection of already-existing local compatibility objects remains
-available so historical data can be identified and migrated deliberately.
+The active `tools/build_oewn2025_embeddings.py` workflow is a separate,
+metadata-free relational construction. It requires exact clean OEWN and UCNS
+source checkouts, keeps English identities in external binding files, and emits
+no position, face, angle, geometry, measurement, or canon selection. Completed
+output can resume only after the exact source manifest, exact artifact file set,
+intrinsic carriers, bindings, receipts, and producer identities are revalidated.
 
 ## Reopening conditions
 
@@ -88,15 +91,18 @@ That bridge must state exactly what is preserved and must not silently:
   mapping;
 - transfer UCNS proof status into EDCM measurement validity.
 
-## Migration order
+## Completed migration
 
-1. Review and merge the UCNS public-gonol promotion.
-2. Replace A0's local authority with UCNS imports or strict parity wrappers.
-3. Repin EDCM to the merged UCNS commit.
-4. Specify the consumer bridge separately.
-5. Build simple word-list or OEWN adapters only after the bridge is accepted.
+1. The UCNS public-gonol promotion was merged and EDCM retained only a strict,
+   lazy compatibility view.
+2. The old local placement authority and constructors were removed.
+3. The bounded lexical consumer bridge was specified separately and pinned to
+   an exact UCNS relational producer commit.
+4. OEWN construction reopened only through that relational bridge, with the
+   source, representation, and claim boundaries recorded independently.
 
 ## hmmm
 
-This correction protects the canon by stopping construction. It does not guess
-the missing bridge.
+This correction protects the canon by keeping compatibility access and lexical
+relational construction on distinct surfaces. The lexical bridge does not
+manufacture the unresolved geometric or measurement bridge.

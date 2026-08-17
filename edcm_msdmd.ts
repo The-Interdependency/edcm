@@ -769,7 +769,7 @@ export default defineMsdmdCollection({
         "since": "2026-07-16",
         "storage_boundary": "none",
         "summary": "lazily consumes the UCNS-owned public gonol without retaining a competing EDCM arrangement authority",
-        "tests": "tests.test_language_embeddings",
+        "tests": "tests.test_language_relational_bridge",
         "unresolved": "canonical public-gonol to EDCM language-object bridge remains hmmm",
         "user_data_boundary": "none"
       },
@@ -828,7 +828,7 @@ export default defineMsdmdCollection({
         "since": "2026-07-13",
         "storage_boundary": "none",
         "summary": "defines explicit composition trees, evidence states, and direct/generated atomic comparison records without placing linguistic metadata inside gonols",
-        "tests": "tests.test_language_embeddings",
+        "tests": "tests.test_language_relational_bridge",
         "unresolved": "whether soundness will ultimately be indexed by context, technology, community, or all three",
         "user_data_boundary": "none"
       },
@@ -920,7 +920,7 @@ export default defineMsdmdCollection({
         "class": "safety",
         "given": "EDCM opens the UCNS relational construction API",
         "since": "2026-08-16",
-        "then": "the checkout HEAD equals the merged producer commit and the imported producer module is the exact source-root file whose bytes match the verification receipt"
+        "then": "the checkout HEAD equals the merged producer commit and every construction freshly compiles the exact committed module bytes named by the verification receipt"
       },
       "file": "edcm/language/relational_bridge.py",
       "id": "lexical_ucns_producer_is_exactly_verified"
@@ -930,7 +930,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "exact UCNS producer commit is pinned by package profile and work-graph artifact",
-        "internal_surface": "_ucns_api, _digest, _relation_codes, _git",
+        "internal_surface": "_ucns_api, _load_verified_ucns_module, _committed_ucns_module_bytes, _digest, _relation_codes, _git",
         "module_kind": "adapter",
         "module_name": "relational_bridge",
         "network_boundary": "none",
@@ -1719,9 +1719,9 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
-        "call": "self::test_independent_branches_freeze_before_comparison",
-        "cleanup": "pytest tmp_path",
-        "mutates": "tmp_path only",
+        "call": "self::language_relational_branch_check",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
         "proves": "lexical_branches_are_independently_constructed, english_metadata_is_external_to_ucns_carrier, lexical_ucns_producer_is_exactly_verified, lexical_relation_multiplicity_is_preserved, lexical_pre_replay_status_is_unresolved, comparison_requires_two_prior_freezes, lexical_manifest_preserves_authority_firewall",
         "timeout": "30"
       },
@@ -2606,7 +2606,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "verifies exact OEWN and UCNS commits",
-        "internal_surface": "_git, _acquire, _source_manifest",
+        "internal_surface": "_git, _acquire, _verify_oewn_source_tree_clean, _expected_source_manifest, _resume_complete",
         "module_kind": "instrument",
         "module_name": "build_oewn2025_embeddings",
         "network_boundary": "git clone only when --acquire is explicitly supplied",
@@ -2806,7 +2806,7 @@ export default defineMsdmdCollection({
       "fields": {
         "class": "evidence",
         "given": "a protocol execution request",
-        "then": "both PDFs, renderer, OCR executable, French model, versions, page counts, and reference bytes must match before a producer runs"
+        "then": "both PDFs, renderer, OCR executable, active model, versions, page counts, and reference bytes must match before a producer runs"
       },
       "file": "tools/run_tarot_ocr_v4.py",
       "id": "tarot_ocr_v4_verifies_every_frozen_identity"
@@ -2816,7 +2816,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "producer verification, render/OCR execution, checkpoint verification, TSV reconstruction, CER/WER scoring",
+        "internal_surface": "producer verification, render/OCR execution, exact checkpoint file-set verification, TSV reconstruction, CER/WER scoring",
         "module_kind": "experiment",
         "module_name": "tarot_ocr_v4_runner",
         "network_boundary": "none",
@@ -4355,7 +4355,7 @@ export default defineMsdmdCollection({
       "kind": "calls",
       "source_block": "CHECKS",
       "source_id": "language_relational_branch_check",
-      "to": "self::test_independent_branches_freeze_before_comparison"
+      "to": "self::language_relational_branch_check"
     },
     {
       "from": "language_relational_branch_check",

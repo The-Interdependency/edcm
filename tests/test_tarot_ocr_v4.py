@@ -35,6 +35,7 @@ import pytest
 from tools.run_tarot_ocr_v4 import (
     MODEL_SHA256,
     MUTOOL_SHA256,
+    ProtocolBlocked,
     REFERENCE_SHA256,
     TESSERACT_SHA256,
     SOURCES,
@@ -43,6 +44,7 @@ from tools.run_tarot_ocr_v4 import (
     normalize,
     record_for,
     score,
+    write_canonical,
     verify_record,
 )
 
@@ -104,3 +106,35 @@ def test_normalization_distance_and_empty_page_rule() -> None:
 def test_canonical_serialization_is_byte_deterministic() -> None:
     assert canonical_bytes({"b": 1, "a": "é"}) == canonical_bytes({"a": "é", "b": 1})
     assert canonical_bytes({"b": 1, "a": "é"}) == b'{"a":"\xc3\xa9","b":1}\n'
+
+
+def test_resume_rejects_uncheckpointed_files_before_execution(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from tools import run_tarot_ocr_v4 as runner
+
+    output = tmp_path / "run"
+    output.mkdir()
+    write_canonical(
+        output / "checkpoint.json",
+        {"schema": "edcm.tarot-ocr-checkpoint", "version": "4.0.0", "records": []},
+    )
+    (output / "injected.txt").write_text("not checkpointed", encoding="utf-8")
+    monkeypatch.setattr(
+        runner,
+        "verify_inputs",
+        lambda *args, **kwargs: (Path("mutool"), Path("tesseract"), {}),
+    )
+
+    def page_producer(*args, **kwargs):
+        raise AssertionError("resume validation must precede producer execution")
+
+    with pytest.raises(ProtocolBlocked, match="checkpoint file set mismatch"):
+        runner.run(
+            Path("acquisition"),
+            Path("reference"),
+            output,
+            True,
+            page_producer=page_producer,
+        )
