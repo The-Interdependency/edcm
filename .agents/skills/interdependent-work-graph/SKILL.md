@@ -123,6 +123,53 @@ When this skill is active, produce or maintain:
 
 For machine-consumed work, also emit the versioned stack manifest or an explicitly named equivalent.
 
+## Repository plan reports and overall portfolio plan
+
+When the question is not one bounded work graph but **what part of the overall effort each self-contained repository owns**, use the repository-report projection rather than inventing a centralized plan document.
+
+Each participating repository owns:
+
+```text
+docs/work-graphs/repository-plan-report.json
+```
+
+That report states its exact source commit, authority and non-transfer boundaries, portfolio role, current claim, delivered surfaces, active frontier, next actions, blockers, cross-repository relations, machine entrypoints, and `hmmm`.
+
+The frozen input contract is:
+
+```text
+interdependent-work-graph/repository-plan-report.schema.json
+schema:   the-interdependency.repository-plan-report
+version:  1.0.0
+blob SHA: 9b347b2dff7692054b571602f30ee6d00c2e7265
+```
+
+The deterministic reference aggregator is:
+
+```text
+interdependent-work-graph/portfolio_plan.py
+```
+
+Its output contract is:
+
+```text
+interdependent-work-graph/portfolio-plan.schema.json
+schema:  the-interdependency.portfolio-plan
+version: 1.0.0
+```
+
+Read `interdependent-work-graph/PORTFOLIO_PLAN.md` before producing or changing this projection.
+
+The portfolio plan is a **derived index of repo-owned claims**. It owns no repository canon. Missing or stale repo reports remain visible `hmmm`; do not reconstruct them from memory, package metadata, a neighboring repository, or the aggregator itself. Local checkout paths are excluded from the portfolio identity so the same report set hashes identically across machines.
+
+A repository plan report and a stack manifest are complementary:
+
+```text
+repository plan report -> what this repository owns and where its work stands
+stack manifest          -> exact identities in one bounded cross-repository work graph
+portfolio plan          -> deterministic projection across supplied repo reports
+```
+
 ## Validation
 
 A successful application demonstrates:
@@ -136,6 +183,16 @@ A successful application demonstrates:
 - at least one cross-repository fixture, import, adapter, artifact, or workflow proves the connected path;
 - later agents can resume from the graph record without guessing which commits were used.
 
+For the portfolio projection specifically, also require:
+
+- every supplied report validates against the frozen report contract;
+- every report pins a source commit and the exact schema blob identity;
+- duplicate repository reports fail closed;
+- every cross-repository relation carries `authority_transfer: false`;
+- report order does not change the derived portfolio identity;
+- the portfolio digest excludes machine-local checkout paths;
+- missing portfolio members are reported as incompletion rather than synthesized.
+
 ## Anti-patterns
 
 - Assigning one AI to one repository when the task's truth conditions span several.
@@ -146,6 +203,8 @@ A successful application demonstrates:
 - Using a digest as though it were a signature.
 - Hiding unresolved mappings behind constructor defaults.
 - Allowing validation workflows to mutate the source they are validating.
+- Copying repo canon into the portfolio plan instead of deriving a report from the owning repository.
+- Treating repository discovery or GitHub visibility as automatic portfolio membership.
 
 ## Minimal example
 
@@ -168,3 +227,4 @@ One agent can follow the complete path. Separate agents can work on different pa
 - Whether the stack-manifest schema remains a procedural-skill reference contract or later becomes its own metadata-block/schema skill.
 - The next stack-manifest schema revision is expected to add explicit `certification_status_transfer` and `empirical_status_transfer` boundary fields, a canonical `repositories` ordering (for example by `repository` then `commit`) in place of declared-order identity, typed non-repository participants with digest/version/schema identities, and an explicit hashed edge list (`from`, `to`, `relation_type`) so distinct work graphs over the same participants cannot share one digest. Version 1.0.0 stays as sealed by the EDCM OEWN 2025 run.
 - Cross-repository merge orchestration remains repository-host dependent; the skill defines order and evidence, not a universal transaction mechanism.
+- Automatic organization-wide portfolio discovery remains deliberately unselected; explicit report sets preserve intentional membership and visible incompletion.

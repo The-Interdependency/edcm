@@ -1,6 +1,6 @@
 ---
 name: domain-claims
-description: Domain-first lexical and semantic governance for canonical terms. Load this when a word or phrase is being promoted into a theorem term, ontology primitive, schema field, encoding label, skill doctrine, cross-domain mapping, or other meaning-bearing control surface; when multiple domains use the same word differently; or when conversational provenance is about to be attached to a definition. Do not load for ordinary prose, casual wording choices, or simple dictionary explanations that will not control canon or structure.
+description: Domain-first lexical and semantic governance for canonical terms. Load this when a word or phrase is being promoted into a theorem term, ontology primitive, schema field, encoding label, skill doctrine, cross-domain mapping, or other meaning-bearing control surface; when multiple domains use the same word differently; when an acronym, initialism, symbol, or compact handle is being mistaken for a fixed expansion or definition; or when conversational provenance is about to be attached to a definition. Do not load for ordinary prose, casual wording choices, or simple dictionary explanations that will not control canon or structure.
 ---
 
 # domain-claims — establish semantic standing before provenance
@@ -13,6 +13,12 @@ The governing rule is:
 > Before a word becomes a canonical term, identify which domain has standing to
 > claim the applicable sense and scope.
 
+For compact handles, an additional rule applies:
+
+> |∆|Acronyms identify; they do not define. Expansions are instance-resolved
+> properties, not canonical identities, unless the claiming domain explicitly
+> ratifies a fixed expansion as identity-bearing.|∆|
+
 A domain claim does not own a word everywhere. It claims authority over one bounded
 sense of that word inside a declared scope.
 
@@ -23,6 +29,8 @@ sense of that word inside a declared scope.
 - A definition is being derived from conversation and will later authorize an
   implementation or encoding.
 - The same surface word appears in several domains with different meanings.
+- An acronym, initialism, symbol, or compact project handle is being expanded and the
+  expansion could be mistaken for the handle's identity.
 - A cross-domain import, specialization, translation, or shared term needs to be
   declared.
 - An agent must decide whether provenance belongs to this sense of a word or to a
@@ -59,6 +67,47 @@ Therefore:
 - an encoding based on an unresolved word is **not authorized**;
 - a domain collision is a fail-closed boundary, not a cue to choose the most familiar
   meaning.
+
+## Despecified handles
+
+A **despecified handle** is a stable surface identifier whose identity is not exhausted
+by, and does not require, one canonical lexical expansion. This is the default treatment
+for The Interdependency's acronym-like semantic control surfaces unless a domain claim
+explicitly ratifies a fixed expansion.
+
+Despecified does not mean unspecified. Identity remains constrained by the resolved
+term id, claiming domain, scope, relations, invariants, provenance, and current instance.
+An expansion may improve legibility in one outward-facing artifact without becoming a
+global definition.
+
+For an acronym, initialism, symbol, or compact handle, extend the domain-claim record
+when needed:
+
+```yaml
+handle:
+  kind: acronym | initialism | symbol | compact-name
+  identity_mode: despecified | fixed-expansion
+  canonical_expansion: none | <ratified text> | hmmm
+  instance_expansions:
+    - text: <expansion used in this instance>
+      scope: <artifact, audience, domain, or other bounded context>
+      status: instance-definition | proposed | ratified | superseded
+      provenance: <source or hmmm>
+```
+
+Rules:
+
+- `despecified` means the handle can remain stable while instance expansions vary;
+- an instance expansion is a property of that instance, not retroactive authority over
+  every use of the handle;
+- `fixed-expansion` requires explicit domain ratification; familiarity, search rank,
+  historical usage, or lexical plausibility is insufficient;
+- external acronym collisions do not redefine an internal handle; they remain separate
+  domain claims and are tested only where scopes overlap;
+- changing an expansion does not change identity unless the active domain claim makes
+  that expansion identity-bearing;
+- a handle whose relations, invariants, scope, and provenance cannot recover its
+  operative identity is underspecified and remains `hmmm`.
 
 ## Domain-claim record
 
@@ -114,11 +163,15 @@ claim may still be provisional.
 
 A `DOMAIN_COLLISION` exists when all are true:
 
-1. the surface word or phrase is the same or treated as equivalent;
+1. the surface word, phrase, or handle is the same or treated as equivalent;
 2. the scopes overlap for the current task;
 3. the claimed senses differ materially;
 4. no explicit translation, specialization, precedence, or disambiguation rule
    resolves the overlap.
+
+Different expansions of a despecified handle are not by themselves a collision. Test
+the domain-bound senses and overlapping scopes, not merely the words chosen to expand
+the letters.
 
 On collision, emit:
 
@@ -132,7 +185,7 @@ resolution required before canonization or encoding
 ```
 
 Do not silently choose by recency, popularity, model familiarity, lexical similarity,
-or repository proximity.
+repository proximity, or the most common acronym expansion returned by search.
 
 ## Workflow
 
@@ -143,18 +196,21 @@ or repository proximity.
    apply in the current scope.
 3. **Declare the claim.** Create or retrieve the domain-claim record before drafting
    the operative definition.
-4. **Run the collision test.** Fail closed on unresolved overlap.
-5. **Bind the definition.** Write the definition as a claim of the domain, not as a
-   universal statement about the surface word.
-6. **Attach provenance.** Attach conversation excerpts, documents, commits, examples,
+4. **Resolve handle identity.** For acronyms, initialisms, symbols, and compact names,
+   determine whether identity is `despecified` or explicitly `fixed-expansion` before
+   treating any expansion as semantic authority.
+5. **Run the collision test.** Fail closed on unresolved overlap.
+6. **Bind the definition.** Write the definition as a claim of the domain, not as a
+   universal statement about the surface word or expansion.
+7. **Attach provenance.** Attach conversation excerpts, documents, commits, examples,
    corrections, and counterexamples to the domain-qualified sense.
-7. **Ratify honestly.** Mark proposed, provisional, ratified, contested, or superseded.
+8. **Ratify honestly.** Mark proposed, provisional, ratified, contested, or superseded.
    Do not turn accepted discussion into retroactive authority for earlier artifacts.
-8. **Authorize downstream use.** Only a resolved domain-bound definition may control
+9. **Authorize downstream use.** Only a resolved domain-bound definition may control
    an ontology, schema, theorem term, METAPAT record, UCNS encoding, or other structural
    surface.
-9. **Preserve hmmm.** Unresolved scope, collisions, borrowing rules, and authority
-   questions remain visible.
+10. **Preserve hmmm.** Unresolved scope, collisions, borrowing rules, handle identity,
+    and authority questions remain visible.
 
 ## Relationship to other skills
 
@@ -165,6 +221,7 @@ or repository proximity.
   senses that require separate term identities.
 - **Before `plain-lens`:** companion views may simplify wording but must preserve the
   active domain claim and disclose when a familiar word carries a specialized sense.
+  Expanding a despecified handle for readability must remain explicitly instance-bound.
 - **Before semantic encodings:** structural possibility does not authorize meaning.
   The encoding must cite the resolved domain claim.
 
@@ -187,6 +244,29 @@ neighboring_terms:
   - ucns.relational_geometry.breadth
 ```
 
+### Despecified acronym
+
+```yaml
+surface_form: EDCM
+term_id: the-interdependency.edcm
+claiming_domain: The Interdependency
+claimed_sense: <resolved project/object sense>
+scope: <current instance scope>
+handle:
+  kind: acronym
+  identity_mode: despecified
+  canonical_expansion: none
+  instance_expansions:
+    - text: <audience-appropriate expansion>
+      scope: <this outward-facing instance>
+      status: instance-definition
+      provenance: <source>
+```
+
+A search result that expands `EDCM` differently supplies another domain claim, not a
+replacement definition. Resolve scope and sense first. The letters remain the stable
+handle.
+
 ### Fork
 
 UCNS may claim the structural sense "multiple payload-bearing branches." METAPAT may
@@ -207,6 +287,7 @@ When this skill is active, return:
 - Scope:
 - Claim type:
 - Status:
+- Handle identity: despecified | fixed-expansion | not-applicable | hmmm
 
 ## Boundaries
 - Included:
@@ -231,6 +312,7 @@ A successful application demonstrates that:
 - the domain claim appears before the definition and provenance;
 - the term has a stable domain-qualified identifier;
 - scope and exclusions are explicit;
+- acronym/handle expansions are not promoted to identity without explicit ratification;
 - overlapping claims were tested rather than ignored;
 - unresolved collisions block downstream structural use;
 - provenance is attached to the claimed sense, not merely the surface word;
@@ -241,6 +323,8 @@ A successful application demonstrates that:
 - Treating a dictionary definition as authority for a specialized domain term.
 - Attaching a conversation to a bare word and assuming every later use inherits it.
 - Saying a domain owns a word globally.
+- Treating the most familiar or searchable acronym expansion as the handle's definition.
+- Freezing an outward-facing expansion into global canon without explicit ratification.
 - Using repository location as semantic precedence.
 - Encoding a homonym because its field name matches.
 - Treating structural detectability as semantic authorization.
@@ -251,11 +335,13 @@ hmmm
 
 - whether domain-claim records should later gain an msdmd metadata-block sibling and
   registry runner
+- whether despecified-handle records need an organization-wide machine-readable registry
+  or should remain attached only to domain-qualified claims
 - whether ratified conversational definition events should have a standard immutable
   transcript-envelope schema
 - how multilingual surface forms share or fork a term identity without assuming exact
   translation
 - how domain authority is delegated, revoked, or shared across organizations
 
-The word remains common. The claim gives one sense standing. Conversation then earns
-the definition that structure is permitted to carry.
+The word remains common. The claim gives one sense standing. The handle remains stable.
+Conversation then earns the definition that structure is permitted to carry.
