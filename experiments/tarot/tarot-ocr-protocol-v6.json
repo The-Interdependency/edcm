@@ -1,0 +1,34 @@
+{
+  "schema": "edcm.tarot-ocr-protocol",
+  "version": "6.0.0",
+  "status": "frozen-before-v6-ocr",
+  "parent_result_commit": "ffb85e7ce0f796d763165f6224b0bd9ffe9ae05a",
+  "inherits": {
+    "schema": "edcm.tarot-ocr-protocol",
+    "version": "5.0.0",
+    "protocol_sha256": "625acfea972dfe882afd4742db3608cf67f7828d898b6725678e19b2b586661c",
+    "result": "FALSIFIED"
+  },
+  "sole_override": {
+    "field": "language_model",
+    "predecessor": "Debian tessdata_fast French 4.1.0",
+    "candidate": "Zenodo 10125246 frak2021-0.905 generic best historic Latin-print model",
+    "model_sha256": "1da2384254fa8462c776faf3b43307fe19ce51be0931c623b2fdd560f96e299a",
+    "command": "OMP_THREAD_LIMIT=1 tesseract PAGE.png OUT --tessdata-dir MODEL_DIR -l frak2021-0.905 --oem 1 --psm 3 -c thresholding_method=2 txt tsv"
+  },
+  "model_receipt": "experiments/tarot/tarot-ocr-model-frak2021.json",
+  "explicitly_unchanged": [
+    "source identities and page order",
+    "MuPDF renderer and 300-DPI grayscale rendering",
+    "Tesseract 5.3.4 executable",
+    "OEM 1, PSM 3, and source orientation",
+    "Sauvola method 2 with installed window and k-factor defaults",
+    "sealed v4 validation reference and exact-empty comparison rule",
+    "accuracy thresholds, serialization, raw evidence, resources, replay, and stopping rules",
+    "licensing, provenance, epistemic, and nonclaim boundaries"
+  ],
+  "v6_ocr_before_freeze": false,
+  "candidate_score_observed": false,
+  "outcomes": ["FALSIFIED", "SURVIVED", "UNRESOLVED", "BLOCKED"],
+  "hmmm": "whether generic historic-print recognition transfers to the French source without increasing visual-page false positives"
+}
