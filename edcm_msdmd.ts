@@ -2073,6 +2073,28 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_v5_protocol_and_instrument_identities_are_frozen",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v5_retains_v4_evidence_contracts"
+      },
+      "file": "tests/test_tarot_ocr_v5.py",
+      "id": "check_tarot_ocr_v5_core_identity"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v5_ocr_command_is_exact_single_threshold_change",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v5_changes_only_frozen_thresholding"
+      },
+      "file": "tests/test_tarot_ocr_v5.py",
+      "id": "check_tarot_ocr_v5_single_change"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_frozen_thresholds_accept_only_adequate_pages",
         "cleanup": "none",
         "mutates": "none",
@@ -2755,6 +2777,48 @@ export default defineMsdmdCollection({
       },
       "file": "tools/run_tarot_ocr_v4.py",
       "id": "edcm_tarot_ocr_v4_runner"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a v5 page OCR request",
+        "then": "the exact v4 command gains only thresholding_method=2 and retains raw TXT/TSV evidence"
+      },
+      "file": "tools/run_tarot_ocr_v5.py",
+      "id": "tarot_ocr_v5_changes_only_frozen_thresholding"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a complete or resumed v5 run",
+        "then": "frozen identities, page evidence, validation, deterministic serialization, and fail-closed resume use the v4 core with v5 identities"
+      },
+      "file": "tools/run_tarot_ocr_v5.py",
+      "id": "tarot_ocr_v5_retains_v4_evidence_contracts"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "frozen Sauvola OCR command and v4 resumable corpus core",
+        "module_kind": "experiment",
+        "module_name": "tarot_ocr_v5_runner",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "command-line interface",
+        "requires": "edcm_tarot_ocr_v4_runner",
+        "rollback": "remove this adapter without altering v4 evidence or protocols",
+        "rollout": "explicit CLI only after protocol commit 9199f2d",
+        "storage_boundary": "write",
+        "summary": "executes the frozen Tarot OCR v5 adaptive-threshold protocol through the v4 evidence-preserving core",
+        "tests": "tests.test_tarot_ocr_v5",
+        "user_data_boundary": "none"
+      },
+      "file": "tools/run_tarot_ocr_v5.py",
+      "id": "edcm_tarot_ocr_v5_runner"
     }
   ],
   "edges": [
@@ -3844,6 +3908,34 @@ export default defineMsdmdCollection({
       "to": "tarot_ocr_v4_preserves_raw_page_evidence"
     },
     {
+      "from": "check_tarot_ocr_v5_core_identity",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v5_core_identity",
+      "to": "self::test_v5_protocol_and_instrument_identities_are_frozen"
+    },
+    {
+      "from": "check_tarot_ocr_v5_core_identity",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v5_core_identity",
+      "to": "tarot_ocr_v5_retains_v4_evidence_contracts"
+    },
+    {
+      "from": "check_tarot_ocr_v5_single_change",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v5_single_change",
+      "to": "self::test_v5_ocr_command_is_exact_single_threshold_change"
+    },
+    {
+      "from": "check_tarot_ocr_v5_single_change",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v5_single_change",
+      "to": "tarot_ocr_v5_changes_only_frozen_thresholding"
+    },
+    {
       "from": "check_tarot_text_gate_frozen_thresholds",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -4731,6 +4823,20 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_tarot_ocr_v4_runner",
       "to": "edcm_tarot_corpus_acquirer"
+    },
+    {
+      "from": "edcm_tarot_ocr_v5_runner",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v5_runner",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_ocr_v5_runner",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v5_runner",
+      "to": "edcm_tarot_ocr_v4_runner"
     },
     {
       "from": "edcm_tarot_pdf_text_layer_gate",
