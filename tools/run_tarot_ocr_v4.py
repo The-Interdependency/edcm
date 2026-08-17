@@ -337,6 +337,7 @@ def run(
     protocol_commit: str = "5d20d70a3b2b9d91fefbfc5142294b262a125223",
     page_producer=render_and_ocr,
     instrument: dict[str, object] | None = None,
+    model_sha256: str = MODEL_SHA256,
 ) -> dict[str, object]:
     mutool, tesseract, reference = verify_inputs(acquisition, reference_path)
     output.mkdir(parents=True, exist_ok=True)
@@ -378,7 +379,7 @@ def run(
         "reference_sha256": REFERENCE_SHA256,
         "renderer_sha256": MUTOOL_SHA256,
         "ocr_sha256": TESSERACT_SHA256,
-        "model_sha256": MODEL_SHA256,
+        "model_sha256": model_sha256,
         "pages": records,
         "alternatives": {"status": "NA", "reason": "Tesseract txt/tsv interface exposes no character alternatives"},
         "ontology_selected": False,

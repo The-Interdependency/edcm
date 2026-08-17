@@ -62,3 +62,18 @@ def test_v6_protocol_and_instrument_identities_are_frozen() -> None:
     assert PROTOCOL_SHA256 == "07c4540d4be3ab1affb30184d7eb6290361b5b470bb55ac23cc3adf64c34a216"
     assert INSTRUMENT["model_sha256"] == MODEL_SHA256
     assert INSTRUMENT["all_other_v5_fields"] == "unchanged"
+
+
+def test_v6_passes_historic_model_as_top_level_manifest_identity(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tools import run_tarot_ocr_v6 as runner
+
+    captured: dict[str, object] = {}
+    monkeypatch.setattr(runner, "verify_model", lambda path: None)
+
+    def fake_run(*args, **kwargs):
+        captured.update(kwargs)
+        return {"status": "FALSIFIED"}
+
+    monkeypatch.setattr(runner.core, "run", fake_run)
+    runner.run(Path("acquisition"), Path("reference"), Path(MODEL_FILENAME), Path("output"), False)
+    assert captured["model_sha256"] == MODEL_SHA256

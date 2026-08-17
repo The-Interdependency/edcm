@@ -14,6 +14,8 @@
 
 from pathlib import Path
 
+import pytest
+
 from tools.run_tarot_ocr_v6 import MODEL_FILENAME, MODEL_NAME, MODEL_SHA256
 from tools.run_tarot_ocr_v7 import INSTRUMENT, PROTOCOL_COMMIT, PROTOCOL_SHA256, ocr_command
 
@@ -36,3 +38,18 @@ def test_v7_protocol_and_model_are_frozen() -> None:
     assert PROTOCOL_SHA256 == "43a1568c68ffad1052fa382b08ee8af7793cdc8ef289971707dc27aa0479eccd"
     assert INSTRUMENT["model_sha256"] == MODEL_SHA256
     assert INSTRUMENT["all_other_v6_fields"] == "unchanged"
+
+
+def test_v7_passes_historic_model_as_top_level_manifest_identity(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tools import run_tarot_ocr_v7 as runner
+
+    captured: dict[str, object] = {}
+    monkeypatch.setattr(runner.predecessor, "verify_model", lambda path: None)
+
+    def fake_run(*args, **kwargs):
+        captured.update(kwargs)
+        return {"status": "FALSIFIED"}
+
+    monkeypatch.setattr(runner.core, "run", fake_run)
+    runner.run(Path("acquisition"), Path("reference"), Path(MODEL_FILENAME), Path("output"), False)
+    assert captured["model_sha256"] == MODEL_SHA256

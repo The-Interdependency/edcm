@@ -94,6 +94,7 @@ def run(acquisition: Path, reference: Path, model: Path, output: Path, resume: b
         protocol_commit=PROTOCOL_COMMIT,
         page_producer=page_producer,
         instrument={**INSTRUMENT, "protocol_sha256": PROTOCOL_SHA256},
+        model_sha256=predecessor.MODEL_SHA256,
     )
 
 
