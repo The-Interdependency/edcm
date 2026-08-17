@@ -1,0 +1,29 @@
+{
+  "schema": "edcm.tarot-ocr-protocol",
+  "version": "7.0.0",
+  "status": "frozen-before-v7-ocr",
+  "parent_result_commit": "843e8af0e2f0fe98e84ed7fba34fe6a16d8ff8e1",
+  "inherits": {
+    "schema": "edcm.tarot-ocr-protocol",
+    "version": "6.0.0",
+    "protocol_sha256": "07c4540d4be3ab1affb30184d7eb6290361b5b470bb55ac23cc3adf64c34a216",
+    "result": "BLOCKED",
+    "admitted_pages": 0
+  },
+  "sole_override": {
+    "field": "ocr.output_renderer_activation",
+    "predecessor": "terminal txt tsv config filenames resolved inside custom tessdata directory",
+    "candidate": "explicit tessedit_create_txt=1 and tessedit_create_tsv=1 engine parameters",
+    "command": "OMP_THREAD_LIMIT=1 tesseract PAGE.png OUT --tessdata-dir MODEL_DIR -l frak2021-0.905 --oem 1 --psm 3 -c thresholding_method=2 -c tessedit_create_txt=1 -c tessedit_create_tsv=1"
+  },
+  "equivalence_evidence": {
+    "txt_config_sha256": "9bcbdbe285fd3a024be563cb237751ceb3435d86610e231f08894023321af5d7",
+    "txt_config_declaration": "tessedit_create_txt 1",
+    "tsv_config_sha256": "59d079bb75d8b3d7c839a3564580cb559e362c93a9d70f234e421c0c3e767e04",
+    "tsv_config_declaration": "tessedit_create_tsv 1"
+  },
+  "explicitly_unchanged": "all v6 model, image, OCR, validation, serialization, resource, failure, provenance, and nonclaim fields",
+  "v7_ocr_before_freeze": false,
+  "outcomes": ["FALSIFIED", "SURVIVED", "UNRESOLVED", "BLOCKED"],
+  "hmmm": "whether the executable historic-print instrument survives source-wide validation"
+}
