@@ -1,0 +1,99 @@
+{
+  "schema": "edcm.english-lexical-floor-run-receipt",
+  "version": "3.0.0",
+  "run_date": "2026-08-16",
+  "work_graph_sha256": "cf901c8bc8ee7c7152f6647966f7dd3bb990054e282cfb05f6247232b8534016",
+  "producer": {
+    "repository": "The-Interdependency/ucns",
+    "pull_request": 199,
+    "merge_commit": "d7c6f51304ed6c32d48badf63132bea6de8af497",
+    "module_sha256": "b839d29c79b43d29faf6f5d9a39b7a1485f39a0f071b525fd1848cf18f061cdd"
+  },
+  "consumer_implementation_commit": "9e5521c80baa20c14fad04d7ffd2e146ebdb00be",
+  "source": {
+    "repository": "globalwordnet/english-wordnet",
+    "tag": "2025-edition",
+    "commit": "dc343f2683279ecbb13fab4e2fd778d7b162d287",
+    "license": "Princeton WordNet License plus CC BY 4.0",
+    "source_tree_sha256": "3a46546a1ffbb4aed98990535ad5155c69be12ad09fdf093701b257d2a3e468f",
+    "source_file_count": 73,
+    "lexical_entry_count": 135969,
+    "sense_count": 185129,
+    "synset_count": 107519,
+    "observed_relation_count": 244727,
+    "release_reported_relation_count": 355064,
+    "materialized_surface_count": 131094
+  },
+  "direct_atomic": {
+    "status": "UNRESOLVED",
+    "node_count": 423742,
+    "edge_count": 626281,
+    "intrinsic_sha256": "083c8af8379669a7623d30ca5f5c28d605781aaedefc838e875d986776ca8544",
+    "binding_sha256": "b1bd31410bf5df6d152afba95b11f387b18f37e1c6eb919cd1e6c52f980c807a",
+    "receipt_sha256": "e6e03a7f06c9f8c57c92d57d8a53a9f1f3377905f7ff5ddba4eb963bef35831e"
+  },
+  "molecular": {
+    "status": "UNRESOLVED",
+    "node_count": 190626,
+    "edge_count": 224715,
+    "intrinsic_sha256": "84143d072b52d8ddb9694b42d9c9737ae180dac74cb4944f0b475e1217a05bb7",
+    "binding_sha256": "8803fa19dced142f6a8fd9334f3d50da6d4aa7d44025ff559b7db89ee2daa3e8",
+    "receipt_sha256": "7f31372c7d75c24865ed63e8dbd6726e038751d0ff30d68bf20fc1badd7d7f7e"
+  },
+  "evidence_artifacts": {
+    "affix_inventory_sha256": "802cf6d2d43942758c43184b69b141d96391f0f8a0b816a290c4e5dd29b45cb6",
+    "transformations_sha256": "c13143b2dd12e26a2527597cf979daae5ace53f25cf2170461825eaed8905807",
+    "morphology_evidence_sha256": "db619bf2ca3b21d6b285d7573d8c9342d6fef5d9a4d53d648e0c8e49f8273b72",
+    "source_manifest_sha256": "ce74888a0f92e1ac435f3c50a463497a226d9deb17b41452df898f21cfd1e8b1",
+    "comparison_sha256": "c1ad2000412f0f6bfd97eda1c98105a19f2f784ef4964d051621d702db5901a9",
+    "artifact_manifest_sha256": "bb03f16084d5ebfc658b5a38d13acd24a98e67ec19ac5d8ef315e34f12b0dd61"
+  },
+  "comparison": {
+    "status": "UNRESOLVED",
+    "shared_surface_count": 131094,
+    "direct_only_surface_count": 0,
+    "molecular_only_surface_count": 0,
+    "intrinsic_equal": false,
+    "interpretation": "preserved-disagreement; no structural equivalence or measurement claim"
+  },
+  "independent_replay": {
+    "status": "SURVIVED",
+    "complete_artifact_set_byte_identical": true,
+    "file_count": 12,
+    "comparison": "diff -qr over two clean output directories",
+    "runs": [
+      "generated/oewn2025-merged-final-v4-a",
+      "generated/oewn2025-merged-final-v4-b"
+    ]
+  },
+  "resume": {
+    "status": "SURVIVED",
+    "complete_manifest_validated": true,
+    "exact_file_set_validated": true,
+    "source_tree_reverified": true,
+    "corpus_reingested": false,
+    "artifact_bytes_unchanged": true
+  },
+  "supersedes": {
+    "receipt": "english-lexical-floor-run-v2.json",
+    "reason": "direct sense-owned edges were duplicated once per surface form"
+  },
+  "validation": {
+    "edcm_metadata_contract_graph": "closed",
+    "edcm_full_suite": "244 passed, 25 optional-dependency skips",
+    "lexical_bridge_with_exact_ucns": "9 passed",
+    "canonical_msdmd_collection": "regenerated",
+    "edcm_build_and_twine": "passed",
+    "ucns_pull_request_199_ci": "passed"
+  },
+  "status": "SURVIVED",
+  "geometry_attached": false,
+  "measurement_attached": false,
+  "canon_selection": null,
+  "hmmm": [
+    "UCNS geometric assignment remains unresolved",
+    "canonical English morphology remains unresolved",
+    "observed parser relation count and release-reported relation count use different declared counting scopes",
+    "Git and content digests do not authenticate producers"
+  ]
+}

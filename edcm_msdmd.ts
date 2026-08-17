@@ -708,22 +708,22 @@ export default defineMsdmdCollection({
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
-        "auth_boundary": "none",
+        "auth_boundary": "exact OEWN and UCNS producer commits",
         "internal_surface": "none",
         "module_kind": "engine",
         "module_name": "language",
-        "network_boundary": "optional_package_import",
+        "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "EnglishEmbeddingManifest, embedding_manifest, PUBLIC_GLYPH_FLOOR_157, UCNSPublicGonolDependencyError, UCNSPublicGonolContractError, NonCanonicalLanguagePlacementError, require_canonical_language_placement, CompositionNode, Attestation, Soundness, LexicalEvidence, AtomicForkRelation, AtomicForkResult, GonolRegistry, compose_gonols, materialize, compare_atomic_fork, intrinsic_gonol_record, metadata_free_jsonl, write_metadata_free_gonol_list, AffixRecord, load_affix_inventory, TransformationRule, transformation_inventory, render_affix_candidates, inverse_affix_candidates, compound_candidates, normalize_lemma, Decomposition, MorphologyGraph, build_morphology_graph, OEWN_REPOSITORY, OEWN_TAG, OEWN_COMMIT, OEWN_LICENSE, LexemeRecord, SenseRecord, SynsetRecord, WordnetSnapshot, load_oewn_2025, assign_affix_gonol, assign_root_gonol, assign_direct_atomic_gonol, superpose_gonols, compare_gonols, gonol_sha256",
-        "requires": "edcm_language_manifest, edcm_language_glyph_floor, edcm_language_model, edcm_language_composition, edcm_language_artifacts, edcm_language_oewn_source, edcm_language_affixes, edcm_language_rendering, edcm_language_morphology, edcm_language_placement",
-        "rollback": "restore active placement only after an Erin-ratified UCNS public-gonol bridge exists",
-        "rollout": "fail_closed_pending_canonical_bridge",
-        "since": "2026-07-16",
-        "storage_boundary": "read",
-        "summary": "exposes OEWN source, morphology and rendering evidence while consuming UCNS public-gonol authority lazily and retiring noncanonical placement",
-        "tests": "tests.test_language_embeddings, tests.test_language_full_run",
-        "unresolved": "public-gonol to EDCM language-object bridge remains hmmm",
-        "user_data_boundary": "none"
+        "public_surface": "source, affix, rendering, morphology, model, manifest, and relational-bridge names listed in __all__",
+        "requires": "edcm_language_manifest, edcm_language_model, edcm_language_oewn_source, edcm_language_affixes, edcm_language_rendering, edcm_language_morphology, edcm_language_relational_bridge",
+        "rollback": "remove relational bridge while retaining EDCM evidence modules",
+        "rollout": "explicit lexical-floor construction; no measurement or higher-language activation",
+        "since": "2026-08-16",
+        "storage_boundary": "caller-selected lexical artifact directory",
+        "summary": "exposes exact OEWN evidence, reversible lexical candidates, and independent EDCM-to-UCNS relational branch construction without EDCM-owned geometry",
+        "tests": "tests.test_language_full_run, tests.test_language_relational_bridge",
+        "unresolved": "UCNS geometry and higher-gonol composition remain absent; lexical decomposition remains dictionary-and-inventory bounded evidence",
+        "user_data_boundary": "public licensed lexical evidence only"
       },
       "file": "edcm/language/__init__.py",
       "id": "edcm_language_package"
@@ -757,54 +757,6 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_anchor_record",
-        "module_kind": "adapter",
-        "module_name": "artifacts",
-        "network_boundary": "none",
-        "owner": "Erin Spencer",
-        "public_surface": "intrinsic_gonol_record, metadata_free_jsonl, write_metadata_free_gonol_list",
-        "requires": "edcmbone_ucns_v04",
-        "rollback": "remove language embedding package before any published artifact depends on this serialization",
-        "rollout": "default_enabled",
-        "since": "2026-07-13",
-        "storage_boundary": "write",
-        "summary": "serializes ordered UCNS gonols as intrinsic-only canonical JSONL with no words, labels, evidence, source ids, or embedding classifications",
-        "tests": "tests.test_language_embeddings",
-        "unresolved": "producer signatures and authenticated transport remain outside intrinsic gonol serialization",
-        "user_data_boundary": "none"
-      },
-      "file": "edcm/language/artifacts.py",
-      "id": "edcm_language_artifacts"
-    },
-    {
-      "block": "MODULE_BUILD",
-      "fields": {
-        "admin_only": "false",
-        "auth_boundary": "none",
-        "internal_surface": "none",
-        "module_kind": "engine",
-        "module_name": "composition",
-        "network_boundary": "none",
-        "owner": "Erin Spencer",
-        "public_surface": "GonolRegistry, compose_gonols, materialize, compare_atomic_fork, MissingGonolError",
-        "requires": "edcm_language_model, edcmbone_ucns_v04",
-        "rollback": "remove language embedding package before any published artifact depends on this composer",
-        "rollout": "default_enabled",
-        "since": "2026-07-13",
-        "storage_boundary": "none",
-        "summary": "materializes explicit language composition trees through one UCNS product and compares independent direct atomic gonols with molecularly generated atomic views",
-        "tests": "tests.test_language_embeddings",
-        "unresolved": "the maintained local UCNS engine is associative while explicit language grouping remains preserved as independent provenance for comparison",
-        "user_data_boundary": "none"
-      },
-      "file": "edcm/language/composition.py",
-      "id": "edcm_language_composition"
-    },
-    {
-      "block": "MODULE_BUILD",
-      "fields": {
-        "admin_only": "false",
-        "auth_boundary": "none",
         "internal_surface": "_load_ucns_public_gonol, _PublicGonolProxy",
         "module_kind": "adapter",
         "module_name": "glyph_floor",
@@ -817,7 +769,7 @@ export default defineMsdmdCollection({
         "since": "2026-07-16",
         "storage_boundary": "none",
         "summary": "lazily consumes the UCNS-owned public gonol without retaining a competing EDCM arrangement authority",
-        "tests": "tests.test_language_embeddings",
+        "tests": "tests.test_language_relational_bridge",
         "unresolved": "canonical public-gonol to EDCM language-object bridge remains hmmm",
         "user_data_boundary": "none"
       },
@@ -825,24 +777,35 @@ export default defineMsdmdCollection({
       "id": "edcm_language_glyph_floor"
     },
     {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "the English lexical-floor manifest is inspected",
+        "since": "2026-08-16",
+        "then": "EDCM owns English evidence, UCNS owns representation, and geometry, proof, measurement, empirical, and canon transfer remain false"
+      },
+      "file": "edcm/language/manifest.py",
+      "id": "lexical_manifest_preserves_authority_firewall"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
-        "auth_boundary": "none",
+        "auth_boundary": "exact producer commits",
         "internal_surface": "none",
         "module_kind": "policy",
         "module_name": "manifest",
         "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "EnglishEmbeddingManifest, embedding_manifest, SOURCE_DICTIONARY, PUBLIC_GLYPH_FLOOR_SOURCE",
-        "requires": "none",
-        "rollback": "restore active placement only after an Erin-ratified UCNS public-gonol bridge exists",
-        "rollout": "fail_closed_pending_canonical_bridge",
-        "since": "2026-07-16",
+        "public_surface": "EnglishEmbeddingManifest, embedding_manifest, SOURCE_DICTIONARY",
+        "requires": "edcm_language_oewn_source, ucns_relational_carrier",
+        "rollback": "restore fail-closed bridge state without restoring retired placement",
+        "rollout": "active lexical-floor bridge",
+        "since": "2026-08-16",
         "storage_boundary": "none",
-        "summary": "pins OEWN input provenance while recording that public-gonol authority belongs to UCNS and legacy placement is retired",
-        "tests": "tests.test_language_embeddings",
-        "unresolved": "public-gonol to EDCM language-object bridge remains hmmm",
+        "summary": "pins OEWN evidence and the exact UCNS relational producer while forbidding geometry and status transfer",
+        "tests": "tests.test_language_relational_bridge",
+        "unresolved": "geometry, canonical English decomposition, measurement validity, and producer signatures",
         "user_data_boundary": "none"
       },
       "file": "edcm/language/manifest.py",
@@ -865,7 +828,7 @@ export default defineMsdmdCollection({
         "since": "2026-07-13",
         "storage_boundary": "none",
         "summary": "defines explicit composition trees, evidence states, and direct/generated atomic comparison records without placing linguistic metadata inside gonols",
-        "tests": "tests.test_language_embeddings",
+        "tests": "tests.test_language_relational_bridge",
         "unresolved": "whether soundness will ultimately be indexed by context, technology, community, or all three",
         "user_data_boundary": "none"
       },
@@ -897,28 +860,94 @@ export default defineMsdmdCollection({
       "id": "edcm_language_morphology"
     },
     {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a branch comparison is requested",
+        "since": "2026-08-16",
+        "then": "both immutable branch files and their recorded digests are validated before any comparison is emitted"
+      },
+      "file": "edcm/language/relational_bridge.py",
+      "id": "comparison_requires_two_prior_freezes"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "either branch is frozen",
+        "since": "2026-08-16",
+        "then": "English labels and provenance appear only in the external binding while intrinsic bytes are produced by the pinned UCNS carrier API"
+      },
+      "file": "edcm/language/relational_bridge.py",
+      "id": "english_metadata_is_external_to_ucns_carrier"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "direct-atomic and molecular branch builders run",
+        "since": "2026-08-16",
+        "then": "the direct builder consumes only OEWN lexical and semantic evidence while the molecular builder independently consumes surfaces, declared affixes, and reversible decompositions"
+      },
+      "file": "edcm/language/relational_bridge.py",
+      "id": "lexical_branches_are_independently_constructed"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "one branch freeze or within-run branch comparison completes",
+        "since": "2026-08-16",
+        "then": "its status is UNRESOLVED until a separately recorded clean independent replay agrees byte-for-byte"
+      },
+      "file": "edcm/language/relational_bridge.py",
+      "id": "lexical_pre_replay_status_is_unresolved"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "direct semantic evidence or molecular alternatives contain repeated relation occurrences",
+        "since": "2026-08-16",
+        "then": "every occurrence remains in supplied order in the UCNS relational input without deduplication"
+      },
+      "file": "edcm/language/relational_bridge.py",
+      "id": "lexical_relation_multiplicity_is_preserved"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "EDCM opens the UCNS relational construction API",
+        "since": "2026-08-16",
+        "then": "the checkout HEAD equals the merged producer commit and every construction freshly compiles the exact committed module bytes named by the verification receipt"
+      },
+      "file": "edcm/language/relational_bridge.py",
+      "id": "lexical_ucns_producer_is_exactly_verified"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
-        "auth_boundary": "none",
-        "internal_surface": "_update_intrinsic_hash, _payload_depth, _theta_set",
+        "auth_boundary": "exact UCNS producer commit is pinned by package profile and work-graph artifact",
+        "internal_surface": "_ucns_api, _load_verified_ucns_module, _committed_ucns_module_bytes, _digest, _relation_codes, _git",
         "module_kind": "adapter",
-        "module_name": "placement",
+        "module_name": "relational_bridge",
         "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "NonCanonicalLanguagePlacementError, require_canonical_language_placement, assign_affix_gonol, assign_root_gonol, assign_direct_atomic_gonol, superpose_gonols, compare_gonols, gonol_sha256",
-        "requires": "edcm_language_manifest",
-        "rollback": "restore placement only after an Erin-ratified UCNS public-gonol bridge and migration plan exist",
-        "rollout": "fail_closed",
-        "since": "2026-07-16",
-        "storage_boundary": "none",
-        "summary": "retires noncanonical hash/evidence-derived language placement while retaining read-only compatibility inspection of existing objects",
-        "tests": "tests.test_language_embeddings, tests.test_language_full_run",
-        "unresolved": "public-gonol to EDCM language-object bridge remains hmmm",
-        "user_data_boundary": "none"
+        "public_surface": "UCNS_RELATIONAL_COMMIT, UCNSProducerVerification, DirectAtomicFreeze, MolecularFreeze, verify_ucns_producer, build_direct_atomic, build_molecular, freeze_branch, validate_frozen_branch, compare_frozen_branches, canonical_json_bytes",
+        "requires": "ucns_relational_carrier, edcm_language_oewn_source, edcm_language_affixes, edcm_language_morphology",
+        "rollback": "remove adapter and generated lexical artifacts while preserving source evidence modules",
+        "rollout": "explicit lexical-floor builder; no geometry, measurement, canon, or higher-language activation",
+        "since": "2026-08-16",
+        "storage_boundary": "writes caller-selected frozen artifacts only",
+        "summary": "independently constructs direct-atomic and molecular OEWN relation inputs for the UCNS metadata-free relational carrier and freezes external identity bindings before comparison",
+        "tests": "tests.test_language_relational_bridge",
+        "unresolved": "geometric placement, canonical English morphology, closed compounds, pronunciation, phrase and higher semantics",
+        "user_data_boundary": "OEWN evidence remains in external bindings and never enters intrinsic UCNS bytes"
       },
-      "file": "edcm/language/placement.py",
-      "id": "edcm_language_placement"
+      "file": "edcm/language/relational_bridge.py",
+      "id": "edcm_language_relational_bridge"
     },
     {
       "block": "MODULE_BUILD",
@@ -1804,6 +1833,30 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::language_relational_branch_check",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "lexical_branches_are_independently_constructed, english_metadata_is_external_to_ucns_carrier, lexical_ucns_producer_is_exactly_verified, lexical_relation_multiplicity_is_preserved, lexical_pre_replay_status_is_unresolved, comparison_requires_two_prior_freezes, lexical_manifest_preserves_authority_firewall",
+        "timeout": "30"
+      },
+      "file": "tests/test_language_relational_bridge.py",
+      "id": "language_relational_branch_check"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_builder_contract_is_pinned_and_freeze_order_is_explicit",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "oewn_source_is_exact_pinned_and_resumable, incomplete_or_altered_lexical_resume_fails_closed, lexical_comparison_occurs_after_freeze",
+        "timeout": "30"
+      },
+      "file": "tests/test_language_relational_bridge.py",
+      "id": "oewn_builder_order_check"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_calibration_and_threshold_depend_only_on_development_and_validation",
         "cleanup": "none",
         "mutates": "none",
@@ -2090,6 +2143,257 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_manifest_rejects_auto_fetch_without_public_domain_rights",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_acquisition_fetches_only_authorized_public_domain_bytes",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_auto_fetch_rights_gate"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_completed_resume_reuses_exact_state_and_rejects_tamper",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_acquisition_resume_fails_closed",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_completed_resume_fails_closed"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_acquisition_fetches_only_public_domain_and_seals_source_identity",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_acquisition_fetches_only_authorized_public_domain_bytes, tarot_metadata_only_sources_are_not_downloaded, tarot_acquisition_preserves_source_identity",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_fetch_authority_and_metadata_only_boundary"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_interrupted_resume_keeps_verified_completed_sources",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_acquisition_resume_fails_closed, tarot_acquisition_preserves_source_identity",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_interrupted_resume_checkpoint"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_committed_manifest_validates_without_tarot_ontology",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_manifest_preserves_preontology_boundary",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_corpus_acquisition.py",
+      "id": "check_tarot_manifest_preserves_preontology_boundary"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_normalization_distance_and_empty_page_rule",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v4_applies_frozen_accuracy_rule"
+      },
+      "file": "tests/test_tarot_ocr_v4.py",
+      "id": "check_tarot_ocr_v4_accuracy"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_canonical_serialization_is_byte_deterministic",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v4_serialization_is_deterministic"
+      },
+      "file": "tests/test_tarot_ocr_v4.py",
+      "id": "check_tarot_ocr_v4_determinism"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_frozen_identity_constants_and_record_verification",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_ocr_v4_verifies_every_frozen_identity, tarot_ocr_v4_resume_fails_closed"
+      },
+      "file": "tests/test_tarot_ocr_v4.py",
+      "id": "check_tarot_ocr_v4_identity_and_resume"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_record_preserves_hashes_confidence_and_page_identity",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_ocr_v4_preserves_raw_page_evidence"
+      },
+      "file": "tests/test_tarot_ocr_v4.py",
+      "id": "check_tarot_ocr_v4_raw_evidence"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v5_protocol_and_instrument_identities_are_frozen",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v5_retains_v4_evidence_contracts"
+      },
+      "file": "tests/test_tarot_ocr_v5.py",
+      "id": "check_tarot_ocr_v5_core_identity"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v5_ocr_command_is_exact_single_threshold_change",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v5_changes_only_frozen_thresholding"
+      },
+      "file": "tests/test_tarot_ocr_v5.py",
+      "id": "check_tarot_ocr_v5_single_change"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v6_protocol_and_instrument_identities_are_frozen",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v6_retains_v4_evidence_contracts"
+      },
+      "file": "tests/test_tarot_ocr_v6.py",
+      "id": "check_tarot_ocr_v6_core_identity"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v6_model_verification_fails_closed",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_ocr_v6_verifies_historic_model"
+      },
+      "file": "tests/test_tarot_ocr_v6.py",
+      "id": "check_tarot_ocr_v6_model_identity"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v6_ocr_command_is_exact_model_change",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v6_changes_only_frozen_model"
+      },
+      "file": "tests/test_tarot_ocr_v6.py",
+      "id": "check_tarot_ocr_v6_single_change"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v7_protocol_and_model_are_frozen",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v7_retains_v6_instrument"
+      },
+      "file": "tests/test_tarot_ocr_v7.py",
+      "id": "check_tarot_ocr_v7_inherited_identity"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v7_command_uses_explicit_renderer_flags",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v7_repairs_only_renderer_activation"
+      },
+      "file": "tests/test_tarot_ocr_v7.py",
+      "id": "check_tarot_ocr_v7_renderer_repair"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_frozen_thresholds_accept_only_adequate_pages",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_text_gate_applies_frozen_adequacy_rule, tarot_text_gate_retains_nonclaims_and_failure",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_pdf_text_layer_gate.py",
+      "id": "check_tarot_text_gate_frozen_thresholds"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_discovery_requires_sealed_acquisition_and_is_byte_deterministic",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_discovery_consumes_only_complete_sealed_acquisition, tarot_discovery_is_byte_deterministic",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_relation_discovery.py",
+      "id": "check_tarot_discovery_complete_acquisition_and_determinism"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_documented_direct_cli_executes",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_discovery_is_byte_deterministic",
+        "requires": "python3, posix_shell",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_relation_discovery.py",
+      "id": "check_tarot_discovery_documented_cli"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_discovery_preserves_order_exact_values_and_typed_absence",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_discovery_preserves_exact_source_order_and_values, tarot_discovery_preserves_typed_absence_and_nonclaims",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_relation_discovery.py",
+      "id": "check_tarot_discovery_exact_order_values_and_absence"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_discovery_emits_only_frozen_relations_and_enforces_bounds",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_discovery_relations_are_mechanical_and_bounded",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_tarot_relation_discovery.py",
+      "id": "check_tarot_discovery_mechanical_bounds"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_exact_profile_activates_and_option_drift_suspends",
         "cleanup": "none",
         "mutates": "none",
@@ -2363,6 +2667,486 @@ export default defineMsdmdCollection({
       },
       "file": "tests/test_ucns_fork_lint.py",
       "id": "check_edcm_fork_status_firewall"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a source requests automatic byte acquisition",
+        "since": "2026-08-16",
+        "then": "the source must declare an HTTPS content URL, a safe artifact name, expected media type, and public-domain or Public Domain Mark rights before any network request occurs"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_acquisition_fetches_only_authorized_public_domain_bytes"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a Tarot source is admitted to an acquisition run",
+        "since": "2026-08-16",
+        "then": "its exact manifest entry digest, locator, retrieval policy, rights state, and any fetched byte digest are recorded without semantic normalization"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_acquisition_preserves_source_identity"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a completed or interrupted Tarot acquisition is resumed",
+        "since": "2026-08-16",
+        "then": "manifest identity, checkpoint entries, byte digests, and the exact output file set are validated; altered, missing, stale, or injected state is rejected"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_acquisition_resume_fails_closed"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a Tarot corpus manifest is loaded",
+        "since": "2026-08-16",
+        "then": "only the frozen evidence-envelope schema is accepted and ontology, canonical-deck, canonical-card-count, cross-source card identity, and I Ching inclusion remain explicitly unselected"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_manifest_preserves_preontology_boundary"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a source is metadata_only or manual_review",
+        "since": "2026-08-16",
+        "then": "no content request is issued and the source remains a provenance-bearing locator in the evidence index"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "tarot_metadata_only_sources_are_not_downloaded"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_fetch_https, _write_checkpoint, _validate_completed_run, _canonical_bytes",
+        "module_kind": "instrument",
+        "module_name": "tarot_corpus_acquirer",
+        "network_boundary": "external",
+        "owner": "Erin Spencer",
+        "public_surface": "validate_manifest, acquire_manifest, main",
+        "requires": "none",
+        "rollback": "remove this tool and its corpus/artifact documentation; generated artifacts are reproducible caches and remain noncanonical",
+        "rollout": "explicit CLI only; no automatic embedding or corpus download",
+        "since": "2026-08-16",
+        "storage_boundary": "write",
+        "summary": "validates a provenance-only Tarot source manifest, acquires only explicitly authorized public-domain bytes, and seals deterministic evidence receipts without defining Tarot ontology",
+        "tests": "tests.test_tarot_corpus_acquisition",
+        "unresolved": "source-specific item licensing and child-object identities beyond pinned public-domain downloads; OCR, transcription, semantic extraction, and EDCM embedding remain separate stages",
+        "user_data_boundary": "none; public cultural and archival evidence only"
+      },
+      "file": "tools/acquire_tarot_corpus.py",
+      "id": "edcm_tarot_corpus_acquirer"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "resume state is partial, noncanonical, stale, producer-mismatched, status-promoted, missing, or digest-altered",
+        "since": "2026-08-16",
+        "then": "no completed run is reused and altered complete state raises an explicit error"
+      },
+      "file": "tools/build_oewn2025_embeddings.py",
+      "id": "incomplete_or_altered_lexical_resume_fails_closed"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a complete lexical-floor build runs",
+        "since": "2026-08-16",
+        "then": "direct and molecular artifacts are written and receipted before the comparison function reads them"
+      },
+      "file": "tools/build_oewn2025_embeddings.py",
+      "id": "lexical_comparison_occurs_after_freeze"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "the lexical-floor builder consumes or acquires OEWN",
+        "since": "2026-08-16",
+        "then": "exact repository commit, tag, counts, tree digest, license, and provenance are frozen and a complete run may be reused only after every listed artifact, branch, producer, status, and comparison identity validates"
+      },
+      "file": "tools/build_oewn2025_embeddings.py",
+      "id": "oewn_source_is_exact_pinned_and_resumable"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "verifies exact OEWN and UCNS commits",
+        "internal_surface": "_git, _acquire, _verify_oewn_source_tree_clean, _expected_source_manifest, _resume_complete",
+        "module_kind": "instrument",
+        "module_name": "build_oewn2025_embeddings",
+        "network_boundary": "git clone only when --acquire is explicitly supplied",
+        "owner": "Erin Spencer",
+        "public_surface": "command line, build",
+        "requires": "edcm_language_relational_bridge",
+        "rollback": "remove builder and generated artifacts",
+        "rollout": "explicit builder",
+        "since": "2026-08-16",
+        "storage_boundary": "caller-selected cache and output directories",
+        "summary": "acquires or verifies the pinned OEWN source and independently freezes direct-atomic and molecular UCNS relational artifacts before comparison",
+        "tests": "tests.test_language_relational_bridge",
+        "unresolved": "upstream cryptographic signatures are unavailable; Git and tree digests are identity, not authentication",
+        "user_data_boundary": "public licensed lexical evidence only"
+      },
+      "file": "tools/build_oewn2025_embeddings.py",
+      "id": "edcm_oewn2025_lexical_floor_builder"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "Tarot relation discovery is requested",
+        "since": "2026-08-16",
+        "then": "the exact acquisition receipt, manifest identities, evidence index digest, every listed artifact digest, and complete file set validate before discovery"
+      },
+      "file": "tools/discover_tarot_relations.py",
+      "id": "tarot_discovery_consumes_only_complete_sealed_acquisition"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "the same validated acquisition and frozen algorithm identity are processed twice",
+        "since": "2026-08-16",
+        "then": "canonical report bytes are identical"
+      },
+      "file": "tools/discover_tarot_relations.py",
+      "id": "tarot_discovery_is_byte_deterministic"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a validated evidence index is discovered",
+        "since": "2026-08-16",
+        "then": "every source remains in manifest order and every admitted field value remains exact without case folding, tokenization, OCR, or semantic normalization"
+      },
+      "file": "tools/discover_tarot_relations.py",
+      "id": "tarot_discovery_preserves_exact_source_order_and_values"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "a source field is absent or the report completes",
+        "since": "2026-08-16",
+        "then": "absence remains explicit and the report selects no ontology, card identity, geometry, measurement, or canon"
+      },
+      "file": "tools/discover_tarot_relations.py",
+      "id": "tarot_discovery_preserves_typed_absence_and_nonclaims"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "source-envelope relations are emitted",
+        "since": "2026-08-16",
+        "then": "relations are limited to ordered adjacency, exact field assertions, fetched-artifact binding, and same-field exact-value agreement within declared resource bounds"
+      },
+      "file": "tools/discover_tarot_relations.py",
+      "id": "tarot_discovery_relations_are_mechanical_and_bounded"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_canonical_bytes, _digest, _value_identity, _load_validated_acquisition",
+        "module_kind": "instrument",
+        "module_name": "tarot_relation_discovery",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "discover_relations, validate_discovery, main",
+        "requires": "edcm_tarot_corpus_acquirer",
+        "rollback": "remove this tool, its tests, docs, and generated discovery reports without altering acquisition evidence",
+        "rollout": "explicit CLI after a complete tarot corpus acquisition; no automatic UCNS or EDCM measurement activation",
+        "since": "2026-08-16",
+        "storage_boundary": "read sealed acquisition and write one caller-selected report",
+        "summary": "validates a sealed Tarot acquisition and discovers only ordered source-envelope assertions and exact-value agreements without selecting Tarot ontology",
+        "tests": "tests.test_tarot_relation_discovery",
+        "unresolved": "OCR, image interpretation, cross-source card identity, semantic relation discovery, UCNS recursive representation, and EDCM measurement",
+        "user_data_boundary": "none; public cultural and archival evidence only"
+      },
+      "file": "tools/discover_tarot_relations.py",
+      "id": "edcm_tarot_relation_discovery"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "exact per-page text bytes are extracted",
+        "since": "2026-08-16",
+        "then": "only preregistered non-whitespace, alphanumeric, replacement, coverage, and total thresholds determine the verdict"
+      },
+      "file": "tools/evaluate_tarot_pdf_text_layer.py",
+      "id": "tarot_text_gate_applies_frozen_adequacy_rule"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "the gate completes or fails",
+        "since": "2026-08-16",
+        "then": "FALSIFIED, SURVIVED, or BLOCKED is recorded without OCR fallback, semantic inspection, ontology, geometry, measurement, or canon escalation"
+      },
+      "file": "tools/evaluate_tarot_pdf_text_layer.py",
+      "id": "tarot_text_gate_retains_nonclaims_and_failure"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "the embedded-text gate runs",
+        "since": "2026-08-16",
+        "then": "both PDF digests, page counts, MuPDF version, executable digest, command, and timeout match the preregistration"
+      },
+      "file": "tools/evaluate_tarot_pdf_text_layer.py",
+      "id": "tarot_text_gate_uses_exact_frozen_inputs_and_backend"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_verify_backend, _extract_pages, _canonical_bytes",
+        "module_kind": "experiment",
+        "module_name": "tarot_pdf_text_layer_gate",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "evaluate_pages, run_gate, main",
+        "requires": "edcm_tarot_corpus_acquirer",
+        "rollback": "remove experiment tool, tests, reports, and protocol without changing source evidence",
+        "rollout": "explicit CLI after frozen preregistration only",
+        "since": "2026-08-16",
+        "storage_boundary": "read exact acquired PDFs, temporary extracted pages, and one caller-selected report",
+        "summary": "executes the frozen MuPDF embedded-text adequacy gate over the two exact acquired Wellcome PDFs without OCR or semantic inspection",
+        "tests": "tests.test_tarot_pdf_text_layer_gate",
+        "unresolved": "OCR backend and accuracy law if embedded text is insufficient",
+        "user_data_boundary": "none; public-domain archival evidence only"
+      },
+      "file": "tools/evaluate_tarot_pdf_text_layer.py",
+      "id": "edcm_tarot_pdf_text_layer_gate"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "the sealed independent reference and complete OCR outputs",
+        "then": "inherited normalization, CER/WER thresholds, replacement check, and exact-empty rule produce only FALSIFIED, UNRESOLVED, or BLOCKED for one run"
+      },
+      "file": "tools/run_tarot_ocr_v4.py",
+      "id": "tarot_ocr_v4_applies_frozen_accuracy_rule"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "an admitted PDF page",
+        "then": "exact grayscale PNG, raw UTF-8 TXT, raw TSV, hashes, bytes, confidences, page identity, and typed unavailable alternatives are retained"
+      },
+      "file": "tools/run_tarot_ocr_v4.py",
+      "id": "tarot_ocr_v4_preserves_raw_page_evidence"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "an interrupted or completed output directory",
+        "then": "only checkpoint-bound exact files are reused and any missing, injected, or changed file blocks continuation"
+      },
+      "file": "tools/run_tarot_ocr_v4.py",
+      "id": "tarot_ocr_v4_resume_fails_closed"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "identical producer outputs and inputs",
+        "then": "canonical manifest, checkpoint, and evaluation bytes are identical"
+      },
+      "file": "tools/run_tarot_ocr_v4.py",
+      "id": "tarot_ocr_v4_serialization_is_deterministic"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a protocol execution request",
+        "then": "both PDFs, renderer, OCR executable, active model, versions, page counts, and reference bytes must match before a producer runs"
+      },
+      "file": "tools/run_tarot_ocr_v4.py",
+      "id": "tarot_ocr_v4_verifies_every_frozen_identity"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "producer verification, render/OCR execution, exact checkpoint file-set verification, TSV reconstruction, CER/WER scoring",
+        "module_kind": "experiment",
+        "module_name": "tarot_ocr_v4_runner",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "command-line interface",
+        "requires": "edcm_tarot_corpus_acquirer",
+        "rollback": "remove this runner without altering frozen protocol or result receipts",
+        "rollout": "explicit CLI only after validation reference commit aed1cf7de3df80da104daf2b3c46246ff5c3fe39",
+        "storage_boundary": "write",
+        "summary": "executes the frozen Tarot OCR v4 protocol with exact producer identities, resumable raw outputs, deterministic manifests, and independent-reference scoring",
+        "tests": "tests.test_tarot_ocr_v4",
+        "user_data_boundary": "none"
+      },
+      "file": "tools/run_tarot_ocr_v4.py",
+      "id": "edcm_tarot_ocr_v4_runner"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a v5 page OCR request",
+        "then": "the exact v4 command gains only thresholding_method=2 and retains raw TXT/TSV evidence"
+      },
+      "file": "tools/run_tarot_ocr_v5.py",
+      "id": "tarot_ocr_v5_changes_only_frozen_thresholding"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a complete or resumed v5 run",
+        "then": "frozen identities, page evidence, validation, deterministic serialization, and fail-closed resume use the v4 core with v5 identities"
+      },
+      "file": "tools/run_tarot_ocr_v5.py",
+      "id": "tarot_ocr_v5_retains_v4_evidence_contracts"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "frozen Sauvola OCR command and v4 resumable corpus core",
+        "module_kind": "experiment",
+        "module_name": "tarot_ocr_v5_runner",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "command-line interface",
+        "requires": "edcm_tarot_ocr_v4_runner",
+        "rollback": "remove this adapter without altering v4 evidence or protocols",
+        "rollout": "explicit CLI only after protocol commit 9199f2d",
+        "storage_boundary": "write",
+        "summary": "executes the frozen Tarot OCR v5 adaptive-threshold protocol through the v4 evidence-preserving core",
+        "tests": "tests.test_tarot_ocr_v5",
+        "user_data_boundary": "none"
+      },
+      "file": "tools/run_tarot_ocr_v5.py",
+      "id": "edcm_tarot_ocr_v5_runner"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a v6 page OCR request",
+        "then": "the v5 command replaces only the language model and model directory while retaining Sauvola, OEM, PSM, TXT, and TSV"
+      },
+      "file": "tools/run_tarot_ocr_v6.py",
+      "id": "tarot_ocr_v6_changes_only_frozen_model"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a complete or resumed v6 run",
+        "then": "frozen sources, page evidence, validation, serialization, resources, and fail-closed resume use the shared core with v6 identities"
+      },
+      "file": "tools/run_tarot_ocr_v6.py",
+      "id": "tarot_ocr_v6_retains_v4_evidence_contracts"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a v6 execution request",
+        "then": "the external model filename, byte count, and SHA-256 must match before any producer runs"
+      },
+      "file": "tools/run_tarot_ocr_v6.py",
+      "id": "tarot_ocr_v6_verifies_historic_model"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "historic-model verification, frozen OCR command, and v4 resumable corpus core",
+        "module_kind": "experiment",
+        "module_name": "tarot_ocr_v6_runner",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "command-line interface",
+        "requires": "edcm_tarot_ocr_v4_runner",
+        "rollback": "remove this adapter without altering earlier evidence or protocols",
+        "rollout": "explicit CLI only after protocol commit c63ad40",
+        "storage_boundary": "write",
+        "summary": "executes the frozen Tarot OCR v6 historic-print model protocol through the v4 evidence-preserving core",
+        "tests": "tests.test_tarot_ocr_v6",
+        "user_data_boundary": "none"
+      },
+      "file": "tools/run_tarot_ocr_v6.py",
+      "id": "edcm_tarot_ocr_v6_runner"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a v7 page OCR request",
+        "then": "explicit TXT and TSV booleans replace only the unavailable config filenames"
+      },
+      "file": "tools/run_tarot_ocr_v7.py",
+      "id": "tarot_ocr_v7_repairs_only_renderer_activation"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a complete or resumed v7 run",
+        "then": "the exact historic model and all inherited source, OCR, validation, evidence, and failure contracts remain active"
+      },
+      "file": "tools/run_tarot_ocr_v7.py",
+      "id": "tarot_ocr_v7_retains_v6_instrument"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "explicit TXT/TSV flags and v6 historic-model page producer",
+        "module_kind": "experiment",
+        "module_name": "tarot_ocr_v7_runner",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "command-line interface",
+        "requires": "edcm_tarot_ocr_v6_runner",
+        "rollback": "remove this adapter without altering prior evidence or protocols",
+        "rollout": "explicit CLI only after protocol commit f57f639",
+        "storage_boundary": "write",
+        "summary": "executes the frozen Tarot OCR v7 renderer-flag repair with the unchanged historic-print instrument",
+        "tests": "tests.test_tarot_ocr_v7",
+        "user_data_boundary": "none"
+      },
+      "file": "tools/run_tarot_ocr_v7.py",
+      "id": "edcm_tarot_ocr_v7_runner"
     }
   ],
   "edges": [
@@ -3270,6 +4054,426 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
+      "from": "check_tarot_auto_fetch_rights_gate",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_auto_fetch_rights_gate",
+      "to": "self::test_manifest_rejects_auto_fetch_without_public_domain_rights"
+    },
+    {
+      "from": "check_tarot_auto_fetch_rights_gate",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_auto_fetch_rights_gate",
+      "to": "tarot_acquisition_fetches_only_authorized_public_domain_bytes"
+    },
+    {
+      "from": "check_tarot_auto_fetch_rights_gate",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_auto_fetch_rights_gate",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_completed_resume_fails_closed",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_completed_resume_fails_closed",
+      "to": "self::test_completed_resume_reuses_exact_state_and_rejects_tamper"
+    },
+    {
+      "from": "check_tarot_completed_resume_fails_closed",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_completed_resume_fails_closed",
+      "to": "tarot_acquisition_resume_fails_closed"
+    },
+    {
+      "from": "check_tarot_completed_resume_fails_closed",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_completed_resume_fails_closed",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "to": "self::test_discovery_requires_sealed_acquisition_and_is_byte_deterministic"
+    },
+    {
+      "from": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "to": "tarot_discovery_consumes_only_complete_sealed_acquisition"
+    },
+    {
+      "from": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "to": "tarot_discovery_is_byte_deterministic"
+    },
+    {
+      "from": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_complete_acquisition_and_determinism",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_discovery_documented_cli",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_documented_cli",
+      "to": "self::test_documented_direct_cli_executes"
+    },
+    {
+      "from": "check_tarot_discovery_documented_cli",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_documented_cli",
+      "to": "tarot_discovery_is_byte_deterministic"
+    },
+    {
+      "from": "check_tarot_discovery_documented_cli",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_documented_cli",
+      "to": "posix_shell"
+    },
+    {
+      "from": "check_tarot_discovery_documented_cli",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_documented_cli",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_discovery_exact_order_values_and_absence",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_exact_order_values_and_absence",
+      "to": "self::test_discovery_preserves_order_exact_values_and_typed_absence"
+    },
+    {
+      "from": "check_tarot_discovery_exact_order_values_and_absence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_exact_order_values_and_absence",
+      "to": "tarot_discovery_preserves_exact_source_order_and_values"
+    },
+    {
+      "from": "check_tarot_discovery_exact_order_values_and_absence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_exact_order_values_and_absence",
+      "to": "tarot_discovery_preserves_typed_absence_and_nonclaims"
+    },
+    {
+      "from": "check_tarot_discovery_exact_order_values_and_absence",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_exact_order_values_and_absence",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_discovery_mechanical_bounds",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_mechanical_bounds",
+      "to": "self::test_discovery_emits_only_frozen_relations_and_enforces_bounds"
+    },
+    {
+      "from": "check_tarot_discovery_mechanical_bounds",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_mechanical_bounds",
+      "to": "tarot_discovery_relations_are_mechanical_and_bounded"
+    },
+    {
+      "from": "check_tarot_discovery_mechanical_bounds",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_discovery_mechanical_bounds",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "self::test_acquisition_fetches_only_public_domain_and_seals_source_identity"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "tarot_acquisition_fetches_only_authorized_public_domain_bytes"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "tarot_acquisition_preserves_source_identity"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "tarot_metadata_only_sources_are_not_downloaded"
+    },
+    {
+      "from": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_fetch_authority_and_metadata_only_boundary",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_interrupted_resume_checkpoint",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_interrupted_resume_checkpoint",
+      "to": "self::test_interrupted_resume_keeps_verified_completed_sources"
+    },
+    {
+      "from": "check_tarot_interrupted_resume_checkpoint",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_interrupted_resume_checkpoint",
+      "to": "tarot_acquisition_preserves_source_identity"
+    },
+    {
+      "from": "check_tarot_interrupted_resume_checkpoint",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_interrupted_resume_checkpoint",
+      "to": "tarot_acquisition_resume_fails_closed"
+    },
+    {
+      "from": "check_tarot_interrupted_resume_checkpoint",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_interrupted_resume_checkpoint",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_manifest_preserves_preontology_boundary",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_manifest_preserves_preontology_boundary",
+      "to": "self::test_committed_manifest_validates_without_tarot_ontology"
+    },
+    {
+      "from": "check_tarot_manifest_preserves_preontology_boundary",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_manifest_preserves_preontology_boundary",
+      "to": "tarot_manifest_preserves_preontology_boundary"
+    },
+    {
+      "from": "check_tarot_manifest_preserves_preontology_boundary",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_manifest_preserves_preontology_boundary",
+      "to": "python3"
+    },
+    {
+      "from": "check_tarot_ocr_v4_accuracy",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_accuracy",
+      "to": "self::test_normalization_distance_and_empty_page_rule"
+    },
+    {
+      "from": "check_tarot_ocr_v4_accuracy",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_accuracy",
+      "to": "tarot_ocr_v4_applies_frozen_accuracy_rule"
+    },
+    {
+      "from": "check_tarot_ocr_v4_determinism",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_determinism",
+      "to": "self::test_canonical_serialization_is_byte_deterministic"
+    },
+    {
+      "from": "check_tarot_ocr_v4_determinism",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_determinism",
+      "to": "tarot_ocr_v4_serialization_is_deterministic"
+    },
+    {
+      "from": "check_tarot_ocr_v4_identity_and_resume",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_identity_and_resume",
+      "to": "self::test_frozen_identity_constants_and_record_verification"
+    },
+    {
+      "from": "check_tarot_ocr_v4_identity_and_resume",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_identity_and_resume",
+      "to": "tarot_ocr_v4_resume_fails_closed"
+    },
+    {
+      "from": "check_tarot_ocr_v4_identity_and_resume",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_identity_and_resume",
+      "to": "tarot_ocr_v4_verifies_every_frozen_identity"
+    },
+    {
+      "from": "check_tarot_ocr_v4_raw_evidence",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_raw_evidence",
+      "to": "self::test_record_preserves_hashes_confidence_and_page_identity"
+    },
+    {
+      "from": "check_tarot_ocr_v4_raw_evidence",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v4_raw_evidence",
+      "to": "tarot_ocr_v4_preserves_raw_page_evidence"
+    },
+    {
+      "from": "check_tarot_ocr_v5_core_identity",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v5_core_identity",
+      "to": "self::test_v5_protocol_and_instrument_identities_are_frozen"
+    },
+    {
+      "from": "check_tarot_ocr_v5_core_identity",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v5_core_identity",
+      "to": "tarot_ocr_v5_retains_v4_evidence_contracts"
+    },
+    {
+      "from": "check_tarot_ocr_v5_single_change",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v5_single_change",
+      "to": "self::test_v5_ocr_command_is_exact_single_threshold_change"
+    },
+    {
+      "from": "check_tarot_ocr_v5_single_change",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v5_single_change",
+      "to": "tarot_ocr_v5_changes_only_frozen_thresholding"
+    },
+    {
+      "from": "check_tarot_ocr_v6_core_identity",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v6_core_identity",
+      "to": "self::test_v6_protocol_and_instrument_identities_are_frozen"
+    },
+    {
+      "from": "check_tarot_ocr_v6_core_identity",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v6_core_identity",
+      "to": "tarot_ocr_v6_retains_v4_evidence_contracts"
+    },
+    {
+      "from": "check_tarot_ocr_v6_model_identity",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v6_model_identity",
+      "to": "self::test_v6_model_verification_fails_closed"
+    },
+    {
+      "from": "check_tarot_ocr_v6_model_identity",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v6_model_identity",
+      "to": "tarot_ocr_v6_verifies_historic_model"
+    },
+    {
+      "from": "check_tarot_ocr_v6_single_change",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v6_single_change",
+      "to": "self::test_v6_ocr_command_is_exact_model_change"
+    },
+    {
+      "from": "check_tarot_ocr_v6_single_change",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v6_single_change",
+      "to": "tarot_ocr_v6_changes_only_frozen_model"
+    },
+    {
+      "from": "check_tarot_ocr_v7_inherited_identity",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v7_inherited_identity",
+      "to": "self::test_v7_protocol_and_model_are_frozen"
+    },
+    {
+      "from": "check_tarot_ocr_v7_inherited_identity",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v7_inherited_identity",
+      "to": "tarot_ocr_v7_retains_v6_instrument"
+    },
+    {
+      "from": "check_tarot_ocr_v7_renderer_repair",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v7_renderer_repair",
+      "to": "self::test_v7_command_uses_explicit_renderer_flags"
+    },
+    {
+      "from": "check_tarot_ocr_v7_renderer_repair",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v7_renderer_repair",
+      "to": "tarot_ocr_v7_repairs_only_renderer_activation"
+    },
+    {
+      "from": "check_tarot_text_gate_frozen_thresholds",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_text_gate_frozen_thresholds",
+      "to": "self::test_frozen_thresholds_accept_only_adequate_pages"
+    },
+    {
+      "from": "check_tarot_text_gate_frozen_thresholds",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_text_gate_frozen_thresholds",
+      "to": "tarot_text_gate_applies_frozen_adequacy_rule"
+    },
+    {
+      "from": "check_tarot_text_gate_frozen_thresholds",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_text_gate_frozen_thresholds",
+      "to": "tarot_text_gate_retains_nonclaims_and_failure"
+    },
+    {
+      "from": "check_tarot_text_gate_frozen_thresholds",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_text_gate_frozen_thresholds",
+      "to": "python3"
+    },
+    {
       "from": "check_ucns_edcm_program_structure",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -3438,6 +4642,90 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
+      "from": "language_relational_branch_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "self::language_relational_branch_check"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "comparison_requires_two_prior_freezes"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "english_metadata_is_external_to_ucns_carrier"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_branches_are_independently_constructed"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_manifest_preserves_authority_firewall"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_pre_replay_status_is_unresolved"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_relation_multiplicity_is_preserved"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_ucns_producer_is_exactly_verified"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "self::test_builder_contract_is_pinned_and_freeze_order_is_explicit"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "incomplete_or_altered_lexical_resume_fails_closed"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "lexical_comparison_occurs_after_freeze"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "oewn_source_is_exact_pinned_and_resumable"
+    },
+    {
       "from": "edcm_ucns_fork_lint_docs",
       "kind": "covers",
       "source_block": "DOCS",
@@ -3557,41 +4845,6 @@ export default defineMsdmdCollection({
       "to": "edcm measurement canon bones_affixes_v1.json"
     },
     {
-      "from": "edcm_language_artifacts",
-      "kind": "owns",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_artifacts",
-      "to": "Erin Spencer"
-    },
-    {
-      "from": "edcm_language_artifacts",
-      "kind": "requires",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_artifacts",
-      "to": "edcmbone_ucns_v04"
-    },
-    {
-      "from": "edcm_language_composition",
-      "kind": "owns",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_composition",
-      "to": "Erin Spencer"
-    },
-    {
-      "from": "edcm_language_composition",
-      "kind": "requires",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_composition",
-      "to": "edcm_language_model"
-    },
-    {
-      "from": "edcm_language_composition",
-      "kind": "requires",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_composition",
-      "to": "edcmbone_ucns_v04"
-    },
-    {
       "from": "edcm_language_glyph_floor",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
@@ -3617,7 +4870,14 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_language_manifest",
-      "to": "none"
+      "to": "edcm_language_oewn_source"
+    },
+    {
+      "from": "edcm_language_manifest",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_manifest",
+      "to": "ucns_relational_carrier"
     },
     {
       "from": "edcm_language_model",
@@ -3694,27 +4954,6 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_language_package",
-      "to": "edcm_language_artifacts"
-    },
-    {
-      "from": "edcm_language_package",
-      "kind": "requires",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_package",
-      "to": "edcm_language_composition"
-    },
-    {
-      "from": "edcm_language_package",
-      "kind": "requires",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_package",
-      "to": "edcm_language_glyph_floor"
-    },
-    {
-      "from": "edcm_language_package",
-      "kind": "requires",
-      "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_package",
       "to": "edcm_language_manifest"
     },
     {
@@ -3743,7 +4982,7 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_language_package",
-      "to": "edcm_language_placement"
+      "to": "edcm_language_relational_bridge"
     },
     {
       "from": "edcm_language_package",
@@ -3753,18 +4992,39 @@ export default defineMsdmdCollection({
       "to": "edcm_language_rendering"
     },
     {
-      "from": "edcm_language_placement",
+      "from": "edcm_language_relational_bridge",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_placement",
+      "source_id": "edcm_language_relational_bridge",
       "to": "Erin Spencer"
     },
     {
-      "from": "edcm_language_placement",
+      "from": "edcm_language_relational_bridge",
       "kind": "requires",
       "source_block": "MODULE_BUILD",
-      "source_id": "edcm_language_placement",
-      "to": "edcm_language_manifest"
+      "source_id": "edcm_language_relational_bridge",
+      "to": "edcm_language_affixes"
+    },
+    {
+      "from": "edcm_language_relational_bridge",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_relational_bridge",
+      "to": "edcm_language_morphology"
+    },
+    {
+      "from": "edcm_language_relational_bridge",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_relational_bridge",
+      "to": "edcm_language_oewn_source"
+    },
+    {
+      "from": "edcm_language_relational_bridge",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_relational_bridge",
+      "to": "ucns_relational_carrier"
     },
     {
       "from": "edcm_language_rendering",
@@ -3914,6 +5174,20 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
+      "from": "edcm_oewn2025_lexical_floor_builder",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_oewn2025_lexical_floor_builder",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_oewn2025_lexical_floor_builder",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_oewn2025_lexical_floor_builder",
+      "to": "edcm_language_relational_bridge"
+    },
+    {
       "from": "edcm_package",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
@@ -4031,6 +5305,104 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_shared_stack",
       "to": "edcmucns_manifest"
+    },
+    {
+      "from": "edcm_tarot_corpus_acquirer",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_corpus_acquirer",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_corpus_acquirer",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_corpus_acquirer",
+      "to": "none"
+    },
+    {
+      "from": "edcm_tarot_ocr_v4_runner",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v4_runner",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_ocr_v4_runner",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v4_runner",
+      "to": "edcm_tarot_corpus_acquirer"
+    },
+    {
+      "from": "edcm_tarot_ocr_v5_runner",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v5_runner",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_ocr_v5_runner",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v5_runner",
+      "to": "edcm_tarot_ocr_v4_runner"
+    },
+    {
+      "from": "edcm_tarot_ocr_v6_runner",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v6_runner",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_ocr_v6_runner",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v6_runner",
+      "to": "edcm_tarot_ocr_v4_runner"
+    },
+    {
+      "from": "edcm_tarot_ocr_v7_runner",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v7_runner",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_ocr_v7_runner",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v7_runner",
+      "to": "edcm_tarot_ocr_v6_runner"
+    },
+    {
+      "from": "edcm_tarot_pdf_text_layer_gate",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_pdf_text_layer_gate",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_pdf_text_layer_gate",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_pdf_text_layer_gate",
+      "to": "edcm_tarot_corpus_acquirer"
+    },
+    {
+      "from": "edcm_tarot_relation_discovery",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_relation_discovery",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_relation_discovery",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_relation_discovery",
+      "to": "edcm_tarot_corpus_acquirer"
     },
     {
       "from": "edcm_ucns_adapter",

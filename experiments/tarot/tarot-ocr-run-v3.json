@@ -1,0 +1,31 @@
+{
+  "schema": "edcm.tarot-ocr-run-receipt",
+  "version": "3.0.0",
+  "protocol_commit": "b010bb903d5320f76c6de0630f8859ae91098170",
+  "protocol_sha256": "074f8e708a91f87d09e8cb496f864a93ad02ae9d9a80501caed5987d41a10143",
+  "status": "BLOCKED",
+  "stage": "independent-validation-reference-definition",
+  "renderer": {
+    "stdout_bytes": 0,
+    "stderr_bytes": 0,
+    "exit_status": 0,
+    "page_sha256": [
+      "d4087ce9238743726a7e43f0bedb3c9282e54f2a1b7d215ba43c77ab1f2ce48a",
+      "06f5324ee0745b7ab2c4368e423306b5f7954a37141e13302a3dd89229582ad7",
+      "1596e994e268e07d1ac874f660a75ed75ee67e123ab6c40a6ab64af646f8ac47",
+      "cb53e84c0dec0836ce8ddd88a9866da5b574cf0762b640809fa682a2797304b3",
+      "aa599117f743da05c1dcceaeb757f21f59814b2f4647eaa89bf3ddbd81b2c2b1",
+      "979bd111c7f38839386d4d2c930d288f829b5fd562d9d1f4af701937a4fd4a79"
+    ]
+  },
+  "aggregate_tableau_reference_minimum": "satisfied-by-page-0001",
+  "empty_reference_pages": [4, 5],
+  "failure": "page-level CER is undefined when the reference character count is zero and v3 specifies no empty-page rule",
+  "validation_reference": "not-sealed",
+  "ocr": "not-run",
+  "sources_rejected": false,
+  "ontology_selected": false,
+  "geometry_attached": false,
+  "measurement_attached": false,
+  "canon_selection": null
+}

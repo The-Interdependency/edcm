@@ -1,0 +1,63 @@
+{
+  "schema": "edcm.tarot-ocr-run-receipt",
+  "version": "7.0.0",
+  "status": "FALSIFIED",
+  "protocol": {
+    "commit": "f57f639c02f3f975c4bd7983d3a22cdf59592a77",
+    "sha256": "43a1568c68ffad1052fa382b08ee8af7793cdc8ef289971707dc27aa0479eccd"
+  },
+  "implementation_commit": "76e2cfecda50bdb8ac9e834a6eb47ed2fcba805b",
+  "manifest_identity_correction_commit": "7d07c0a546ef9181301622f83af277f23c908df6",
+  "run": {
+    "path": "artifacts/tarot/ocr-v7/run-a",
+    "pages": 407,
+    "bytes": 282001402,
+    "manifest_sha256": "ceaf5c964e33b1a79a13e8e44f60ee8168e71c22fe846fc463073c39bc8dbff8",
+    "validation_sha256": "b77244363faa76d70b449174afc1bdee3052d51f1fd09858df30531fc1a1221a",
+    "checkpoint_sha256": "da6de5edc15fc995cc8eff304458d62b8dab22611c2f8827d53bfd5eae8a2845"
+  },
+  "complete_corpus": {
+    "book": {
+      "pages": 401,
+      "empty_txt_pages": 9,
+      "word_tokens": 63736,
+      "png_bytes": 272945880,
+      "txt_bytes": 371443,
+      "tsv_bytes": 3489425
+    },
+    "tableau": {
+      "pages": 6,
+      "empty_txt_pages": 2,
+      "word_tokens": 190,
+      "png_bytes": 3271756,
+      "txt_bytes": 1100,
+      "tsv_bytes": 18088
+    }
+  },
+  "validation": {
+    "aggregate_cer": 0.15585241730279897,
+    "aggregate_wer": 0.4250936329588015,
+    "book_cer": 0.07681692732290708,
+    "book_wer": 0.27906976744186046,
+    "tableau_cer": 0.33298969072164947,
+    "tableau_wer": 0.8095238095238095,
+    "false_text_on_exact_empty_page": "tableau:0005",
+    "terminal_failure": true
+  },
+  "replay": {
+    "status": "not-run",
+    "reason": "frozen accuracy failure is terminal and replay cannot repair measurement validity"
+  },
+  "surviving_local_result": "book CER survives the source-level character threshold; book WER and complete source-wide gate fail",
+  "trustworthy_transcription_corpus_produced": false,
+  "sources_rejected": false,
+  "stopping_rule_applied": "further whole-page single-model Tesseract substitution is irrational; remaining boundary is multimodal region classification and preservation",
+  "nonclaims": [
+    "Tarot ontology or card equivalence",
+    "semantic normalization or historical truth",
+    "Platonic card construction",
+    "UCNS geometry",
+    "EDCM interpretation or measurement",
+    "canon selection"
+  ]
+}

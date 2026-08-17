@@ -1,0 +1,24 @@
+{
+  "schema": "edcm.tarot-ocr-protocol",
+  "version": "4.0.0",
+  "status": "frozen-before-reference-sealing-or-ocr",
+  "inherits": {
+    "schema": "edcm.tarot-ocr-protocol",
+    "version": "3.0.0",
+    "commit": "b010bb903d5320f76c6de0630f8859ae91098170",
+    "sha256": "074f8e708a91f87d09e8cb496f864a93ad02ae9d9a80501caed5987d41a10143"
+  },
+  "predecessor_result": {
+    "status": "BLOCKED",
+    "commit": "4b56f2c262b51ec597d19882cf6f943224898868",
+    "reason": "zero-length page references made inherited CER undefined"
+  },
+  "override": {
+    "field": "validation.empty_reference_page",
+    "empty_reference_empty_candidate": "exact_empty_pass_and_exclude_from_aggregate_cer_wer",
+    "empty_reference_nonempty_candidate": "FALSIFIED",
+    "nonempty_reference": "unchanged-inherited-cer-wer"
+  },
+  "all_other_fields": "identical-to-inherited-v3",
+  "ocr_before_freeze": "not-run"
+}

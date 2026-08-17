@@ -21,19 +21,19 @@ jobs:
 
     steps:
       - name: Check out EDCM
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
         with:
           path: edcm
 
       - name: Check out exact UCNS experiment authority
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
         with:
           repository: The-Interdependency/ucns
           ref: 5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed
           path: ucns
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -143,7 +143,7 @@ jobs:
 
       - name: Upload research evidence
         if: matrix.python-version == '3.12'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: ucns-edcm-experiment-reports
           path: |

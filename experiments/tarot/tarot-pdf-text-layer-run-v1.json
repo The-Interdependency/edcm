@@ -1,0 +1,66 @@
+{
+  "schema": "edcm.tarot-pdf-text-layer-run-receipt",
+  "version": "1.0.0",
+  "run_date": "2026-08-16",
+  "work_graph_sha256": "fa2045760c0eb3a237f8238e941f790994a54770d51aef3b430cc13e7cc50059",
+  "implementation_commit": "85c9985b6b2a3f0434fd6e328f0715bd46115f89",
+  "protocol_commit": "1a75447",
+  "backend": {
+    "version": "mutool version 1.23.10",
+    "sha256": "9203440040cc38ee412aeedbfe57f452d6b85709c5b1600ca6ab2aa05478ab73",
+    "ocr_enabled": false
+  },
+  "pre_execution_attempt": {
+    "status": "BLOCKED",
+    "report_sha256": "4ad94c93cd26b1172ef7351f13ec99604f04f20dbc38ecd013b836ea32e5ec0a",
+    "reason": "harness read stdout while MuPDF writes version identity to stderr",
+    "text_extraction_started": false
+  },
+  "result": {
+    "status": "FALSIFIED",
+    "report_sha256": "bea832bee2a6c46d5ca737acc38e84b47a6c384dde385831adfb3b216177ad39",
+    "sources": [
+      {
+        "source_id": "wellcome_etteilla_1783_1785",
+        "pages": 401,
+        "populated_pages": 1,
+        "non_whitespace": 820,
+        "alphanumeric": 759,
+        "replacement": 0,
+        "passed": false
+      },
+      {
+        "source_id": "wellcome_etteilla_tableau_1780s",
+        "pages": 6,
+        "populated_pages": 1,
+        "non_whitespace": 685,
+        "alphanumeric": 642,
+        "replacement": 0,
+        "passed": false
+      }
+    ]
+  },
+  "independent_replay": {
+    "report_bytes_identical": true,
+    "runs": [
+      "artifacts/tarot/pdf-text-layer-gate-v1-c.json",
+      "artifacts/tarot/pdf-text-layer-gate-v1-d.json"
+    ]
+  },
+  "validation": {
+    "edcm_full_suite": "254 passed, 25 optional-dependency skips",
+    "edcm_integrity": "passed",
+    "edcm_metadata_contract_graph": "closed"
+  },
+  "ocr": "not-run",
+  "semantic_inspection": "not-run",
+  "ontology_selected": false,
+  "geometry_attached": false,
+  "measurement_attached": false,
+  "canon_selection": null,
+  "hmmm": [
+    "exact OCR producer and model identities are not selected",
+    "independent transcription controls and accuracy thresholds are unresolved",
+    "eighteenth-century French typography handling is unresolved"
+  ]
+}

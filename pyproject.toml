@@ -44,6 +44,9 @@ full-stack = [
 ucns-experiments = [
   "ucns @ git+https://github.com/The-Interdependency/ucns.git@5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed",
 ]
+lexical-floor = [
+  "PyYAML>=6,<7",
+]
 
 [tool.setuptools]
 include-package-data = true
