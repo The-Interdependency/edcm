@@ -7,6 +7,28 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
+        "internal_surface": "validate_report, canonical_bytes, digest",
+        "module_kind": "instrument",
+        "module_name": "portfolio_plan",
+        "network_boundary": "none",
+        "owner": "The-Interdependency/skill-lib maintainers",
+        "public_surface": "load_report, build_portfolio, main",
+        "rollback": "remove the aggregator, schemas, companion docs, and portfolio projection section without changing repo-owned source claims",
+        "rollout": "explicit CLI or library invocation after repo reports are supplied",
+        "storage_boundary": "none",
+        "summary": "validates repo-owned plan reports and derives a deterministic cross-repository portfolio projection without transferring authority",
+        "tests": "tests/test_interdependent_work_graph_portfolio_plan.py",
+        "unresolved": "automatic portfolio membership discovery, persistent live service, cryptographic producer authentication",
+        "user_data_boundary": "none"
+      },
+      "file": ".agents/skills/interdependent-work-graph/portfolio_plan.py",
+      "id": "interdependent_work_graph_portfolio_plan"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
         "internal_surface": "none",
         "module_kind": "engine",
         "module_name": "edcm",
@@ -6019,6 +6041,13 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcmucns_validation",
       "to": "edcmucns_types"
+    },
+    {
+      "from": "interdependent_work_graph_portfolio_plan",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "interdependent_work_graph_portfolio_plan",
+      "to": "The-Interdependency/skill-lib maintainers"
     },
     {
       "from": "recovered_dissonance_controlled_gate",
