@@ -4692,5 +4692,5 @@ export default defineMsdmdCollection({
     }
   ],
   "gaps": [],
-  "repo": "edcm"
+  "repo": "The-Interdependency/edcm"
 });
