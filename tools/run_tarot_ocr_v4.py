@@ -6,7 +6,7 @@
 #   summary: executes the frozen Tarot OCR v4 protocol with exact producer identities, resumable raw outputs, deterministic manifests, and independent-reference scoring
 #   owner: Erin Spencer
 #   public_surface: command-line interface
-#   internal_surface: producer verification, render/OCR execution, checkpoint verification, TSV reconstruction, CER/WER scoring
+#   internal_surface: producer verification, render/OCR execution, exact checkpoint file-set verification, TSV reconstruction, CER/WER scoring
 #   auth_boundary: none
 #   storage_boundary: write
 #   network_boundary: none
@@ -21,7 +21,7 @@
 # === CONTRACTS ===
 # id: tarot_ocr_v4_verifies_every_frozen_identity
 #   given: a protocol execution request
-#   then: both PDFs, renderer, OCR executable, French model, versions, page counts, and reference bytes must match before a producer runs
+#   then: both PDFs, renderer, OCR executable, active model, versions, page counts, and reference bytes must match before a producer runs
 #   class: evidence
 #
 # id: tarot_ocr_v4_preserves_raw_page_evidence
@@ -136,11 +136,17 @@ def command_identity(command: str, expected_digest: str) -> Path:
     return path
 
 
-def verify_inputs(acquisition: Path, reference: Path) -> tuple[Path, Path, dict[str, object]]:
+def verify_inputs(
+    acquisition: Path,
+    reference: Path,
+    *,
+    model_path: Path = MODEL_PATH,
+    model_sha256: str = MODEL_SHA256,
+) -> tuple[Path, Path, dict[str, object]]:
     mutool = command_identity("mutool", MUTOOL_SHA256)
     tesseract = command_identity("tesseract", TESSERACT_SHA256)
-    if not MODEL_PATH.is_file() or digest(MODEL_PATH) != MODEL_SHA256:
-        raise ProtocolBlocked("French model identity mismatch")
+    if not model_path.is_file() or digest(model_path) != model_sha256:
+        raise ProtocolBlocked("OCR model identity mismatch")
     if not reference.is_file() or digest(reference) != REFERENCE_SHA256:
         raise ProtocolBlocked("validation reference identity mismatch")
     mutool_version = subprocess.run([str(mutool), "version"], capture_output=True, text=True, timeout=5)
@@ -192,6 +198,38 @@ def verify_record(output: Path, source: Source, record: dict[str, object]) -> bo
         if not path.is_file() or path.stat().st_size != expected["bytes"] or digest(path) != expected["sha256"]:
             return False
     return record_for(source, page, png, txt, tsv) == record
+
+
+def _verify_checkpoint_file_set(
+    output: Path,
+    records: list[dict[str, object]],
+    expected_record_count: int,
+) -> None:
+    """Reject every file that is not authorized by the durable checkpoint."""
+
+    expected = {"checkpoint.json"}
+    source_by_id = {source.source_id: source for source in SOURCES}
+    for record in records:
+        source = source_by_id.get(str(record.get("source_id")))
+        if source is None:
+            raise ProtocolBlocked("checkpoint source identity mismatch")
+        for path in page_paths(output, source, int(record["page"])):
+            expected.add(path.relative_to(output).as_posix())
+    actual = {
+        path.relative_to(output).as_posix()
+        for path in output.rglob("*")
+        if path.is_file()
+    }
+    derived = {"manifest.json", "validation.json"} & actual
+    if derived:
+        if len(records) != expected_record_count or derived != {
+            "manifest.json",
+            "validation.json",
+        }:
+            raise ProtocolBlocked("checkpoint file set mismatch")
+        expected.update(derived)
+    if actual != expected:
+        raise ProtocolBlocked("checkpoint file set mismatch")
 
 
 def render_and_ocr(mutool: Path, tesseract: Path, pdf: Path, output: Path, source: Source, page: int) -> dict[str, object]:
@@ -337,9 +375,15 @@ def run(
     protocol_commit: str = "5d20d70a3b2b9d91fefbfc5142294b262a125223",
     page_producer=render_and_ocr,
     instrument: dict[str, object] | None = None,
+    model_path: Path = MODEL_PATH,
     model_sha256: str = MODEL_SHA256,
 ) -> dict[str, object]:
-    mutool, tesseract, reference = verify_inputs(acquisition, reference_path)
+    mutool, tesseract, reference = verify_inputs(
+        acquisition,
+        reference_path,
+        model_path=model_path,
+        model_sha256=model_sha256,
+    )
     output.mkdir(parents=True, exist_ok=True)
     checkpoint_path = output / "checkpoint.json"
     if checkpoint_path.exists():
@@ -361,6 +405,8 @@ def run(
         source, page = expected_sequence[index]
         if record["source_id"] != source.source_id or record["page"] != page or not verify_record(output, source, record):
             raise ProtocolBlocked("checkpoint/file mismatch")
+    if checkpoint_path.exists():
+        _verify_checkpoint_file_set(output, records, len(expected_sequence))
     rendered_bytes = sum(int(record["png"]["bytes"]) for record in records)
     ocr_bytes = sum(int(record["txt"]["bytes"]) + int(record["tsv"]["bytes"]) for record in records)
     for source, page in expected_sequence[len(records):]:

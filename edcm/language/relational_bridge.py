@@ -5,7 +5,7 @@
 #   summary: independently constructs direct-atomic and molecular OEWN relation inputs for the UCNS metadata-free relational carrier and freezes external identity bindings before comparison
 #   owner: Erin Spencer
 #   public_surface: UCNS_RELATIONAL_COMMIT, UCNSProducerVerification, DirectAtomicFreeze, MolecularFreeze, verify_ucns_producer, build_direct_atomic, build_molecular, freeze_branch, validate_frozen_branch, compare_frozen_branches, canonical_json_bytes
-#   internal_surface: _ucns_api, _digest, _relation_codes, _git
+#   internal_surface: _ucns_api, _load_verified_ucns_module, _committed_ucns_module_bytes, _digest, _relation_codes, _git
 #   auth_boundary: exact UCNS producer commit is pinned by package profile and work-graph artifact
 #   storage_boundary: writes caller-selected frozen artifacts only
 #   network_boundary: none
@@ -46,7 +46,7 @@
 #
 # id: lexical_ucns_producer_is_exactly_verified
 #   given: EDCM opens the UCNS relational construction API
-#   then: the checkout HEAD equals the merged producer commit and the imported producer module is the exact source-root file whose bytes match the verification receipt
+#   then: the checkout HEAD equals the merged producer commit and every construction freshly compiles the exact committed module bytes named by the verification receipt
 #   class: safety
 #   since: 2026-08-16
 #
@@ -66,6 +66,8 @@ from hashlib import sha256
 import json
 from pathlib import Path
 import subprocess
+import sys
+from types import ModuleType
 from typing import Any, Iterable, Mapping
 
 from .affixes import AffixRecord
@@ -112,8 +114,8 @@ class UCNSProducerVerification:
     module_sha256: str
 
 
-def verify_ucns_producer(source_root: str | Path) -> UCNSProducerVerification:
-    """Bind the imported API to the exact merged UCNS checkout bytes."""
+def _committed_ucns_module_bytes(source_root: str | Path) -> tuple[Path, bytes]:
+    """Return exact committed producer bytes only when the checkout matches them."""
 
     root = Path(source_root).resolve()
     if _git(root, "rev-parse", "HEAD") != UCNS_RELATIONAL_COMMIT:
@@ -134,38 +136,60 @@ def verify_ucns_producer(source_root: str | Path) -> UCNSProducerVerification:
     module_digest = _digest(committed_bytes)
     if module_digest != UCNS_RELATIONAL_MODULE_SHA256:
         raise LexicalBridgeError("UCNS relational carrier committed digest mismatch")
-    try:
-        import ucns.relational_carrier as module
-    except ImportError as exc:
-        raise LexicalBridgeError("exact UCNS relational producer is not importable") from exc
-    imported_path = Path(module.__file__ or "").resolve()
-    if imported_path != module_path:
-        raise LexicalBridgeError("imported UCNS producer does not come from the verified checkout")
+    return module_path, committed_bytes
+
+
+def verify_ucns_producer(source_root: str | Path) -> UCNSProducerVerification:
+    """Bind later execution to the exact merged UCNS checkout bytes."""
+
+    root = Path(source_root).resolve()
+    _, committed_bytes = _committed_ucns_module_bytes(root)
     return UCNSProducerVerification(
         source_root=str(root),
         commit=UCNS_RELATIONAL_COMMIT,
-        module_sha256=module_digest,
+        module_sha256=_digest(committed_bytes),
     )
+
+
+def _load_verified_ucns_module(path: Path, payload: bytes) -> ModuleType:
+    """Compile a private producer module from the already verified byte string."""
+
+    module_name = f"_edcm_verified_ucns_relational_carrier_{_digest(payload)}"
+    module = ModuleType(module_name)
+    module.__file__ = str(path)
+    module.__package__ = ""
+    previous = sys.modules.get(module_name)
+    sys.modules[module_name] = module
+    try:
+        exec(compile(payload, str(path), "exec"), module.__dict__)
+    finally:
+        if previous is None:
+            sys.modules.pop(module_name, None)
+        else:
+            sys.modules[module_name] = previous
+    for name in (
+        "build_relational_carrier",
+        "relational_carrier_bytes",
+        "parse_relational_carrier",
+    ):
+        if not callable(getattr(module, name, None)):
+            raise LexicalBridgeError(f"verified UCNS producer lacks callable {name}")
+    return module
 
 
 def _ucns_api(verification: UCNSProducerVerification):
     if not isinstance(verification, UCNSProducerVerification):
         raise LexicalBridgeError("an exact UCNS producer verification is required")
-    if verification.commit != UCNS_RELATIONAL_COMMIT:
-        raise LexicalBridgeError("UCNS producer verification commit mismatch")
-    try:
-        import ucns.relational_carrier as module
-    except ImportError as exc:
-        raise LexicalBridgeError(
-            "install the exact EDCM lexical-floor UCNS profile before construction"
-        ) from exc
-    expected_path = (
-        Path(verification.source_root) / "src" / "ucns" / "relational_carrier.py"
-    ).resolve()
-    imported_path = Path(module.__file__ or "").resolve()
-    if imported_path != expected_path or _digest(imported_path.read_bytes()) != verification.module_sha256:
-        raise LexicalBridgeError("UCNS producer bytes changed after verification")
-    return module.build_relational_carrier, module.relational_carrier_bytes
+    current = verify_ucns_producer(verification.source_root)
+    if current != verification:
+        raise LexicalBridgeError("UCNS producer verification token is stale or forged")
+    module_path, committed_bytes = _committed_ucns_module_bytes(verification.source_root)
+    module = _load_verified_ucns_module(module_path, committed_bytes)
+    return (
+        module.build_relational_carrier,
+        module.relational_carrier_bytes,
+        module.parse_relational_carrier,
+    )
 
 
 def _relation_codes(labels: Iterable[str]) -> tuple[dict[str, int], list[dict[str, object]]]:
@@ -286,7 +310,7 @@ def freeze_branch(
         raise LexicalBridgeError("unknown lexical branch")
     if not isinstance(value, branch_types[branch]):
         raise LexicalBridgeError(f"{branch} branch value type mismatch")
-    build_carrier, carrier_bytes = _ucns_api(verification)
+    build_carrier, carrier_bytes, _ = _ucns_api(verification)
     target = Path(path)
     target.mkdir(parents=True, exist_ok=True)
     intrinsic = carrier_bytes(build_carrier(len(value.node_binding), value.edges))
@@ -328,7 +352,7 @@ def validate_frozen_branch(
 ) -> dict[str, object]:
     """Validate a resumable branch freeze completely or fail closed."""
 
-    _ucns_api(verification)
+    _, carrier_bytes, parse_carrier = _ucns_api(verification)
     root = Path(path)
     receipt_bytes = (root / f"{branch}.receipt.json").read_bytes()
     receipt = json.loads(receipt_bytes)
@@ -344,6 +368,16 @@ def validate_frozen_branch(
     binding_bytes = (root / f"{branch}.binding.json").read_bytes()
     if _digest(intrinsic) != receipt.get("intrinsic_sha256") or _digest(binding_bytes) != receipt.get("binding_sha256"):
         raise LexicalBridgeError(f"{branch} freeze digest mismatch")
+    try:
+        carrier = parse_carrier(intrinsic)
+    except ValueError as exc:
+        raise LexicalBridgeError(f"{branch} intrinsic carrier is invalid") from exc
+    if carrier_bytes(carrier) != intrinsic:
+        raise LexicalBridgeError(f"{branch} intrinsic carrier is not canonical")
+    if len(carrier.nodes) != receipt.get("node_count"):
+        raise LexicalBridgeError(f"{branch} intrinsic node count mismatch")
+    if len(carrier.edges) != receipt.get("edge_count"):
+        raise LexicalBridgeError(f"{branch} intrinsic edge count mismatch")
     binding = json.loads(binding_bytes)
     if canonical_json_bytes(binding) != binding_bytes:
         raise LexicalBridgeError(f"{branch} binding is not canonical")

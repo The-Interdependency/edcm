@@ -8,7 +8,7 @@
 #   summary: acquires or verifies the pinned OEWN source and independently freezes direct-atomic and molecular UCNS relational artifacts before comparison
 #   owner: Erin Spencer
 #   public_surface: command line, build
-#   internal_surface: _git, _acquire, _source_manifest
+#   internal_surface: _git, _acquire, _verify_oewn_source_tree_clean, _expected_source_manifest, _resume_complete
 #   auth_boundary: verifies exact OEWN and UCNS commits
 #   storage_boundary: caller-selected cache and output directories
 #   network_boundary: git clone only when --acquire is explicitly supplied
@@ -81,6 +81,10 @@ REQUIRED_ARTIFACT_FILES = frozenset({
     "source-manifest.json",
     "transformations.json",
 })
+OEWN_SOURCE_TREE_SHA256 = "3a46546a1ffbb4aed98990535ad5155c69be12ad09fdf093701b257d2a3e468f"
+OEWN_EXPECTED_SOURCE_FILE_COUNT = 73
+OEWN_EXPECTED_SENSE_COUNT = 185_129
+OEWN_OBSERVED_RELATION_COUNT = 244_727
 
 
 def _git(repo: Path, *args: str) -> str:
@@ -105,11 +109,21 @@ def _verified_snapshot(source_repo: Path):
         raise RuntimeError("OEWN checkout commit mismatch")
     if _git(source_repo, "rev-list", "-n", "1", OEWN_TAG) != OEWN_COMMIT:
         raise RuntimeError("OEWN release tag mismatch")
+    _verify_oewn_source_tree_clean(source_repo)
     snapshot = load_oewn_2025(source_repo / "src" / "yaml")
     if len(snapshot.lexemes) != OEWN_EXPECTED_WORD_COUNT:
         raise RuntimeError("OEWN lexical-entry count mismatch")
     if len(snapshot.synsets) != OEWN_EXPECTED_SYNSET_COUNT:
         raise RuntimeError("OEWN synset count mismatch")
+    if snapshot.sense_count != OEWN_EXPECTED_SENSE_COUNT:
+        raise RuntimeError("OEWN sense count mismatch")
+    if snapshot.relation_count != OEWN_OBSERVED_RELATION_COUNT:
+        raise RuntimeError("OEWN observed relation count mismatch")
+    if (
+        snapshot.source_tree_sha256 != OEWN_SOURCE_TREE_SHA256
+        or snapshot.source_file_count != OEWN_EXPECTED_SOURCE_FILE_COUNT
+    ):
+        raise RuntimeError("OEWN source tree identity mismatch")
     return snapshot
 
 
@@ -127,6 +141,43 @@ def _resume_source_tree_digest(source_repo: Path) -> tuple[str, int]:
     return digest.hexdigest(), len(paths)
 
 
+def _verify_oewn_source_tree_clean(source_repo: Path) -> tuple[str, int]:
+    """Require the complete working source tree to equal the pinned Git tree."""
+
+    changed = subprocess.run(
+        ["git", "-C", str(source_repo), "diff", "--quiet", "HEAD", "--", "src/yaml"],
+        check=False,
+    )
+    if changed.returncode != 0:
+        raise RuntimeError("OEWN source tree has tracked changes")
+    if _git(source_repo, "ls-files", "--others", "--", "src/yaml"):
+        raise RuntimeError("OEWN source tree has untracked files")
+    digest, file_count = _resume_source_tree_digest(source_repo)
+    if digest != OEWN_SOURCE_TREE_SHA256 or file_count != OEWN_EXPECTED_SOURCE_FILE_COUNT:
+        raise RuntimeError("OEWN source tree identity mismatch")
+    return digest, file_count
+
+
+def _expected_source_manifest() -> dict[str, object]:
+    return {
+        "schema": "edcm.oewn-2025-source",
+        "version": "1.0.0",
+        "repository": OEWN_REPOSITORY,
+        "tag": OEWN_TAG,
+        "commit": OEWN_COMMIT,
+        "release_date": OEWN_RELEASE_DATE,
+        "license": OEWN_LICENSE,
+        "source_tree_sha256": OEWN_SOURCE_TREE_SHA256,
+        "source_file_count": OEWN_EXPECTED_SOURCE_FILE_COUNT,
+        "lexical_entry_count": OEWN_EXPECTED_WORD_COUNT,
+        "synset_count": OEWN_EXPECTED_SYNSET_COUNT,
+        "sense_count": OEWN_EXPECTED_SENSE_COUNT,
+        "relation_count": OEWN_OBSERVED_RELATION_COUNT,
+        "release_reported_relation_count": OEWN_EXPECTED_RELATION_COUNT,
+        "ucns_commit": UCNS_RELATIONAL_COMMIT,
+    }
+
+
 def _verify_resumable_source(source_repo: Path, source: object) -> dict[str, object]:
     if not isinstance(source, dict):
         raise RuntimeError("resumable source manifest is missing")
@@ -134,20 +185,11 @@ def _verify_resumable_source(source_repo: Path, source: object) -> dict[str, obj
         raise RuntimeError("OEWN checkout commit mismatch")
     if _git(source_repo, "rev-list", "-n", "1", OEWN_TAG) != OEWN_COMMIT:
         raise RuntimeError("OEWN release tag mismatch")
-    digest, file_count = _resume_source_tree_digest(source_repo)
-    expected = {
-        "repository": OEWN_REPOSITORY,
-        "tag": OEWN_TAG,
-        "commit": OEWN_COMMIT,
-        "release_date": OEWN_RELEASE_DATE,
-        "license": OEWN_LICENSE,
-        "source_tree_sha256": digest,
-        "source_file_count": file_count,
-        "ucns_commit": UCNS_RELATIONAL_COMMIT,
-    }
-    if any(source.get(key) != value for key, value in expected.items()):
+    _verify_oewn_source_tree_clean(source_repo)
+    expected = _expected_source_manifest()
+    if source != expected:
         raise RuntimeError("resumable OEWN source identity mismatch")
-    return source
+    return expected
 
 
 def _resume_complete(
@@ -161,11 +203,21 @@ def _resume_complete(
         raise RuntimeError("resumable manifest is not canonical")
     if manifest.get("source") != source_manifest or manifest.get("status") != "UNRESOLVED":
         raise RuntimeError("resumable manifest identity or status mismatch")
+    source_manifest_bytes = (output / "source-manifest.json").read_bytes()
+    stored_source_manifest = json.loads(source_manifest_bytes)
+    if canonical_json_bytes(stored_source_manifest) != source_manifest_bytes:
+        raise RuntimeError("resumable source manifest is not canonical")
+    if stored_source_manifest != source_manifest:
+        raise RuntimeError("resumable source manifest mismatch")
     records = manifest.get("files")
     if not isinstance(records, list) or any(not isinstance(record, dict) for record in records):
         raise RuntimeError("resumable artifact inventory is invalid")
     listed_files = {record.get("path") for record in records}
-    actual_files = {path.name for path in output.iterdir() if path.is_file()}
+    actual_files = {
+        path.relative_to(output).as_posix()
+        for path in output.rglob("*")
+        if path.is_file()
+    }
     if listed_files != REQUIRED_ARTIFACT_FILES or actual_files != REQUIRED_ARTIFACT_FILES | {"manifest.json"}:
         raise RuntimeError("resumable artifact file set mismatch")
     if len(records) != len(REQUIRED_ARTIFACT_FILES):
@@ -200,24 +252,11 @@ def build(
         )
         return _resume_complete(output, source_manifest, verification)
 
+    if any(output.iterdir()):
+        raise RuntimeError("fresh lexical output directory must be empty")
+
     snapshot = _verified_snapshot(source_repo)
-    source_manifest = {
-        "schema": "edcm.oewn-2025-source",
-        "version": "1.0.0",
-        "repository": OEWN_REPOSITORY,
-        "tag": OEWN_TAG,
-        "commit": OEWN_COMMIT,
-        "release_date": OEWN_RELEASE_DATE,
-        "license": OEWN_LICENSE,
-        "source_tree_sha256": snapshot.source_tree_sha256,
-        "source_file_count": snapshot.source_file_count,
-        "lexical_entry_count": len(snapshot.lexemes),
-        "synset_count": len(snapshot.synsets),
-        "sense_count": snapshot.sense_count,
-        "relation_count": snapshot.relation_count,
-        "release_reported_relation_count": OEWN_EXPECTED_RELATION_COUNT,
-        "ucns_commit": UCNS_RELATIONAL_COMMIT,
-    }
+    source_manifest = _expected_source_manifest()
     (output / "source-manifest.json").write_bytes(canonical_json_bytes(source_manifest))
 
     freeze_branch(
@@ -246,11 +285,18 @@ def build(
     )
 
     comparison = compare_frozen_branches(output, verification)
+    actual_files = {
+        path.relative_to(output).as_posix()
+        for path in output.rglob("*")
+        if path.is_file()
+    }
+    if actual_files != REQUIRED_ARTIFACT_FILES:
+        raise RuntimeError("fresh lexical artifact file set mismatch")
     files = []
-    for path in sorted(output.iterdir()):
-        if path.is_file() and path.name != "manifest.json":
-            payload = path.read_bytes()
-            files.append({"path": path.name, "bytes": len(payload), "sha256": sha256(payload).hexdigest()})
+    for name in sorted(REQUIRED_ARTIFACT_FILES):
+        path = output / name
+        payload = path.read_bytes()
+        files.append({"path": name, "bytes": len(payload), "sha256": sha256(payload).hexdigest()})
     manifest = {
         "schema": "edcm.english-lexical-floor-artifact-set",
         "version": "1.0.0",

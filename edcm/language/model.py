@@ -13,7 +13,7 @@
 #   network_boundary: none
 #   user_data_boundary: none
 #   admin_only: false
-#   tests: tests.test_language_embeddings
+#   tests: tests.test_language_relational_bridge
 #   rollout: default_enabled
 #   rollback: remove language embedding package before any published artifact depends on these schemas
 #   requires: none

@@ -19,7 +19,7 @@ that the optional UCNS integration is installed or active.
 #   network_boundary: package_import_only
 #   user_data_boundary: none
 #   admin_only: false
-#   tests: tests.test_language_embeddings
+#   tests: tests.test_language_relational_bridge
 #   rollout: compatibility_only
 #   rollback: restore only after reverting canonical ownership to the exact pinned UCNS source
 #   requires: edcm_language_manifest

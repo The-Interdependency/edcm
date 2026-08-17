@@ -51,5 +51,7 @@ def test_v7_passes_historic_model_as_top_level_manifest_identity(monkeypatch: py
         return {"status": "FALSIFIED"}
 
     monkeypatch.setattr(runner.core, "run", fake_run)
-    runner.run(Path("acquisition"), Path("reference"), Path(MODEL_FILENAME), Path("output"), False)
+    model = Path(MODEL_FILENAME)
+    runner.run(Path("acquisition"), Path("reference"), model, Path("output"), False)
+    assert captured["model_path"] == model
     assert captured["model_sha256"] == MODEL_SHA256
