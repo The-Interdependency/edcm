@@ -1,0 +1,140 @@
+{
+  "candidate_a": {
+    "global_strict_gap": false,
+    "matched_direction": true,
+    "range": true,
+    "rows": [
+      {
+        "construction_label": "resolved",
+        "kappa": [
+          0,
+          1,
+          0
+        ],
+        "pair_id": "low-pressure",
+        "score": {
+          "denominator": 1,
+          "numerator": 1
+        }
+      },
+      {
+        "construction_label": "unresolved",
+        "kappa": [
+          0,
+          1,
+          1
+        ],
+        "pair_id": "low-pressure",
+        "score": {
+          "denominator": 1,
+          "numerator": 0
+        }
+      },
+      {
+        "construction_label": "resolved",
+        "kappa": [
+          0,
+          10,
+          0
+        ],
+        "pair_id": "high-pressure",
+        "score": {
+          "denominator": 1,
+          "numerator": 10
+        }
+      },
+      {
+        "construction_label": "unresolved",
+        "kappa": [
+          0,
+          10,
+          8
+        ],
+        "pair_id": "high-pressure",
+        "score": {
+          "denominator": 1,
+          "numerator": 2
+        }
+      }
+    ],
+    "status": "FALSIFIED",
+    "threshold": null
+  },
+  "candidate_b": {
+    "global_strict_gap": true,
+    "matched_direction": true,
+    "range": true,
+    "rows": [
+      {
+        "construction_label": "resolved",
+        "kappa": [
+          0,
+          1,
+          0
+        ],
+        "pair_id": "low-pressure",
+        "score": {
+          "denominator": 1,
+          "numerator": 1
+        }
+      },
+      {
+        "construction_label": "unresolved",
+        "kappa": [
+          0,
+          1,
+          1
+        ],
+        "pair_id": "low-pressure",
+        "score": {
+          "denominator": 1,
+          "numerator": 0
+        }
+      },
+      {
+        "construction_label": "resolved",
+        "kappa": [
+          0,
+          10,
+          0
+        ],
+        "pair_id": "high-pressure",
+        "score": {
+          "denominator": 1,
+          "numerator": 1
+        }
+      },
+      {
+        "construction_label": "unresolved",
+        "kappa": [
+          0,
+          10,
+          8
+        ],
+        "pair_id": "high-pressure",
+        "score": {
+          "denominator": 5,
+          "numerator": 1
+        }
+      }
+    ],
+    "status": "SURVIVED",
+    "threshold": {
+      "denominator": 5,
+      "numerator": 3
+    }
+  },
+  "canon_selection": null,
+  "controlled_candidate_selected_for_external_evaluation": "edcm.recovered-dissonance.normalized-positive-pressure/0.1.0",
+  "external_evaluation_performed": false,
+  "measurement_validity": "not-established",
+  "preregistration_file_sha256": "120417a45a4515d0ab0d56e3a4b4c7cf66edde53c445e56db1152ff39d2e05cd",
+  "prior_multiwoz": {
+    "report_digest": "a726434a533395e7e3bd7d72ba3e9ce68f58c5b62f3b6b10d2b0556b09e85e61",
+    "sensitivity_hypothesis": "FALSIFIED"
+  },
+  "schema": "edcm.recovered-dissonance-controlled-result/0.1.0",
+  "sealed_outcome_labels_inspected": false,
+  "stopping_rule_reached": true,
+  "transport_status": "not-run"
+}

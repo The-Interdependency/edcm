@@ -1286,6 +1286,120 @@ export default defineMsdmdCollection({
       "id": "edcm_metapat_adapter"
     },
     {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "the controlled recovered-dissonance gate runs",
+        "since": "2026-08-16",
+        "then": "formulas, controls, direction, escalation, and stopping rules match the committed preregistration exactly"
+      },
+      "file": "edcm/recovered_dissonance_experiment.py",
+      "id": "recovered_dissonance_gate_executes_only_frozen_candidates"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a controlled report is emitted",
+        "since": "2026-08-16",
+        "then": "the prior MultiWOZ sensitivity result remains FALSIFIED and no transport, validity, or canon promotion is claimed"
+      },
+      "file": "edcm/recovered_dissonance_experiment.py",
+      "id": "recovered_dissonance_gate_preserves_prior_falsification"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "canonical JSON and frozen-design validation helpers",
+        "module_kind": "experiment",
+        "module_name": "recovered_dissonance_experiment",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "CandidateStatus, recovered_dissonance, accumulated_positive_pressure, normalized_recovered_dissonance, run_controlled_gate, main",
+        "requires": "maintained EDCM baseline identity and committed recovered-dissonance preregistration",
+        "rollback": "remove this module, its tests, and generated controlled report without changing the frozen baseline or historical MultiWOZ evidence",
+        "rollout": "controlled candidate falsification only; external evaluation requires separate UCNS PR #196 transport",
+        "since": "2026-08-16",
+        "storage_boundary": "reads the committed preregistration and writes one aggregate report path selected by the caller",
+        "summary": "executes the frozen absolute-recovery scale falsifier and its sole normalized-positive-pressure escalation without external labels",
+        "tests": "tests/test_recovered_dissonance_experiment.py",
+        "unresolved": "external outcome validity, temporal sampling comparability, independent replication, and canon authority",
+        "user_data_boundary": "hand-authored synthetic kappa trajectories only; sealed and external outcome labels are forbidden"
+      },
+      "file": "edcm/recovered_dissonance_experiment.py",
+      "id": "recovered_dissonance_controlled_gate"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "the evaluator emits SURVIVED, FALSIFIED, or UNRESOLVED candidate evidence",
+        "since": "2026-08-17",
+        "then": "absolute recovered dissonance and the historical MultiWOZ sensitivity remain FALSIFIED, normalized controlled evidence remains SURVIVED, and measurement validity, activation, selection, and canon remain unestablished"
+      },
+      "file": "edcm/recovered_dissonance_external_evaluator.py",
+      "id": "recovered_dissonance_external_evaluator_does_not_promote"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "structure, identity, custody, disclosure, limits, protocol, or metric admission disagrees with the frozen packet",
+        "since": "2026-08-17",
+        "then": "structural disagreement exits nonzero for an incomplete UCNS receipt while mathematically undefined admitted rows produce one aggregate UNRESOLVED result"
+      },
+      "file": "edcm/recovered_dissonance_external_evaluator.py",
+      "id": "recovered_dissonance_external_evaluator_fails_closed"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "privacy",
+        "given": "the frozen batch is evaluated",
+        "since": "2026-08-17",
+        "then": "stdout contains only aggregate admission, confusion, metric, and decision evidence without event commitments, per-event labels, trajectories, or scores"
+      },
+      "file": "edcm/recovered_dissonance_external_evaluator.py",
+      "id": "recovered_dissonance_external_evaluator_is_aggregate_only"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "the external evaluator receives a UCNS PR 196 request",
+        "since": "2026-08-17",
+        "then": "it accepts only the exact plan, evaluator, upstream manifest, command policy, single batch case, source identities, threshold, metric, and class inventory frozen before outcome inspection"
+      },
+      "file": "edcm/recovered_dissonance_external_evaluator.py",
+      "id": "recovered_dissonance_external_evaluator_is_frozen"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "source custody and disclosure authority are caller supplied and must match the frozen public-source authority identifiers",
+        "internal_surface": "canonical request validation, exact rational metric evaluation, aggregate confusion and decision rendering",
+        "module_kind": "experiment",
+        "module_name": "recovered_dissonance_external_evaluator",
+        "network_boundary": "no network code or environment inputs; caller-isolated enforcement remains the harness caller's responsibility",
+        "owner": "Erin Spencer",
+        "public_surface": "main",
+        "requires": "recovered_dissonance_controlled_gate, edcm_multiwoz21_booking_outcome_holdout, UCNS PR 196 external evaluation protocol",
+        "rollback": "remove this evaluator and supersede its unopened packet identity without changing controlled or historical findings",
+        "rollout": "one preregistered retrospective external-label replay through UCNS PR 196 after an execution-generated full-corpus receipt",
+        "since": "2026-08-17",
+        "storage_boundary": "reads one process-local protocol request and emits one aggregate response; retains no raw text, event locator, per-event label, or per-event score",
+        "summary": "evaluates one frozen aggregate MultiWOZ booking batch with normalized recovered dissonance through the UCNS PR 196 external protocol",
+        "tests": "tests/test_recovered_dissonance_external_evaluator.py",
+        "unresolved": "measurement validity, independent hidden custody, temporal sampling comparability, label construct validity, and independent replication",
+        "user_data_boundary": "receives only opaque event commitments, source booking labels, and exact rational kappa trajectories derived from pre-response public-source context"
+      },
+      "file": "edcm/recovered_dissonance_external_evaluator.py",
+      "id": "recovered_dissonance_external_evaluator"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
@@ -1960,6 +2074,71 @@ export default defineMsdmdCollection({
       },
       "file": "tests/test_multiwoz21_corpus.py",
       "id": "check_multiwoz21_written_outputs_exclude_raw_text"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_frozen_request_emits_only_aggregate_survival",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "recovered_dissonance_external_evaluator_is_aggregate_only",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_recovered_dissonance_external_evaluator.py",
+      "id": "check_recovered_dissonance_external_evaluator_aggregate_only"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_structural_drift_exits_nonzero_and_metric_undefined_is_unresolved",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "recovered_dissonance_external_evaluator_fails_closed",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_recovered_dissonance_external_evaluator.py",
+      "id": "check_recovered_dissonance_external_evaluator_failure_propagation"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_frozen_request_emits_only_aggregate_survival",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "recovered_dissonance_external_evaluator_is_frozen",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_recovered_dissonance_external_evaluator.py",
+      "id": "check_recovered_dissonance_external_evaluator_frozen"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_frozen_request_emits_only_aggregate_survival",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "recovered_dissonance_external_evaluator_does_not_promote",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_recovered_dissonance_external_evaluator.py",
+      "id": "check_recovered_dissonance_external_evaluator_nonpromotion"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_packet_pins_executable_protocol_and_nonpromotion",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "recovered_dissonance_external_evaluator_is_frozen, recovered_dissonance_external_evaluator_does_not_promote",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_recovered_dissonance_external_evaluator.py",
+      "id": "check_recovered_dissonance_external_packet_identity"
     },
     {
       "block": "CHECKS",
@@ -3739,6 +3918,118 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "CHECKS",
       "source_id": "check_occurrence_coverage_candidate",
+      "to": "python3"
+    },
+    {
+      "from": "check_recovered_dissonance_external_evaluator_aggregate_only",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_evaluator_aggregate_only",
+      "to": "self::test_frozen_request_emits_only_aggregate_survival"
+    },
+    {
+      "from": "check_recovered_dissonance_external_evaluator_aggregate_only",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_evaluator_aggregate_only",
+      "to": "recovered_dissonance_external_evaluator_is_aggregate_only"
+    },
+    {
+      "from": "check_recovered_dissonance_external_evaluator_aggregate_only",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_evaluator_aggregate_only",
+      "to": "python3"
+    },
+    {
+      "from": "check_recovered_dissonance_external_evaluator_failure_propagation",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_evaluator_failure_propagation",
+      "to": "self::test_structural_drift_exits_nonzero_and_metric_undefined_is_unresolved"
+    },
+    {
+      "from": "check_recovered_dissonance_external_evaluator_failure_propagation",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_evaluator_failure_propagation",
+      "to": "recovered_dissonance_external_evaluator_fails_closed"
+    },
+    {
+      "from": "check_recovered_dissonance_external_evaluator_failure_propagation",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_evaluator_failure_propagation",
+      "to": "python3"
+    },
+    {
+      "from": "check_recovered_dissonance_external_evaluator_frozen",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_evaluator_frozen",
+      "to": "self::test_frozen_request_emits_only_aggregate_survival"
+    },
+    {
+      "from": "check_recovered_dissonance_external_evaluator_frozen",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_evaluator_frozen",
+      "to": "recovered_dissonance_external_evaluator_is_frozen"
+    },
+    {
+      "from": "check_recovered_dissonance_external_evaluator_frozen",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_evaluator_frozen",
+      "to": "python3"
+    },
+    {
+      "from": "check_recovered_dissonance_external_evaluator_nonpromotion",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_evaluator_nonpromotion",
+      "to": "self::test_frozen_request_emits_only_aggregate_survival"
+    },
+    {
+      "from": "check_recovered_dissonance_external_evaluator_nonpromotion",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_evaluator_nonpromotion",
+      "to": "recovered_dissonance_external_evaluator_does_not_promote"
+    },
+    {
+      "from": "check_recovered_dissonance_external_evaluator_nonpromotion",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_evaluator_nonpromotion",
+      "to": "python3"
+    },
+    {
+      "from": "check_recovered_dissonance_external_packet_identity",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_packet_identity",
+      "to": "self::test_packet_pins_executable_protocol_and_nonpromotion"
+    },
+    {
+      "from": "check_recovered_dissonance_external_packet_identity",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_packet_identity",
+      "to": "recovered_dissonance_external_evaluator_does_not_promote"
+    },
+    {
+      "from": "check_recovered_dissonance_external_packet_identity",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_packet_identity",
+      "to": "recovered_dissonance_external_evaluator_is_frozen"
+    },
+    {
+      "from": "check_recovered_dissonance_external_packet_identity",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_recovered_dissonance_external_packet_identity",
       "to": "python3"
     },
     {
@@ -5728,6 +6019,48 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcmucns_validation",
       "to": "edcmucns_types"
+    },
+    {
+      "from": "recovered_dissonance_controlled_gate",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "recovered_dissonance_controlled_gate",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "recovered_dissonance_controlled_gate",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "recovered_dissonance_controlled_gate",
+      "to": "maintained EDCM baseline identity and committed recovered-dissonance preregistration"
+    },
+    {
+      "from": "recovered_dissonance_external_evaluator",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "recovered_dissonance_external_evaluator",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "recovered_dissonance_external_evaluator",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "recovered_dissonance_external_evaluator",
+      "to": "UCNS PR 196 external evaluation protocol"
+    },
+    {
+      "from": "recovered_dissonance_external_evaluator",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "recovered_dissonance_external_evaluator",
+      "to": "edcm_multiwoz21_booking_outcome_holdout"
+    },
+    {
+      "from": "recovered_dissonance_external_evaluator",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "recovered_dissonance_external_evaluator",
+      "to": "recovered_dissonance_controlled_gate"
     }
   ],
   "gaps": [],
