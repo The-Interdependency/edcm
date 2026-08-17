@@ -2073,6 +2073,83 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_v5_protocol_and_instrument_identities_are_frozen",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v5_retains_v4_evidence_contracts"
+      },
+      "file": "tests/test_tarot_ocr_v5.py",
+      "id": "check_tarot_ocr_v5_core_identity"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v5_ocr_command_is_exact_single_threshold_change",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v5_changes_only_frozen_thresholding"
+      },
+      "file": "tests/test_tarot_ocr_v5.py",
+      "id": "check_tarot_ocr_v5_single_change"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v6_protocol_and_instrument_identities_are_frozen",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v6_retains_v4_evidence_contracts"
+      },
+      "file": "tests/test_tarot_ocr_v6.py",
+      "id": "check_tarot_ocr_v6_core_identity"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v6_model_verification_fails_closed",
+        "cleanup": "tempdir_teardown",
+        "mutates": "filesystem",
+        "proves": "tarot_ocr_v6_verifies_historic_model"
+      },
+      "file": "tests/test_tarot_ocr_v6.py",
+      "id": "check_tarot_ocr_v6_model_identity"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v6_ocr_command_is_exact_model_change",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v6_changes_only_frozen_model"
+      },
+      "file": "tests/test_tarot_ocr_v6.py",
+      "id": "check_tarot_ocr_v6_single_change"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v7_protocol_and_model_are_frozen",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v7_retains_v6_instrument"
+      },
+      "file": "tests/test_tarot_ocr_v7.py",
+      "id": "check_tarot_ocr_v7_inherited_identity"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_v7_command_uses_explicit_renderer_flags",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "tarot_ocr_v7_repairs_only_renderer_activation"
+      },
+      "file": "tests/test_tarot_ocr_v7.py",
+      "id": "check_tarot_ocr_v7_renderer_repair"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_frozen_thresholds_accept_only_adequate_pages",
         "cleanup": "none",
         "mutates": "none",
@@ -2755,6 +2832,142 @@ export default defineMsdmdCollection({
       },
       "file": "tools/run_tarot_ocr_v4.py",
       "id": "edcm_tarot_ocr_v4_runner"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a v5 page OCR request",
+        "then": "the exact v4 command gains only thresholding_method=2 and retains raw TXT/TSV evidence"
+      },
+      "file": "tools/run_tarot_ocr_v5.py",
+      "id": "tarot_ocr_v5_changes_only_frozen_thresholding"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a complete or resumed v5 run",
+        "then": "frozen identities, page evidence, validation, deterministic serialization, and fail-closed resume use the v4 core with v5 identities"
+      },
+      "file": "tools/run_tarot_ocr_v5.py",
+      "id": "tarot_ocr_v5_retains_v4_evidence_contracts"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "frozen Sauvola OCR command and v4 resumable corpus core",
+        "module_kind": "experiment",
+        "module_name": "tarot_ocr_v5_runner",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "command-line interface",
+        "requires": "edcm_tarot_ocr_v4_runner",
+        "rollback": "remove this adapter without altering v4 evidence or protocols",
+        "rollout": "explicit CLI only after protocol commit 9199f2d",
+        "storage_boundary": "write",
+        "summary": "executes the frozen Tarot OCR v5 adaptive-threshold protocol through the v4 evidence-preserving core",
+        "tests": "tests.test_tarot_ocr_v5",
+        "user_data_boundary": "none"
+      },
+      "file": "tools/run_tarot_ocr_v5.py",
+      "id": "edcm_tarot_ocr_v5_runner"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a v6 page OCR request",
+        "then": "the v5 command replaces only the language model and model directory while retaining Sauvola, OEM, PSM, TXT, and TSV"
+      },
+      "file": "tools/run_tarot_ocr_v6.py",
+      "id": "tarot_ocr_v6_changes_only_frozen_model"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a complete or resumed v6 run",
+        "then": "frozen sources, page evidence, validation, serialization, resources, and fail-closed resume use the shared core with v6 identities"
+      },
+      "file": "tools/run_tarot_ocr_v6.py",
+      "id": "tarot_ocr_v6_retains_v4_evidence_contracts"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a v6 execution request",
+        "then": "the external model filename, byte count, and SHA-256 must match before any producer runs"
+      },
+      "file": "tools/run_tarot_ocr_v6.py",
+      "id": "tarot_ocr_v6_verifies_historic_model"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "historic-model verification, frozen OCR command, and v4 resumable corpus core",
+        "module_kind": "experiment",
+        "module_name": "tarot_ocr_v6_runner",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "command-line interface",
+        "requires": "edcm_tarot_ocr_v4_runner",
+        "rollback": "remove this adapter without altering earlier evidence or protocols",
+        "rollout": "explicit CLI only after protocol commit c63ad40",
+        "storage_boundary": "write",
+        "summary": "executes the frozen Tarot OCR v6 historic-print model protocol through the v4 evidence-preserving core",
+        "tests": "tests.test_tarot_ocr_v6",
+        "user_data_boundary": "none"
+      },
+      "file": "tools/run_tarot_ocr_v6.py",
+      "id": "edcm_tarot_ocr_v6_runner"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "a v7 page OCR request",
+        "then": "explicit TXT and TSV booleans replace only the unavailable config filenames"
+      },
+      "file": "tools/run_tarot_ocr_v7.py",
+      "id": "tarot_ocr_v7_repairs_only_renderer_activation"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a complete or resumed v7 run",
+        "then": "the exact historic model and all inherited source, OCR, validation, evidence, and failure contracts remain active"
+      },
+      "file": "tools/run_tarot_ocr_v7.py",
+      "id": "tarot_ocr_v7_retains_v6_instrument"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "explicit TXT/TSV flags and v6 historic-model page producer",
+        "module_kind": "experiment",
+        "module_name": "tarot_ocr_v7_runner",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "command-line interface",
+        "requires": "edcm_tarot_ocr_v6_runner",
+        "rollback": "remove this adapter without altering prior evidence or protocols",
+        "rollout": "explicit CLI only after protocol commit f57f639",
+        "storage_boundary": "write",
+        "summary": "executes the frozen Tarot OCR v7 renderer-flag repair with the unchanged historic-print instrument",
+        "tests": "tests.test_tarot_ocr_v7",
+        "user_data_boundary": "none"
+      },
+      "file": "tools/run_tarot_ocr_v7.py",
+      "id": "edcm_tarot_ocr_v7_runner"
     }
   ],
   "edges": [
@@ -3844,6 +4057,104 @@ export default defineMsdmdCollection({
       "to": "tarot_ocr_v4_preserves_raw_page_evidence"
     },
     {
+      "from": "check_tarot_ocr_v5_core_identity",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v5_core_identity",
+      "to": "self::test_v5_protocol_and_instrument_identities_are_frozen"
+    },
+    {
+      "from": "check_tarot_ocr_v5_core_identity",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v5_core_identity",
+      "to": "tarot_ocr_v5_retains_v4_evidence_contracts"
+    },
+    {
+      "from": "check_tarot_ocr_v5_single_change",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v5_single_change",
+      "to": "self::test_v5_ocr_command_is_exact_single_threshold_change"
+    },
+    {
+      "from": "check_tarot_ocr_v5_single_change",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v5_single_change",
+      "to": "tarot_ocr_v5_changes_only_frozen_thresholding"
+    },
+    {
+      "from": "check_tarot_ocr_v6_core_identity",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v6_core_identity",
+      "to": "self::test_v6_protocol_and_instrument_identities_are_frozen"
+    },
+    {
+      "from": "check_tarot_ocr_v6_core_identity",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v6_core_identity",
+      "to": "tarot_ocr_v6_retains_v4_evidence_contracts"
+    },
+    {
+      "from": "check_tarot_ocr_v6_model_identity",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v6_model_identity",
+      "to": "self::test_v6_model_verification_fails_closed"
+    },
+    {
+      "from": "check_tarot_ocr_v6_model_identity",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v6_model_identity",
+      "to": "tarot_ocr_v6_verifies_historic_model"
+    },
+    {
+      "from": "check_tarot_ocr_v6_single_change",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v6_single_change",
+      "to": "self::test_v6_ocr_command_is_exact_model_change"
+    },
+    {
+      "from": "check_tarot_ocr_v6_single_change",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v6_single_change",
+      "to": "tarot_ocr_v6_changes_only_frozen_model"
+    },
+    {
+      "from": "check_tarot_ocr_v7_inherited_identity",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v7_inherited_identity",
+      "to": "self::test_v7_protocol_and_model_are_frozen"
+    },
+    {
+      "from": "check_tarot_ocr_v7_inherited_identity",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v7_inherited_identity",
+      "to": "tarot_ocr_v7_retains_v6_instrument"
+    },
+    {
+      "from": "check_tarot_ocr_v7_renderer_repair",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v7_renderer_repair",
+      "to": "self::test_v7_command_uses_explicit_renderer_flags"
+    },
+    {
+      "from": "check_tarot_ocr_v7_renderer_repair",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_tarot_ocr_v7_renderer_repair",
+      "to": "tarot_ocr_v7_repairs_only_renderer_activation"
+    },
+    {
       "from": "check_tarot_text_gate_frozen_thresholds",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -4731,6 +5042,48 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_tarot_ocr_v4_runner",
       "to": "edcm_tarot_corpus_acquirer"
+    },
+    {
+      "from": "edcm_tarot_ocr_v5_runner",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v5_runner",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_ocr_v5_runner",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v5_runner",
+      "to": "edcm_tarot_ocr_v4_runner"
+    },
+    {
+      "from": "edcm_tarot_ocr_v6_runner",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v6_runner",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_ocr_v6_runner",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v6_runner",
+      "to": "edcm_tarot_ocr_v4_runner"
+    },
+    {
+      "from": "edcm_tarot_ocr_v7_runner",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v7_runner",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_tarot_ocr_v7_runner",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_tarot_ocr_v7_runner",
+      "to": "edcm_tarot_ocr_v6_runner"
     },
     {
       "from": "edcm_tarot_pdf_text_layer_gate",

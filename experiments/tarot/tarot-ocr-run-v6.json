@@ -1,0 +1,38 @@
+{
+  "schema": "edcm.tarot-ocr-run-receipt",
+  "version": "6.0.0",
+  "status": "BLOCKED",
+  "protocol": {
+    "commit": "c63ad40d71b60a1d944ad6ce21e9d7e4cf8d2a3b",
+    "sha256": "07c4540d4be3ab1affb30184d7eb6290361b5b470bb55ac23cc3adf64c34a216"
+  },
+  "implementation_commit": "542454bfc03c4e21595689b96893d55ce6f8f00c",
+  "admitted_pages": 0,
+  "blocked_page": {
+    "source": "wellcome_etteilla_1783_1785",
+    "page": 1,
+    "reason": "custom tessdata directory lacks txt and tsv renderer config files; required TSV output absent"
+  },
+  "producer_observation": {
+    "returncode": 0,
+    "stderr": [
+      "read_params_file: Can't open txt",
+      "read_params_file: Can't open tsv"
+    ],
+    "txt_written": true,
+    "tsv_written": false
+  },
+  "accuracy_evaluated": false,
+  "candidate_score_observed": false,
+  "trustworthy_transcription_corpus_produced": false,
+  "repair_boundary": "new preregistration may replace renderer config filenames with their exact tessedit_create_txt and tessedit_create_tsv parameters",
+  "nonclaims": [
+    "historic model accuracy",
+    "Tarot ontology or card equivalence",
+    "semantic normalization or historical truth",
+    "Platonic card construction",
+    "UCNS geometry",
+    "EDCM interpretation or measurement",
+    "canon selection"
+  ]
+}

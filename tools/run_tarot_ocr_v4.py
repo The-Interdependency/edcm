@@ -278,7 +278,7 @@ def score(reference_text: str, candidate_text: str) -> dict[str, object]:
     }
 
 
-def evaluate(output: Path, reference: dict[str, object]) -> dict[str, object]:
+def evaluate(output: Path, reference: dict[str, object], *, version: str = "4.0.0") -> dict[str, object]:
     results: list[dict[str, object]] = []
     totals = {"characters": 0, "character_distance": 0, "words": 0, "word_distance": 0}
     source_totals: dict[str, dict[str, int]] = {}
@@ -317,7 +317,7 @@ def evaluate(output: Path, reference: dict[str, object]) -> dict[str, object]:
         failed = True
     return {
         "schema": "edcm.tarot-ocr-validation",
-        "version": "4.0.0",
+        "version": version,
         "status": "FALSIFIED" if failed else "UNRESOLVED",
         "aggregate": {**totals, "cer": aggregate_cer, "wer": aggregate_wer},
         "sources": source_totals,
@@ -327,7 +327,18 @@ def evaluate(output: Path, reference: dict[str, object]) -> dict[str, object]:
     }
 
 
-def run(acquisition: Path, reference_path: Path, output: Path, resume: bool) -> dict[str, object]:
+def run(
+    acquisition: Path,
+    reference_path: Path,
+    output: Path,
+    resume: bool,
+    *,
+    version: str = "4.0.0",
+    protocol_commit: str = "5d20d70a3b2b9d91fefbfc5142294b262a125223",
+    page_producer=render_and_ocr,
+    instrument: dict[str, object] | None = None,
+    model_sha256: str = MODEL_SHA256,
+) -> dict[str, object]:
     mutool, tesseract, reference = verify_inputs(acquisition, reference_path)
     output.mkdir(parents=True, exist_ok=True)
     checkpoint_path = output / "checkpoint.json"
@@ -339,7 +350,9 @@ def run(acquisition: Path, reference_path: Path, output: Path, resume: bool) -> 
         unexpected = list(output.iterdir())
         if unexpected:
             raise ProtocolBlocked("nonempty output without checkpoint")
-        checkpoint = {"schema": "edcm.tarot-ocr-checkpoint", "version": "4.0.0", "records": []}
+        checkpoint = {"schema": "edcm.tarot-ocr-checkpoint", "version": version, "records": []}
+    if checkpoint.get("version") != version:
+        raise ProtocolBlocked("checkpoint protocol version mismatch")
     records = checkpoint["records"]
     expected_sequence = [(source, page) for source in SOURCES for page in range(1, source.pages + 1)]
     if len(records) > len(expected_sequence):
@@ -351,7 +364,7 @@ def run(acquisition: Path, reference_path: Path, output: Path, resume: bool) -> 
     rendered_bytes = sum(int(record["png"]["bytes"]) for record in records)
     ocr_bytes = sum(int(record["txt"]["bytes"]) + int(record["tsv"]["bytes"]) for record in records)
     for source, page in expected_sequence[len(records):]:
-        record = render_and_ocr(mutool, tesseract, acquisition / "raw" / source.filename, output, source, page)
+        record = page_producer(mutool, tesseract, acquisition / "raw" / source.filename, output, source, page)
         records.append(record)
         rendered_bytes += int(record["png"]["bytes"])
         ocr_bytes += int(record["txt"]["bytes"]) + int(record["tsv"]["bytes"])
@@ -360,13 +373,13 @@ def run(acquisition: Path, reference_path: Path, output: Path, resume: bool) -> 
         write_canonical(checkpoint_path, checkpoint)
     manifest = {
         "schema": "edcm.tarot-ocr-corpus-manifest",
-        "version": "4.0.0",
-        "protocol_commit": "5d20d70a3b2b9d91fefbfc5142294b262a125223",
+        "version": version,
+        "protocol_commit": protocol_commit,
         "reference_commit": "aed1cf7de3df80da104daf2b3c46246ff5c3fe39",
         "reference_sha256": REFERENCE_SHA256,
         "renderer_sha256": MUTOOL_SHA256,
         "ocr_sha256": TESSERACT_SHA256,
-        "model_sha256": MODEL_SHA256,
+        "model_sha256": model_sha256,
         "pages": records,
         "alternatives": {"status": "NA", "reason": "Tesseract txt/tsv interface exposes no character alternatives"},
         "ontology_selected": False,
@@ -375,8 +388,10 @@ def run(acquisition: Path, reference_path: Path, output: Path, resume: bool) -> 
         "measurement_attached": False,
         "canon_selection": None,
     }
+    if instrument is not None:
+        manifest["instrument"] = instrument
     write_canonical(output / "manifest.json", manifest)
-    evaluation = evaluate(output, reference)
+    evaluation = evaluate(output, reference, version=version)
     write_canonical(output / "validation.json", evaluation)
     return evaluation
 

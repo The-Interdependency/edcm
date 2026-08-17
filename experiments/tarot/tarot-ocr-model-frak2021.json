@@ -1,0 +1,30 @@
+{
+  "schema": "edcm.external-ocr-model-receipt",
+  "version": "1.0.0",
+  "record": {
+    "provider": "Zenodo",
+    "id": "10125246",
+    "doi": "10.5281/zenodo.10125246",
+    "created": "2023-11-14T15:43:23.529847+00:00",
+    "updated": "2023-11-14T15:43:23.721252+00:00",
+    "title": "Tesseract OCR models for historic prints based on Latin script",
+    "creator": "Weil, Stefan",
+    "creator_orcid": "0000-0002-0524-9898",
+    "license": "CC0-1.0"
+  },
+  "artifact": {
+    "key": "frak2021-0.905.traineddata",
+    "content_url": "https://zenodo.org/api/records/10125246/files/frak2021-0.905.traineddata/content",
+    "cache_path": "artifacts/tarot/ocr-models/frak2021-0.905.traineddata",
+    "bytes": 3421140,
+    "md5": "234e8bb819042f615576bd01aa2419fd",
+    "sha256": "1da2384254fa8462c776faf3b43307fe19ce51be0931c623b2fdd560f96e299a",
+    "redistributed_by_package": false
+  },
+  "selection": {
+    "basis": "declared generic historic Latin-print recognition domain with explicit French applicability",
+    "selected_before_v6_ocr": true,
+    "candidate_score_observed": false,
+    "feature_or_model_search": false
+  }
+}

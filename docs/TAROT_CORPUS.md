@@ -115,7 +115,10 @@ Tarot evidence snapshot
               -> OCR v2 [BLOCKED]
               -> OCR v3 [BLOCKED]
               -> OCR v4 [FALSIFIED]
-              -> new historical-type instrument [DEFERRED]
+              -> OCR v5 [FALSIFIED: detection recovered; accuracy failed]
+              -> OCR v6 [BLOCKED: renderer configs unavailable]
+              -> OCR v7 [FALSIFIED: book improved; source-wide gate failed]
+              -> further whole-page OCR model substitution [STOPPED]
     -> source-relative multimodal observations
     -> semantic/relational discovery
     -> provenance-bearing recovered relations
@@ -131,7 +134,10 @@ EDCM should be allowed to discover that two sources agree, disagree, split, merg
 - comprehensive source coverage is impossible to claim from v1;
 - item-level IIIF and reuse identities remain unresolved for several major collections;
 - modern commercial decks and guidebooks need source-specific lawful acquisition;
-- OCR v4 completed all 407 pages but is FALSIFIED; 397/401 book TXT outputs are empty and no trustworthy transcription corpus exists from that instrument;
+- OCR v4 completed all 407 pages but is FALSIFIED; 397/401 book TXT outputs are empty;
+- OCR v5 recovered text on 392/401 book pages but is FALSIFIED by accuracy, one near-total book miss, and tableau false positives/negatives; no trustworthy transcription corpus exists;
+- OCR v7's historic model brings book CER below its source threshold but leaves book WER above threshold and fails the visual tableau; further whole-page model substitution stops here;
+- a source-faithful control must not force the predominantly visual tableau into a text-only validity criterion;
 - the minimum source-faithful image observation record that exposes useful relations without importing a Tarot ontology;
 - the first machine-readable textual subset large and diverse enough to begin blind semantic/relational discovery without overrepresenting one historical school;
 - language normalization remains a separate transformation and must not erase source-owned distinctions;
