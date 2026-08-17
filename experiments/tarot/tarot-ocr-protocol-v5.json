@@ -1,0 +1,47 @@
+{
+  "schema": "edcm.tarot-ocr-protocol",
+  "version": "5.0.0",
+  "status": "frozen-before-v5-ocr",
+  "parent_repository_commit": "6ccde9c2c156ff692df2ac33fcc2350006a087b5",
+  "inherits": {
+    "schema": "edcm.tarot-ocr-protocol",
+    "version": "4.0.0",
+    "protocol_sha256": "b88716261761726af44b02ce135f897122e154b2d1d91bef363b18ac0c384565",
+    "result_commit": "d5f8180581c1c808e4e609fe6ba92c85117eeb75",
+    "result": "FALSIFIED"
+  },
+  "discovery_before_freeze": {
+    "allowed": [
+      "installed producer and model inventory",
+      "frozen v4 detection counts",
+      "non-semantic grayscale statistics of frozen v4 PNGs"
+    ],
+    "v5_ocr_run": false,
+    "candidate_output_inspected": false,
+    "parameter_search": false,
+    "technical_basis": "v4 yielded 397 empty book pages; frozen book validation PNGs have varying grayscale backgrounds"
+  },
+  "sole_override": {
+    "field": "ocr.thresholding",
+    "predecessor": "thresholding_method=0 global Otsu default",
+    "candidate": "thresholding_method=2 Sauvola",
+    "command": "OMP_THREAD_LIMIT=1 tesseract PAGE.png OUT -l fra --oem 1 --psm 3 -c thresholding_method=2 txt tsv",
+    "thresholding_window_size": "0.33 installed default; frozen",
+    "thresholding_kfactor": "0.34 installed default; frozen"
+  },
+  "explicitly_unchanged": [
+    "source identities and page order",
+    "MuPDF 1.23.10 renderer identity and 300-DPI grayscale rendering",
+    "Tesseract 5.3.4 executable identity",
+    "tessdata_fast French 4.1.0 model identity",
+    "OEM 1 and PSM 3",
+    "orientation and absence of external preprocessing",
+    "sealed v4 validation reference and comparison normalization",
+    "accuracy thresholds and exact-empty rule",
+    "deterministic serialization and raw TXT/TSV evidence",
+    "resource, failure, replay, and stopping rules",
+    "licensing, provenance, evidence, and nonclaim boundaries"
+  ],
+  "outcomes": ["FALSIFIED", "SURVIVED", "UNRESOLVED", "BLOCKED"],
+  "hmmm": "whether fixed-default Sauvola thresholding exposes the historical type sufficiently for the unchanged OCR instrument"
+}
