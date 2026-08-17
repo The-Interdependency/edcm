@@ -13,6 +13,7 @@
 # === END CHECKS ===
 
 from pathlib import Path
+import sys
 
 from tools.run_tarot_ocr_v5 import INSTRUMENT, PROTOCOL_COMMIT, PROTOCOL_SHA256, ocr_command
 
@@ -21,7 +22,7 @@ def test_v5_usage_command_loads_as_a_direct_script() -> None:
     import subprocess
 
     result = subprocess.run(
-        [".venv/bin/python", "tools/run_tarot_ocr_v5.py", "--help"],
+        [sys.executable, "tools/run_tarot_ocr_v5.py", "--help"],
         capture_output=True,
         text=True,
     )
