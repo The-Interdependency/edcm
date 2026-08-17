@@ -97,6 +97,7 @@ Tarot evidence snapshot
     -> OCR v2 [BLOCKED: tableau validation sample lacks 100 decidable characters]
     -> OCR v3 [BLOCKED: empty-reference scoring undefined]
     -> OCR v4 [FALSIFIED: eighteenth-century book typography undetected]
+    -> OCR v5 [FALSIFIED: detection recovered, source-wide accuracy failed]
     -> source-faithful historical-type/multimodal transcription design [hmmm]
     -> semantic discovery [not run]
     -> provenance-bearing recovered relations
@@ -112,7 +113,8 @@ EDCM should be allowed to discover that two sources agree, disagree, split, merg
 - comprehensive source coverage is impossible to claim from v1;
 - item-level IIIF and reuse identities remain unresolved for several major collections;
 - modern commercial decks and guidebooks need source-specific lawful acquisition;
-- OCR v4 completed all 407 pages but is FALSIFIED; 397/401 book TXT outputs are empty and no trustworthy transcription corpus exists;
+- OCR v4 completed all 407 pages but is FALSIFIED; 397/401 book TXT outputs are empty;
+- OCR v5 recovered text on 392/401 book pages but is FALSIFIED by accuracy, one near-total book miss, and tableau false positives/negatives; no trustworthy transcription corpus exists;
 - a source-faithful control must not force the predominantly visual tableau into a text-only validity criterion;
 - image segmentation, multimodal transcription, language normalization, and semantic discovery remain separate undefined transformations;
 - the Platonic Tarot card remains a target of discovery, not an input schema.

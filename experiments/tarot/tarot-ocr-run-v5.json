@@ -1,0 +1,68 @@
+{
+  "schema": "edcm.tarot-ocr-run-receipt",
+  "version": "5.0.0",
+  "status": "FALSIFIED",
+  "protocol": {
+    "commit": "9199f2dc3830bab11486c359b5e1f9e9974b36fb",
+    "sha256": "625acfea972dfe882afd4742db3608cf67f7828d898b6725678e19b2b586661c"
+  },
+  "implementation_commit": "edc4533ee1cfceec0803ddbc88cd9e375795ab61",
+  "run": {
+    "path": "artifacts/tarot/ocr-v5/run-a",
+    "pages": 407,
+    "bytes": 282142682,
+    "manifest_sha256": "01dad9d354c46d831089161b6c1a197af60e470bc9acbf6ee48625541242ac67",
+    "validation_sha256": "0601f3391411657245c811f3e9ecc5599455d0919579f03666a0ea0cc2d61535",
+    "checkpoint_sha256": "37dc531aa9072edf1b5019458985ec6cb118cfbac41dace9267d7e4fc5b3ecb7"
+  },
+  "instrument": {
+    "thresholding_method": "2",
+    "thresholding_name": "Sauvola",
+    "thresholding_window_size": "0.33",
+    "thresholding_kfactor": "0.34",
+    "all_other_v4_fields": "unchanged"
+  },
+  "complete_corpus": {
+    "book": {
+      "pages": 401,
+      "empty_txt_pages": 9,
+      "word_tokens": 65031,
+      "png_bytes": 272945880,
+      "txt_bytes": 372013,
+      "tsv_bytes": 3595989
+    },
+    "tableau": {
+      "pages": 6,
+      "empty_txt_pages": 2,
+      "word_tokens": 217,
+      "png_bytes": 3271756,
+      "txt_bytes": 1095,
+      "tsv_bytes": 19864
+    }
+  },
+  "validation": {
+    "aggregate_cer": 0.2627226463104326,
+    "aggregate_wer": 0.5543071161048689,
+    "book_cer": 0.22585096596136153,
+    "book_wer": 0.4625322997416021,
+    "tableau_cer": 0.34536082474226804,
+    "tableau_wer": 0.7959183673469388,
+    "false_text_on_exact_empty_page": "tableau:0005",
+    "terminal_failure": true
+  },
+  "replay": {
+    "status": "not-run",
+    "reason": "frozen accuracy failure is terminal and replay cannot repair measurement validity"
+  },
+  "trustworthy_transcription_corpus_produced": false,
+  "sources_rejected": false,
+  "nonclaims": [
+    "Tarot ontology or card equivalence",
+    "semantic normalization or historical truth",
+    "Platonic card construction",
+    "UCNS geometry",
+    "EDCM interpretation or measurement",
+    "canon selection"
+  ],
+  "hmmm": "historical recognition and predominantly visual-page treatment require independent justification before another source-wide instrument"
+}
