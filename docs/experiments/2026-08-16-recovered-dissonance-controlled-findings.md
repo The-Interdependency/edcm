@@ -51,6 +51,17 @@ bounded execution and reconciliation. This controlled survival does not
 establish measurement validity, empirical validity, canon, or activation;
 `canon_selection` remains `null`.
 
+That evaluator is now frozen at EDCM commit
+`14e2c16c8fa76f994afe9939e1a2e2a2bfcd5414`, executable SHA-256
+`b7825cfe1c5bd673bc56caac2801e46844413ed252d850643bfdf84ea79e1fe1`.
+The preregistered packet is
+`docs/experiments/2026-08-17-recovered-dissonance-external-evaluation-packet.json`.
+It freezes one aggregate 661-event public MultiWOZ test replay, exact metric,
+`3/5` threshold, aggregation, resource and network boundaries, stopping and
+failure propagation, and evidence receipts. No external case has been
+generated, no external outcome label has been inspected, and no external
+evaluation has run.
+
 ## hmmm
 
 Normalization is necessary for this cheapest scale adversary, but the controls

@@ -34,6 +34,14 @@ from __future__ import annotations
 #   timeout: 10
 #   mutates: none
 #   cleanup: none
+#
+# id: check_recovered_dissonance_external_packet_identity
+#   proves: recovered_dissonance_external_evaluator_is_frozen, recovered_dissonance_external_evaluator_does_not_promote
+#   call: self::test_packet_pins_executable_protocol_and_nonpromotion
+#   requires: python3
+#   timeout: 10
+#   mutates: none
+#   cleanup: none
 # === END CHECKS ===
 
 from copy import deepcopy
@@ -49,6 +57,9 @@ from edcm import recovered_dissonance_external_evaluator as evaluator
 
 ROOT = Path(__file__).resolve().parents[1]
 EXECUTABLE = ROOT / "edcm" / "recovered_dissonance_external_evaluator.py"
+PACKET = ROOT / "docs" / "experiments" / (
+    "2026-08-17-recovered-dissonance-external-evaluation-packet.json"
+)
 
 
 def _canonical(value: object) -> bytes:
@@ -88,12 +99,12 @@ def _records() -> list[dict[str, object]]:
 
 def _request() -> dict[str, object]:
     payload = {
-        "candidate": evaluator.EXPECTED_CANDIDATE,
-        "event_contract": evaluator.EXPECTED_EVENT_CONTRACT,
+        "candidate": deepcopy(evaluator.EXPECTED_CANDIDATE),
+        "event_contract": deepcopy(evaluator.EXPECTED_EVENT_CONTRACT),
         "records": _records(),
         "schema_id": evaluator.CASE_SCHEMA_ID,
         "schema_version": evaluator.CASE_SCHEMA_VERSION,
-        "source": evaluator.EXPECTED_SOURCE,
+        "source": deepcopy(evaluator.EXPECTED_SOURCE),
     }
     executable_digest = sha256(EXECUTABLE.read_bytes()).hexdigest()
     return {
@@ -128,7 +139,9 @@ def _request() -> dict[str, object]:
         "schema_version": evaluator.PROTOCOL_VERSION,
         "upstream": {
             "completion_receipt_id": "a" * 64,
-            "corpus_manifest_evidence_identity": evaluator.EXPECTED_UPSTREAM_EVIDENCE_IDENTITY,
+            "corpus_manifest_evidence_identity": list(
+                evaluator.EXPECTED_UPSTREAM_EVIDENCE_IDENTITY
+            ),
         },
     }
 
@@ -216,3 +229,41 @@ def test_identity_and_inventory_disagreement_fail_closed(mutation: str) -> None:
     else:
         request["upstream"]["corpus_manifest_evidence_identity"][0] = "other"  # type: ignore[index]
     assert _run(request).returncode == 2
+
+
+def test_packet_pins_executable_protocol_and_nonpromotion() -> None:
+    packet = json.loads(PACKET.read_text(encoding="utf-8"))
+    assert packet["schema"] == "edcm.recovered-dissonance.external-evaluation-packet/0.1.0"
+    assert packet["freeze"]["selectable_fields_frozen"] is True
+    assert packet["freeze"]["external_case_generated"] is False
+    assert packet["freeze"]["external_outcome_labels_inspected"] is False
+    assert packet["evaluator"] == {
+        "code_reference": "The-Interdependency/edcm@14e2c16c8fa76f994afe9939e1a2e2a2bfcd5414:edcm/recovered_dissonance_external_evaluator.py",
+        "evaluator_id": evaluator.EVALUATOR_ID,
+        "evaluator_version": evaluator.EVALUATOR_VERSION,
+        "executable_sha256": sha256(EXECUTABLE.read_bytes()).hexdigest(),
+        "protocol_version": evaluator.PROTOCOL_VERSION,
+    }
+    assert packet["plan"] == {
+        "plan_id": evaluator.PLAN_ID,
+        "plan_version": evaluator.PLAN_VERSION,
+        "question": evaluator.QUESTION,
+    }
+    assert packet["execution"]["timeout_seconds"] == evaluator.TIMEOUT_SECONDS
+    assert packet["execution"]["max_input_bytes"] == evaluator.MAX_INPUT_BYTES
+    assert packet["execution"]["max_output_bytes_per_stream"] == evaluator.MAX_OUTPUT_BYTES
+    assert packet["upstream_corpus_receipt"]["required_manifest_evidence_identity"] == evaluator.EXPECTED_UPSTREAM_EVIDENCE_IDENTITY
+    assert packet["prior_statuses"] == {
+        "absolute_recovered_dissonance": "FALSIFIED",
+        "historical_multiwoz_sensitivity_at_least_0_50": "FALSIFIED",
+        "historical_multiwoz_report_digest": "a726434a533395e7e3bd7d72ba3e9ce68f58c5b62f3b6b10d2b0556b09e85e61",
+        "measurement_validity": "not-established",
+        "normalized_recovered_dissonance_per_accumulated_positive_pressure_controlled_gate": "SURVIVED",
+    }
+    assert packet["evidence_receipt_requirements"]["receipt_nonpromotion"] == {
+        "canon_status": "none",
+        "edcm_activation": "inactive",
+        "evidence_status": "candidate-measured-evidence",
+        "measurement_validity": "not-established",
+        "selection_effect": "none",
+    }

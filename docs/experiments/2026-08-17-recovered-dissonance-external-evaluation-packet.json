@@ -1,0 +1,205 @@
+{
+  "canonical_case": {
+    "case_count": 1,
+    "case_id": "multiwoz21-test-booking-batch-v1",
+    "case_payload_schema": "edcm.recovered-dissonance.external-batch-case/0.1.0",
+    "custody_reference": "doi:10.17863/CAM.41572;archive-sha256:d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e",
+    "disclosure_authority": {
+      "authority_id": "edcm.multiwoz21-public-cc-by-4.0/1.0.0",
+      "authority_scope": "Erin Spencer authorizes disclosure to the pinned evaluator of opaque commitments, source booking labels, and pre-response kappa trajectories only under the Cambridge-distributed CC-BY-4.0 source license; raw text, dialogue ids, response text, goals, metadata, ontology, databases, and later turns are prohibited",
+      "independent_hidden_custodian": false,
+      "source_authority": "University of Cambridge repository, DOI 10.17863/CAM.41572"
+    },
+    "event_contract": {
+      "admission": "test-partition dialogue-act mapping contains exactly one of Booking-Book and Booking-NoBook and decimal source turn id maps to an in-range odd system response index",
+      "candidate_context": "exact data.json turns 0 through response_index-1",
+      "candidate_noninputs": [
+        "labelled-system-response",
+        "later-turns",
+        "dialogue-act-payload-other-than-target-label",
+        "goal",
+        "turn-metadata",
+        "ontology",
+        "domain-databases"
+      ],
+      "event_commitment": "sha256(canonical-json({archive_sha256,dialogue_id,source_turn_id,response_index}))",
+      "event_order": "unicode-dialogue-id-ascending-then-decimal-source-turn-id-ascending",
+      "expected_negative": 131,
+      "expected_positive": 530,
+      "expected_records": 661,
+      "kappa_production": "speaker-prefix each preceding turn by even USER or odd SYSTEM; map each CR and LF to SPACE; parse_transcript(round_strategy=cycle) and compute_transcript with the clean pinned EDCM tree; prepend exact 0; encode every RoundMetrics.kappa as reduced Fraction(str(float_value))",
+      "negative_label": "Booking-NoBook",
+      "positive_label": "Booking-Book",
+      "response_index": "2*decimal-source-turn-id-1",
+      "subject_digest": "sha256(canonical-json(case_payload))"
+    },
+    "source_identities": {
+      "archive_sha256": "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e",
+      "data_member": "MULTIWOZ2.1/data.json",
+      "data_member_sha256": "cb88bd0070bf11b04974cee54c84ad16cfee723c86b096bea04d2cebad098d58",
+      "dialogue_acts_member": "MULTIWOZ2.1/dialogue_acts.json",
+      "dialogue_acts_member_sha256": "54d02ef40aed0e00e5aa84b62ccf7f23df901d07f54c2376d5e8130909c2546f",
+      "partition": "test",
+      "test_membership_member": "MULTIWOZ2.1/testListFile.json",
+      "test_membership_member_sha256": "56fff5bf8c7b0a64fba8672241a7bdd947c3a58986bf06f46d37f33288f73ce0"
+    }
+  },
+  "decision_and_aggregation": {
+    "admission": "all 661 rows must have at least three ordered states, nonnegative reduced rational states, positive accumulated pressure, normalized score in [0,1], and score unequal to 3/5",
+    "aggregate": {
+      "balanced_accuracy": "(sensitivity+specificity)/2",
+      "confusion": "TP,FP,FN,TN over all 661 admitted rows",
+      "sensitivity": "TP/(TP+FN)",
+      "specificity": "TN/(TN+FP)"
+    },
+    "candidate_id": "edcm.recovered-dissonance.normalized-positive-pressure/0.1.0",
+    "direction": "higher-means-more-recovery",
+    "falsified_if": "all rows admit and any of sensitivity<1/2, specificity<1/2, or balanced_accuracy<=1/2",
+    "formula": "(max(kappa_t)-kappa_final)/sum_t(max(kappa_t-kappa_(t-1),0))",
+    "prediction": {
+      "above_3_over_5": "Booking-Book",
+      "below_3_over_5": "Booking-NoBook",
+      "equal_3_over_5": "UNRESOLVED"
+    },
+    "reporting": "exact reduced rational estimates and integer confusion counts; no per-event outputs, fitted parameters, p-values, confidence intervals, calibration metrics, or alternate thresholds",
+    "survived_if": "all rows admit and sensitivity>=1/2 and specificity>=1/2 and balanced_accuracy>1/2",
+    "threshold": {
+      "denominator": 5,
+      "numerator": 3,
+      "source": "control-only strict-gap midpoint"
+    },
+    "unresolved_if": "any admitted row has fewer than three states, zero accumulated positive pressure, or exact threshold equality"
+  },
+  "evaluator": {
+    "code_reference": "The-Interdependency/edcm@14e2c16c8fa76f994afe9939e1a2e2a2bfcd5414:edcm/recovered_dissonance_external_evaluator.py",
+    "evaluator_id": "edcm.recovered-dissonance.external-batch",
+    "evaluator_version": "0.1.0",
+    "executable_sha256": "b7825cfe1c5bd673bc56caac2801e46844413ed252d850643bfdf84ea79e1fe1",
+    "protocol_version": "1.0.0"
+  },
+  "evidence_receipt_requirements": {
+    "archive_after_two_runs": [
+      "packet file SHA-256 and packet freeze commit",
+      "case payload subject digest without opening per-event rows",
+      "both UCNS external evaluation receipts and receipt ids",
+      "upstream completion receipt id and exact corpus manifest evidence identity",
+      "request_sha256, stdout_sha256, stderr_sha256, byte counts, return code, timeout, and failure from each receipt",
+      "evaluator id, version, code reference, and executable SHA-256",
+      "aggregate response status, decision, admission counts, unresolved counts, confusion counts, sensitivity, specificity, and balanced accuracy when defined",
+      "attestation that caller-isolated network enforcement was active",
+      "attestation that no raw text, dialogue id, per-event label, trajectory, score, or external outcome was inspected before packet and case sealing"
+    ],
+    "interpretation_gate": "do not inspect aggregate outcome until two executions have complete receipts and equal request_sha256, stdout_sha256, stderr_sha256, and response_results; elapsed seconds and receipt ids may differ",
+    "receipt_nonpromotion": {
+      "canon_status": "none",
+      "edcm_activation": "inactive",
+      "evidence_status": "candidate-measured-evidence",
+      "measurement_validity": "not-established",
+      "selection_effect": "none"
+    }
+  },
+  "execution": {
+    "argv": "one absolute path resolving to the byte-identical pinned executable; no arguments",
+    "environment_keys": [],
+    "max_input_bytes": 8388608,
+    "max_output_bytes_per_stream": 65536,
+    "network_policy": "caller-isolated",
+    "network_requirement": "deny all evaluator network access before launch; inability to enforce isolation is BLOCKED",
+    "timeout_seconds": 30,
+    "ucns_harness": "The-Interdependency/ucns@123495018f50ef63697de7f8e0d15f1dc9e826b2:src/ucns/external_evaluation.py"
+  },
+  "failure_propagation": {
+    "BLOCKED": "archive, member, upstream receipt, source inventory, case digest, disclosure, executable digest, command, network enforcement, protocol, schema, resource, or reconciliation disagreement; evaluator exits nonzero or UCNS receipt is incomplete; do not score or substitute",
+    "FALSIFIED": "one complete deterministic aggregate response meets the falsified rule; scientific falsification is evidence and does not make transport incomplete",
+    "SURVIVED": "one complete deterministic aggregate response meets the survived rule; survival is candidate evidence only",
+    "UNRESOLVED": "structurally valid batch contains any mathematically undefined or threshold-tied row; one aggregate unresolved result, no row removal or denominator substitution"
+  },
+  "freeze": {
+    "external_case_generated": false,
+    "external_outcome_labels_inspected": false,
+    "freeze_parent_commit": "14e2c16c8fa76f994afe9939e1a2e2a2bfcd5414",
+    "frozen_at_utc": "2026-08-17",
+    "post_freeze_changes": "any selectable evaluator, case, disclosure, metric, threshold, aggregation, limit, network, stop, propagation, or receipt change invalidates this packet before execution; after any label or outcome exposure a replacement case source is required",
+    "selectable_fields_frozen": true
+  },
+  "hmmm": [
+    "This is a retrospective external-label replay on a public test partition used by the historical terminal-progress experiment, not a new independent hidden holdout.",
+    "The source booking acts are bounded action annotations, not independent adjudications of universal task success, user satisfaction, truth, intention, diagnosis, morality, or consciousness.",
+    "Accumulated positive kappa pressure and temporal sampling comparability remain unvalidated real-system semantics.",
+    "A complete transport receipt cannot establish measurement validity, empirical validity, selection, activation, canon, or proof status."
+  ],
+  "plan": {
+    "plan_id": "edcm.recovered-dissonance.multiwoz21-test/0.1.0",
+    "plan_version": "0.1.0",
+    "question": "On the frozen MultiWOZ 2.1 test booking-event batch, does normalized recovered dissonance per accumulated positive pressure at the control-only threshold 3/5 discriminate Booking-Book from Booking-NoBook under the preregistered aggregate rule?"
+  },
+  "prior_statuses": {
+    "absolute_recovered_dissonance": "FALSIFIED",
+    "historical_multiwoz_sensitivity_at_least_0_50": "FALSIFIED",
+    "historical_multiwoz_report_digest": "a726434a533395e7e3bd7d72ba3e9ce68f58c5b62f3b6b10d2b0556b09e85e61",
+    "measurement_validity": "not-established",
+    "normalized_recovered_dissonance_per_accumulated_positive_pressure_controlled_gate": "SURVIVED"
+  },
+  "schema": "edcm.recovered-dissonance.external-evaluation-packet/0.1.0",
+  "stopping_rules": [
+    "generate and seal exactly one canonical 661-record batch after packet freeze without displaying its rows",
+    "execute exactly twice with the same upstream receipt, case payload, executable, argv, environment, limits, and network isolation",
+    "stop BLOCKED on any structural or transport failure; do not retry with changed settings",
+    "stop UNRESOLVED on any admitted undefined or tied row; do not exclude, impute, or replace it",
+    "after equal deterministic evidence receipts, record exactly one SURVIVED or FALSIFIED aggregate outcome",
+    "do not search features, normalizers, thresholds, partitions, exclusions, metrics, aggregations, evaluators, limits, or stopping rules",
+    "do not inspect per-event rows or promote measurement validity, activation, selection, canon, proof, or theorem status"
+  ],
+  "upstream_corpus_receipt": {
+    "required_type": "execution-generated ucns.full_corpus.FullCorpusCompletionReceipt",
+    "required_manifest_evidence_identity": [
+      "multiwoz-2.1",
+      "2.1",
+      "d377a176f5ec82dc9f6a97e4653d4eddc6cad917704c1aaaa5a8ee3e79f63a8e",
+      "143048",
+      "CC-BY-4.0",
+      "aggregate-only; raw dialogue text remains in caller-held source custody and outside Git",
+      "none-preserve-source; no transformed or redacted substitute is used for exact execution",
+      "sha256:aba3ebbac5e6f6ef0505cd9349361ba8bde7586fae21049e2d120fa362033ed6",
+      "edcm.corpora.multiwoz21",
+      "1.2.0",
+      "edcm.corpora.multiwoz21:_iter_ucns_full_corpus_turns"
+    ]
+  },
+  "work_graph": {
+    "authority_transfer": false,
+    "participants": [
+      {
+        "authority": "recovered-dissonance preregistration",
+        "identity": "0bc34fae54533454c58f21271c19cc02e61f6dfb",
+        "repository": "The-Interdependency/edcm#53"
+      },
+      {
+        "authority": "controlled statuses, evaluator, metric, cases, aggregation, and candidate interpretation",
+        "identity": "14e2c16c8fa76f994afe9939e1a2e2a2bfcd5414",
+        "repository": "The-Interdependency/edcm#54"
+      },
+      {
+        "authority": "skill-lib boundary execution support only",
+        "identity": "287bcc5d17fe044ce99e196d9592ca7dcd50244c",
+        "repository": "The-Interdependency/ucns#194"
+      },
+      {
+        "authority": "external process transport, resource enforcement, reconciliation, and nonpromoting receipt only",
+        "identity": "123495018f50ef63697de7f8e0d15f1dc9e826b2",
+        "repository": "The-Interdependency/ucns#196"
+      },
+      {
+        "authority": "current reusable build and evidence doctrine",
+        "identity": "b4234ca29529f56526541df8deb58c2c19570792",
+        "repository": "The-Interdependency/skill-lib"
+      },
+      {
+        "authority": "root doctrine and domain-restraint boundary only; no domain validation",
+        "identity": "d1545041685a1d573c19656945c4cd850359961b",
+        "repository": "The-Interdependency/metapat#21"
+      }
+    ],
+    "status_transfer": false
+  }
+}
