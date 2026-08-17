@@ -87,32 +87,52 @@ tokenize or normalize language, infer card identity, select an ontology, build
 UCNS objects, or run EDCM measurement. A single result remains `UNRESOLVED`;
 repeat-run byte identity is determinism evidence only.
 
-The wider path remains:
+## Observation pivot
+
+OCR is no longer a prerequisite for Tarot progress.
+
+The Etteilla scans remain admitted evidence and their failed extraction history remains sealed. The exact v4 OCR instrument is `FALSIFIED`; that does not make historical typography recognition the next mandatory experiment.
+
+Advance the corpus through three independent observation lanes:
+
+1. **machine-readable text** — resolve exact identities and rights for already-transcribed or natively digital Tarot primary texts, rules, and institutional descriptions; preserve source order, wording, language, and provenance without semantic normalization;
+2. **image-native evidence** — admit card, tableau, page, and deck images as image objects with exact source identity and provenance; do not require text extraction before relational discovery;
+3. **historical scan text** — retain scanned historical texts as unresolved observation objects and revisit historical-type recognition only when the expected information gain justifies a new preregistered instrument.
+
+No lane may silently manufacture cross-source card identity, ontology, meanings, correspondences, or canon. Relations discovered within one modality may later be compared with another only through explicit provenance-bearing mappings.
+
+The wider path is now:
 
 ```text
 Tarot evidence snapshot
     -> EDCM source-envelope distinction/relation discovery [implemented]
-    -> embedded-text extraction [FALSIFIED for both acquired PDFs]
-    -> OCR v1 [BLOCKED: renderer warning]
-    -> OCR v2 [BLOCKED: tableau validation sample lacks 100 decidable characters]
-    -> OCR v3 [BLOCKED: empty-reference scoring undefined]
-    -> OCR v4 [FALSIFIED: eighteenth-century book typography undetected]
-    -> source-faithful historical-type/multimodal transcription design [hmmm]
-    -> semantic discovery [not run]
+    -> observation lanes
+         -> machine-readable text [NEXT]
+         -> image-native evidence [NEXT]
+         -> historical scanned text
+              -> embedded-text extraction [FALSIFIED]
+              -> OCR v1 [BLOCKED]
+              -> OCR v2 [BLOCKED]
+              -> OCR v3 [BLOCKED]
+              -> OCR v4 [FALSIFIED]
+              -> new historical-type instrument [DEFERRED]
+    -> source-relative multimodal observations
+    -> semantic/relational discovery
     -> provenance-bearing recovered relations
     -> UCNS recursive objects
     -> reconstruction/adversarial tests
     -> hmmm: emergent Platonic Tarot card
 ```
 
-EDCM should be allowed to discover that two sources agree, disagree, split, merge, omit, reinterpret, or fail to map. Acquisition must not erase those possibilities by preprocessing them into one Tarot taxonomy.
+EDCM should be allowed to discover that two sources agree, disagree, split, merge, omit, reinterpret, or fail to map. Acquisition and observation must not erase those possibilities by preprocessing them into one Tarot taxonomy.
 
 ## hmmm
 
 - comprehensive source coverage is impossible to claim from v1;
 - item-level IIIF and reuse identities remain unresolved for several major collections;
 - modern commercial decks and guidebooks need source-specific lawful acquisition;
-- OCR v4 completed all 407 pages but is FALSIFIED; 397/401 book TXT outputs are empty and no trustworthy transcription corpus exists;
-- a source-faithful control must not force the predominantly visual tableau into a text-only validity criterion;
-- image segmentation, multimodal transcription, language normalization, and semantic discovery remain separate undefined transformations;
+- OCR v4 completed all 407 pages but is FALSIFIED; 397/401 book TXT outputs are empty and no trustworthy transcription corpus exists from that instrument;
+- the minimum source-faithful image observation record that exposes useful relations without importing a Tarot ontology;
+- the first machine-readable textual subset large and diverse enough to begin blind semantic/relational discovery without overrepresenting one historical school;
+- language normalization remains a separate transformation and must not erase source-owned distinctions;
 - the Platonic Tarot card remains a target of discovery, not an input schema.
