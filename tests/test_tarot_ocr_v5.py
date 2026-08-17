@@ -17,6 +17,18 @@ from pathlib import Path
 from tools.run_tarot_ocr_v5 import INSTRUMENT, PROTOCOL_COMMIT, PROTOCOL_SHA256, ocr_command
 
 
+def test_v5_usage_command_loads_as_a_direct_script() -> None:
+    import subprocess
+
+    result = subprocess.run(
+        [".venv/bin/python", "tools/run_tarot_ocr_v5.py", "--help"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0
+    assert "--acquisition" in result.stdout
+
+
 def test_v5_ocr_command_is_exact_single_threshold_change() -> None:
     assert ocr_command(Path("/usr/bin/tesseract"), Path("page.png"), Path("page")) == [
         "/usr/bin/tesseract", "page.png", "page", "-l", "fra", "--oem", "1",

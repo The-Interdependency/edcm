@@ -53,7 +53,10 @@ from pathlib import Path
 import subprocess
 import sys
 
-from tools import run_tarot_ocr_v4 as core
+try:
+    from tools import run_tarot_ocr_v4 as core
+except ModuleNotFoundError:  # Direct ``python tools/run_tarot_ocr_v5.py`` use.
+    import run_tarot_ocr_v4 as core
 
 
 PROTOCOL_COMMIT = "9199f2dc3830bab11486c359b5e1f9e9974b36fb"
