@@ -29,49 +29,35 @@ This reciprocal loop is the intended meaning of **UCNS–EDCM canon**.
 
 ## Gonol language boundary
 
-The stack's current language-object construction is gonol-native:
+The prior **lexical-floor** construction is DEPRECATED. NGSL 1.2 is a word list, not the dictionary semantic source required for the active language path, and its fixed-list closure rule has no forward authority.
+
+UCNS has authorized a Scrabble dictionary as the replacement lexical source class. Exact edition/source identity and custody must be pinned upstream before ingestion.
+
+The current language-object direction is gonol-native:
 
 ```text
 Unicode character gonols
         ↓
-fixed floor word gonols
+dictionary lexical entries / words
         ↓
-complete lexical floor F
+word gonols
         ↓
-definitions expressed only with members of F
+source-bound dictionary definitions and senses
         ↓
-floor-definition gonols
+ordered semantic relationships among word gonols
+        ↓
+definition gonols = first lexical deep-recursion layer
 ```
 
-UCNS owns these language-object construction rules. Unicode character gonols are
-the primitive inscription objects. Once the lexical floor `F` is admitted, its
-floor definitions are closed over that floor:
+The semantic relationships expressed by the dictionary definitions are themselves the first lexical recursive layer. They are not metadata awaiting a later embedding step.
 
-```text
-support(definition_gonol(word, sense)) ⊆ F
-```
+The replacement path does not insert conventional NLP token IDs, subword IDs, opaque external embedding vectors, or whole-string cryptographic hashes. Source definition prose may remain custody evidence; the semantic representation is the source-bound gonol relationship structure constructed from it.
 
-A definition that needs lexical material outside `F` is not a floor definition
-and does not expand the floor. The current path does not insert conventional NLP
-tokens, token IDs, subword pieces, or an opaque external embedding lookup.
-Arbitrary source definition text may remain provenance but is not itself a
-floor-definition gonol.
+A dictionary-derived definition gonol is intended to occupy the semantic-representation role commonly served by vector embeddings. That analogy establishes no semantic quality, metric behavior, equivalence, benchmark advantage, or downstream utility.
 
-A floor-definition gonol is intended to occupy the semantic-representation role
-for which conventional systems commonly use vector embeddings. That analogy
-establishes no semantic quality, metric behavior, equivalence, benchmark
-advantage, or downstream utility.
+EDCM may consume exact UCNS gonol identities and source-bound receipts only under an explicit consumer contract. Any EDCM scalar projection or measurement must separately declare its mapping and information loss. UCNS representation does not activate or validate EDCM measurement; EDCM outcomes do not validate UCNS semantics, proof status, or construction law.
 
-EDCM may consume exact UCNS gonol identities and source-bound receipts only
-under an explicit consumer contract. Any EDCM scalar projection or measurement
-must separately declare its mapping and information loss. UCNS representation
-does not activate or validate EDCM measurement; EDCM outcomes do not validate
-UCNS semantics, proof status, or construction law.
-
-Historical EDCM experiment or profile surfaces may retain `token` and
-`word-gonol` terminology where those names are part of frozen evidence. Such
-terms do not create a tokenizer layer or redefine the current lexical primitive.
-Historical artifacts are not rewritten by this correction.
+Historical EDCM experiment or profile surfaces may retain `token`, `lexical-floor`, and `word-gonol` terminology where those names are part of frozen evidence. Such terms do not create a tokenizer layer or restore the deprecated lexical-floor premise as current architecture. Historical artifacts are not rewritten by this correction.
 
 See [`docs/GONOL_LANGUAGE_BOUNDARY.md`](docs/GONOL_LANGUAGE_BOUNDARY.md).
 
@@ -196,13 +182,14 @@ Where discourse graphs are involved, the experiment must additionally retain:
 
 For new language-semantic experiments, the experiment must additionally retain:
 
-- the exact UCNS lexical-floor identity;
-- source-bound floor-definition-gonol receipt identities;
-- floor-closure verification for every admitted definition;
-- constituent order, multiplicity, sense, context, source, and provenance;
-- explicit failure on tokenizer, subword, opaque-vector, or out-of-floor substitution;
+- the exact UCNS dictionary-corpus and source identity;
+- source-bound dictionary-definition-gonol receipt identities;
+- constituent order, multiplicity, occurrence position, sense, context, source, and provenance;
+- explicit failure on tokenizer, subword, opaque-vector, or whole-string-hash substitution;
 - the EDCM projection and declared information loss separately from the UCNS representation; and
 - preregistered comparison criteria before semantic or downstream outcome inspection.
+
+Historical lexical-floor artifacts may be reproduced against their original exact inputs, but their fixed-list closure criteria are not forward experiment requirements.
 
 Hypothesis failure is a valid experiment result and must not be converted into a build failure merely to preserve a preferred model.
 
@@ -217,6 +204,7 @@ candidate_registration_implies_canon = false
 passing_development_fixtures_implies_canon = false
 majority_candidate_agreement_implies_truth = false
 definition_gonol_role_analogy_implies_embedding_efficacy = false
+historical_lexical_floor_name_implies_current_floor_architecture = false
 NA_equals_zero = false
 ```
 
@@ -233,7 +221,7 @@ This phase may implement:
 - positive unresolved-reference and alternative-bundle evidence;
 - reproducible reports and policy-preservation findings;
 - CI execution against an exact UCNS commit;
-- fail-closed consumer validation for future source-bound definition-gonol receipts; and
+- fail-closed consumer validation for future source-bound dictionary-definition-gonol receipts; and
 - preregistered EDCM evaluations of those receipts once the upstream construction exists.
 
 This phase may not promote:
@@ -244,8 +232,9 @@ This phase may not promote:
 - canonical product character `M`;
 - canonical faithful breadth `B`;
 - canonical discourse resolver, relation vocabulary, or graph precedence;
-- arbitrary dictionary prose into a floor-definition gonol;
-- a tokenizer, subword vocabulary, or opaque vector lookup into the gonol-native language path;
+- arbitrary dictionary prose into a completed semantic relation without source-bound gonol construction;
+- the deprecated NGSL closed-floor rule into the replacement dictionary path;
+- a tokenizer, subword vocabulary, opaque vector lookup, or whole-string hash into the gonol-native language path;
 - definition-gonol role analogy into a claim of embedding replacement efficacy;
 - diagnosis, intention, morality, consciousness, or external truth claims;
 - a complete production `UCNSObject` or EDCM deployment contract.
@@ -262,14 +251,8 @@ python -m edcm.ucns_edcm_experiments_v4 \
 
 Every report is research evidence. No report is a canon file, and no report may be renamed or imported as one.
 
-For new semantic work, do not treat EDCM's existing arbitrary definition strings or historical word-profile outputs as completed floor-definition gonols. Consume the exact future UCNS producer receipt, freeze the EDCM mapping and falsifier, then evaluate.
+For new semantic work, do not treat EDCM's existing arbitrary definition strings, historical word-profile outputs, or lexical-floor-named artifacts as the current semantic basis. Consume the exact future UCNS dictionary-derived producer receipt, freeze the EDCM mapping and falsifier, then evaluate.
 
 ## hmmm
 
-The exact UCNS relation/composition law for closed floor-definition gonols and
-the source/custody procedure for a complete closed definition set remain
-upstream unresolved boundaries. EDCM has not yet selected a lawful projection,
-metric, benchmark, or falsifier for evaluating that future representation.
-External holdout custody, independently authored graph annotations, human
-outcome labels, multilingual evidence, separate implementation replication, and
-the authority procedure for the first joint canon selection also remain open.
+The exact Scrabble dictionary edition/source, machine-readable acquisition, immutable source identity, and custody/redistribution boundary remain upstream UCNS source questions. UCNS must also generalize its first-recursion producer away from NGSL closure and 2,809-target coverage before EDCM consumes the replacement representation. EDCM has not yet selected a lawful projection, metric, benchmark, or falsifier for evaluating that future representation. External holdout custody, independently authored graph annotations, human outcome labels, multilingual evidence, separate implementation replication, and the authority procedure for the first joint canon selection also remain open.
