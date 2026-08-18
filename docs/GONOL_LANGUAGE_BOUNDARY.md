@@ -2,103 +2,93 @@
 
 **Status:** active EDCM consumer boundary; UCNS lexical construction remains upstream.  
 **Authority:** Erin Spencer for the stack declaration; UCNS owns lexical/gonol construction surfaces; EDCM owns measurement-side use and non-use.  
-**Recorded:** 2026-08-17.  
+**Corrected:** 2026-08-18.  
 
-## Current correction
+## Current UCNS source roles
 
-The UCNS **lexical-floor** model is DEPRECATED. NGSL 1.2 is a word list, not the dictionary semantic source required for the active lexical construction. Its fixed-list closure rule no longer has forward authority.
-
-A Scrabble dictionary is authorized upstream as the replacement lexical source class. The exact edition/source identity and custody boundary remain to be pinned by UCNS before ingestion.
-
-The active language-object direction is therefore:
+The active UCNS lexical construction now uses:
 
 ```text
-Unicode character gonols
-        ↓
-dictionary lexical entries / words
-        ↓
-word gonols
-        ↓
-source-bound dictionary definitions and senses
-        ↓
-ordered semantic relationships among word gonols
-        ↓
-definition gonols = first lexical deep-recursion layer
+xkcd constrained-English 1,000-word vocabulary
+    -> lexical-floor candidate
+
+Open English WordNet 2025 Core
+    -> primary contemporary lexical-semantic corpus
 ```
 
-There is no requirement that semantic definitions close over NGSL or another artificially frozen subset.
+The earlier NGSL lexical-floor premise remains **DEPRECATED**. The later Scrabble-dictionary source selection is **SUPERSEDED** for this work. Webster 1913 is deferred and is not part of the current execution graph.
+
+Exact xkcd and OEWN source receipts remain UCNS-owned acquisition/custody boundaries.
+
+## Current language architecture
+
+EDCM must treat the current upstream sequence as:
+
+```text
+characters
+    ↓
+morphology
+    ↓
+definitions
+    ↓
+recursive gonol relations
+```
+
+Relationships enter gonols. They are not merely external semantic edges.
+
+A completed word gonol is atomic for the next scale. A completed definition gonol is atomic for the next recursion. Lower-scale provenance remains available for replay without requiring every higher-scale operation to re-expand all constituents.
+
+Affixiation is scale-invariant in current UCNS doctrine: gonols couple, the relationship enters the result, closure produces a new gonol, and the result becomes atomic at its scale. Morphological affixes are one linguistic instance; EDCM must not restore the historical omega/phi/psi three-core morphology as current authority.
+
+Direct coupling across non-adjacent recursive scales is allowed upstream. EDCM may not impose mandatory intermediate-scale reopening as a precondition for measurement merely because it simplifies a projection.
 
 ## No hidden token or vector layer
 
-The correction does not introduce conventional NLP token IDs, subword IDs, opaque external embedding vectors, or whole-string cryptographic hashes as lexical primitives.
+EDCM must not insert conventional NLP token IDs, subword IDs, opaque embedding vectors, or whole-string hashes as substitutes for upstream gonol identity.
 
-Unicode-character gonols remain primitive inscription objects. Word spelling, constituent order, multiplicity, occurrence position, sense identity, source provenance, deterministic replay, and recursive semantic relations remain load-bearing.
-
-Source definition prose may be retained as custody evidence; the semantic representation is the source-bound gonol relationship structure constructed from it.
-
-## First recursion
-
-Dictionary definitions establish semantic relationships among word gonols. Those relationships are themselves the first lexical deep-recursion layer, not metadata waiting for a later embedding step.
-
-A dictionary-derived definition gonol is intended to occupy the semantic-representation role commonly served by vector embeddings. That role analogy establishes no semantic quality, equivalence, similarity behavior, benchmark advantage, or downstream utility.
+Source definition prose may remain custody evidence; the semantic representation is the source-bound relationship structure incorporated into the gonol.
 
 ## EDCM ownership and use
 
 EDCM does **not** own:
 
-- dictionary source selection or custody;
-- Unicode-character-gonol identity or construction;
-- UCNS word-gonol construction;
+- xkcd lexical-floor source identity;
+- OEWN Core source selection or custody;
+- Unicode-character-gonol construction;
+- the Möbius glyph-axis / history-dependent word-gonol relation law;
+- UCNS morphology construction;
 - UCNS definition-gonol construction;
+- atomic closure or direct interscale coupling semantics; or
 - semantic validity merely because a UCNS representation exists.
 
 EDCM may:
 
-- consume exact source-bound UCNS word/definition-gonol identities and receipts;
-- preserve order, multiplicity, sense identity, context, source, and provenance;
-- construct measurement candidates over those represented trajectories when an explicit EDCM mapping is declared;
-- compare a dictionary-definition-gonol representation against simpler baselines or conventional embeddings under preregistered criteria; and
-- record `FALSIFIED`, `SURVIVED — not proved`, `UNRESOLVED`, or `BLOCKED` without changing the upstream construction after outcome inspection.
+- consume exact source-bound UCNS gonol identities and receipts;
+- preserve order, multiplicity, occurrence, part of speech, sense/synset, source, provenance, scale, and atomic identity;
+- declare a measurement projection over those gonols with explicit information loss;
+- evaluate compression, reconstruction, semantic behavior, or other hypotheses only under separately frozen EDCM metrics and falsifiers; and
+- record `FALSIFIED`, `SURVIVED — not proved`, `UNRESOLVED`, or `BLOCKED` without changing upstream construction after outcome inspection.
 
-UCNS representation does not activate EDCM measurement. EDCM measurement does not validate UCNS semantics or prove UCNS construction.
+UCNS representation does not activate EDCM measurement. EDCM outcomes do not validate UCNS semantics, proof status, or construction law.
 
-## Historical surfaces
+## Historical OEWN evidence
 
-Historical EDCM artifacts keep their exact identities and names.
+EDCM already contains a sealed historical OEWN 2025 acquisition / replay experiment. Preserve it exactly as historical evidence and acquisition precedent.
 
-In particular:
+Do not rewrite historical `lexical-floor`, `token`, OEWN branch, or package-extra identities. Their names do not restore superseded current architecture.
 
-- `docs/ENGLISH_LEXICAL_FLOOR.md` and the OEWN 2025 lexical-floor-named artifacts identify a sealed historical experiment and are not renamed;
-- historical `lexical-floor` package extras remain reproducibility surfaces;
-- historical experiment generations may retain `token` where it names a frozen support unit;
-- the NGSL lexical-floor experiment and PR #205 closed-floor producer remain historical UCNS evidence.
-
-None of those historical names restores the deprecated lexical-floor concept as current stack architecture.
-
-## PR #205 boundary
-
-UCNS PR #205 established reusable machinery for preserving target identity, sense, order, repeated occurrences, provenance, deterministic replay, and receipts.
-
-Its NGSL-specific fixed-floor rules are deprecated for forward work. EDCM must not require:
-
-- closure over the 2,809-word NGSL list;
-- complete semantic coverage of exactly those 2,809 targets; or
-- NGSL source receipts as current lexical authority.
-
-EDCM should consume only a future generalized dictionary-derived UCNS producer contract after the exact dictionary source is pinned.
+The historical EDCM OEWN semantic-relation artifacts also do not automatically become the current UCNS semantic mechanism. Current UCNS construction is definition-driven unless upstream explicitly selects another relation source.
 
 ## Usage guidance
 
-For historical reproduction, continue using exact pinned experiment sources and artifacts. Do not rewrite sealed evidence.
-
 For new lexical-semantic work:
 
-1. wait for UCNS to pin the exact authorized Scrabble dictionary source and custody identity;
-2. consume source-bound dictionary word/definition-gonol receipts;
-3. reject hidden tokenizer, subword, opaque-vector, or whole-string-hash substitution;
-4. keep the EDCM projection/measurement contract separate from the UCNS semantic representation;
-5. freeze EDCM metrics, aggregation, baselines, partitions, stopping, and falsifiers before outcome inspection.
+1. wait for / consume exact UCNS xkcd and OEWN Core source receipts;
+2. consume atomic word / morphology / definition / recursive gonol receipts rather than rebuilding semantics inside EDCM;
+3. preserve the distinction between source prose, intrinsic gonol relationships, and EDCM measurement projection;
+4. do not impose pairwise materialization or intermediate-scale reopening upstream;
+5. freeze EDCM projection, information loss, metrics, aggregation, baselines, partitions, stopping, and falsifiers before outcome inspection.
 
 ## hmmm
 
-The exact Scrabble dictionary edition/source, machine-readable acquisition, license/custody/redistribution boundary, and treatment of definition lexical material not separately listed as dictionary headwords remain upstream UCNS source-ingestion questions. EDCM has not yet selected the projection, information-loss accounting, metric, benchmark, or falsifier for the future dictionary-derived definition-gonol representation.
+EDCM has not selected the projection, information-loss accounting, metric, benchmark, or falsifier for the completed recursive lexical representation. Upstream UCNS still has unresolved source receipts, morphology law, executable Möbius glyph-axis traversal, and direct distant interscale coupling representation.
