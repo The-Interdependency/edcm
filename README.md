@@ -6,7 +6,7 @@ The repository has three deliberately separate surfaces:
 
 1. **Frozen maintained baseline:** `edcm/measurement/`, preserved as candidate `edcm-measurement-v1` with byte-checked canon and provenance.
 2. **Experiment-first joint program:** reproducible UCNS–EDCM experiments that determine which structural and measurement candidates deserve later canon review.
-3. **Exact corpus-observation profile:** the optional EDCM-only UCNS word-gonol configuration used to expose incomplete assumptions against full real-system corpora.
+3. **Exact corpus-observation profile:** the optional pinned EDCM UCNS word-gonol configuration used to expose incomplete assumptions against full real-system corpora. It is an observation/replay surface, not the definition of the stack's current lexical primitive or semantic representation.
 
 The baseline is executable. It is not automatically the final UCNS–EDCM canon.
 
@@ -41,6 +41,41 @@ implemented v0.3.1 architecture layer, joint experiment candidates, controlled
 goal-vector candidate, and unresolved formal boundaries. A textbook or website
 may carry a source-pinned copy but is not the mathematical authority.
 
+## Gonol language boundary
+
+The current stack language path is gonol-native end to end:
+
+```text
+Unicode character gonols
+        ↓
+fixed floor word gonols
+        ↓
+complete lexical floor F
+        ↓
+definitions expressed only with members of F
+        ↓
+floor-definition gonols
+```
+
+Unicode character gonols are the primitive inscription objects. The admitted
+lexical floor is closed: a floor definition cannot add another word to the
+floor. New semantic construction therefore consumes existing floor word gonols;
+it does not insert a tokenizer, token IDs, subword pieces, or an opaque external
+vector lookup. Arbitrary source definition prose may be retained as provenance
+but is not itself a floor-definition gonol.
+
+The floor-definition gonol is intended to occupy the semantic-representation
+role for which conventional systems commonly use vector embeddings. That is a
+role analogy, not evidence of semantic quality, equivalence, benchmark
+advantage, or downstream utility.
+
+UCNS owns the gonol construction. EDCM may consume exact source-bound gonol
+identities and receipts and may later evaluate an explicitly declared
+measurement projection. UCNS representation does not activate or validate EDCM
+measurement, and EDCM results do not validate UCNS semantics or mathematics.
+
+See [`docs/GONOL_LANGUAGE_BOUNDARY.md`](docs/GONOL_LANGUAGE_BOUNDARY.md).
+
 ## First joint experiment
 
 The initial fixed corpus pressures four load-bearing distinctions:
@@ -57,6 +92,9 @@ It compares:
 - unit-, token-, and pressure-weighted UCNS cell encodings;
 - UCNS ordered, multiset, and set structural views;
 - noncanonical UCNS product-character and faithful-breadth candidate families.
+
+Here `token` names a frozen support unit in that historical experiment. It must
+not be read forward as a tokenizer layer in the current gonol language path.
 
 The experiment records supported, falsified, and errored hypotheses. A falsified hypothesis is valid research evidence and does not fail the build merely because a preferred candidate lost.
 
@@ -118,8 +156,10 @@ python -m edcm.goal_vector_experiment \
 ```
 
 This is controlled candidate-measured evidence, not empirical validation.
-METAPAT constraints, formal UCNS geometry, formal completion, higher-gonol
-composition, proof transfer, and canon selection remain absent.
+METAPAT constraints, formal UCNS geometry, formal completion, closed
+floor-definition-gonol construction, proof transfer, and canon selection were
+not part of this sealed experiment and are not retroactively supplied by the
+later language-boundary correction.
 
 ## First externally labelled booking-outcome holdout
 
@@ -147,7 +187,7 @@ python -m edcm.corpora.multiwoz21_booking_holdout \
   --edcm-repository-root /path/to/edcm \
   --edcm-commit "$(git -C /path/to/edcm rev-parse HEAD)" \
   --output /tmp/multiwoz-booking-holdout.json \
-  --receipt /tmp/multiwoz-booking-holdout-complete.json
+  --receipt /tmp/multiwoz-booking-outcome-holdout-complete.json
 ```
 
 The historical MultiWOZ profile seals remain represented evidence. The new
@@ -193,7 +233,7 @@ METAPAT integration remains optional:
 python -m pip install -e .[dev,metapat]
 ```
 
-The exact word-gonol profile is also optional:
+The exact historical/replay word-gonol profile is also optional:
 
 ```bash
 python -m pip install -e .[dev,ucns-profile]
@@ -277,7 +317,8 @@ The shared-stack pipeline separates:
 
 - source evidence;
 - METAPAT semantic constraints;
-- exact UCNS word-gonol observations;
+- exact pinned UCNS word-gonol observations where historical/replay profiles are used;
+- future source-bound UCNS floor-definition-gonol receipts where explicitly integrated;
 - typed UCNS geometry and factorization absence;
 - EDCM policy and implementation provenance;
 - readouts;
@@ -305,9 +346,11 @@ Historical implementation, source packets, repair handoffs, and prior adapter co
 
 ## hmmm
 
-UCNS v0.19 supplies a nonselected trace-local source-coordinate candidate over
-its fixed full producer demonstration. This EDCM observation path does not
-attach or consume that candidate, and higher-gonol composition plus lawful projection
-into EDCM readouts remain open. The corrected MultiWOZ 2.1 SPACE-origin
-aggregate is sealed represented evidence, not measurement validity; true
-non-SPACE carrier coverage remains a separate hmmm.
+The current EDCM runtime still consumes the pinned word-gonol observation profile
+for its historical/replay paths; it does not yet consume a closed
+floor-definition-gonol producer. The exact UCNS definition-gonol
+relation/composition law and source-custody procedure remain upstream hmmm, and
+EDCM has not selected a lawful projection, metric, or benchmark for evaluating
+that future representation. The corrected MultiWOZ 2.1 SPACE-origin aggregate
+is sealed represented evidence, not measurement validity; true non-SPACE
+carrier coverage remains a separate hmmm.
