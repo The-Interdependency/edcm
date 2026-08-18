@@ -8,11 +8,12 @@ This repository is the maintained Python package for the Energy–Dissonance Cir
 2. `codex-handoff/2026-07-12-stack-repair/COMPLETED_LOOKS_LIKE.md`
 3. `codex-handoff/2026-07-12-stack-repair/IMPLEMENTATION_STATUS.md`
 4. `README.md`
-5. `docs/integrity-gates.md`
-6. `docs/ucns-adapter.md`
-7. `docs/shared-stack-result.md`
-8. `docs/consolidation-edcmbone.md`
-9. `docs/codex_edcmucns_v031_handoff.md`
+5. `docs/GONOL_LANGUAGE_BOUNDARY.md`
+6. `docs/integrity-gates.md`
+7. `docs/ucns-adapter.md`
+8. `docs/shared-stack-result.md`
+9. `docs/consolidation-edcmbone.md`
+10. `docs/codex_edcmucns_v031_handoff.md`
 
 Unknown or unresolved facts are written `hmmm`, not guessed.
 
@@ -82,6 +83,51 @@ Preserve exact source statements, references, constraints, permitted interpretat
 
 Direct absence of `metapat` is typed unavailability. Transitive import errors, missing producer surfaces, unsupported schemas, invalid provenance, unknown fields, and wrong envelope types remain visible failures.
 
+## Gonol-native language architecture
+
+For current stack language work, UCNS owns this construction boundary:
+
+```text
+Unicode character gonols
+        ↓
+fixed floor word gonols
+        ↓
+complete lexical floor F
+        ↓
+definitions expressed only with members of F
+        ↓
+floor-definition gonols
+```
+
+Unicode character gonols are the primitive inscription objects. Once the
+lexical floor is admitted, floor definitions cannot enlarge it:
+
+```text
+support(definition_gonol(word, sense)) ⊆ F
+```
+
+Do not insert a conventional NLP tokenizer, token IDs, subword pieces, or an
+opaque external vector lookup between inscription and the gonol construction.
+Do not treat arbitrary dictionary definition prose as a completed
+floor-definition gonol. Source prose may remain custody/provenance evidence.
+
+A floor-definition gonol is intended to occupy the semantic-representation role
+for which conventional systems commonly use vector embeddings. This is a role
+analogy only. Do not promote it into semantic-quality, equivalence, similarity,
+benchmark-advantage, or downstream-utility claims without a separate frozen
+evaluation.
+
+EDCM owns neither lexical-floor membership nor UCNS character-, word-, or
+definition-gonol construction. EDCM may consume exact source-bound receipts and
+may separately define a measurement projection. UCNS representation does not
+activate EDCM measurement; EDCM results do not validate UCNS semantics or
+mathematics.
+
+The exact UCNS definition-gonol relation/composition law and the source/custody
+procedure for a complete closed definition set are still `hmmm`. Until the
+upstream producer exists, do not fabricate an EDCM semantic adapter by reusing
+arbitrary definition text or the historical word-profile schema.
+
 ## Exact EDCM UCNS observation profile
 
 EDCM owns the consumer adapter. UCNS owns the exact EDCM-only word-gonol
@@ -90,6 +136,13 @@ from merged UCNS v0.19 producer
 `a98c9e6c69804a8a08d0786b1d8b450bb2c49a97`, which includes the final
 integrity repairs.
 
+This is a sealed observation/replay producer epoch. Its names and options are
+preserved for reproducibility; they do not override the later gonol-native
+language architecture above. In particular, `smallest_gonol: word`,
+`token_alphabet`, `token_identity`, and token-record field names are frozen
+profile/schema vocabulary, not current ontology and not authorization for a
+tokenizer layer.
+
 The adapter activates only for `ucns.profile.edcm-word-gonol/0.2.0` with all
 fourteen fixed options, `source_domain=unicode-scalar-values`, the exact
 157-token public gonol digest, and the exact ordered 25-value pin behind
@@ -97,13 +150,14 @@ fourteen fixed options, `source_domain=unicode-scalar-values`, the exact
 ordered `ucns_turns` as exact `(speaker_id, text)` tuples. Never infer speaker
 turns from a flattened transcript, sample a corpus, or normalize source text.
 
-Every word is a maximal sequence not assigned to carrier position zero. Each
-pinned Unicode SPACE manifestation is assigned to the public SPACE carrier at
-position zero and emitted as an explicit superpositioned nesting boundary.
-Source value/code point and carrier token/position are serialized separately,
-so tab, newline, and non-breaking space remain exact source witnesses. Each
-complete speaker turn has support one. True non-SPACE out-of-alphabet code
-points remain ordered positive evidence.
+Every word is a maximal sequence not assigned to carrier position zero under
+this pinned profile. Each pinned Unicode SPACE manifestation is assigned to the
+public SPACE carrier at position zero and emitted as an explicit
+superpositioned nesting boundary. Source value/code point and carrier
+token/position are serialized separately, so tab, newline, and non-breaking
+space remain exact source witnesses. Each complete speaker turn has support
+one. True non-SPACE out-of-alphabet code points remain ordered positive
+evidence.
 
 UCNS v0.19 also exposes a nonselected trace-local source-coordinate candidate
 over its fixed full producer demonstration. This adapter does not attach or
@@ -216,6 +270,8 @@ proof_status_transfers_to_measurement_validity = false
 - METAPAT semantic labels never become measured values merely by being named.
 - Deterministic transcript metrics do not establish diagnosis, intent, consciousness, external truth, or root ontology.
 - UCNS observation digests establish content identity, not signed producer authentication.
+- Historical `token` or `word-gonol` profile vocabulary never authorizes a tokenizer or overrides the current gonol-language boundary.
+- Arbitrary definition prose never substitutes for a source-bound closed floor-definition gonol.
 
 These frontier gates remain non-operational until their named falsifiers and tests exist:
 
@@ -242,6 +298,12 @@ The UCNS profile suite must prove:
 - package availability alone attaches no observation;
 - profile evidence never becomes geometry, factorization, theorem, or measurement validity.
 
+A future floor-definition-gonol consumer suite must additionally prove exact
+producer/floor identity, closure over `F`, source-bound replay, constituent
+order/multiplicity/sense/context/source provenance, and fail-closed rejection of
+out-of-floor words, arbitrary definition prose, tokenizer IDs, subwords, and
+opaque-vector substitution before any EDCM semantic evaluation runs.
+
 The full-stack fixture proves identity separation, deterministic measurement, `NA != 0`, fail-closed producer validation, canon/manifest epoch rotation, and no proof-status transfer.
 
 The integrity suite must include adversarial byte mutation, added/missing canon files, authority reversal, and no-fork identity checks.
@@ -265,8 +327,10 @@ Optional skips are explicit. Fake sibling implementations may test adversarial c
 
 Still unresolved:
 
+- exact UCNS closed floor-definition-gonol composition and source/custody procedure;
+- EDCM projection, metric, benchmark, and falsifier for future definition-gonol evaluation;
 - cryptographically signed UCNS producer or transport authentication;
 - mutation-level verification for the repository-wide CONTRACTS/CHECKS graph;
 - remaining historical L0/L1/L2/L3 split, P assignment, matrix wiring, bidirectional alerts, and Bridge-home decisions.
 
-These unresolveds do not reopen measurement authority, semantic-authority ownership, canonical evidence schemas, certification policy, integrity guarantees, or the proof-transfer firewall.
+These unresolveds do not reopen measurement authority, semantic-authority ownership, canonical evidence schemas, certification policy, integrity guarantees, lexical-floor closure, or the proof-transfer firewall.

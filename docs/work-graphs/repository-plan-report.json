@@ -10,19 +10,21 @@
   },
   "source": {
     "branch": "main",
-    "commit": "69cb02e133e6c2d808d541c6a6f0b3168324f9c6",
-    "generated_at": "2026-08-07",
-    "note": "This report describes the cited EDCM main commit. The report commit is coordination metadata and does not upgrade measurement, empirical, proof, or canon status."
+    "commit": "330876d31065e4f9fad6e801e92e87c65bf91939",
+    "generated_at": "2026-08-17",
+    "note": "This report describes the cited EDCM main commit plus the current repo-owned plan. Report-only and gonol-boundary documentation commits are coordination metadata; they do not upgrade measurement, empirical, proof, semantic, or canon status."
   },
   "authority": {
     "owns": [
       "EDCM measurement, projection, diagnostic, and result contracts",
       "EDCM-maintained baseline implementation and integrity evidence",
       "EDCM experiment designs, candidate-measured results, falsification records, and evidence-state labels",
-      "EDCM corpus runners, receipts, provenance, and measurement-side activation boundaries"
+      "EDCM corpus runners, receipts, provenance, and measurement-side activation boundaries",
+      "EDCM consumer contracts and evaluation boundaries for exact upstream gonol representations"
     ],
     "does_not_own": [
       "UCNS mathematical representation canon or UCNS proof status",
+      "UCNS Unicode-character-gonol identity, lexical-floor membership, word-gonol construction, or definition-gonol construction law",
       "METAPAT semantic or ontology validity",
       "a0 runtime, agent identity, deployment, or orchestration authority",
       "skill-lib organization-wide build and cross-repository workflow doctrine"
@@ -32,12 +34,14 @@
       "EDCM empirical fit does not establish UCNS proof status",
       "candidate registration or development-fixture success does not select canon",
       "integrity of the maintained baseline does not establish empirical validation",
+      "a UCNS gonol representation does not activate EDCM measurement or establish semantic validity",
+      "a floor-definition-gonol role analogy does not establish vector-embedding equivalence or efficacy",
       "a falsified hypothesis remains research evidence and is not repaired by relabeling status"
     ]
   },
   "portfolio_role": {
-    "summary": "Measure and pressure responses under declared constraints, maintain falsifiable measurement candidates and evidence states, and report bounded results without treating structural representation as measurement validity.",
-    "upstream_contract": "EDCM consumes exact source evidence, declared semantic constraints where used, and pinned UCNS structural candidates or profiles without inheriting their authority.",
+    "summary": "Measure and pressure responses under declared constraints, maintain falsifiable measurement candidates and evidence states, and consume exact upstream gonol representations without treating representation as measurement validity or silently inserting token, subword, or opaque-vector layers.",
+    "upstream_contract": "EDCM consumes exact source evidence, declared semantic constraints where used, and pinned UCNS structural candidates, profiles, or future source-bound gonol receipts without inheriting their authority. The current language path is Unicode character gonols -> fixed floor word gonols -> closed lexical floor -> floor-definition gonols; UCNS owns that construction.",
     "downstream_contract": "EDCM emits measurement artifacts, experiment findings, receipts, and explicit evidence statuses that downstream systems may consume without upgrading them.",
     "reports_to": {
       "repository": "The-Interdependency/skill-lib",
@@ -47,7 +51,7 @@
   },
   "status": {
     "state": "active research and measurement",
-    "current_claim": "EDCM supports represented, candidate-measured, and experiment-supported evidence in declared scopes; canon_selection remains null and empirical validation is not established.",
+    "current_claim": "EDCM supports represented, candidate-measured, and experiment-supported evidence in declared scopes; canon_selection remains null and empirical validation is not established. For language, EDCM is a downstream consumer of a gonol-native UCNS path: Unicode character gonols are primitive inscription objects, floor word gonols form a closed lexical floor, and semantic floor definitions must be gonols composed only from existing floor gonols. Existing arbitrary definition text and historical token/profile surfaces are not the completed semantic representation.",
     "latest_main_milestone": {
       "commit": "0b9639d69eb0a15d9b16218fc1026a5939bf435f",
       "description": "merged externally labelled MultiWOZ 2.1 booking-outcome holdout with weak above-chance balanced accuracy and a falsified sensitivity hypothesis"
@@ -78,18 +82,36 @@
       "surface": "externally labelled MultiWOZ booking-outcome holdout",
       "status": "sealed bounded candidate-measured holdout evidence",
       "boundary": "balanced-accuracy interval spans chance; sensitivity hypothesis is falsified; canon_selection remains null"
+    },
+    {
+      "surface": "gonol-native language consumer boundary",
+      "status": "documented against current UCNS lexical-floor closure authority",
+      "boundary": "documentation does not implement the unresolved upstream floor-definition-gonol composition law or select an EDCM semantic metric"
     }
   ],
   "active_frontier": [
+    "preserve the gonol-native language boundary: Unicode character gonols -> fixed floor word gonols -> closed lexical floor -> floor-definition gonols, with no hidden tokenizer, subword, or opaque-vector substitution",
+    "prepare a fail-closed EDCM consumer contract for exact source-bound UCNS floor-definition-gonol receipts once the upstream producer exists",
+    "define the smallest preregistered EDCM evaluation that can test whether floor-definition-gonol relations perform useful semantic work against simpler or conventional baselines without promoting a role analogy into an efficacy claim",
     "design the next genuinely new measurement candidate under the sealed holdout boundary rather than tuning the failed candidate",
     "preserve development, validation, sealed-test, candidate, witness, and decision authority separation",
     "pressure measurement candidates against real-system outcomes while retaining falsified and weak results",
     "integrate METAPAT constraints only through exact semantic identities and explicit transfer limits",
-    "keep EDCM activation distinct from package availability, UCNS proof status, and candidate evidence"
+    "keep EDCM activation distinct from package availability, UCNS proof status, representation availability, and candidate evidence"
   ],
   "next_actions": [
     {
-      "action": "freeze the next experiment packet around one genuinely new candidate with preregistered hypotheses, partitions, custody, stopping rules, failure conditions, and provenance",
+      "action": "consume no completed lexical semantic embedding until UCNS emits exact replayable closed floor-definition-gonol receipts; reject arbitrary definition prose, tokenizer IDs, subword units, opaque vectors, and out-of-floor lexical support as substitutes",
+      "owner": "The-Interdependency/edcm",
+      "dependency": "upstream UCNS definition-gonol construction and source/custody procedure must exist first"
+    },
+    {
+      "action": "after the upstream representation exists, freeze one EDCM projection, information-loss declaration, baseline set, hypotheses, metric, aggregation, partitions, stopping rules, and falsifiers before semantic outcome inspection",
+      "owner": "The-Interdependency/edcm",
+      "dependency": "exact UCNS lexical-floor identity and source-bound definition-gonol receipts"
+    },
+    {
+      "action": "freeze the next experiment packet around one genuinely new measurement candidate with preregistered hypotheses, partitions, custody, stopping rules, failure conditions, and provenance",
       "owner": "The-Interdependency/edcm",
       "dependency": "must not tune on the sealed MultiWOZ booking test set"
     },
@@ -104,11 +126,13 @@
       "dependency": "producer identities and mappings must be explicit and independently checkable"
     }
   ],
-  "blocked": [],
+  "blocked": [
+    "EDCM semantic integration of floor-definition gonols is BLOCKED until UCNS implements the closed definition-gonol producer and emits source-bound replayable receipts; documentation of the boundary is not implementation"
+  ],
   "cross_repository_relations": [
     {
       "repository": "The-Interdependency/ucns",
-      "relation": "structural candidate and exact observation/profile producer for declared joint experiments",
+      "relation": "upstream authority for Unicode-character gonols, lexical-floor membership and construction, word gonols, closed floor-definition-gonol construction, plus structural candidate and exact observation/profile producers for declared joint experiments",
       "authority_transfer": false,
       "proof_status_transfer": false,
       "measurement_status_transfer": false
@@ -130,12 +154,15 @@
     "repo_report": "docs/work-graphs/repository-plan-report.json",
     "system_overview": "README.md",
     "canon": "CANON.md",
+    "gonol_language_boundary": "docs/GONOL_LANGUAGE_BOUNDARY.md",
     "mathematics_index": "docs/EDCM_MATHEMATICS.md",
     "joint_experiment_program": "docs/UCNS_EDCM_EXPERIMENT_PROGRAM.md",
     "latest_holdout_design": "docs/experiments/2026-08-02-multiwoz-booking-outcome-holdout-design.md",
     "latest_holdout_findings": "docs/experiments/2026-08-02-multiwoz-booking-outcome-holdout-findings.md"
   },
   "hmmm": [
+    "the exact upstream UCNS relation/composition law for closed floor-definition gonols and its complete source/custody procedure",
+    "the EDCM projection, information-loss accounting, metric, benchmark, and falsifier for evaluating future floor-definition-gonol representations",
     "empirical validity of maintained and current candidate measurement surfaces",
     "selection of any final EDCM or joint UCNS-EDCM canon",
     "external custody arrangement for the next sealed test",

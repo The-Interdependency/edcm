@@ -10,7 +10,28 @@ profile: ucns.profile.edcm-word-gonol/0.2.0
 full-corpus gate: ucns.edcm.full-corpus-execution/0.14.1
 ```
 
-Install it with:
+This profile remains the current **runtime observation/replay contract** for the
+sealed corpus path. Its option names, including `smallest_gonol: word`,
+`token_alphabet`, and `token_identity`, are producer-epoch fields and must remain
+exact for reproduction. They do **not** define the stack's current gonol-native
+language architecture. That later boundary is:
+
+```text
+Unicode character gonols
+        ↓
+fixed floor word gonols
+        ↓
+complete lexical floor F
+        ↓
+definitions expressed only with members of F
+        ↓
+floor-definition gonols
+```
+
+The later architecture does not retroactively mutate this adapter or its sealed
+receipts. See [`GONOL_LANGUAGE_BOUNDARY.md`](GONOL_LANGUAGE_BOUNDARY.md).
+
+Install the runtime profile with:
 
 ```text
 python -m pip install -e .[dev,ucns-profile]
@@ -75,6 +96,9 @@ witness.
 
 ## Fixed option configuration
 
+The following block is frozen producer-epoch configuration, not current stack
+ontology:
+
 ```text
 carrier_requirement: mobius-origin-hidden-zero
 corpus_execution: full-corpus
@@ -106,13 +130,15 @@ The declared source domain is Unicode scalar values. Surrogate code points
 ordinary characters.
 
 Maximal ordered sequences not assigned to carrier position zero are word
-gonols. Each code point in the pinned Unicode White_Space set is assigned to
-the existing public SPACE carrier at position zero and becomes an explicit
-superpositioned nesting boundary. This is carrier equivalence, not Unicode
-normalization: a tab remains `U+0009`, a newline remains `U+000A`, and a
-non-breaking space remains `U+00A0` in source evidence. Every new word gonol
-records a Möbius-twist initiation event. That event is evidence of the selected
-interpretation; it is not a supplied formal coordinate construction.
+gonols under this pinned profile. Each code point in the pinned Unicode
+White_Space set is assigned to the existing public SPACE carrier at position
+zero and becomes an explicit superpositioned nesting boundary. This is carrier
+equivalence, not Unicode normalization: a tab remains `U+0009`, a newline
+remains `U+000A`, and a non-breaking space remains `U+00A0` in source evidence.
+Every new word gonol records a Möbius-twist initiation event. That event is
+evidence of the selected historical profile interpretation; it is not a supplied
+formal coordinate construction and does not override the later character-gonol
+primitive declaration.
 
 ## Result and authority boundary
 
@@ -132,6 +158,7 @@ source_value / source_code_point
 carrier_token / carrier_position
 ```
 
+`token` here is a frozen schema field, not a current tokenizer abstraction.
 Canonical token fields include `has_carrier_assignment` and
 `is_public_gonol_token`; canonical turn/word unassigned evidence is
 `carrier_unassigned`, and a turn records
@@ -156,6 +183,24 @@ The retired ordered-occurrence bridge, live `UCNSObject`, and factorization
 input forms fail closed. Profile observations do not become geometry merely
 because both surfaces use UCNS identifiers.
 
+## Current gonol-semantic consumer boundary
+
+This adapter does not consume the future closed floor-definition-gonol
+representation. When that upstream UCNS producer exists, EDCM must use a
+separate explicit consumer contract that:
+
+- pins the lexical-floor and producer identities;
+- verifies that every definition is closed over the admitted floor;
+- verifies source-bound replay receipts and constituent order, multiplicity,
+  sense, context, source, and provenance;
+- rejects arbitrary source prose, tokenizer IDs, subwords, opaque external
+  vectors, and out-of-floor lexical support as substitutes; and
+- keeps any EDCM projection, information loss, metric, and evidence status
+  separate from the UCNS representation.
+
+The floor-definition gonol's vector-embedding role analogy is not an efficacy
+claim and must not be converted into one by adapter availability.
+
 ## Historical experiment epoch
 
 The v0.1–v0.4 joint experiments remain reproducible at:
@@ -166,16 +211,27 @@ python -m pip install -e .[dev,ucns-experiments]
 ```
 
 Those reports are historical evidence. They are not rewritten to the current
-runtime profile, and their support, product-character, breadth, and structural
-view candidates remain scoped to their recorded epoch.
+runtime profile or later gonol-language boundary, and their support,
+product-character, breadth, and structural view candidates remain scoped to
+their recorded epoch.
+
+## Usage guidance
+
+Use this adapter only for artifacts that name its exact pinned profile. Do not
+repin it to current UCNS merely to make terminology look current.
+
+For new semantic work, wait for the upstream closed floor-definition-gonol
+producer contract, then implement a separate fail-closed EDCM consumer rather
+than modifying historical profile evidence in place.
 
 ## hmmm
 
-The executable profile establishes exact corpus observations and now resolves
-the admitted SPACE manifestations to the Möbius origin. Coverage of true
-non-SPACE code points outside the 157-token carrier alphabet remains open.
-UCNS v0.19 supplies a nonselected trace-local source-coordinate candidate over
-its fixed full producer demonstration, but this adapter does not attach or
-consume that evidence. Higher-gonol composition and any projection from observations
-into geometry or scalar claims remain open and must be learned from full
-real-system corpus runs rather than collapsed early.
+The executable profile establishes exact corpus observations and resolves its
+admitted SPACE manifestations to its pinned Möbius-origin interpretation.
+Coverage of true non-SPACE code points outside the 157-token carrier alphabet
+remains open for that profile. UCNS v0.19 supplies a nonselected trace-local
+source-coordinate candidate over its fixed demonstration, but this adapter does
+not attach or consume that evidence. The exact UCNS closed definition-gonol
+composition law and source/custody procedure remain unresolved upstream; EDCM's
+future semantic consumer projection, metric, benchmark, and falsifier are also
+unselected.
