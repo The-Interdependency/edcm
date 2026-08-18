@@ -27,6 +27,54 @@ The joint construction is intentionally reciprocal:
 
 This reciprocal loop is the intended meaning of **UCNS–EDCM canon**.
 
+## Gonol language boundary
+
+The stack's current language-object construction is gonol-native:
+
+```text
+Unicode character gonols
+        ↓
+fixed floor word gonols
+        ↓
+complete lexical floor F
+        ↓
+definitions expressed only with members of F
+        ↓
+floor-definition gonols
+```
+
+UCNS owns these language-object construction rules. Unicode character gonols are
+the primitive inscription objects. Once the lexical floor `F` is admitted, its
+floor definitions are closed over that floor:
+
+```text
+support(definition_gonol(word, sense)) ⊆ F
+```
+
+A definition that needs lexical material outside `F` is not a floor definition
+and does not expand the floor. The current path does not insert conventional NLP
+tokens, token IDs, subword pieces, or an opaque external embedding lookup.
+Arbitrary source definition text may remain provenance but is not itself a
+floor-definition gonol.
+
+A floor-definition gonol is intended to occupy the semantic-representation role
+for which conventional systems commonly use vector embeddings. That analogy
+establishes no semantic quality, metric behavior, equivalence, benchmark
+advantage, or downstream utility.
+
+EDCM may consume exact UCNS gonol identities and source-bound receipts only
+under an explicit consumer contract. Any EDCM scalar projection or measurement
+must separately declare its mapping and information loss. UCNS representation
+does not activate or validate EDCM measurement; EDCM outcomes do not validate
+UCNS semantics, proof status, or construction law.
+
+Historical EDCM experiment or profile surfaces may retain `token` and
+`word-gonol` terminology where those names are part of frozen evidence. Such
+terms do not create a tokenizer layer or redefine the current lexical primitive.
+Historical artifacts are not rewritten by this correction.
+
+See [`docs/GONOL_LANGUAGE_BOUNDARY.md`](docs/GONOL_LANGUAGE_BOUNDARY.md).
+
 ## Evidence states
 
 These states may not be collapsed:
@@ -64,6 +112,9 @@ The joint program currently retains four immutable evidence generations.
 - constraint phrase-family coverage;
 - resolution horizon, peak, accumulated, and terminal state;
 - unit, token, occurrence, and dissonance support assignments.
+
+Here `token` is preserved as a frozen experimental support-unit label. It is not
+an active tokenizer or subword architecture in the gonol-native language path.
 
 ### v0.3 — assertion and local scope
 
@@ -143,6 +194,16 @@ Where discourse graphs are involved, the experiment must additionally retain:
 - a canonical bundle identity across alternatives;
 - information loss for every graph projection.
 
+For new language-semantic experiments, the experiment must additionally retain:
+
+- the exact UCNS lexical-floor identity;
+- source-bound floor-definition-gonol receipt identities;
+- floor-closure verification for every admitted definition;
+- constituent order, multiplicity, sense, context, source, and provenance;
+- explicit failure on tokenizer, subword, opaque-vector, or out-of-floor substitution;
+- the EDCM projection and declared information loss separately from the UCNS representation; and
+- preregistered comparison criteria before semantic or downstream outcome inspection.
+
 Hypothesis failure is a valid experiment result and must not be converted into a build failure merely to preserve a preferred model.
 
 ## Non-transfer firewall
@@ -155,6 +216,7 @@ edcm_fit_implies_ucns_proof = false
 candidate_registration_implies_canon = false
 passing_development_fixtures_implies_canon = false
 majority_candidate_agreement_implies_truth = false
+definition_gonol_role_analogy_implies_embedding_efficacy = false
 NA_equals_zero = false
 ```
 
@@ -170,7 +232,9 @@ This phase may implement:
 - competing resolver and graph-projection policies;
 - positive unresolved-reference and alternative-bundle evidence;
 - reproducible reports and policy-preservation findings;
-- CI execution against an exact UCNS commit.
+- CI execution against an exact UCNS commit;
+- fail-closed consumer validation for future source-bound definition-gonol receipts; and
+- preregistered EDCM evaluations of those receipts once the upstream construction exists.
 
 This phase may not promote:
 
@@ -180,6 +244,9 @@ This phase may not promote:
 - canonical product character `M`;
 - canonical faithful breadth `B`;
 - canonical discourse resolver, relation vocabulary, or graph precedence;
+- arbitrary dictionary prose into a floor-definition gonol;
+- a tokenizer, subword vocabulary, or opaque vector lookup into the gonol-native language path;
+- definition-gonol role analogy into a claim of embedding replacement efficacy;
 - diagnosis, intention, morality, consciousness, or external truth claims;
 - a complete production `UCNSObject` or EDCM deployment contract.
 
@@ -195,6 +262,14 @@ python -m edcm.ucns_edcm_experiments_v4 \
 
 Every report is research evidence. No report is a canon file, and no report may be renamed or imported as one.
 
+For new semantic work, do not treat EDCM's existing arbitrary definition strings or historical word-profile outputs as completed floor-definition gonols. Consume the exact future UCNS producer receipt, freeze the EDCM mapping and falsifier, then evaluate.
+
 ## hmmm
 
-External holdout custody, independently authored graph annotations, human outcome labels, multilingual evidence, separate implementation replication, and the authority procedure for the first joint canon selection remain open.
+The exact UCNS relation/composition law for closed floor-definition gonols and
+the source/custody procedure for a complete closed definition set remain
+upstream unresolved boundaries. EDCM has not yet selected a lawful projection,
+metric, benchmark, or falsifier for evaluating that future representation.
+External holdout custody, independently authored graph annotations, human
+outcome labels, multilingual evidence, separate implementation replication, and
+the authority procedure for the first joint canon selection also remain open.
