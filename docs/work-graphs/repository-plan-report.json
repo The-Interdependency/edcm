@@ -10,9 +10,9 @@
   },
   "source": {
     "branch": "main",
-    "commit": "66db8322b1d4ad68493b2f2fc64c81a4aa987edb",
-    "generated_at": "2026-08-17",
-    "note": "This report describes the cited EDCM state plus the current repo-owned plan. Report-only and language-boundary documentation commits are coordination metadata; they do not upgrade measurement, empirical, proof, semantic, or canon status. The current UCNS lexical-floor premise is deprecated and replaced by a dictionary-corpus direction with Scrabble dictionary authorized as the source class."
+    "commit": "060d3c64e2758f4d4f4fbfd1351294faa8fc3c2b",
+    "generated_at": "2026-08-18",
+    "note": "This report describes the cited EDCM state plus the current repo-owned plan. Report-only and language-boundary documentation commits are coordination metadata; they do not upgrade measurement, empirical, proof, semantic, or canon status. The current upstream UCNS lexical program selects the xkcd constrained-English 1,000-word vocabulary as lexical-floor candidate and OEWN 2025 Core as the primary contemporary lexical-semantic corpus."
   },
   "authority": {
     "owns": [
@@ -24,7 +24,7 @@
     ],
     "does_not_own": [
       "UCNS mathematical representation canon or UCNS proof status",
-      "UCNS Unicode-character-gonol identity, dictionary-source selection, word-gonol construction, or definition-gonol construction law",
+      "UCNS xkcd/OEWN source selection, Unicode-character-gonol identity, Mobius glyph-axis construction, morphology, word-gonol construction, definition-gonol construction, atomic closure, or direct interscale coupling law",
       "METAPAT semantic or ontology validity",
       "a0 runtime, agent identity, deployment, or orchestration authority",
       "skill-lib organization-wide build and cross-repository workflow doctrine"
@@ -35,14 +35,15 @@
       "candidate registration or development-fixture success does not select canon",
       "integrity of the maintained baseline does not establish empirical validation",
       "a UCNS gonol representation does not activate EDCM measurement or establish semantic validity",
-      "a dictionary-definition-gonol role analogy does not establish vector-embedding equivalence or efficacy",
-      "historical lexical-floor-named artifacts do not restore the deprecated lexical-floor premise as current architecture",
+      "a definition-gonol semantic role does not establish vector-embedding equivalence or efficacy",
+      "historical lexical-floor-named artifacts do not restore the deprecated NGSL floor premise as current architecture",
+      "EDCM may not externalize intrinsic UCNS semantic relationships merely because a graph projection is convenient",
       "a falsified hypothesis remains research evidence and is not repaired by relabeling status"
     ]
   },
   "portfolio_role": {
-    "summary": "Measure and pressure responses under declared constraints, maintain falsifiable measurement candidates and evidence states, and consume exact upstream gonol representations without treating representation as measurement validity or silently inserting token, subword, opaque-vector, or whole-string-hash layers.",
-    "upstream_contract": "EDCM consumes exact source evidence, declared semantic constraints where used, and pinned UCNS structural candidates, profiles, or future dictionary-derived gonol receipts without inheriting their authority. The current lexical direction is Unicode character gonols -> dictionary words/entries -> word gonols -> dictionary definitions/senses -> definition gonols as first lexical recursion; UCNS owns that construction.",
+    "summary": "Measure and pressure responses under declared constraints, maintain falsifiable measurement candidates and evidence states, and consume exact upstream gonol representations without treating representation as measurement validity or silently inserting token, subword, opaque-vector, whole-string-hash, pairwise-sidecar, or intermediate-scale-reopening substitutions.",
+    "upstream_contract": "EDCM consumes exact source evidence and pinned UCNS gonol receipts without inheriting their authority. The current upstream lexical sequence is characters -> morphology -> definitions -> recursive gonol relations, with xkcd 1,000 as floor candidate and OEWN 2025 Core as primary corpus. Relationships enter gonols and completed gonols are atomic at the next scale.",
     "downstream_contract": "EDCM emits measurement artifacts, experiment findings, receipts, and explicit evidence statuses that downstream systems may consume without upgrading them.",
     "reports_to": {
       "repository": "The-Interdependency/skill-lib",
@@ -52,10 +53,10 @@
   },
   "status": {
     "state": "active research and measurement",
-    "current_claim": "EDCM supports represented, candidate-measured, and experiment-supported evidence in declared scopes; canon_selection remains null and empirical validation is not established. For language, EDCM is a downstream consumer of a gonol-native UCNS path. The NGSL lexical-floor premise and fixed-list semantic closure are DEPRECATED. A Scrabble dictionary is authorized upstream as the replacement lexical source class; dictionary definitions will establish source-bound semantic relations among word gonols as the first lexical deep-recursion layer. Historical token/profile and lexical-floor-named surfaces remain sealed evidence only.",
+    "current_claim": "EDCM supports represented, candidate-measured, and experiment-supported evidence in declared scopes; canon_selection remains null and empirical validation is not established. For language, EDCM is a downstream consumer of the current UCNS atomic lexical recursion: xkcd 1,000 floor candidate, OEWN 2025 Core corpus, characters -> morphology -> definitions -> recursive gonol relations, intrinsic semantic relationships, atomic closure, scale-invariant affixiation, and permitted direct interscale coupling. Historical NGSL and Scrabble planning no longer define the active source path.",
     "latest_main_milestone": {
-      "commit": "66db8322b1d4ad68493b2f2fc64c81a4aa987edb",
-      "description": "updated the EDCM consumer boundary to follow UCNS deprecation of the lexical floor and the dictionary-derived first-recursion replacement"
+      "commit": "060d3c64e2758f4d4f4fbfd1351294faa8fc3c2b",
+      "description": "aligned EDCM's consumer boundary with current UCNS xkcd/OEWN atomic lexical recursion"
     }
   },
   "delivered": [
@@ -86,19 +87,20 @@
     },
     {
       "surface": "gonol-native language consumer boundary",
-      "status": "documented against current UCNS dictionary-replacement authority",
-      "boundary": "documentation does not implement the upstream dictionary corpus or select an EDCM semantic metric"
+      "status": "documented against current UCNS atomic lexical recursion",
+      "boundary": "documentation does not implement upstream gonols or select an EDCM semantic metric"
     },
     {
       "surface": "OEWN 2025 lexical-floor-named experiment",
-      "status": "sealed historical evidence",
-      "boundary": "the historical name and artifacts remain unchanged for reproduction; they do not define current lexical-floor architecture"
+      "status": "sealed historical evidence and acquisition/replay precedent",
+      "boundary": "the historical name and artifacts remain unchanged for reproduction; they do not own current UCNS semantic construction"
     }
   ],
   "active_frontier": [
-    "preserve the gonol-native language boundary: Unicode character gonols -> dictionary words/entries -> word gonols -> source-bound dictionary definitions/senses -> definition gonols as first lexical recursion, with no hidden tokenizer, subword, opaque-vector, or whole-string-hash substitution",
-    "prepare a fail-closed EDCM consumer contract for exact source-bound UCNS dictionary-definition-gonol receipts once the generalized upstream producer exists",
-    "define the smallest preregistered EDCM evaluation that can test whether dictionary-definition-gonol relations perform useful semantic work against simpler or conventional baselines without promoting a role analogy into an efficacy claim",
+    "preserve the current UCNS consumer boundary: xkcd 1,000 floor candidate; OEWN 2025 Core corpus; characters -> morphology -> definitions -> recursive gonol relations; relationships intrinsic to gonols; completed gonols atomic at the next scale",
+    "prepare a fail-closed EDCM consumer contract for exact source-bound UCNS atomic word, morphology, definition, and recursive-gonol receipts once the upstream producer exists",
+    "do not impose all-pairs materialization, external semantic-edge authority, or mandatory intermediate-scale reopening on the upstream UCNS representation",
+    "define the smallest preregistered EDCM evaluation that can test semantic behavior, compression, reconstruction, or other declared hypotheses without promoting architecture into efficacy",
     "design the next genuinely new measurement candidate under the sealed holdout boundary rather than tuning the failed candidate",
     "preserve development, validation, sealed-test, candidate, witness, and decision authority separation",
     "pressure measurement candidates against real-system outcomes while retaining falsified and weak results",
@@ -107,14 +109,14 @@
   ],
   "next_actions": [
     {
-      "action": "consume no new lexical semantic representation until UCNS pins the exact authorized Scrabble dictionary source and emits generalized replayable dictionary-definition-gonol receipts; reject historical NGSL closure, tokenizer IDs, subword units, opaque vectors, and whole-string hashes as substitutes",
+      "action": "consume no new lexical semantic representation until UCNS freezes exact xkcd 1,000 and OEWN 2025 Core source receipts and emits replayable atomic gonol receipts; reject tokenizer IDs, subword units, opaque vectors, whole-string hashes, pairwise-sidecar substitution, and forced intermediate reopening",
       "owner": "The-Interdependency/edcm",
-      "dependency": "upstream UCNS dictionary source/custody identity and generalized first-recursion producer must exist first"
+      "dependency": "upstream UCNS source identities and recursive producer must exist first"
     },
     {
-      "action": "after the upstream dictionary-derived representation exists, freeze one EDCM projection, information-loss declaration, baseline set, hypotheses, metric, aggregation, partitions, stopping rules, and falsifiers before semantic outcome inspection",
+      "action": "after the upstream representation exists, freeze one EDCM projection, information-loss declaration, baseline set, hypotheses, metric, aggregation, partitions, stopping rules, and falsifiers before semantic/compression/reconstruction outcome inspection",
       "owner": "The-Interdependency/edcm",
-      "dependency": "exact UCNS dictionary corpus identity and source-bound definition-gonol receipts"
+      "dependency": "exact UCNS source identities and source-bound atomic gonol receipts"
     },
     {
       "action": "freeze the next experiment packet around one genuinely new measurement candidate with preregistered hypotheses, partitions, custody, stopping rules, failure conditions, and provenance",
@@ -133,12 +135,12 @@
     }
   ],
   "blocked": [
-    "EDCM semantic integration of dictionary-definition gonols is BLOCKED until UCNS pins the exact Scrabble dictionary source/custody identity, generalizes the PR #205 producer away from NGSL closure/2,809 coverage, and emits source-bound replayable receipts"
+    "EDCM semantic integration is BLOCKED until UCNS pins exact xkcd 1,000 and OEWN 2025 Core sources and emits the corrected atomic recursive gonol receipts; EDCM must not rebuild the missing upstream semantics itself"
   ],
   "cross_repository_relations": [
     {
       "repository": "The-Interdependency/ucns",
-      "relation": "upstream authority for Unicode-character gonols, dictionary lexical construction, word gonols, dictionary-definition-gonol construction, plus structural candidate and exact observation/profile producers for declared joint experiments",
+      "relation": "upstream authority for xkcd/OEWN lexical source binding, Unicode-character gonols, Mobius glyph-axis word construction, morphology, semantic definition gonols, atomic closure, direct interscale coupling, and recursive gonol construction",
       "authority_transfer": false,
       "proof_status_transfer": false,
       "measurement_status_transfer": false
@@ -152,7 +154,7 @@
     },
     {
       "repository": "The-Interdependency/skill-lib",
-      "relation": "build, evidence, and cross-repository coordination doctrine",
+      "relation": "build/evidence doctrine and current scale-affixiation / atomic-closure procedural boundary; no UCNS geometry authority transfer",
       "authority_transfer": false
     }
   ],
@@ -168,8 +170,8 @@
     "latest_holdout_findings": "docs/experiments/2026-08-02-multiwoz-booking-outcome-holdout-findings.md"
   },
   "hmmm": [
-    "the exact upstream Scrabble dictionary edition/source, machine-readable acquisition path, immutable source identity, license/custody/redistribution boundary, and generalized UCNS dictionary-definition-gonol producer identity",
-    "the EDCM projection, information-loss accounting, metric, benchmark, and falsifier for evaluating future dictionary-definition-gonol representations",
+    "the exact upstream xkcd 1,000 and OEWN 2025 Core source receipt identities and recursive UCNS producer identity",
+    "the EDCM projection, information-loss accounting, metric, benchmark, and falsifier for evaluating future atomic recursive gonol representations",
     "empirical validity of maintained and current candidate measurement surfaces",
     "selection of any final EDCM or joint UCNS-EDCM canon",
     "external custody arrangement for the next sealed test",
