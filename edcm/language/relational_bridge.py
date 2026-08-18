@@ -4,7 +4,7 @@
 #   module_kind: adapter
 #   summary: independently constructs direct-atomic and molecular OEWN relation inputs for the UCNS metadata-free relational carrier and freezes external identity bindings before comparison
 #   owner: Erin Spencer
-#   public_surface: UCNS_RELATIONAL_COMMIT, UCNSProducerVerification, DirectAtomicFreeze, MolecularFreeze, verify_ucns_producer, build_direct_atomic, build_molecular, freeze_branch, validate_frozen_branch, compare_frozen_branches, canonical_json_bytes
+#   public_surface: UCNS_RELATIONAL_COMMIT, UCNSProducerVerification, DirectAtomicFreeze, MolecularFreeze, verify_ucns_producer, build_direct_atomic, build_molecular, freeze_branch, freeze_relational_layer, validate_frozen_branch, validate_frozen_relational_layer, compare_frozen_branches, canonical_json_bytes
 #   internal_surface: _ucns_api, _load_verified_ucns_module, _committed_ucns_module_bytes, _digest, _relation_codes, _git
 #   auth_boundary: exact UCNS producer commit is pinned by package profile and work-graph artifact
 #   storage_boundary: writes caller-selected frozen artifacts only
@@ -345,6 +345,120 @@ def freeze_branch(
     return receipt
 
 
+def freeze_relational_layer(
+    path: str | Path,
+    layer: str,
+    node_binding: Iterable[Mapping[str, object]],
+    relation_binding: Iterable[Mapping[str, object]],
+    edges: Iterable[tuple[int, int, int]],
+    edge_binding: Iterable[Mapping[str, object]],
+    verification: UCNSProducerVerification,
+) -> dict[str, object]:
+    """Freeze one metadata-free UCNS layer plus complete external evidence bindings."""
+
+    if not layer or any(character not in "abcdefghijklmnopqrstuvwxyz0123456789-" for character in layer):
+        raise LexicalBridgeError("invalid relational layer identity")
+    nodes = tuple(dict(row) for row in node_binding)
+    relations = tuple(dict(row) for row in relation_binding)
+    edge_values = tuple(edges)
+    evidence = tuple(dict(row) for row in edge_binding)
+    if [row.get("address") for row in nodes] != list(range(len(nodes))):
+        raise LexicalBridgeError("relational layer node addresses are not dense")
+    if [row.get("code") for row in relations] != list(range(len(relations))):
+        raise LexicalBridgeError("relational layer relation codes are not dense")
+    if len(evidence) != len(edge_values):
+        raise LexicalBridgeError("relational layer edge evidence is incomplete")
+    if [row.get("edge_index") for row in evidence] != list(range(len(evidence))):
+        raise LexicalBridgeError("relational layer edge evidence is not ordered")
+
+    build_carrier, carrier_bytes, _ = _ucns_api(verification)
+    target = Path(path)
+    target.mkdir(parents=True, exist_ok=True)
+    intrinsic = carrier_bytes(build_carrier(len(nodes), edge_values))
+    binding = canonical_json_bytes({
+        "schema": "edcm.english-lexical-relational-layer-binding",
+        "version": "1.0.0",
+        "layer": layer,
+        "ucns_commit": UCNS_RELATIONAL_COMMIT,
+        "ucns_module_sha256": verification.module_sha256,
+        "node_binding": list(nodes),
+        "relation_binding": list(relations),
+        "edge_binding": list(evidence),
+    })
+    intrinsic_path = target / f"{layer}.ucns.json"
+    binding_path = target / f"{layer}.binding.json"
+    intrinsic_path.write_bytes(intrinsic)
+    binding_path.write_bytes(binding)
+    receipt = {
+        "schema": "edcm.english-lexical-relational-layer-freeze",
+        "version": "1.0.0",
+        "layer": layer,
+        "ucns_commit": UCNS_RELATIONAL_COMMIT,
+        "ucns_module_sha256": verification.module_sha256,
+        "node_count": len(nodes),
+        "edge_count": len(edge_values),
+        "intrinsic_sha256": _digest(intrinsic),
+        "binding_sha256": _digest(binding),
+        "geometry_attached": False,
+        "measurement_attached": False,
+        "status": "UNRESOLVED",
+    }
+    (target / f"{layer}.receipt.json").write_bytes(canonical_json_bytes(receipt))
+    return receipt
+
+
+def validate_frozen_relational_layer(
+    path: str | Path,
+    layer: str,
+    verification: UCNSProducerVerification,
+) -> dict[str, object]:
+    """Validate every byte and binding of a previously frozen generic layer."""
+
+    _, carrier_bytes, parse_carrier = _ucns_api(verification)
+    root = Path(path)
+    receipt_bytes = (root / f"{layer}.receipt.json").read_bytes()
+    receipt = json.loads(receipt_bytes)
+    if canonical_json_bytes(receipt) != receipt_bytes:
+        raise LexicalBridgeError("relational layer receipt is not canonical")
+    if receipt.get("layer") != layer or receipt.get("status") != "UNRESOLVED":
+        raise LexicalBridgeError("relational layer receipt identity or status mismatch")
+    if receipt.get("ucns_commit") != UCNS_RELATIONAL_COMMIT:
+        raise LexicalBridgeError("relational layer UCNS commit mismatch")
+    if receipt.get("ucns_module_sha256") != verification.module_sha256:
+        raise LexicalBridgeError("relational layer producer module mismatch")
+    intrinsic = (root / f"{layer}.ucns.json").read_bytes()
+    binding_bytes = (root / f"{layer}.binding.json").read_bytes()
+    if _digest(intrinsic) != receipt.get("intrinsic_sha256"):
+        raise LexicalBridgeError("relational layer intrinsic digest mismatch")
+    if _digest(binding_bytes) != receipt.get("binding_sha256"):
+        raise LexicalBridgeError("relational layer binding digest mismatch")
+    try:
+        carrier = parse_carrier(intrinsic)
+    except ValueError as exc:
+        raise LexicalBridgeError("relational layer intrinsic carrier is invalid") from exc
+    if carrier_bytes(carrier) != intrinsic:
+        raise LexicalBridgeError("relational layer intrinsic carrier is not canonical")
+    binding = json.loads(binding_bytes)
+    if canonical_json_bytes(binding) != binding_bytes:
+        raise LexicalBridgeError("relational layer binding is not canonical")
+    if binding.get("layer") != layer:
+        raise LexicalBridgeError("relational layer binding identity mismatch")
+    nodes = binding.get("node_binding")
+    relations = binding.get("relation_binding")
+    evidence = binding.get("edge_binding")
+    if not isinstance(nodes, list) or [row.get("address") for row in nodes] != list(range(len(nodes))):
+        raise LexicalBridgeError("relational layer node binding is invalid")
+    if not isinstance(relations, list) or [row.get("code") for row in relations] != list(range(len(relations))):
+        raise LexicalBridgeError("relational layer relation binding is invalid")
+    if not isinstance(evidence, list) or [row.get("edge_index") for row in evidence] != list(range(len(evidence))):
+        raise LexicalBridgeError("relational layer edge binding is invalid")
+    if len(nodes) != receipt.get("node_count") or len(carrier.nodes) != len(nodes):
+        raise LexicalBridgeError("relational layer node count mismatch")
+    if len(evidence) != receipt.get("edge_count") or len(carrier.edges) != len(evidence):
+        raise LexicalBridgeError("relational layer edge count mismatch")
+    return receipt
+
+
 def validate_frozen_branch(
     path: str | Path,
     branch: str,
@@ -434,5 +548,6 @@ __all__ = [
     "UCNS_RELATIONAL_COMMIT", "UCNS_RELATIONAL_MODULE_SHA256",
     "build_direct_atomic", "build_molecular",
     "canonical_json_bytes", "compare_frozen_branches", "freeze_branch",
-    "validate_frozen_branch", "verify_ucns_producer",
+    "freeze_relational_layer", "validate_frozen_branch",
+    "validate_frozen_relational_layer", "verify_ucns_producer",
 ]

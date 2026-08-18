@@ -737,14 +737,14 @@ export default defineMsdmdCollection({
         "network_boundary": "none",
         "owner": "Erin Spencer",
         "public_surface": "source, affix, rendering, morphology, model, manifest, and relational-bridge names listed in __all__",
-        "requires": "edcm_language_manifest, edcm_language_model, edcm_language_oewn_source, edcm_language_affixes, edcm_language_rendering, edcm_language_morphology, edcm_language_relational_bridge",
+        "requires": "edcm_language_manifest, edcm_language_model, edcm_language_oewn_source, edcm_language_affixes, edcm_language_rendering, edcm_language_morphology, edcm_language_relational_bridge, edcm_language_deep_recursion",
         "rollback": "remove relational bridge while retaining EDCM evidence modules",
-        "rollout": "explicit lexical-floor construction; no measurement or higher-language activation",
+        "rollout": "explicit lexical-floor then depth-one construction; no measurement or phrase/discourse activation",
         "since": "2026-08-16",
         "storage_boundary": "caller-selected lexical artifact directory",
-        "summary": "exposes exact OEWN evidence, reversible lexical candidates, and independent EDCM-to-UCNS relational branch construction without EDCM-owned geometry",
-        "tests": "tests.test_language_full_run, tests.test_language_relational_bridge",
-        "unresolved": "UCNS geometry and higher-gonol composition remain absent; lexical decomposition remains dictionary-and-inventory bounded evidence",
+        "summary": "exposes exact OEWN evidence, reversible lexical candidates, independent EDCM-to-UCNS floor construction, and the complete closed depth-one semantic/definition layer without EDCM-owned geometry",
+        "tests": "tests.test_language_full_run, tests.test_language_relational_bridge, tests.test_language_deep_recursion",
+        "unresolved": "UCNS geometry, depth beyond one, and phrase/discourse composition remain absent; lexical evidence remains dictionary-and-inventory bounded",
         "user_data_boundary": "public licensed lexical evidence only"
       },
       "file": "edcm/language/__init__.py",
@@ -773,6 +773,74 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/language/affixes.py",
       "id": "edcm_language_affixes"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "the complete closed layer is frozen and replayed",
+        "since": "2026-08-18",
+        "then": "the result remains OEWN-bounded represented evidence without geometry, measurement validity, canonical sense selection, or higher-language activation"
+      },
+      "file": "edcm/language/deep_recursion.py",
+      "id": "deep_recursion_does_not_claim_semantic_canon"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a definition or semantic relation is admitted to the first deep-recursion layer",
+        "since": "2026-08-18",
+        "then": "every lexical endpoint is an exact normalized surface in the supplied frozen floor and every definition endpoint is constructed solely from such floor surfaces"
+      },
+      "file": "edcm/language/deep_recursion.py",
+      "id": "deep_recursion_is_closed_over_frozen_floor"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "the first deep-recursion layer is constructed",
+        "since": "2026-08-18",
+        "then": "every OEWN definition, synset membership pair, synset relation occurrence, and sense relation occurrence is either materialized with full multiplicity or named in the coverage exclusions"
+      },
+      "file": "edcm/language/deep_recursion.py",
+      "id": "deep_recursion_processes_complete_oewn_inventory"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "a closed definition contains repeated or ordered lexical atoms",
+        "since": "2026-08-18",
+        "then": "its definition-token edges and external evidence retain every occurrence in source order"
+      },
+      "file": "edcm/language/deep_recursion.py",
+      "id": "definition_order_and_multiplicity_are_preserved"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "OEWN owns lexical evidence; UCNS owns only the metadata-free relational carrier",
+        "internal_surface": "_is_atom_character",
+        "module_kind": "engine",
+        "module_name": "deep_recursion",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "DEEP_RECURSION_LAYER, DefinitionAtom, DeepRecursionLayer, definition_atoms, load_floor_surface_binding, build_deep_recursion_layer",
+        "requires": "edcm_language_oewn_source, edcm_language_relational_bridge",
+        "rollback": "remove this candidate layer without changing the sealed lexical floor",
+        "rollout": "explicit corpus builder after lexical-floor freeze validation",
+        "since": "2026-08-18",
+        "storage_boundary": "none; callers freeze returned evidence separately",
+        "summary": "constructs the complete first closed OEWN definition and semantic-relation layer over an already frozen lexical floor",
+        "tests": "tests.test_language_deep_recursion",
+        "unresolved": "dictionary coverage beyond OEWN, lexical ambiguity resolution, UCNS geometry, EDCM measurement validity, phrase and discourse semantics",
+        "user_data_boundary": "no user data"
+      },
+      "file": "edcm/language/deep_recursion.py",
+      "id": "edcm_language_deep_recursion"
     },
     {
       "block": "MODULE_BUILD",
@@ -957,7 +1025,7 @@ export default defineMsdmdCollection({
         "module_name": "relational_bridge",
         "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "UCNS_RELATIONAL_COMMIT, UCNSProducerVerification, DirectAtomicFreeze, MolecularFreeze, verify_ucns_producer, build_direct_atomic, build_molecular, freeze_branch, validate_frozen_branch, compare_frozen_branches, canonical_json_bytes",
+        "public_surface": "UCNS_RELATIONAL_COMMIT, UCNSProducerVerification, DirectAtomicFreeze, MolecularFreeze, verify_ucns_producer, build_direct_atomic, build_molecular, freeze_branch, freeze_relational_layer, validate_frozen_branch, validate_frozen_relational_layer, compare_frozen_branches, canonical_json_bytes",
         "requires": "ucns_relational_carrier, edcm_language_oewn_source, edcm_language_affixes, edcm_language_morphology",
         "rollback": "remove adapter and generated lexical artifacts while preserving source evidence modules",
         "rollout": "explicit lexical-floor builder; no geometry, measurement, canon, or higher-language activation",
@@ -1851,6 +1919,30 @@ export default defineMsdmdCollection({
       },
       "file": "tests/test_goal_vector_experiment.py",
       "id": "check_goal_vector_sealed_evidence"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::lexical_deep_recursion_check",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "deep_recursion_is_closed_over_frozen_floor, deep_recursion_processes_complete_oewn_inventory, definition_order_and_multiplicity_are_preserved, deep_recursion_does_not_claim_semantic_canon",
+        "timeout": "30"
+      },
+      "file": "tests/test_language_deep_recursion.py",
+      "id": "lexical_deep_recursion_check"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_deep_recursion_freeze_is_metadata_free_and_tamper_evident",
+        "cleanup": "tmp_path",
+        "mutates": "filesystem",
+        "proves": "english_metadata_is_external_to_ucns_carrier, deep_recursion_resume_is_fail_closed",
+        "timeout": "30"
+      },
+      "file": "tests/test_language_deep_recursion.py",
+      "id": "lexical_deep_recursion_freeze_check"
     },
     {
       "block": "CHECKS",
@@ -2768,6 +2860,52 @@ export default defineMsdmdCollection({
       },
       "file": "tools/acquire_tarot_corpus.py",
       "id": "edcm_tarot_corpus_acquirer"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "the depth-one builder runs or resumes",
+        "since": "2026-08-18",
+        "then": "the exact frozen direct-atomic floor, its source identity, and every digest are validated before construction or reuse"
+      },
+      "file": "tools/build_oewn2025_deep_recursion.py",
+      "id": "deep_recursion_requires_sealed_floor"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "a completed depth-one output is resumed",
+        "since": "2026-08-18",
+        "then": "unexpected, missing, noncanonical, or digest-mismatched files abort reuse"
+      },
+      "file": "tools/build_oewn2025_deep_recursion.py",
+      "id": "deep_recursion_resume_is_fail_closed"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "exact OEWN and merged UCNS identities are inherited and revalidated",
+        "internal_surface": "_digest, _canonical_read, _source_receipt, _resume_complete",
+        "module_kind": "adapter",
+        "module_name": "build_oewn2025_deep_recursion",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "REQUIRED_ARTIFACT_FILES, build, main",
+        "requires": "edcm_language_deep_recursion, edcm_language_relational_bridge, edcm_oewn_complete_builder",
+        "rollback": "remove generated layer artifacts without altering lexical-floor artifacts",
+        "rollout": "run twice in clean directories and compare bytes before sealing an evidence receipt",
+        "since": "2026-08-18",
+        "storage_boundary": "caller-selected output directory",
+        "summary": "validates a sealed OEWN lexical floor, exhaustively constructs depth-one closed definitions and semantic relations, and freezes deterministic UCNS artifacts",
+        "tests": "tests.test_language_deep_recursion",
+        "unresolved": "independent replay outcome, dictionary coverage, geometry, measurement, higher language",
+        "user_data_boundary": "none"
+      },
+      "file": "tools/build_oewn2025_deep_recursion.py",
+      "id": "edcm_oewn_deep_recursion_builder"
     },
     {
       "block": "CONTRACTS",
@@ -4720,6 +4858,62 @@ export default defineMsdmdCollection({
       "to": "lexical_ucns_producer_is_exactly_verified"
     },
     {
+      "from": "lexical_deep_recursion_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "lexical_deep_recursion_check",
+      "to": "self::lexical_deep_recursion_check"
+    },
+    {
+      "from": "lexical_deep_recursion_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "lexical_deep_recursion_check",
+      "to": "deep_recursion_does_not_claim_semantic_canon"
+    },
+    {
+      "from": "lexical_deep_recursion_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "lexical_deep_recursion_check",
+      "to": "deep_recursion_is_closed_over_frozen_floor"
+    },
+    {
+      "from": "lexical_deep_recursion_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "lexical_deep_recursion_check",
+      "to": "deep_recursion_processes_complete_oewn_inventory"
+    },
+    {
+      "from": "lexical_deep_recursion_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "lexical_deep_recursion_check",
+      "to": "definition_order_and_multiplicity_are_preserved"
+    },
+    {
+      "from": "lexical_deep_recursion_freeze_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "lexical_deep_recursion_freeze_check",
+      "to": "self::test_deep_recursion_freeze_is_metadata_free_and_tamper_evident"
+    },
+    {
+      "from": "lexical_deep_recursion_freeze_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "lexical_deep_recursion_freeze_check",
+      "to": "deep_recursion_resume_is_fail_closed"
+    },
+    {
+      "from": "lexical_deep_recursion_freeze_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "lexical_deep_recursion_freeze_check",
+      "to": "english_metadata_is_external_to_ucns_carrier"
+    },
+    {
       "from": "oewn_builder_order_check",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -4867,6 +5061,27 @@ export default defineMsdmdCollection({
       "to": "edcm measurement canon bones_affixes_v1.json"
     },
     {
+      "from": "edcm_language_deep_recursion",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_deep_recursion",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_language_deep_recursion",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_deep_recursion",
+      "to": "edcm_language_oewn_source"
+    },
+    {
+      "from": "edcm_language_deep_recursion",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_deep_recursion",
+      "to": "edcm_language_relational_bridge"
+    },
+    {
       "from": "edcm_language_glyph_floor",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
@@ -4970,6 +5185,13 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_language_package",
       "to": "edcm_language_affixes"
+    },
+    {
+      "from": "edcm_language_package",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_language_package",
+      "to": "edcm_language_deep_recursion"
     },
     {
       "from": "edcm_language_package",
@@ -5208,6 +5430,34 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_oewn2025_lexical_floor_builder",
       "to": "edcm_language_relational_bridge"
+    },
+    {
+      "from": "edcm_oewn_deep_recursion_builder",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_oewn_deep_recursion_builder",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_oewn_deep_recursion_builder",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_oewn_deep_recursion_builder",
+      "to": "edcm_language_deep_recursion"
+    },
+    {
+      "from": "edcm_oewn_deep_recursion_builder",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_oewn_deep_recursion_builder",
+      "to": "edcm_language_relational_bridge"
+    },
+    {
+      "from": "edcm_oewn_deep_recursion_builder",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_oewn_deep_recursion_builder",
+      "to": "edcm_oewn_complete_builder"
     },
     {
       "from": "edcm_package",
