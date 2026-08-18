@@ -1,0 +1,89 @@
+{
+  "artifact_manifest_sha256": "7961f7027e340c5f612e5ce81a02b0290d0ae7c940bf1cf2ffda7287e0b7aee7",
+  "claims": {
+    "complete_oewn_semantic_relation_layer": "SURVIVED",
+    "complete_oewn_definitions_reconstructible_from_existing_floor": "FALSIFIED",
+    "deterministic_closed_depth_one_construction": "SURVIVED",
+    "geometry_or_measurement_validity": "UNRESOLVED"
+  },
+  "closed_definition_evidence": {
+    "closed_definition_count": 14469,
+    "definition_atom_count": 1066142,
+    "definition_count": 107524,
+    "definition_member_edge_count": 50396,
+    "definition_token_edge_count": 63940,
+    "empty_definition_count": 0,
+    "rejected_definition_count": 93055,
+    "unknown_definition_atom_occurrences": 330856,
+    "unknown_definition_atom_type_count": 13759
+  },
+  "consumer_implementation_commit": "195e4d6",
+  "evidence_artifacts": {
+    "binding_sha256": "49a3568a125dcbcd5356a7cc5b4c6ef29b37a613cadfc0a7ae88ccce4521cf86",
+    "coverage_sha256": "4e0277a71dc65488e1f934d5f42c9755fc44e1e467fffdfeba475ca2d502cb56",
+    "floor_receipt_sha256": "113604c912146ebfe722cb2abe7fc5542dfdf474c1bb42d79eeaaa509ae7cf9d",
+    "intrinsic_sha256": "92e6f7b7179132b61bef7883d384cb682593aa373d8879fdd1a14be22612baa9",
+    "layer_receipt_sha256": "9c4c2eeddee64ebbac2bcb303138f3bdb06bd73f32d7e13f300004e1e3cd9309",
+    "source_manifest_sha256": "ce74888a0f92e1ac435f3c50a463497a226d9deb17b41452df898f21cfd1e8b1"
+  },
+  "independent_replay": {
+    "complete_artifact_set_byte_identical": true,
+    "comparison": "diff -qr over two clean output directories",
+    "manifest_sha256": "7961f7027e340c5f612e5ce81a02b0290d0ae7c940bf1cf2ffda7287e0b7aee7",
+    "runs": [
+      "generated/oewn2025-depth1-run-a",
+      "generated/oewn2025-depth1-run-b"
+    ],
+    "status": "SURVIVED"
+  },
+  "layer": {
+    "edge_count": 1005873,
+    "floor_surface_count": 131094,
+    "geometry_attached": false,
+    "measurement_attached": false,
+    "name": "semantic-definition-depth-1",
+    "node_count": 145563
+  },
+  "producer": {
+    "commit": "d7c6f51304ed6c32d48badf63132bea6de8af497",
+    "module_sha256": "b839d29c79b43d29faf6f5d9a39b7a1485f39a0f071b525fd1848cf18f061cdd",
+    "repository": "The-Interdependency/ucns"
+  },
+  "resume": {
+    "artifact_bytes_unchanged": true,
+    "complete_manifest_validated": true,
+    "exact_file_set_validated": true,
+    "status": "SURVIVED"
+  },
+  "run_date": "2026-08-18",
+  "schema": "edcm.english-lexical-deep-recursion-run-receipt",
+  "semantic_evidence": {
+    "excluded_sense_relation_occurrence_count": 0,
+    "excluded_synset_membership_pair_count": 0,
+    "excluded_synset_relation_occurrence_count": 0,
+    "sense_relation_edge_count": 139202,
+    "sense_relation_occurrence_count": 113629,
+    "synset_membership_edge_count": 285546,
+    "synset_membership_pair_count": 285546,
+    "synset_relation_edge_count": 466789,
+    "synset_relation_occurrence_count": 131098
+  },
+  "source": {
+    "commit": "dc343f2683279ecbb13fab4e2fd778d7b162d287",
+    "license": "Princeton WordNet License plus CC BY 4.0",
+    "repository": "globalwordnet/english-wordnet",
+    "source_tree_sha256": "3a46546a1ffbb4aed98990535ad5155c69be12ad09fdf093701b257d2a3e468f",
+    "tag": "2025-edition"
+  },
+  "status": "SURVIVED",
+  "validation": {
+    "build_and_twine": "passed",
+    "canonical_msdmd_collection": "regenerated and byte-identical",
+    "edcm_full_suite": "301 passed, 20 optional-dependency skips",
+    "edcm_integrity": "passed",
+    "metadata_contract_graph": "closed",
+    "relational_and_deep_recursion_exact_ucns_suite": "19 passed"
+  },
+  "version": "1.0.0",
+  "work_graph_sha256": "8588aaf6c502b12091198d84f4a2e8b04b918daf2ca74390a90d2bdbf05c6226"
+}

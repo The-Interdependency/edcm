@@ -1,0 +1,30 @@
+{
+  "edges": [
+    {
+      "from": "globalwordnet/english-wordnet@dc343f2683279ecbb13fab4e2fd778d7b162d287",
+      "to": "The-Interdependency/edcm@195e4d6",
+      "transfer": "licensed definition, synset, sense, and relation evidence only"
+    },
+    {
+      "from": "The-Interdependency/ucns@d7c6f51304ed6c32d48badf63132bea6de8af497",
+      "to": "The-Interdependency/edcm@195e4d6",
+      "transfer": "metadata-free ordered relational carrier API only"
+    },
+    {
+      "from": "The-Interdependency/edcm lexical floor receipt v3",
+      "to": "semantic-definition-depth-1",
+      "transfer": "exact frozen direct-atomic surface identities only"
+    }
+  ],
+  "nontransfers": [
+    "UCNS geometry or proof status",
+    "EDCM measurement or empirical validity",
+    "METAPAT root or semantic authority",
+    "canonical English sense selection",
+    "phrase, sentence, or discourse semantics"
+  ],
+  "schema": "interdependent-work-graph",
+  "skill_lib": "The-Interdependency/skill-lib@ff931cff30d04893b995f46eca177fee75c8d3ec",
+  "status": "SURVIVED",
+  "version": "1.0.0"
+}
