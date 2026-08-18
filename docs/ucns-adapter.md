@@ -12,7 +12,7 @@ full-corpus gate: ucns.edcm.full-corpus-execution/0.14.1
 
 This profile remains the current **runtime observation/replay contract** for the
 sealed corpus path. Its option names, including `smallest_gonol: word`,
-'token_alphabet`, and `token_identity`, are producer-epoch fields and must remain
+`token_alphabet`, and `token_identity`, are producer-epoch fields and must remain
 exact for reproduction. They do **not** define the stack's current gonol-native
 language architecture. That later boundary is:
 
