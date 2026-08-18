@@ -187,7 +187,7 @@ python -m edcm.corpora.multiwoz21_booking_holdout \
   --edcm-repository-root /path/to/edcm \
   --edcm-commit "$(git -C /path/to/edcm rev-parse HEAD)" \
   --output /tmp/multiwoz-booking-holdout.json \
-  --receipt /tmp/multiwoz-booking-outcome-holdout-complete.json
+  --receipt /tmp/multiwoz-booking-holdout-complete.json
 ```
 
 The historical MultiWOZ profile seals remain represented evidence. The new
