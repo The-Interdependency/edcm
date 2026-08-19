@@ -217,7 +217,7 @@ repository proximity, or the most common acronym expansion returned by search.
 - **Before `canon`:** `domain-claims` establishes which domain-qualified sense is under
   review; `canon` then determines whether the claim is declared, implemented,
   repo-local, inferred, desired, or `hmmm`.
-- **Before `gonal-morphology`:** lexical classification must not collapse domain-specific
+- **Before `gonol-build`:** lexical classification must not collapse domain-specific
   senses that require separate term identities.
 - **Before `plain-lens`:** companion views may simplify wording but must preserve the
   active domain claim and disclose when a familiar word carries a specialized sense.
