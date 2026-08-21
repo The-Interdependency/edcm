@@ -29,35 +29,54 @@ This reciprocal loop is the intended meaning of **UCNS–EDCM canon**.
 
 ## Gonol language boundary
 
-The prior **lexical-floor** construction is DEPRECATED. NGSL 1.2 is a word list, not the dictionary semantic source required for the active language path, and its fixed-list closure rule has no forward authority.
+The prior **lexical-floor** construction is DEPRECATED as current architecture. Historical artifacts keep their exact names and producer epochs for replay; they do not govern new text construction.
 
-UCNS has authorized a Scrabble dictionary as the replacement lexical source class. Exact edition/source identity and custody must be pinned upstream before ingestion.
-
-The current language-object direction is gonol-native:
+The active authority split is:
 
 ```text
-Unicode character gonols
+METAPAT
+    affixiation semantics and relational-integration invariants
         ↓
-dictionary lexical entries / words
+UCNS
+    gonol geometry, native Möbius/Public Gonol carrier,
+    geometrically established operations
         ↓
-word gonols
+EDCM
+    text-domain admission and linguistic/semantic gonol construction
         ↓
-source-bound dictionary definitions and senses
-        ↓
-ordered semantic relationships among word gonols
-        ↓
-definition gonols = first lexical deep-recursion layer
+EDCM measurement
+    separately frozen projections, metrics, and falsifiers
 ```
 
-The semantic relationships expressed by the dictionary definitions are themselves the first lexical recursive layer. They are not metadata awaiting a later embedding step.
+For active EDCM text construction:
 
-The replacement path does not insert conventional NLP token IDs, subword IDs, opaque external embedding vectors, or whole-string cryptographic hashes. Source definition prose may remain custody evidence; the semantic representation is the source-bound gonol relationship structure constructed from it.
+```text
+every admitted character is a gonol
+```
 
-A dictionary-derived definition gonol is intended to occupy the semantic-representation role commonly served by vector embeddings. That analogy establishes no semantic quality, metric behavior, equivalence, benchmark advantage, or downstream utility.
+This is an EDCM text-domain rule. EDCM owns the declared source/profile that determines what is admitted as a character. If a construction has not yet selected its exact unit—Unicode code point, grapheme, Public Gonol glyph inventory, or another explicit unit—that admission boundary remains `hmmm`. UCNS may realize admitted characters geometrically; UCNS does not own the linguistic admission rule merely because it owns the geometry.
 
-EDCM may consume exact UCNS gonol identities and source-bound receipts only under an explicit consumer contract. Any EDCM scalar projection or measurement must separately declare its mapping and information loss. UCNS representation does not activate or validate EDCM measurement; EDCM outcomes do not validate UCNS semantics, proof status, or construction law.
+The current EDCM construction dependency is:
 
-Historical EDCM experiment or profile surfaces may retain `token`, `lexical-floor`, and `word-gonol` terminology where those names are part of frozen evidence. Such terms do not create a tokenizer layer or restore the deprecated lexical-floor premise as current architecture. Historical artifacts are not rewritten by this correction.
+```text
+characters
+    ↓
+morphology
+    ↓
+definitions
+    ↓
+recursive gonol relations
+```
+
+This is a dependency order, not permission to flatten completed gonols or impose conventional NLP intermediate scales. A completed gonol is atomic for participation at its consuming scale while constituent identity and provenance remain recoverable.
+
+Affixiation is defined by METAPAT, not by EDCM and not by UCNS. EDCM applies affixiation to text-domain gonols. UCNS owns any exact geometric realization on the native Möbius/Public Gonol carrier. An unresolved UCNS coupling law remains `hmmm`; neither EDCM nor UCNS may fill it by importing an invented carrier, topology, scale increment, arity rule, containment rule, or linguistic convention.
+
+The replacement path does not insert conventional NLP token IDs, subword IDs, opaque external embedding vectors, or whole-string cryptographic hashes. Source prose, dictionaries, corpora, annotations, and labels may remain source evidence and provenance; they become gonol semantics only through an explicit EDCM construction whose admission, relation, closure, and replay boundaries are declared.
+
+UCNS Public Gonol function positions may be used by EDCM only to the extent their operations are geometrically established. Unicode names, dictionary definitions, glyph shape, adjacency, or conventional punctuation grammar do not define a UCNS operation. An unresolved operation remains `hmmm`.
+
+EDCM construction and EDCM measurement remain separate. A completed gonol construction does not activate measurement. Any scalar projection or measurement must separately declare its mapping, information loss, metric, aggregation, baseline, partitions, stopping rules, and falsifiers. UCNS geometry does not validate EDCM measurement; EDCM outcomes do not validate UCNS geometry or METAPAT semantics.
 
 See [`docs/GONOL_LANGUAGE_BOUNDARY.md`](docs/GONOL_LANGUAGE_BOUNDARY.md).
 
@@ -180,16 +199,19 @@ Where discourse graphs are involved, the experiment must additionally retain:
 - a canonical bundle identity across alternatives;
 - information loss for every graph projection.
 
-For new language-semantic experiments, the experiment must additionally retain:
+For new text-gonol or language-semantic experiments, the experiment must additionally retain:
 
-- the exact UCNS dictionary-corpus and source identity;
-- source-bound dictionary-definition-gonol receipt identities;
-- constituent order, multiplicity, occurrence position, sense, context, source, and provenance;
-- explicit failure on tokenizer, subword, opaque-vector, or whole-string-hash substitution;
-- the EDCM projection and declared information loss separately from the UCNS representation; and
-- preregistered comparison criteria before semantic or downstream outcome inspection.
+- the exact EDCM source artifact and character-admission profile;
+- the current METAPAT affixiation authority identity when affixiation is used;
+- the exact UCNS geometry/carrier identity used by the construction;
+- EDCM construction code/profile and completion-receipt identities;
+- constituent identity, order, multiplicity, occurrence position, relation identity, scale, source, and provenance;
+- explicit failure on tokenizer, subword, opaque-vector, or whole-string-hash substitution for gonol identity;
+- unresolved UCNS geometric operations as `hmmm`, not semantic inference;
+- the EDCM measurement projection and declared information loss separately from EDCM construction; and
+- preregistered comparison criteria before semantic or downstream outcome inspection when the criterion could be outcome-selected.
 
-Historical lexical-floor artifacts may be reproduced against their original exact inputs, but their fixed-list closure criteria are not forward experiment requirements.
+Historical lexical-floor artifacts may be reproduced against their original exact inputs, but their historical UCNS producer boundaries and fixed-list criteria are not forward experiment requirements.
 
 Hypothesis failure is a valid experiment result and must not be converted into a build failure merely to preserve a preferred model.
 
@@ -203,8 +225,10 @@ edcm_fit_implies_ucns_proof = false
 candidate_registration_implies_canon = false
 passing_development_fixtures_implies_canon = false
 majority_candidate_agreement_implies_truth = false
-definition_gonol_role_analogy_implies_embedding_efficacy = false
+gonol_semantic_role_implies_embedding_efficacy = false
 historical_lexical_floor_name_implies_current_floor_architecture = false
+ucns_geometry_implies_edcm_text_semantics = false
+edcm_text_construction_implies_measurement_validity = false
 NA_equals_zero = false
 ```
 
@@ -220,9 +244,10 @@ This phase may implement:
 - competing resolver and graph-projection policies;
 - positive unresolved-reference and alternative-bundle evidence;
 - reproducible reports and policy-preservation findings;
-- CI execution against an exact UCNS commit;
-- fail-closed consumer validation for future source-bound dictionary-definition-gonol receipts; and
-- preregistered EDCM evaluations of those receipts once the upstream construction exists.
+- CI execution against exact UCNS commits where experiments require them;
+- source-bound EDCM character, morphology, definition, and recursive-gonol candidate constructors under the current authority split;
+- candidate UCNS Möbius-carrier realizations of affixiation under fixed METAPAT invariants; and
+- preregistered EDCM measurements of completed text-gonol constructions.
 
 This phase may not promote:
 
@@ -232,16 +257,18 @@ This phase may not promote:
 - canonical product character `M`;
 - canonical faithful breadth `B`;
 - canonical discourse resolver, relation vocabulary, or graph precedence;
-- arbitrary dictionary prose into a completed semantic relation without source-bound gonol construction;
-- the deprecated NGSL closed-floor rule into the replacement dictionary path;
+- arbitrary dictionary prose into completed gonol semantics without an explicit EDCM construction;
+- the deprecated NGSL closed-floor rule into current text construction;
 - a tokenizer, subword vocabulary, opaque vector lookup, or whole-string hash into the gonol-native language path;
-- definition-gonol role analogy into a claim of embedding replacement efficacy;
+- gonol semantic-role analogy into a claim of embedding replacement efficacy;
+- Unicode names, dictionary definitions, adjacency, or glyph shape into UCNS function authority;
+- an invented alternative carrier, topology, scale increment, arity rule, containment rule, or coupling law to fill unresolved UCNS geometry;
 - diagnosis, intention, morality, consciousness, or external truth claims;
 - a complete production `UCNSObject` or EDCM deployment contract.
 
 ## Usage guidance
 
-Run each joint program only in an environment containing the exact UCNS experiment commit declared by the runner. The current discourse-graph program is:
+Run each historical joint program only in an environment containing the exact UCNS experiment commit declared by that runner. The current discourse-graph program is:
 
 ```text
 python -m edcm.ucns_edcm_experiments_v4 \
@@ -251,8 +278,8 @@ python -m edcm.ucns_edcm_experiments_v4 \
 
 Every report is research evidence. No report is a canon file, and no report may be renamed or imported as one.
 
-For new semantic work, do not treat EDCM's existing arbitrary definition strings, historical word-profile outputs, or lexical-floor-named artifacts as the current semantic basis. Consume the exact future UCNS dictionary-derived producer receipt, freeze the EDCM mapping and falsifier, then evaluate.
+For new text-gonol work, start in EDCM: resolve the EDCM source/admission profile, import current METAPAT affixiation invariants, consume current UCNS geometry, construct and replay the EDCM gonols, and freeze any measurement separately. Do not move language semantics back into UCNS merely because UCNS supplies the carrier geometry.
 
 ## hmmm
 
-The exact Scrabble dictionary edition/source, machine-readable acquisition, immutable source identity, and custody/redistribution boundary remain upstream UCNS source questions. UCNS must also generalize its first-recursion producer away from NGSL closure and 2,809-target coverage before EDCM consumes the replacement representation. EDCM has not yet selected a lawful projection, metric, benchmark, or falsifier for evaluating that future representation. External holdout custody, independently authored graph annotations, human outcome labels, multilingual evidence, separate implementation replication, and the authority procedure for the first joint canon selection also remain open.
+The exact EDCM character-admission unit remains source/profile-specific where not yet selected. The source-supported complete English morphology law remains unresolved. UCNS still has to expose the exact native Möbius-carrier affixiation/coupling law and direct distant-scale coupling geometry through implementation rather than semantic inference. EDCM has not yet selected a lawful projection, information-loss account, metric, benchmark, or falsifier for evaluating a completed recursive text-gonol representation. External holdout custody, independently authored graph annotations, human outcome labels, multilingual evidence, separate implementation replication, and the authority procedure for the first joint canon selection also remain open.
