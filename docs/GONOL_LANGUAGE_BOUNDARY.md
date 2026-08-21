@@ -1,28 +1,52 @@
 # EDCM gonol language boundary
 
-**Status:** active EDCM consumer boundary; UCNS lexical construction remains upstream.  
-**Authority:** Erin Spencer for the stack declaration; UCNS owns lexical/gonol construction surfaces; EDCM owns measurement-side use and non-use.  
-**Corrected:** 2026-08-18.  
+**Status:** active EDCM text-construction and measurement boundary.  
+**Authority split:** METAPAT owns affixiation semantics; UCNS owns gonol/Möbius/Public Gonol geometry; EDCM owns text-domain admission and linguistic/semantic gonol construction and measurement.  
+**Corrected:** 2026-08-21 after UCNS geometry-only canon and skill-lib `gonol-build` authority repair.
 
-## Current UCNS source roles
+## Governing authorities
 
-The active UCNS lexical construction now uses:
+The current stack separates meaning, geometry, text construction, and measurement:
 
 ```text
-xkcd constrained-English 1,000-word vocabulary
-    -> lexical-floor candidate
-
-Open English WordNet 2025 Core
-    -> primary contemporary lexical-semantic corpus
+METAPAT
+    affixiation semantics and relational integration invariants
+        ↓
+UCNS
+    gonol geometry, native Möbius/Public Gonol carrier,
+    geometrically established operations
+        ↓
+EDCM
+    text-domain admission and linguistic/semantic gonol construction
+        ↓
+EDCM measurement
+    separately declared observations, projections, metrics, and falsifiers
 ```
 
-The earlier NGSL lexical-floor premise remains **DEPRECATED**. The later Scrabble-dictionary source selection is **SUPERSEDED** for this work. Webster 1913 is deferred and is not part of the current execution graph.
+Authority does not transfer automatically between these layers.
 
-Exact xkcd and OEWN source receipts remain UCNS-owned acquisition/custody boundaries.
+- METAPAT semantic authority does not prove UCNS geometry.
+- UCNS geometry does not choose EDCM text sources, morphology, definitions, or semantic relations.
+- EDCM construction does not validate EDCM measurement.
+- EDCM measurement does not validate METAPAT or UCNS.
 
-## Current language architecture
+## Character rule
 
-EDCM must treat the current upstream sequence as:
+For active EDCM text construction:
+
+```text
+every admitted character is a gonol
+```
+
+This is an EDCM text-domain rule.
+
+EDCM owns the declared source/profile that determines what is admitted as a character. A profile may select Unicode code points, graphemes, the exact Public Gonol glyph inventory, or another explicitly defined character unit. If that admission unit is not yet selected for a construction, it remains `hmmm`; UCNS does not silently decide it merely because UCNS supplies the geometry.
+
+Every admitted occurrence remains separately addressable. Repeated characters may share gonol identity where the governing construction says they are the same gonol, while occurrence order, multiplicity, source location, and provenance remain preserved.
+
+## Active text construction
+
+The current EDCM construction dependency is:
 
 ```text
 characters
@@ -34,61 +58,89 @@ definitions
 recursive gonol relations
 ```
 
-Relationships enter gonols. They are not merely external semantic edges.
+This is a dependency order, not a demand to reopen every completed object at every later scale. A completed gonol is atomic for participation at its consuming scale while retaining recoverable constituent identity and provenance.
 
-A completed word gonol is atomic for the next scale. A completed definition gonol is atomic for the next recursion. Lower-scale provenance remains available for replay without requiring every higher-scale operation to re-expand all constituents.
+Words and other intermediate closures may be used where an explicit EDCM construction requires them. EDCM must not manufacture a mandatory intermediate scale merely because a conventional NLP pipeline normally contains one.
 
-Affixiation is scale-invariant in current UCNS doctrine: gonols couple, the relationship enters the result, closure produces a new gonol, and the result becomes atomic at its scale. Morphological affixes are one linguistic instance; EDCM must not restore the historical omega/phi/psi three-core morphology as current authority.
+Relationships that constitute a gonol enter the construction. They are not merely external semantic edges. Sidecars may index, cache, project, or record provenance; they do not replace intrinsic relational content.
 
-Direct coupling across non-adjacent recursive scales is allowed upstream. EDCM may not impose mandatory intermediate-scale reopening as a precondition for measurement merely because it simplifies a projection.
+## Affixiation
+
+Affixiation is not defined by EDCM and is not defined by UCNS.
+
+METAPAT defines affixiation as a declared relation among already-bounded participants that preserves their individual addressability, identities, and provenance while the relation may integrate as a higher-scale object-whole. An affixiated whole may participate recursively without erasing its constituents.
+
+UCNS owns any exact geometric realization of that operation. The native Möbius/Public Gonol carrier is the current geometric authority. Where the precise coupling operation has not yet been constructed, it remains `hmmm`; EDCM must not fill the gap with an invented carrier, topology, scale increment, arity rule, containment rule, or coupling law.
+
+EDCM applies affixiation to text-domain gonols. Linguistic prefixes and suffixes are one instance of affixiation; they do not define affixiation.
+
+The complete English root, stem, affix, irregular-transformation, and family law remains unresolved unless source-backed EDCM evidence establishes it. EDCM must not invent decomposition to complete a pipeline.
+
+## Public Gonol function positions
+
+UCNS owns the geometry of the exact 157-position Public Gonol carrier and any function operation that geometry actually establishes.
+
+EDCM may use a Public Gonol position in text construction, but it may not derive the position's operation from Unicode names, dictionary definitions, conventional punctuation grammar, glyph shape, or adjacency. An unresolved operation remains `hmmm`.
+
+When an operation is geometrically authorized, an EDCM construction must preserve the exact function identity, occurrence address, ordered participants, source/profile identity, carrier/construction identity, result identity, and provenance needed for replay.
 
 ## No hidden token or vector layer
 
-EDCM must not insert conventional NLP token IDs, subword IDs, opaque embedding vectors, or whole-string hashes as substitutes for upstream gonol identity.
+EDCM must not insert conventional NLP token IDs, subword IDs, opaque embedding vectors, or whole-string hashes as substitutes for gonol identity.
 
-Source definition prose may remain custody evidence; the semantic representation is the source-bound relationship structure incorporated into the gonol.
+Source prose, dictionary material, corpora, labels, and annotations may remain evidence and provenance. Their inclusion does not by itself make them gonol semantics. A text-domain relationship becomes authoritative only through an EDCM construction whose source, admission, relation, closure, and replay boundaries are explicit.
 
-## EDCM ownership and use
+## Historical evidence
 
-EDCM does **not** own:
+EDCM contains sealed historical UCNS/OEWN, lexical-floor, word-gonol, token-named, morphology, and other experiments. Preserve them exactly for reproducibility.
 
-- xkcd lexical-floor source identity;
-- OEWN Core source selection or custody;
-- Unicode-character-gonol construction;
-- the Möbius glyph-axis / history-dependent word-gonol relation law;
-- UCNS morphology construction;
-- UCNS definition-gonol construction;
-- atomic closure or direct interscale coupling semantics; or
-- semantic validity merely because a UCNS representation exists.
+Historical names and producer boundaries remain historical evidence. They do not restore the former rule that UCNS owns lexical construction and they do not override current UCNS geometry-only canon or this EDCM text-domain boundary.
 
-EDCM may:
+When reproducing a sealed experiment, use its exact historical commits and artifacts. When beginning new text construction, use the current authority split above.
 
-- consume exact source-bound UCNS gonol identities and receipts;
-- preserve order, multiplicity, occurrence, part of speech, sense/synset, source, provenance, scale, and atomic identity;
-- declare a measurement projection over those gonols with explicit information loss;
-- evaluate compression, reconstruction, semantic behavior, or other hypotheses only under separately frozen EDCM metrics and falsifiers; and
-- record `FALSIFIED`, `SURVIVED — not proved`, `UNRESOLVED`, or `BLOCKED` without changing upstream construction after outcome inspection.
+## EDCM measurement boundary
 
-UCNS representation does not activate EDCM measurement. EDCM outcomes do not validate UCNS semantics, proof status, or construction law.
+Construction and measurement remain separate.
 
-## Historical OEWN evidence
+EDCM may declare a measurement projection over constructed gonols only when the projection, information loss, metric, aggregation, baseline, partitioning, stopping rules, and falsifiers are explicitly frozen as required by the governing experiment.
 
-EDCM already contains a sealed historical OEWN 2025 acquisition / replay experiment. Preserve it exactly as historical evidence and acquisition precedent.
+A reproducible text-gonol construction establishes only that construction. It does not establish semantic quality, compression advantage, reconstruction quality, embedding equivalence, cognition, consciousness, or measurement validity.
 
-Do not rewrite historical `lexical-floor`, `token`, OEWN branch, or package-extra identities. Their names do not restore superseded current architecture.
+## Evidence and replay requirements
 
-The historical EDCM OEWN semantic-relation artifacts also do not automatically become the current UCNS semantic mechanism. Current UCNS construction is definition-driven unless upstream explicitly selects another relation source.
+A completed text-gonol construction must bind the material identities that determine it, including as applicable:
+
+1. current METAPAT affixiation authority;
+2. current UCNS geometric authority;
+3. exact EDCM construction code/profile;
+4. exact source artifacts and admission rules;
+5. participant identity, occurrence, order, multiplicity, relation identity, scale, and provenance;
+6. closure and atomic-participation boundaries;
+7. unresolved state and information loss;
+8. a deterministic construction receipt; and
+9. independent complete reconstruction or replay when completion is claimed.
+
+Preflight real resource requirements before a complete run. Once a healthy admitted run begins, let it reach its natural terminal condition unless a genuine external resource/safety boundary or preregistered load-bearing stopping rule fires.
 
 ## Usage guidance
 
-For new lexical-semantic work:
+For new text-gonol work:
 
-1. wait for / consume exact UCNS xkcd and OEWN Core source receipts;
-2. consume atomic word / morphology / definition / recursive gonol receipts rather than rebuilding semantics inside EDCM;
-3. preserve the distinction between source prose, intrinsic gonol relationships, and EDCM measurement projection;
-4. do not impose pairwise materialization or intermediate-scale reopening upstream;
-5. freeze EDCM projection, information loss, metrics, aggregation, baselines, partitions, stopping, and falsifiers before outcome inspection.
+1. start in EDCM;
+2. resolve the exact EDCM source/admission profile;
+3. import current METAPAT affixiation invariants rather than redefining them;
+4. consume current UCNS geometry rather than moving text semantics into UCNS;
+5. construct characters, morphology, definitions, and recursive relations under explicit EDCM receipts;
+6. keep unresolved UCNS geometric operations as `hmmm`;
+7. replay the complete declared construction before claiming completion; and
+8. freeze any later EDCM measurement separately.
+
+For UCNS geometry work, work in UCNS. For changes to the meaning of affixiation, work in METAPAT.
 
 ## hmmm
 
-EDCM has not selected the projection, information-loss accounting, metric, benchmark, or falsifier for the completed recursive lexical representation. Upstream UCNS still has unresolved source receipts, morphology law, executable Möbius glyph-axis traversal, and direct distant interscale coupling representation.
+- the exact EDCM character-admission unit for any source/profile that has not yet selected one;
+- the source-supported complete English morphology law;
+- the exact UCNS Möbius-carrier affixiation/coupling law exposed by implementation;
+- executable direct coupling across distant recursive scales;
+- the EDCM projection, information-loss accounting, metric, benchmark, and falsifier for recursive text-gonol evaluation.
