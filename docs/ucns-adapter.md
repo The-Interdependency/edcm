@@ -1,6 +1,6 @@
 # EDCM–UCNS integration boundary
 
-## Current runtime profile
+## Historical runtime observation profile
 
 EDCM optionally consumes the exact EDCM-only observation profile at:
 
@@ -10,28 +10,22 @@ profile: ucns.profile.edcm-word-gonol/0.2.0
 full-corpus gate: ucns.edcm.full-corpus-execution/0.14.1
 ```
 
-This profile remains the current **runtime observation/replay contract** for the
-sealed corpus path. Its option names, including `smallest_gonol: word`,
-`token_alphabet`, and `token_identity`, are producer-epoch fields and must remain
-exact for reproduction. They do **not** define the stack's current gonol-native
-language architecture. That later boundary is:
+This profile remains the runtime **observation/replay contract** for its sealed corpus path. Its option names, including `smallest_gonol: word`, `token_alphabet`, and `token_identity`, are producer-epoch fields and must remain exact for reproduction. They do **not** define current text-gonol architecture.
+
+The current boundary is instead:
 
 ```text
-Unicode character gonols
-        ↓
-fixed floor word gonols
-        ↓
-complete lexical floor F
-        ↓
-definitions expressed only with members of F
-        ↓
-floor-definition gonols
+METAPAT   -> affixiation semantics and relational-integration invariants
+UCNS      -> gonol geometry, native Möbius/Public Gonol carrier,
+             geometrically established operations
+EDCM      -> text-domain admission and linguistic/semantic gonol construction
 ```
 
-The later architecture does not retroactively mutate this adapter or its sealed
-receipts. See [`GONOL_LANGUAGE_BOUNDARY.md`](GONOL_LANGUAGE_BOUNDARY.md).
+For active EDCM text construction, every admitted character is a gonol. See [`GONOL_LANGUAGE_BOUNDARY.md`](GONOL_LANGUAGE_BOUNDARY.md).
 
-Install the runtime profile with:
+Current authority does not retroactively mutate this adapter or its sealed receipts. Historical names and options stay fixed for replay.
+
+Install the historical runtime profile with:
 
 ```text
 python -m pip install -e .[dev,ucns-profile]
@@ -84,7 +78,7 @@ result = edcm.build_default_layers().run({
 ```
 
 `transcript` remains EDCM measurement input. `ucns_turns` is independently
-authoritative for UCNS profile observation. The adapter does not reconstruct
+authoritative for this historical UCNS profile observation. The adapter does not reconstruct
 speaker boundaries from flattened text, because doing so would invent support
 units.
 
@@ -126,7 +120,7 @@ sha256: a5dc5ec34775d511a02b17911aa385c5d92908ee58749ea16d721cd53d19b944
 ```
 
 The declared source domain is Unicode scalar values. Surrogate code points
-`U+D800`–`U+DFFF` are outside this profile rather than silently counted as
+`U+D800`–`U+DFFF` are outside this historical profile rather than silently counted as
 ordinary characters.
 
 Maximal ordered sequences not assigned to carrier position zero are word
@@ -137,8 +131,8 @@ equivalence, not Unicode normalization: a tab remains `U+0009`, a newline
 remains `U+000A`, and a non-breaking space remains `U+00A0` in source evidence.
 Every new word gonol records a Möbius-twist initiation event. That event is
 evidence of the selected historical profile interpretation; it is not a supplied
-formal coordinate construction and does not override the later character-gonol
-primitive declaration.
+formal coordinate construction and does not override the current EDCM rule that every
+admitted character is a gonol.
 
 ## Result and authority boundary
 
@@ -183,23 +177,22 @@ The retired ordered-occurrence bridge, live `UCNSObject`, and factorization
 input forms fail closed. Profile observations do not become geometry merely
 because both surfaces use UCNS identifiers.
 
-## Current gonol-semantic consumer boundary
+## Current text-gonol construction boundary
 
-This adapter does not consume the future closed floor-definition-gonol
-representation. When that upstream UCNS producer exists, EDCM must use a
-separate explicit consumer contract that:
+This historical adapter is not the current gonol constructor.
 
-- pins the lexical-floor and producer identities;
-- verifies that every definition is closed over the admitted floor;
-- verifies source-bound replay receipts and constituent order, multiplicity,
-  sense, context, source, and provenance;
-- rejects arbitrary source prose, tokenizer IDs, subwords, opaque external
-  vectors, and out-of-floor lexical support as substitutes; and
-- keeps any EDCM projection, information loss, metric, and evidence status
-  separate from the UCNS representation.
+New text-gonol work starts in EDCM and follows the active contract:
 
-The floor-definition gonol's vector-embedding role analogy is not an efficacy
-claim and must not be converted into one by adapter availability.
+- EDCM declares the exact source and character-admission profile;
+- every admitted character is a gonol;
+- METAPAT supplies affixiation semantics without being redefined downstream;
+- UCNS supplies the current gonol/Möbius/Public Gonol geometry;
+- unresolved UCNS operations remain `hmmm` rather than being inferred from Unicode names, dictionary definitions, adjacency, glyph shape, or conventional grammar;
+- EDCM constructs morphology, definitions, and recursive gonol relations while preserving identity, occurrence, order, multiplicity, relation identity, scale, source, and provenance;
+- completion claims require a deterministic receipt and independent complete replay; and
+- EDCM measurement remains a separate projection with explicit information loss and falsifiers.
+
+Do not create a parallel “consumer” that waits for UCNS to own language construction. UCNS is the geometry authority; EDCM is the current text-construction authority.
 
 ## Historical experiment epoch
 
@@ -211,27 +204,22 @@ python -m pip install -e .[dev,ucns-experiments]
 ```
 
 Those reports are historical evidence. They are not rewritten to the current
-runtime profile or later gonol-language boundary, and their support,
+runtime profile or current gonol-language boundary, and their support,
 product-character, breadth, and structural view candidates remain scoped to
 their recorded epoch.
 
 ## Usage guidance
 
-Use this adapter only for artifacts that name its exact pinned profile. Do not
+Use this adapter only for artifacts that name its exact pinned historical profile. Do not
 repin it to current UCNS merely to make terminology look current.
 
-For new semantic work, wait for the upstream closed floor-definition-gonol
-producer contract, then implement a separate fail-closed EDCM consumer rather
-than modifying historical profile evidence in place.
+For new text construction, do not extend this historical adapter. Work in EDCM under [`GONOL_LANGUAGE_BOUNDARY.md`](GONOL_LANGUAGE_BOUNDARY.md), consume current UCNS geometry and METAPAT affixiation semantics, and keep the later EDCM measurement boundary separate.
 
 ## hmmm
 
-The executable profile establishes exact corpus observations and resolves its
+The executable historical profile establishes exact corpus observations and resolves its
 admitted SPACE manifestations to its pinned Möbius-origin interpretation.
 Coverage of true non-SPACE code points outside the 157-token carrier alphabet
-remains open for that profile. UCNS v0.19 supplies a nonselected trace-local
+remains open for that historical profile. UCNS v0.19 supplies a nonselected trace-local
 source-coordinate candidate over its fixed demonstration, but this adapter does
-not attach or consume that evidence. The exact UCNS closed definition-gonol
-composition law and source/custody procedure remain unresolved upstream; EDCM's
-future semantic consumer projection, metric, benchmark, and falsifier are also
-unselected.
+not attach or consume that evidence. For current work, the exact EDCM character-admission unit remains profile-specific where not selected, the exact UCNS native Möbius-carrier affixiation/coupling geometry remains unresolved, and EDCM's recursive text-gonol measurement projection, metric, benchmark, and falsifier remain unselected.
