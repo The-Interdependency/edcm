@@ -74,7 +74,7 @@ definitions
 recursive gonol relations
 ```
 
-`edcm.character_word` is the implemented candidate for the first two stages. It admits Unicode scalars as character gonols and closes non-whitespace runs into word gonols. It is not selected canon and does not activate measurement.
+`edcm.character_word` is the implemented candidate for the first two stages. `edcm.definition_gonol` is the implemented candidate for definition gonols from already-closed word gonols and exact caller-supplied definition evidence. Neither is selected canon, and neither activates measurement.
 
 Affixiation is defined by METAPAT. UCNS owns any exact geometric realization. EDCM applies affixiation to text-domain gonols. Completed gonols are atomic for participation at the consuming scale while constituent identity and provenance remain recoverable.
 

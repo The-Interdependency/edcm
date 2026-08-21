@@ -62,7 +62,7 @@ This order is load-bearing. Every admitted character is a gonol. Ordered charact
 
 Do not insert another required stage into this sequence unless the governing contract is explicitly changed. Morphology is not a required stage. Historical morphology evidence remains historical; the complete English morphology law remains `hmmm`.
 
-`edcm.character_word` is the implemented candidate for character admission and word closure. It is not selected canon.
+`edcm.character_word` is the implemented candidate for character admission and word closure. `edcm.definition_gonol` is the implemented candidate for definition gonols from already-closed word gonols and exact caller-supplied definition evidence. Neither is selected canon.
 
 Relationships that constitute a gonol enter the construction. They are not merely external semantic edges. Sidecars may index, cache, project, or record provenance; they do not replace intrinsic relational content.
 
@@ -137,6 +137,25 @@ assert first.receipt_digest == second.receipt_digest
 assert ["".join(word.kind_id) for word in first.words] == ["don't", "cut."]
 ```
 
+Copy-pasteable definition candidate:
+
+```python
+from edcm.definition_gonol import construct_definition_gonol, replay_definition_gonol
+
+first = construct_definition_gonol(
+    headword="cut",
+    definition="to divide with a sharp edge",
+    source_id="example:cut#1",
+)
+second = replay_definition_gonol(
+    headword="cut",
+    definition="to divide with a sharp edge",
+    source_id="example:cut#1",
+)
+assert first.receipt_digest == second.receipt_digest
+assert first.definition.relation == "definition-of"
+```
+
 Set `UCNS_SOURCE_ROOT` to a current UCNS checkout if `ucns.public_gonol` is not importable.
 
 For new text-gonol work:
@@ -145,7 +164,7 @@ For new text-gonol work:
 2. resolve the exact EDCM source/admission profile;
 3. import current METAPAT affixiation invariants rather than redefining them;
 4. consume current UCNS geometry rather than moving text semantics into UCNS;
-5. construct characters, words, definitions, and recursive relations under explicit EDCM receipts; use `edcm.character_word` for the first two stages;
+5. construct characters, words, definitions, and recursive relations under explicit EDCM receipts; use `edcm.character_word` then `edcm.definition_gonol`;
 6. keep unresolved UCNS geometric operations as `hmmm`;
 7. replay the complete declared construction before claiming completion; and
 8. freeze any later EDCM measurement separately.

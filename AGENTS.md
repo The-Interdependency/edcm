@@ -56,7 +56,7 @@ EDCM owns the character-admission profile and linguistic/semantic construction. 
 - `edcm/measurement/` is the frozen maintained baseline candidate.
 - `edcm.ucns_edcm_experiments` is the first joint experiment runner.
 - EDCM owns current text-domain gonol admission and construction; measurement remains separately frozen and evaluated.
-- `edcm.character_word` is the implemented candidate for `characters -> words`. It is not selected canon.
+- `edcm.character_word` is the implemented candidate for `characters -> words`. `edcm.definition_gonol` is the implemented candidate for definition gonols from exact source definition evidence. Neither is selected canon.
 - UCNS structural policies, product-character candidates, faithful-breadth candidates, and unresolved Möbius coupling laws remain noncanonical unless current UCNS authority says otherwise.
 - EDCM axes, thresholds, marker lists, and circuit parameters remain candidates unless an explicit canon decision says otherwise.
 - A passing hypothesis is experiment-supported evidence, not canon.
@@ -104,7 +104,7 @@ python -m twine check dist/*
 
 ## Usage guidance
 
-For new text-gonol construction, begin in EDCM. Resolve the exact EDCM source/admission profile, import METAPAT affixiation invariants without redefining them, consume current UCNS geometry, and construct `characters -> words` with `edcm.character_word`. Replay independently before claiming completion. Freeze any EDCM measurement only after construction and keep its evidence status separate.
+For new text-gonol construction, begin in EDCM. Resolve the exact EDCM source/admission profile, import METAPAT affixiation invariants without redefining them, consume current UCNS geometry, construct `characters -> words` with `edcm.character_word`, then construct definition gonols with `edcm.definition_gonol` from exact source definition evidence. Replay independently before claiming completion. Freeze any EDCM measurement only after construction and keep its evidence status separate.
 
 For historical experiments, reproduce the exact historical producer epoch and names. Historical UCNS-owned lexical artifacts remain evidence; they do not restore current language authority to UCNS.
 

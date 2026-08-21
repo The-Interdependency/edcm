@@ -188,7 +188,7 @@ New text-gonol work starts in EDCM and follows the active contract:
 - METAPAT supplies affixiation semantics without being redefined downstream;
 - UCNS supplies the current gonol/Möbius/Public Gonol geometry;
 - unresolved UCNS operations remain `hmmm` rather than being inferred from Unicode names, dictionary definitions, adjacency, glyph shape, or conventional grammar;
-- EDCM constructs words, then definitions, then recursive gonol relations while preserving identity, occurrence, order, multiplicity, relation identity, scale, source, and provenance; `edcm.character_word` is the implemented candidate for the first two stages;
+- EDCM constructs words, then definitions, then recursive gonol relations while preserving identity, occurrence, order, multiplicity, relation identity, scale, source, and provenance; `edcm.character_word` and `edcm.definition_gonol` are the implemented candidates for those stages;
 - completion claims require a deterministic receipt and independent complete replay; and
 - EDCM measurement remains a separate projection with explicit information loss and falsifiers.
 
