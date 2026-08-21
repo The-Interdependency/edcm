@@ -17,6 +17,7 @@ description: Protocol and workflow for all tasks involving The Interdependency o
 
 ## Core Doctrine
 
+- **Agent/work context gate**: `skill-lib` is standing context for org agents. At every agent instantiation, resolve the available skill-lib entrypoint/index plus the governing repository instructions before that agent may reason about or execute org work. At the start of every unit of work, reevaluate the request against skill descriptions and read every applicable `SKILL.md` before acting. Child/sub-agents inherit already-resolved repository identities, governing contracts, and applicable skill context from the parent, then reevaluate triggers for their own assignment. Previously resolved authoritative instructions stay resolved until their source changes, conflicts, becomes unavailable, or is explicitly superseded. Do not ask the user to restate repository knowledge that authoritative sources already resolve. If required authority cannot be resolved, stop that boundary as `hmmm`; do not guess or reconstruct stable project semantics from conversational repetition.
 - **Structure preservation first**: Before any summarization, compression, decision, or output, preserve the complete relational structure, variables, topology, epistemic status (declared / implemented / inferred / hmmm), distinct layers (lived experience vs formal claims vs emotional), and explicitly mark all unresolveds. This follows the org's neurodivergence-preserving interaction principles.
 - **Resource-run preflight and completion**: Resource scarcity requires contemplation **before** a compute run begins. Before launch, inspect or estimate whether available time under real external constraints, CPU, memory, disk, battery/power, network, quotas, API/tool usage limits, and session/process durability are sufficient for the run to reach its natural terminal condition. If there is material doubt that it can finish, do not start it: reduce, stage/checkpoint, relocate, acquire resources, or leave it `hmmm`. Once a healthy run begins, let it finish to completion or deterministic computational failure unless the user explicitly cancels it or an unforeseen real resource/safety emergency requires interruption. Do **not** invent or enforce a wall-clock cutoff merely to make work bounded, falsifiable, or convenient. Runtime/resource ceilings are stopping criteria only when the quantity is itself load-bearing to the hypothesis or acceptance criterion, an authorized safety boundary, or a real externally imposed hard limit, and they must be justified before launch.
 - **METAPAT consultation gate**: Consult current `The-Interdependency/metapat` before committing a conceptual choice when the task must decide which distinctions, relations, boundaries, transformations, scales, or cross-domain correspondences should organize downstream work. METAPAT consultation is also required when an unresolved conceptual choice would constrain architecture, semantics, measurement, ontology, or later falsifiable claims. Do not consult METAPAT merely to execute an already-fixed implementation, run tests, repair syntax, move data, or apply a relation whose meaning and boundary are already established. METAPAT is the source of truth for its own doctrine; skill-lib routes to it and must not duplicate a frozen theory snapshot.
@@ -66,13 +67,14 @@ When consultation triggers, inspect the current METAPAT repository state before 
 
 ## Workflow
 
-1. **Trigger detection**: Activate on any The-Interdependency context or the example trigger phrases listed in the description.
-2. **Resource preflight**: Before starting any compute run, decide whether the available resources can sustain it to its natural terminal condition. If not, do not launch it. Do not substitute an arbitrary timeout for preflight judgment.
-3. **METAPAT gate**: Before conceptual or architectural commitment, run the consultation test above. If triggered, inspect current METAPAT before selecting the relation, boundary, transformation, or cross-domain mapping.
-4. **Context assembly**: For transcript work, explicitly structure output using EDCMBONE energy-dissonance mapping, F-metrics, failure-mode tags, and accessibility annotations. Preserve full original relations.
-5. **Artifact production**: Write code/docs with msdmd blocks (if applicable) + dedicated "Usage Guidance" section or equivalent. Include examples that can be copy-pasted.
-6. **GitHub hygiene**: Check drift, update indexes, propagate only after validation. Reference this skill in commit messages where relevant.
-7. **Output packaging**: Structure responses with:
+1. **Agent/work context gate**: On agent birth, resolve skill-lib plus governing repository instructions before org work begins. On every work start, reevaluate skill triggers and load applicable contracts before reasoning or acting. Inherit resolved authority into child/sub-agents; do not make the user restate stable repository knowledge. Missing required authority is `hmmm` and blocks that boundary.
+2. **Trigger detection**: Activate on any The-Interdependency context or the example trigger phrases listed in the description.
+3. **Resource preflight**: Before starting any compute run, decide whether the available resources can sustain it to its natural terminal condition. If not, do not launch it. Do not substitute an arbitrary timeout for preflight judgment.
+4. **METAPAT gate**: Before conceptual or architectural commitment, run the consultation test above. If triggered, inspect current METAPAT before selecting the relation, boundary, transformation, or cross-domain mapping.
+5. **Context assembly**: For transcript work, explicitly structure output using EDCMBONE energy-dissonance mapping, F-metrics, failure-mode tags, and accessibility annotations. Preserve full original relations.
+6. **Artifact production**: Write code/docs with msdmd blocks (if applicable) + dedicated "Usage Guidance" section or equivalent. Include examples that can be copy-pasted.
+7. **GitHub hygiene**: Check drift, update indexes, propagate only after validation. Reference this skill in commit messages where relevant.
+8. **Output packaging**: Structure responses with:
    - Preserved structure / epistemic layers first.
    - EDCMBONE-mapped analysis where transcripts are involved.
    - Usage guidance and examples.
@@ -81,6 +83,8 @@ When consultation triggers, inspect the current METAPAT repository state before 
 
 ## Anti-patterns
 
+- Beginning org work or instantiating an org agent without resolving skill-lib, governing repo instructions, and applicable contracts first.
+- Asking the user to restate stable repository knowledge instead of resolving it from its authoritative source.
 - Flattening, dropping variables, or losing topology/relations before acting or summarizing (directly conflicts with neurodivergence preservation).
 - Starting a compute run when available resources have not been considered sufficiently to expect completion.
 - Terminating a healthy compute run because of an arbitrary wall-clock limit that was not actually load-bearing to the claim, safety boundary, or external resource limit.
@@ -107,5 +111,4 @@ hmmm
 - Precise harness integration for automatically fetching current METAPAT after this gate triggers; the skill currently defines the decision rule and source-of-truth boundary, while the consuming agent uses its available GitHub/local-repo access.
 - Whether the historical `meta` skill should remain as a compatibility router or be removed after all consumers propagate this gate.
 - Whether a companion metadata-block skill (e.g. `# === TIW_WORKFLOW ===` or `# === INTERDEPENDENCY ===`) should be added for self-declaring modules inside The-Interdependency repos.
-- Deeper integration with a0p-instancing / agent-instantiation so that TIW-context automatically loads this skill for sub-agents.
 - Exact canonical reference for the full EDCMBONE transcript assembly protocol — should the detailed steps live in this skill or be expanded inside the edcmbone repo's own skill definitions?

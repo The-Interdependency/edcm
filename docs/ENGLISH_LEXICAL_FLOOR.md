@@ -4,9 +4,9 @@ Status: `SURVIVED` only after the complete frozen run and independent replay agr
 
 ## Historical-name notice
 
-The file and artifact name are retained because they identify a completed EDCM OEWN evidence run. The stack-level **lexical-floor** premise is now DEPRECATED. This historical name does not define current UCNS lexical architecture and must not be read forward as a fixed-list semantic closure requirement.
+The file and artifact name are retained because they identify a completed EDCM OEWN evidence run. The stack-level **lexical-floor** premise is now DEPRECATED. This historical name does not define current UCNS or EDCM lexical architecture and must not be read forward as a fixed-list semantic closure requirement.
 
-Current lexical construction is recorded separately in [`GONOL_LANGUAGE_BOUNDARY.md`](GONOL_LANGUAGE_BOUNDARY.md): UCNS now targets a source-bound dictionary corpus, with a Scrabble dictionary authorized as the replacement source class once exact edition/source custody is pinned.
+Current text construction is recorded separately in [`GONOL_LANGUAGE_BOUNDARY.md`](GONOL_LANGUAGE_BOUNDARY.md): METAPAT owns affixiation semantics, UCNS owns gonol/Möbius/Public Gonol geometry, and EDCM owns text-domain admission and linguistic/semantic gonol construction, including the rule that every admitted character is a gonol.
 
 ## Work graph
 
@@ -48,31 +48,29 @@ Intrinsic `*.ucns.json` files contain only dense integer occurrence addresses, o
 
 ## Current gonol interpretation boundary
 
-This sealed run does **not** define the current lexical basis.
+This sealed run does **not** define the current text basis.
 
-The current upstream direction is:
+For active EDCM text construction:
 
 ```text
-Unicode character gonols
+every admitted character is a gonol
         ↓
-dictionary lexical entries / words
+morphology
         ↓
-word gonols
+definitions
         ↓
-source-bound dictionary definitions and senses
-        ↓
-ordered semantic relationships among word gonols
-        ↓
-definition gonols = first lexical deep-recursion layer
+recursive gonol relations
 ```
 
-The former rule requiring definitions to close over a fixed NGSL word set is deprecated. OEWN definition strings loaded by this historical EDCM run remain source prose and provenance evidence; they are not automatically promoted into the replacement UCNS dictionary-definition-gonol representation.
+This construction is EDCM-owned. METAPAT supplies the conceptual affixiation contract. UCNS supplies the gonol/Möbius/Public Gonol geometry and only those function operations that geometry establishes. The precise EDCM source/admission profile and unresolved UCNS coupling geometry remain explicit boundaries rather than being inferred from this historical OEWN experiment.
 
-The current definition-gonol role remains analogous to the semantic-representation role of conventional vector embeddings. This historical run establishes no equivalence, semantic quality, similarity behavior, benchmark advantage, or downstream utility for that representation.
+The former rule requiring definitions to close over a fixed NGSL word set is deprecated. OEWN definition strings loaded by this historical EDCM run remain source prose and provenance evidence; they are not automatically promoted into current EDCM gonol semantics.
+
+Any analogy between completed definition gonols and conventional semantic representations establishes no equivalence, semantic quality, similarity behavior, benchmark advantage, or downstream utility without a separately frozen evaluation.
 
 ## Evidence interpretation
 
-“Root”, “affix”, “direct-atomic”, and “molecular” name EDCM’s bounded OEWN and inventory-relative evidence senses. They are not universal English construction authority and are not substitutions for current UCNS dictionary-derived word/definition-gonol identities. All matching affix alternatives and explicit marked compounds are retained. Closed-compound analysis and pronunciation remain outside this run.
+“Root”, “affix”, “direct-atomic”, and “molecular” name EDCM’s bounded OEWN and inventory-relative evidence senses. They are not universal English construction authority and do not automatically define current EDCM character, morphology, definition, or recursive-gonol construction. All matching affix alternatives and explicit marked compounds are retained. Closed-compound analysis and pronunciation remain outside this run.
 
 The comparison preserves agreement and disagreement between independently frozen representations. It establishes neither equivalence nor superiority. Repeated complete runs may claim determinism only when every manifest-listed artifact digest and byte stream agrees.
 
@@ -80,8 +78,8 @@ The comparison preserves agreement and disagreement between independently frozen
 
 Use this document and its pinned commits only when reproducing or auditing the sealed OEWN relational construction. Do not repin it to current UCNS and do not rewrite its historical artifacts or filenames.
 
-For new lexical-semantic construction, follow current UCNS dictionary-corpus authority rather than this historical lexical-floor run. EDCM becomes a consumer only after UCNS pins the exact dictionary source and emits generalized source-bound definition-gonol receipts; any EDCM mapping must then be separately declared and frozen.
+For new text construction, follow [`GONOL_LANGUAGE_BOUNDARY.md`](GONOL_LANGUAGE_BOUNDARY.md): begin in EDCM, resolve the EDCM source/admission profile, import METAPAT affixiation semantics, consume current UCNS geometry, preserve unresolved geometry as `hmmm`, complete and independently replay the construction, and freeze any EDCM measurement separately.
 
 ## hmmm
 
-The exact Scrabble dictionary edition/source, machine-readable acquisition, immutable source identity, license/custody/redistribution boundary, and generalized UCNS dictionary-definition-gonol producer remain upstream unresolved. EDCM has not selected the corresponding consumer projection, metric, benchmark, or falsifier. Canonical English morphology, upstream signatures, and phrase/sentence/discourse semantic constructions also remain unresolved; none are manufactured by this sealed OEWN run.
+The exact EDCM character-admission unit remains profile-specific where not selected. Canonical English morphology, source/custody boundaries for future corpora, the exact UCNS native Möbius-carrier affixiation/coupling law, upstream signatures, phrase/sentence/discourse construction, and the EDCM measurement projection/metric/benchmark/falsifier for completed recursive text gonols remain unresolved. None are manufactured by this sealed OEWN run.

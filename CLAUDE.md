@@ -4,18 +4,20 @@ This repository is the maintained Python package for the Energy–Dissonance Cir
 
 ## Read first
 
-1. `codex-handoff/2026-07-12-stack-repair/REQUIRED_CHANGES.md`
-2. `codex-handoff/2026-07-12-stack-repair/COMPLETED_LOOKS_LIKE.md`
-3. `codex-handoff/2026-07-12-stack-repair/IMPLEMENTATION_STATUS.md`
-4. `README.md`
-5. `docs/GONOL_LANGUAGE_BOUNDARY.md`
-6. `docs/integrity-gates.md`
-7. `docs/ucns-adapter.md`
-8. `docs/shared-stack-result.md`
-9. `docs/consolidation-edcmbone.md`
-10. `docs/codex_edcmucns_v031_handoff.md`
+1. `CANON.md`
+2. `docs/GONOL_LANGUAGE_BOUNDARY.md`
+3. `.agents/skills/gonol-build/SKILL.md` when constructing gonols or applying affixiation
+4. `codex-handoff/2026-07-12-stack-repair/REQUIRED_CHANGES.md`
+5. `codex-handoff/2026-07-12-stack-repair/COMPLETED_LOOKS_LIKE.md`
+6. `codex-handoff/2026-07-12-stack-repair/IMPLEMENTATION_STATUS.md`
+7. `README.md`
+8. `docs/integrity-gates.md`
+9. `docs/ucns-adapter.md`
+10. `docs/shared-stack-result.md`
+11. `docs/consolidation-edcmbone.md`
+12. `docs/codex_edcmucns_v031_handoff.md`
 
-Unknown or unresolved facts are written `hmmm`, not guessed.
+Unknown or unresolved facts are written `hmmm`, not guessed. Current `CANON.md` and `docs/GONOL_LANGUAGE_BOUNDARY.md` govern new text construction; older handoffs and sealed profiles retain their historical meaning only.
 
 ## Package and release facts
 
@@ -61,17 +63,9 @@ Never update pinned canon identities merely to make CI pass. A legitimate change
 
 ## METAPAT semantic authority
 
-EDCM owns the consumer adapter, not the semantic schema. Consume only the actual producer surfaces:
+EDCM owns consumer adapters and text-domain application, not METAPAT semantic schema or affixiation meaning. Consume only actual producer surfaces and current application contracts.
 
-```text
-metapat.MetapatModuleEnvelope
-metapat.MODULE_ENVELOPE_SCHEMA_ID
-metapat.MODULE_ENVELOPE_SCHEMA_VERSION
-MetapatModuleEnvelope.from_json
-MetapatModuleEnvelope.from_dict
-```
-
-Accepted payload keys are mutually exclusive:
+For the maintained envelope adapter, accepted payload keys remain mutually exclusive:
 
 ```text
 metapat_envelope
@@ -81,67 +75,67 @@ metapat_envelope_dict
 
 Preserve exact source statements, references, constraints, permitted interpretations, unresolved `hmmm`, canon identity, and provenance digest. Never convert labels or statements directly into metric values.
 
+For affixiation, METAPAT owns the conceptual contract: already-bounded participants remain individually addressable with identity and provenance preserved while a declared relation may integrate as a recursively addressable object-whole. EDCM applies that contract; it does not redefine it.
+
 Direct absence of `metapat` is typed unavailability. Transitive import errors, missing producer surfaces, unsupported schemas, invalid provenance, unknown fields, and wrong envelope types remain visible failures.
 
 ## Gonol-native language architecture
 
-For current stack language work, UCNS owns this construction boundary:
+The active authority split is:
 
 ```text
-Unicode character gonols
-        ↓
-fixed floor word gonols
-        ↓
-complete lexical floor F
-        ↓
-definitions expressed only with members of F
-        ↓
-floor-definition gonols
+METAPAT   -> affixiation semantics and relational-integration invariants
+UCNS      -> gonol geometry, native Möbius/Public Gonol carrier,
+             geometrically established operations
+EDCM      -> text-domain admission and linguistic/semantic gonol construction
+EDCM      -> separately declared measurement projections and falsifiers
 ```
 
-Unicode character gonols are the primitive inscription objects. Once the
-lexical floor is admitted, floor definitions cannot enlarge it:
+For active EDCM text construction:
 
 ```text
-support(definition_gonol(word, sense)) ⊆ F
+every admitted character is a gonol
 ```
 
-Do not insert a conventional NLP tokenizer, token IDs, subword pieces, or an
-opaque external vector lookup between inscription and the gonol construction.
-Do not treat arbitrary dictionary definition prose as a completed
-floor-definition gonol. Source prose may remain custody/provenance evidence.
+This is an EDCM text-domain rule. EDCM owns the source/profile that decides what is admitted as a character. If a profile has not selected Unicode code point, grapheme, exact Public Gonol glyph inventory, or another explicit unit, that admission boundary remains `hmmm`; UCNS does not silently decide it merely because UCNS supplies the geometry.
 
-A floor-definition gonol is intended to occupy the semantic-representation role
-for which conventional systems commonly use vector embeddings. This is a role
-analogy only. Do not promote it into semantic-quality, equivalence, similarity,
-benchmark-advantage, or downstream-utility claims without a separate frozen
-evaluation.
+The active construction dependency is:
 
-EDCM owns neither lexical-floor membership nor UCNS character-, word-, or
-definition-gonol construction. EDCM may consume exact source-bound receipts and
-may separately define a measurement projection. UCNS representation does not
-activate EDCM measurement; EDCM results do not validate UCNS semantics or
-mathematics.
+```text
+characters
+    ↓
+morphology
+    ↓
+definitions
+    ↓
+recursive gonol relations
+```
 
-The exact UCNS definition-gonol relation/composition law and the source/custody
-procedure for a complete closed definition set are still `hmmm`. Until the
-upstream producer exists, do not fabricate an EDCM semantic adapter by reusing
-arbitrary definition text or the historical word-profile schema.
+Relationships that constitute a gonol enter the construction. Completed gonols are atomic for participation at the consuming scale without becoming structureless or provenance-free. Do not reopen a completed gonol or impose a conventional NLP intermediate scale merely because doing so simplifies later processing.
+
+Do not insert a conventional NLP tokenizer, token IDs, subword pieces, opaque external vector lookup, or whole-string hash as a substitute for gonol identity. Source prose, dictionaries, corpora, labels, and annotations may remain evidence and provenance; they become gonol semantics only through a source-bound EDCM construction whose admission, relation, closure, and replay boundaries are explicit.
+
+Affixiation is defined by METAPAT. UCNS owns any exact geometric realization of the operation. EDCM applies it to text-domain gonols. Linguistic prefixes and suffixes are one instance; they do not define affixiation.
+
+Do not invent an alternative carrier, topology, scale increment, arity rule, containment rule, or coupling law to fill unresolved UCNS geometry. Implement the native Möbius/Public Gonol carrier under the fixed contracts and preserve missing geometric law as `hmmm` until construction exposes it.
+
+UCNS owns the geometry of Public Gonol function positions. EDCM may use only operations that current UCNS geometry actually establishes. Unicode names, dictionary definitions, conventional punctuation grammar, adjacency, and glyph shape do not supply UCNS function authority. An unresolved operation remains `hmmm`.
+
+A completed EDCM gonol construction does not activate EDCM measurement. Any later projection must separately declare information loss, metric, aggregation, baseline, partitions, stopping rules, and falsifiers. Construction reproducibility does not establish semantic quality, embedding equivalence, compression advantage, cognition, consciousness, or measurement validity.
 
 ## Exact EDCM UCNS observation profile
 
-EDCM owns the consumer adapter. UCNS owns the exact EDCM-only word-gonol
+EDCM owns the consumer adapter. UCNS owns the exact historical EDCM-only word-gonol
 profile and v0.14.1 full-corpus gate. EDCM consumes those unchanged surfaces
 from merged UCNS v0.19 producer
 `a98c9e6c69804a8a08d0786b1d8b450bb2c49a97`, which includes the final
 integrity repairs.
 
 This is a sealed observation/replay producer epoch. Its names and options are
-preserved for reproducibility; they do not override the later gonol-native
-language architecture above. In particular, `smallest_gonol: word`,
-`token_alphabet`, `token_identity`, and token-record field names are frozen
-profile/schema vocabulary, not current ontology and not authorization for a
-tokenizer layer.
+preserved for reproducibility; they do not override the current EDCM text-domain
+authority above. In particular, `smallest_gonol: word`, `token_alphabet`,
+`token_identity`, and token-record field names are frozen profile/schema
+vocabulary, not current ontology and not authorization for a tokenizer layer.
 
 The adapter activates only for `ucns.profile.edcm-word-gonol/0.2.0` with all
 fourteen fixed options, `source_domain=unicode-scalar-values`, the exact
@@ -151,7 +145,7 @@ ordered `ucns_turns` as exact `(speaker_id, text)` tuples. Never infer speaker
 turns from a flattened transcript, sample a corpus, or normalize source text.
 
 Every word is a maximal sequence not assigned to carrier position zero under
-this pinned profile. Each pinned Unicode SPACE manifestation is assigned to the
+this pinned historical profile. Each pinned Unicode SPACE manifestation is assigned to the
 public SPACE carrier at position zero and emitted as an explicit
 superpositioned nesting boundary. Source value/code point and carrier
 token/position are serialized separately, so tab, newline, and non-breaking
@@ -249,8 +243,8 @@ observations, readouts, independently attached evidence, and attachment states.
 turns are EDCM objects. They are not substitutes for formal UCNS geometry.
 
 Keep source evidence, METAPAT semantic authority, UCNS profile observations,
-UCNS geometry identity, UCNS status evidence, EDCM policy identity, and EDCM
-readouts separate.
+UCNS geometry identity, UCNS status evidence, EDCM text-construction identity,
+EDCM policy identity, and EDCM readouts separate.
 
 UCNS equality does not imply EDCM measurement equivalence. UCNS or METAPAT theorem/domain/certification status is attached evidence only and never promotes EDCM empirical validity.
 
@@ -265,13 +259,17 @@ proof_status_transfers_to_measurement_validity = false
 ## Non-negotiable guardrails
 
 - `NA != 0`.
+- For active EDCM text construction, every admitted character is a gonol.
+- METAPAT owns affixiation semantics; UCNS owns geometry; EDCM owns text-domain admission and linguistic/semantic construction.
 - No-bone, empty-field, absent-adapter, missing-context, and absent-evidence cases remain typed absence or `NA`.
 - Ordered windows compose with `SeqAppend`; never average testimony-bearing order.
 - METAPAT semantic labels never become measured values merely by being named.
 - Deterministic transcript metrics do not establish diagnosis, intent, consciousness, external truth, or root ontology.
 - UCNS observation digests establish content identity, not signed producer authentication.
-- Historical `token` or `word-gonol` profile vocabulary never authorizes a tokenizer or overrides the current gonol-language boundary.
-- Arbitrary definition prose never substitutes for a source-bound closed floor-definition gonol.
+- Historical `token`, `word-gonol`, lexical-floor, or UCNS producer vocabulary never authorizes a tokenizer or overrides the current EDCM gonol-language boundary.
+- Source prose or dictionary text never substitutes for an explicit source-bound EDCM gonol construction.
+- Unicode names, dictionary definitions, adjacency, conventional grammar, and glyph shape never fill unresolved UCNS function geometry.
+- Unresolved geometry remains `hmmm`; do not invent a different carrier or scale law to make the pipeline complete.
 
 These frontier gates remain non-operational until their named falsifiers and tests exist:
 
@@ -286,7 +284,7 @@ Do not replace `NotImplementedError` with constants, heuristics, language-model 
 
 Base tests pass without UCNS or METAPAT installed. Integration tests use actual pinned sibling packages.
 
-The UCNS profile suite must prove:
+The historical UCNS profile suite must prove:
 
 - exact profile and option drift fail closed;
 - all supplied turns remain ordered and retain exact Unicode source witnesses;
@@ -298,11 +296,7 @@ The UCNS profile suite must prove:
 - package availability alone attaches no observation;
 - profile evidence never becomes geometry, factorization, theorem, or measurement validity.
 
-A future floor-definition-gonol consumer suite must additionally prove exact
-producer/floor identity, closure over `F`, source-bound replay, constituent
-order/multiplicity/sense/context/source provenance, and fail-closed rejection of
-out-of-floor words, arbitrary definition prose, tokenizer IDs, subwords, and
-opaque-vector substitution before any EDCM semantic evaluation runs.
+A current text-gonol construction suite must additionally prove the active EDCM source/admission profile, the rule that every admitted character is a gonol, participant/occurrence/order/multiplicity/provenance preservation, intrinsic relation capture, closure and atomic-participation boundaries, exact UCNS geometry identity where used, unresolved geometric operations remaining `hmmm`, complete-source execution for completion claims, and independent replay. It must fail closed on tokenizer IDs, subwords, opaque-vector substitution, whole-string-hash substitution, invented morphology, and semantic inference standing in for unresolved UCNS geometry.
 
 The full-stack fixture proves identity separation, deterministic measurement, `NA != 0`, fail-closed producer validation, canon/manifest epoch rotation, and no proof-status transfer.
 
@@ -318,19 +312,28 @@ Optional skips are explicit. Fake sibling implementations may test adversarial c
 - Historical measurement modules retain provenance until the explicit metadata-reconciliation pass.
 - Code and documentation include runnable usage guidance, integration notes, limitations, and `hmmm` boundaries.
 - EDCM vendors the bounded build/evidence subset from
-  `The-Interdependency/skill-lib@2b24be24947223b86440f59f1bd9766130f9cc11`.
+  `The-Interdependency/skill-lib@a1c6a7124af537ee9937b6fc6084940091982fe5`.
   The canonical drift checker and msdmd collector run in
   `.github/workflows/skill-compliance.yml`; repo-local copies are consumers,
   never authority.
+- `gonol-build` is the required routing discipline for current gonol construction and affixiation implementation/application work.
+
+## Usage guidance
+
+For new text-gonol work, start in EDCM. Resolve the exact source/admission profile, consume current METAPAT affixiation semantics and current UCNS geometry, preserve `hmmm` where geometry is unresolved, complete and independently replay the declared construction, and only then design a separately frozen EDCM measurement.
+
+For historical UCNS observation experiments, use the exact pinned producer and frozen vocabulary named by the historical artifact. Do not rewrite historical evidence and do not read its old producer boundary forward into current architecture.
 
 ## hmmm
 
 Still unresolved:
 
-- exact UCNS closed floor-definition-gonol composition and source/custody procedure;
-- EDCM projection, metric, benchmark, and falsifier for future definition-gonol evaluation;
+- exact EDCM character-admission units for profiles that have not selected one;
+- source-supported complete English morphology law;
+- exact UCNS native Möbius-carrier affixiation/coupling geometry and direct distant-scale coupling;
+- EDCM projection, metric, benchmark, and falsifier for completed recursive text-gonol evaluation;
 - cryptographically signed UCNS producer or transport authentication;
 - mutation-level verification for the repository-wide CONTRACTS/CHECKS graph;
 - remaining historical L0/L1/L2/L3 split, P assignment, matrix wiring, bidirectional alerts, and Bridge-home decisions.
 
-These unresolveds do not reopen measurement authority, semantic-authority ownership, canonical evidence schemas, certification policy, integrity guarantees, lexical-floor closure, or the proof-transfer firewall.
+These unresolveds do not reopen measurement authority, METAPAT semantic ownership, UCNS geometric authority, EDCM text-domain construction ownership, canonical evidence schemas, certification policy, integrity guarantees, or the proof-transfer firewall.
