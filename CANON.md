@@ -61,14 +61,14 @@ The current EDCM construction dependency is:
 ```text
 characters
     ↓
-morphology
+words
     ↓
 definitions
     ↓
 recursive gonol relations
 ```
 
-This is a dependency order, not permission to flatten completed gonols or impose conventional NLP intermediate scales. A completed gonol is atomic for participation at its consuming scale while constituent identity and provenance remain recoverable.
+This order is load-bearing. Ordered character gonols close into word gonols. A closed word gonol is atomic at the consuming scale while constituent identities, order, multiplicity, source positions, and provenance remain recoverable. Morphology is not a required stage. Historical morphology evidence remains historical; the complete English morphology law remains `hmmm`.
 
 Affixiation is defined by METAPAT, not by EDCM and not by UCNS. EDCM applies affixiation to text-domain gonols. UCNS owns any exact geometric realization on the native Möbius/Public Gonol carrier. An unresolved UCNS coupling law remains `hmmm`; neither EDCM nor UCNS may fill it by importing an invented carrier, topology, scale increment, arity rule, containment rule, or linguistic convention.
 
@@ -245,7 +245,7 @@ This phase may implement:
 - positive unresolved-reference and alternative-bundle evidence;
 - reproducible reports and policy-preservation findings;
 - CI execution against exact UCNS commits where experiments require them;
-- source-bound EDCM character, morphology, definition, and recursive-gonol candidate constructors under the current authority split;
+- source-bound EDCM character, word, definition, and recursive-gonol candidate constructors under the current authority split;
 - candidate UCNS Möbius-carrier realizations of affixiation under fixed METAPAT invariants; and
 - preregistered EDCM measurements of completed text-gonol constructions.
 

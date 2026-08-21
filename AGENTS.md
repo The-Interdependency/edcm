@@ -16,7 +16,7 @@ description: |
 
 1. `CANON.md`
 2. `docs/GONOL_LANGUAGE_BOUNDARY.md`
-3. `.agents/skills/gonol-build/SKILL.md` for gonol, character, morphology, definition, recursive-relation, or affixiation work
+3. `.agents/skills/gonol-build/SKILL.md` for gonol, character, word, definition, recursive-relation, or affixiation work
 4. `README.md`
 5. `docs/UCNS_EDCM_EXPERIMENT_PROGRAM.md`
 6. `CLAUDE.md`
@@ -37,7 +37,7 @@ METAPAT affixiation semantics: The-Interdependency/metapat at the current govern
 UCNS gonol geometry:          The-Interdependency/ucns at the current governing or experiment-pinned commit
 EDCM text construction:       The-Interdependency/edcm current canon/profile
 EDCM baseline measurement:    The-Interdependency/edcm:edcm/measurement
-organization skills:          The-Interdependency/skill-lib@a1c6a7124af537ee9937b6fc6084940091982fe5
+organization skills:          The-Interdependency/skill-lib@fb3b53a7629f7f03ecf255167d52c13abef1a979
 experiment evidence:          exact report, corpus, candidate, and workflow identities
 ```
 
@@ -56,6 +56,7 @@ EDCM owns the character-admission profile and linguistic/semantic construction. 
 - `edcm/measurement/` is the frozen maintained baseline candidate.
 - `edcm.ucns_edcm_experiments` is the first joint experiment runner.
 - EDCM owns current text-domain gonol admission and construction; measurement remains separately frozen and evaluated.
+- `edcm.character_word` is the implemented candidate for `characters -> words`. It is not selected canon.
 - UCNS structural policies, product-character candidates, faithful-breadth candidates, and unresolved Möbius coupling laws remain noncanonical unless current UCNS authority says otherwise.
 - EDCM axes, thresholds, marker lists, and circuit parameters remain candidates unless an explicit canon decision says otherwise.
 - A passing hypothesis is experiment-supported evidence, not canon.
@@ -103,7 +104,7 @@ python -m twine check dist/*
 
 ## Usage guidance
 
-For new text-gonol construction, begin in EDCM. Resolve the exact EDCM source/admission profile, import METAPAT affixiation invariants without redefining them, consume current UCNS geometry, build the declared construction, and replay it independently before claiming completion. Freeze any EDCM measurement only after construction and keep its evidence status separate.
+For new text-gonol construction, begin in EDCM. Resolve the exact EDCM source/admission profile, import METAPAT affixiation invariants without redefining them, consume current UCNS geometry, and construct `characters -> words` with `edcm.character_word`. Replay independently before claiming completion. Freeze any EDCM measurement only after construction and keep its evidence status separate.
 
 For historical experiments, reproduce the exact historical producer epoch and names. Historical UCNS-owned lexical artifacts remain evidence; they do not restore current language authority to UCNS.
 

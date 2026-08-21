@@ -55,7 +55,7 @@ For active EDCM text construction:
 ```text
 every admitted character is a gonol
         ↓
-morphology
+words
         ↓
 definitions
         ↓

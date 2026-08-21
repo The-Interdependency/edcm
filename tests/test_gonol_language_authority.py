@@ -31,6 +31,11 @@ def test_live_surfaces_route_gonol_authority_consistently() -> None:
     assert "METAPAT defines affixiation" in boundary
     assert "UCNS owns any exact geometric realization" in boundary
     assert "EDCM applies affixiation to text-domain gonols" in boundary
+    for text in (boundary, canon, agents):
+        assert "characters" in text and "words" in text
+    assert "This order is load-bearing" in boundary
+    assert "edcm.character_word" in boundary
+    assert "Morphology is not a required stage" in boundary
 
 
 def test_live_surfaces_do_not_restore_ucns_language_ownership() -> None:

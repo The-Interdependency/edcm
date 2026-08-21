@@ -51,16 +51,18 @@ The current EDCM construction dependency is:
 ```text
 characters
     ↓
-morphology
+words
     ↓
 definitions
     ↓
 recursive gonol relations
 ```
 
-This is a dependency order, not a demand to reopen every completed object at every later scale. A completed gonol is atomic for participation at its consuming scale while retaining recoverable constituent identity and provenance.
+This order is load-bearing. Every admitted character is a gonol. Ordered character gonols close into a word gonol. A closed word gonol is atomic at the consuming scale while constituent identities, order, multiplicity, source positions, and provenance remain recoverable. Definition gonols are constructed from already-closed word gonols. Recursive relations are constructed from already-closed gonols.
 
-Words and other intermediate closures may be used where an explicit EDCM construction requires them. EDCM must not manufacture a mandatory intermediate scale merely because a conventional NLP pipeline normally contains one.
+Do not insert another required stage into this sequence unless the governing contract is explicitly changed. Morphology is not a required stage. Historical morphology evidence remains historical; the complete English morphology law remains `hmmm`.
+
+`edcm.character_word` is the implemented candidate for character admission and word closure. It is not selected canon.
 
 Relationships that constitute a gonol enter the construction. They are not merely external semantic edges. Sidecars may index, cache, project, or record provenance; they do not replace intrinsic relational content.
 
@@ -124,13 +126,26 @@ Preflight real resource requirements before a complete run. Once a healthy admit
 
 ## Usage guidance
 
+Copy-pasteable first-two-stages candidate:
+
+```python
+from edcm.character_word import construct_character_word_gonols, replay_character_word_gonols
+
+first = construct_character_word_gonols("don't cut.", source_id="example")
+second = replay_character_word_gonols("don't cut.", source_id="example")
+assert first.receipt_digest == second.receipt_digest
+assert ["".join(word.kind_id) for word in first.words] == ["don't", "cut."]
+```
+
+Set `UCNS_SOURCE_ROOT` to a current UCNS checkout if `ucns.public_gonol` is not importable.
+
 For new text-gonol work:
 
 1. start in EDCM;
 2. resolve the exact EDCM source/admission profile;
 3. import current METAPAT affixiation invariants rather than redefining them;
 4. consume current UCNS geometry rather than moving text semantics into UCNS;
-5. construct characters, morphology, definitions, and recursive relations under explicit EDCM receipts;
+5. construct characters, words, definitions, and recursive relations under explicit EDCM receipts; use `edcm.character_word` for the first two stages;
 6. keep unresolved UCNS geometric operations as `hmmm`;
 7. replay the complete declared construction before claiming completion; and
 8. freeze any later EDCM measurement separately.

@@ -104,14 +104,14 @@ The active construction dependency is:
 ```text
 characters
     ↓
-morphology
+words
     ↓
 definitions
     ↓
 recursive gonol relations
 ```
 
-Relationships that constitute a gonol enter the construction. Completed gonols are atomic for participation at the consuming scale without becoming structureless or provenance-free. Do not reopen a completed gonol or impose a conventional NLP intermediate scale merely because doing so simplifies later processing.
+This order is load-bearing. `edcm.character_word` is the implemented candidate for character admission and word closure. Morphology is not a required stage. Do not reopen a completed word gonol or insert another required scale merely because a conventional NLP pipeline contains one.
 
 Do not insert a conventional NLP tokenizer, token IDs, subword pieces, opaque external vector lookup, or whole-string hash as a substitute for gonol identity. Source prose, dictionaries, corpora, labels, and annotations may remain evidence and provenance; they become gonol semantics only through a source-bound EDCM construction whose admission, relation, closure, and replay boundaries are explicit.
 
