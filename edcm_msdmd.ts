@@ -703,6 +703,85 @@ export default defineMsdmdCollection({
       "id": "edcm_goal_vector_experiment"
     },
     {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "construction",
+        "given": "a closed gonol participates in another construction",
+        "since": "2026-08-22",
+        "then": "the participant is consumed by atomic identity while recoverable provenance and nested structure remain available"
+      },
+      "file": "edcm/gonol.py",
+      "id": "closed_gonol_atomic_at_any_scale"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "ucns.public_gonol is not normally importable",
+        "since": "2026-08-22",
+        "then": "construction records geometry as hmmm and does not mutate sys.path or fail base-package CI"
+      },
+      "file": "edcm/gonol.py",
+      "id": "construction_survives_absent_ucns_geometry"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "importable UCNS Public Gonol geometry has a digest different from the pinned identity",
+        "since": "2026-08-22",
+        "then": "construction raises rather than consuming or copying mismatched geometry"
+      },
+      "file": "edcm/gonol.py",
+      "id": "geometry_mismatch_fails_closed"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "construction",
+        "given": "a caller closes source evidence or closed gonol participants",
+        "since": "2026-08-22",
+        "then": "edcm.gonol uses the declared scale option set rather than dispatching through specialized ladder constructors"
+      },
+      "file": "edcm/gonol.py",
+      "id": "single_constructor_uses_scale_option_sets"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "doctrine",
+        "given": "a receipt is minted",
+        "since": "2026-08-22",
+        "then": "standing is implemented-candidate, selection_effect is none, and measurement, UCNS operation, and METAPAT promotion remain nonclaims"
+      },
+      "file": "edcm/gonol.py",
+      "id": "unified_candidate_does_not_select_canon"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "EDCM owns text-domain closure; UCNS Public Gonol geometry is optional observation unless normally importable with matching digest; METAPAT affixiation semantics are consumed, not redefined",
+        "internal_surface": "_option_set, _require_text, _source_units, _load_optional_public_gonol, _geometry_observation, _participant_payload, _atomic_payload, _receipt_payload, _digest",
+        "module_kind": "engine",
+        "module_name": "gonol",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "CONSTRUCTOR_ID, CONSTRUCTOR_VERSION, PINNED_PUBLIC_GONOL_SHA256, ScaleOptionSet, ClosedGonol, GonolReceipt, GonolConstructionError, SCALE_OPTION_SETS, construct_gonol, replay_gonol, canonical_receipt_bytes",
+        "requires": "none",
+        "rollback": "remove this module; historical lexical-floor and UCNS observation adapters remain unchanged",
+        "rollout": "explicit candidate constructor; no canon selection, measurement activation, UCNS function operation, or Mobius coupling promotion",
+        "since": "2026-08-22",
+        "storage_boundary": "none; receipts remain caller-owned in-memory objects",
+        "summary": "unified EDCM candidate constructor that closes gonols through declared scale option sets while preserving closed-gonol atomicity, deterministic replay, and UCNS/METAPAT authority boundaries",
+        "tests": "tests.test_gonol_constructor",
+        "unresolved": "exact UCNS geometric operation of Public Gonol function positions; Mobius-carrier affixiation/coupling law; which scales and relations are later selected; complete English morphology law",
+        "user_data_boundary": "caller-supplied source, relation, participants, and source_id remain in memory and are not transmitted"
+      },
+      "file": "edcm/gonol.py",
+      "id": "edcm_gonol"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
@@ -1851,6 +1930,66 @@ export default defineMsdmdCollection({
       },
       "file": "tests/test_goal_vector_experiment.py",
       "id": "check_goal_vector_sealed_evidence"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_closed_gonols_participate_directly_without_ladder",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "closed_gonol_atomic_at_any_scale",
+        "timeout": "30"
+      },
+      "file": "tests/test_gonol_constructor.py",
+      "id": "closed_gonol_atomic_at_any_scale_check"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_base_construction_survives_absent_ucns_without_sys_path_mutation",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "construction_survives_absent_ucns_geometry",
+        "timeout": "30"
+      },
+      "file": "tests/test_gonol_constructor.py",
+      "id": "construction_survives_absent_ucns_geometry_check"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_digest_mismatch_fails_closed",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "geometry_mismatch_fails_closed",
+        "timeout": "30"
+      },
+      "file": "tests/test_gonol_constructor.py",
+      "id": "geometry_mismatch_fails_closed_check"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_constructor_uses_declared_scale_option_set",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "single_constructor_uses_scale_option_sets",
+        "timeout": "30"
+      },
+      "file": "tests/test_gonol_constructor.py",
+      "id": "single_constructor_uses_scale_option_sets_check"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_receipt_remains_candidate",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "unified_candidate_does_not_select_canon",
+        "timeout": "30"
+      },
+      "file": "tests/test_gonol_constructor.py",
+      "id": "unified_candidate_does_not_select_canon_check"
     },
     {
       "block": "CHECKS",
@@ -4664,6 +4803,48 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
+      "from": "closed_gonol_atomic_at_any_scale_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "closed_gonol_atomic_at_any_scale_check",
+      "to": "self::test_closed_gonols_participate_directly_without_ladder"
+    },
+    {
+      "from": "closed_gonol_atomic_at_any_scale_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "closed_gonol_atomic_at_any_scale_check",
+      "to": "closed_gonol_atomic_at_any_scale"
+    },
+    {
+      "from": "construction_survives_absent_ucns_geometry_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "construction_survives_absent_ucns_geometry_check",
+      "to": "self::test_base_construction_survives_absent_ucns_without_sys_path_mutation"
+    },
+    {
+      "from": "construction_survives_absent_ucns_geometry_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "construction_survives_absent_ucns_geometry_check",
+      "to": "construction_survives_absent_ucns_geometry"
+    },
+    {
+      "from": "geometry_mismatch_fails_closed_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "geometry_mismatch_fails_closed_check",
+      "to": "self::test_digest_mismatch_fails_closed"
+    },
+    {
+      "from": "geometry_mismatch_fails_closed_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "geometry_mismatch_fails_closed_check",
+      "to": "geometry_mismatch_fails_closed"
+    },
+    {
       "from": "language_relational_branch_check",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -4748,6 +4929,34 @@ export default defineMsdmdCollection({
       "to": "oewn_source_is_exact_pinned_and_resumable"
     },
     {
+      "from": "single_constructor_uses_scale_option_sets_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "single_constructor_uses_scale_option_sets_check",
+      "to": "self::test_constructor_uses_declared_scale_option_set"
+    },
+    {
+      "from": "single_constructor_uses_scale_option_sets_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "single_constructor_uses_scale_option_sets_check",
+      "to": "single_constructor_uses_scale_option_sets"
+    },
+    {
+      "from": "unified_candidate_does_not_select_canon_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "unified_candidate_does_not_select_canon_check",
+      "to": "self::test_receipt_remains_candidate"
+    },
+    {
+      "from": "unified_candidate_does_not_select_canon_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "unified_candidate_does_not_select_canon_check",
+      "to": "unified_candidate_does_not_select_canon"
+    },
+    {
       "from": "edcm_ucns_fork_lint_docs",
       "kind": "covers",
       "source_block": "DOCS",
@@ -4830,6 +5039,20 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_goal_vector_experiment",
       "to": "edcm_ucns_adapter"
+    },
+    {
+      "from": "edcm_gonol",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_gonol",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_gonol",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_gonol",
+      "to": "none"
     },
     {
       "from": "edcm_integrity",
