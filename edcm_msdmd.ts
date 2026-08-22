@@ -773,7 +773,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "EDCM owns text-domain closure; UCNS Public Gonol geometry is optional observation unless normally importable with matching digest; METAPAT affixiation semantics are consumed, not redefined",
-        "internal_surface": "_option_set, _require_text, _source_units, _closed_participants, _carried_option_pairs, _relation_value, _load_optional_public_gonol, _geometry_observation, _participant_payload, _atomic_payload, _receipt_payload, _digest",
+        "internal_surface": "_option_set, _require_text, _source_units, _closed_participants, _carried_option_pairs, _has_suffix_coupling_options, _relation_value, _load_optional_public_gonol, _geometry_observation, _participant_payload, _atomic_payload, _receipt_payload, _digest",
         "module_kind": "engine",
         "module_name": "gonol",
         "network_boundary": "none",

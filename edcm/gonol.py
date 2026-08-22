@@ -50,7 +50,7 @@ Frozen choices for ``edcm.gonol/v1``:
 #   summary: unified EDCM candidate constructor that closes gonols through declared scale option sets while preserving closed-gonol atomicity, carried suffix options, deterministic replay, and UCNS/METAPAT authority boundaries
 #   owner: Erin Spencer
 #   public_surface: CONSTRUCTOR_ID, CONSTRUCTOR_VERSION, PINNED_PUBLIC_GONOL_SHA256, ScaleOptionSet, ClosedGonol, GonolReceipt, GonolConstructionError, SCALE_OPTION_SETS, construct_gonol, replay_gonol, canonical_receipt_bytes
-#   internal_surface: _option_set, _require_text, _source_units, _closed_participants, _carried_option_pairs, _relation_value, _load_optional_public_gonol, _geometry_observation, _participant_payload, _atomic_payload, _receipt_payload, _digest
+#   internal_surface: _option_set, _require_text, _source_units, _closed_participants, _carried_option_pairs, _has_suffix_coupling_options, _relation_value, _load_optional_public_gonol, _geometry_observation, _participant_payload, _atomic_payload, _receipt_payload, _digest
 #   auth_boundary: EDCM owns text-domain closure; UCNS Public Gonol geometry is optional observation unless normally importable with matching digest; METAPAT affixiation semantics are consumed, not redefined
 #   storage_boundary: none; receipts remain caller-owned in-memory objects
 #   network_boundary: none
@@ -332,6 +332,10 @@ def _carried_option_pairs(
     return tuple(pairs)
 
 
+def _has_suffix_coupling_options(carried_options: tuple[tuple[str, str], ...]) -> bool:
+    return any(key.startswith("suffix-coupling.") for key, _value in carried_options)
+
+
 def _relation_value(relation: str | None, *, options: ScaleOptionSet) -> str:
     if relation is None:
         if options.default_relation is None:
@@ -503,6 +507,8 @@ def construct_gonol(
         raise GonolConstructionError("character scale does not accept closed participants")
     if options.scale == "character" and carried:
         raise GonolConstructionError("character scale does not carry declared options")
+    if options.scale != "suffix" and _has_suffix_coupling_options(carried):
+        raise GonolConstructionError("suffix-coupling options must be carried by a closed suffix gonol")
     if options.scale == "suffix" and closed:
         raise GonolConstructionError("suffix scale does not accept closed participants")
     if options.scale == "suffix-coupling":

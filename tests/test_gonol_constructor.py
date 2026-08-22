@@ -176,12 +176,20 @@ class GonolConstructorTest(unittest.TestCase):
         )
         self.assertNotEqual(preserved.gonol.atomic_id, changed.gonol.atomic_id)
 
-        with self.assertRaisesRegex(GonolConstructionError, "carried by the closed suffix participant"):
+        with self.assertRaisesRegex(GonolConstructionError, "carried by a closed suffix gonol"):
             construct_gonol(
                 scale="suffix-coupling",
                 participants=(base.gonol, ing_preserve.gonol),
                 carried_options=(("suffix-coupling.final-y-after-consonant", "preserve-y"),),
                 source_id="fixture:bad-carrier",
+            )
+
+        with self.assertRaisesRegex(GonolConstructionError, "carried by a closed suffix gonol"):
+            construct_gonol(
+                scale="word",
+                source="try",
+                source_id="fixture:bad-word-carrier",
+                carried_options=(("suffix-coupling.final-y-after-consonant", "preserve-y"),),
             )
 
         with self.assertRaisesRegex(GonolConstructionError, "closed base and closed suffix"):
