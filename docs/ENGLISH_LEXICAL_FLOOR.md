@@ -50,19 +50,9 @@ Intrinsic `*.ucns.json` files contain only dense integer occurrence addresses, o
 
 This sealed run does **not** define the current text basis.
 
-For active EDCM text construction:
+For active EDCM text construction, every admitted character is a gonol, and later closures use declared scale option sets rather than a mandatory adjacent-scale ladder.
 
-```text
-every admitted character is a gonol
-        ↓
-morphology
-        ↓
-definitions
-        ↓
-recursive gonol relations
-```
-
-This construction is EDCM-owned. METAPAT supplies the conceptual affixiation contract. UCNS supplies the gonol/Möbius/Public Gonol geometry and only those function operations that geometry establishes. The precise EDCM source/admission profile and unresolved UCNS coupling geometry remain explicit boundaries rather than being inferred from this historical OEWN experiment.
+This construction is EDCM-owned. METAPAT supplies the conceptual affixiation contract. UCNS supplies the gonol/Möbius/Public Gonol geometry and only those function operations that geometry establishes. Once closed, a gonol is atomic at any scale. The precise EDCM source/admission profile and unresolved UCNS coupling geometry remain explicit boundaries rather than being inferred from this historical OEWN experiment.
 
 The former rule requiring definitions to close over a fixed NGSL word set is deprecated. OEWN definition strings loaded by this historical EDCM run remain source prose and provenance evidence; they are not automatically promoted into current EDCM gonol semantics.
 

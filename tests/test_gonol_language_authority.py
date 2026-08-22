@@ -31,6 +31,13 @@ def test_live_surfaces_route_gonol_authority_consistently() -> None:
     assert "METAPAT defines affixiation" in boundary
     assert "UCNS owns any exact geometric realization" in boundary
     assert "EDCM applies affixiation to text-domain gonols" in boundary
+    for text in (boundary, canon, agents):
+        assert "scale option sets" in text
+        assert "edcm.gonol" in text
+        assert "Once closed, a gonol is atomic at any scale" in text
+    assert "mandatory adjacent-scale ladder" in boundary
+    assert "Closed gonols may participate directly at any admissible scale" in boundary
+    assert "does not mutate `sys.path`" in boundary
 
 
 def test_live_surfaces_do_not_restore_ucns_language_ownership() -> None:

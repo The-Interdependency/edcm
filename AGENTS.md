@@ -16,7 +16,7 @@ description: |
 
 1. `CANON.md`
 2. `docs/GONOL_LANGUAGE_BOUNDARY.md`
-3. `.agents/skills/gonol-build/SKILL.md` for gonol, character, morphology, definition, recursive-relation, or affixiation work
+3. `.agents/skills/gonol-build/SKILL.md` for gonol, character, word, definition, recursive-relation, or affixiation work
 4. `README.md`
 5. `docs/UCNS_EDCM_EXPERIMENT_PROGRAM.md`
 6. `CLAUDE.md`
@@ -56,6 +56,7 @@ EDCM owns the character-admission profile and linguistic/semantic construction. 
 - `edcm/measurement/` is the frozen maintained baseline candidate.
 - `edcm.ucns_edcm_experiments` is the first joint experiment runner.
 - EDCM owns current text-domain gonol admission and construction; measurement remains separately frozen and evaluated.
+- `edcm.gonol` is the implemented candidate constructor for closing gonols through declared scale option sets. None is selected canon.
 - UCNS structural policies, product-character candidates, faithful-breadth candidates, and unresolved Möbius coupling laws remain noncanonical unless current UCNS authority says otherwise.
 - EDCM axes, thresholds, marker lists, and circuit parameters remain candidates unless an explicit canon decision says otherwise.
 - A passing hypothesis is experiment-supported evidence, not canon.
@@ -103,7 +104,7 @@ python -m twine check dist/*
 
 ## Usage guidance
 
-For new text-gonol construction, begin in EDCM. Resolve the exact EDCM source/admission profile, import METAPAT affixiation invariants without redefining them, consume current UCNS geometry, build the declared construction, and replay it independently before claiming completion. Freeze any EDCM measurement only after construction and keep its evidence status separate.
+For new text-gonol construction, begin in EDCM. Resolve the exact EDCM source/admission profile, import METAPAT affixiation invariants without redefining them, consume current UCNS geometry where normally available, and close gonols with `edcm.gonol` scale option sets. Once closed, a gonol is atomic at any scale; admissible larger-scale construction may consume closed gonols directly without reopening. Replay independently before claiming completion. Freeze any EDCM measurement only after construction and keep its evidence status separate.
 
 For historical experiments, reproduce the exact historical producer epoch and names. Historical UCNS-owned lexical artifacts remain evidence; they do not restore current language authority to UCNS.
 

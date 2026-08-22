@@ -46,21 +46,11 @@ Every admitted occurrence remains separately addressable. Repeated characters ma
 
 ## Active text construction
 
-The current EDCM construction dependency is:
+Current EDCM text construction uses declared scale option sets rather than a mandatory adjacent-scale ladder. Every admitted character is a gonol, but EDCM must not encode `character -> word -> definition -> recursive` as the only lawful construction path.
 
-```text
-characters
-    ↓
-morphology
-    ↓
-definitions
-    ↓
-recursive gonol relations
-```
+Once closed, a gonol is atomic at any scale. Closed gonols may participate directly at any admissible scale without reopening, while identity, order, multiplicity, source positions, relation identity, and provenance remain recoverable.
 
-This is a dependency order, not a demand to reopen every completed object at every later scale. A completed gonol is atomic for participation at its consuming scale while retaining recoverable constituent identity and provenance.
-
-Words and other intermediate closures may be used where an explicit EDCM construction requires them. EDCM must not manufacture a mandatory intermediate scale merely because a conventional NLP pipeline normally contains one.
+`edcm.gonol` is the implemented candidate constructor for closing one gonol through a declared scale option set. Its current option sets include character, word, suffix, suffix-coupling, definition, and recursive relation scales. None is selected canon. UCNS coupling geometry remains `hmmm`, and absent `ucns.public_gonol` does not prevent candidate construction.
 
 Relationships that constitute a gonol enter the construction. They are not merely external semantic edges. Sidecars may index, cache, project, or record provenance; they do not replace intrinsic relational content.
 
@@ -73,6 +63,8 @@ METAPAT defines affixiation as a declared relation among already-bounded partici
 UCNS owns any exact geometric realization of that operation. The native Möbius/Public Gonol carrier is the current geometric authority. Where the precise coupling operation has not yet been constructed, it remains `hmmm`; EDCM must not fill the gap with an invented carrier, topology, scale increment, arity rule, containment rule, or coupling law.
 
 EDCM applies affixiation to text-domain gonols. Linguistic prefixes and suffixes are one instance of affixiation; they do not define affixiation.
+
+Suffix-coupling options that affect a suffix relation are carried by the relevant closed suffix gonol. For example, a closed `ing` suffix gonol may carry `suffix-coupling.final-y-after-consonant = preserve-y`; the suffix-coupling construction preserves that option through the suffix participant instead of storing an `ing` exception in a global morphology law or reopening the suffix.
 
 The complete English root, stem, affix, irregular-transformation, and family law remains unresolved unless source-backed EDCM evidence establishes it. EDCM must not invent decomposition to complete a pipeline.
 
@@ -124,13 +116,58 @@ Preflight real resource requirements before a complete run. Once a healthy admit
 
 ## Usage guidance
 
+Copy-pasteable unified candidate:
+
+```python
+from edcm.gonol import construct_gonol, replay_gonol
+
+word = construct_gonol(scale="word", source="try", source_id="example:try")
+ing = construct_gonol(
+    scale="suffix",
+    source="ing",
+    source_id="example:ing",
+    carried_options=(("suffix-coupling.final-y-after-consonant", "preserve-y"),),
+)
+definition = construct_gonol(
+    scale="definition",
+    relation="example:definition-evidence",
+    source="to divide with a sharp edge",
+    participants=(word.gonol,),
+    source_id="example:cut#1",
+)
+recursive = construct_gonol(
+    scale="recursive",
+    relation="example:mentions",
+    participants=(word.gonol, definition.gonol),
+    source_id="example:relation#1",
+)
+suffix_coupling = construct_gonol(
+    scale="suffix-coupling",
+    participants=(word.gonol, ing.gonol),
+    source_id="example:trying#1",
+)
+assert recursive.receipt_digest == replay_gonol(
+    scale="recursive",
+    relation="example:mentions",
+    participants=(word.gonol, definition.gonol),
+    source_id="example:relation#1",
+).receipt_digest
+assert suffix_coupling.receipt_digest == replay_gonol(
+    scale="suffix-coupling",
+    participants=(word.gonol, ing.gonol),
+    source_id="example:trying#1",
+).receipt_digest
+```
+
+If `ucns.public_gonol` is normally importable and its digest matches the pinned Public Gonol identity, `edcm.gonol` observes source-unit positions. If it is absent, construction records geometry as `hmmm` and still closes the candidate. It does not mutate `sys.path`.
+
 For new text-gonol work:
 
 1. start in EDCM;
 2. resolve the exact EDCM source/admission profile;
 3. import current METAPAT affixiation invariants rather than redefining them;
 4. consume current UCNS geometry rather than moving text semantics into UCNS;
-5. construct characters, morphology, definitions, and recursive relations under explicit EDCM receipts;
+5. close gonols through declared scale option sets under explicit EDCM receipts; use `edcm.gonol`;
 6. keep unresolved UCNS geometric operations as `hmmm`;
 7. replay the complete declared construction before claiming completion; and
 8. freeze any later EDCM measurement separately.
@@ -142,5 +179,6 @@ For UCNS geometry work, work in UCNS. For changes to the meaning of affixiation,
 - the exact EDCM character-admission unit for any source/profile that has not yet selected one;
 - the source-supported complete English morphology law;
 - the exact UCNS Möbius-carrier affixiation/coupling law exposed by implementation;
+- which scale option sets and recursive relations, if any, are later selected, and the exact UCNS geometry for those relations;
 - executable direct coupling across distant recursive scales;
 - the EDCM projection, information-loss accounting, metric, benchmark, and falsifier for recursive text-gonol evaluation.
