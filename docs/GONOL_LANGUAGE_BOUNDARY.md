@@ -52,6 +52,8 @@ Once closed, a gonol is atomic at any scale. Closed gonols may participate direc
 
 `edcm.gonol` is the implemented candidate constructor for closing one gonol through a declared scale option set. Its current option sets include character, word, suffix, suffix-coupling, definition, and recursive relation scales. None is selected canon. UCNS coupling geometry remains `hmmm`, and absent `ucns.public_gonol` does not prevent candidate construction.
 
+When a non-character construction uses a direct source string, each admitted source unit is also closed as a source-character gonol. Those character gonols remain recoverable evidence; they do not force a mandatory adjacent-scale construction ladder.
+
 Relationships that constitute a gonol enter the construction. They are not merely external semantic edges. Sidecars may index, cache, project, or record provenance; they do not replace intrinsic relational content.
 
 ## Affixiation
@@ -146,20 +148,11 @@ suffix_coupling = construct_gonol(
     participants=(word.gonol, ing.gonol),
     source_id="example:trying#1",
 )
-assert recursive.receipt_digest == replay_gonol(
-    scale="recursive",
-    relation="example:mentions",
-    participants=(word.gonol, definition.gonol),
-    source_id="example:relation#1",
-).receipt_digest
-assert suffix_coupling.receipt_digest == replay_gonol(
-    scale="suffix-coupling",
-    participants=(word.gonol, ing.gonol),
-    source_id="example:trying#1",
-).receipt_digest
+assert recursive.receipt_digest == replay_gonol(receipt=recursive).receipt_digest
+assert suffix_coupling.receipt_digest == replay_gonol(receipt=suffix_coupling).receipt_digest
 ```
 
-If `ucns.public_gonol` is normally importable and its digest matches the pinned Public Gonol identity, `edcm.gonol` observes source-unit positions. If it is absent, construction records geometry as `hmmm` and still closes the candidate. It does not mutate `sys.path`.
+If an explicit `geometry_authority` supplies `PUBLIC_GONOL_157` with a digest matching the pinned Public Gonol identity, `edcm.gonol` observes source-unit positions. If no authority is supplied, construction records geometry as `hmmm` and still closes the candidate. It does not probe ambient imports and does not mutate `sys.path`.
 
 For new text-gonol work:
 

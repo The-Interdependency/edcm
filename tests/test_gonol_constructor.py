@@ -22,7 +22,7 @@
 #
 # id: construction_survives_absent_ucns_geometry_check
 #   proves: construction_survives_absent_ucns_geometry
-#   call: self::test_base_construction_survives_absent_ucns_without_sys_path_mutation
+#   call: self::test_base_construction_survives_absent_ucns_without_sys_path_mutation_or_ambient_import
 #   timeout: 30
 #   mutates: none
 #   cleanup: none
@@ -44,6 +44,9 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+from hashlib import sha256
+import json
 import sys
 from types import SimpleNamespace
 import unittest
@@ -52,12 +55,24 @@ from unittest.mock import patch
 from edcm.gonol import (
     CONSTRUCTOR_ID,
     CONSTRUCTOR_VERSION,
-    PINNED_PUBLIC_GONOL_SHA256,
     SCALE_OPTION_SETS,
     GonolConstructionError,
     construct_gonol,
     replay_gonol,
 )
+
+
+def _fake_public_gonol_authority() -> tuple[str, SimpleNamespace]:
+    carrier = (" ", "A") + tuple(chr(0xE000 + index) for index in range(155))
+    digest = sha256(
+        json.dumps(tuple(carrier), ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    index_by_glyph = {glyph: index for index, glyph in enumerate(carrier)}
+    return digest, SimpleNamespace(
+        PUBLIC_GONOL_157=carrier,
+        PUBLIC_GONOL_SHA256=digest,
+        public_gonol_position=lambda glyph: index_by_glyph.get(glyph),
+    )
 
 
 class GonolConstructorTest(unittest.TestCase):
@@ -68,37 +83,51 @@ class GonolConstructorTest(unittest.TestCase):
         self.assertEqual(receipt.option_set, SCALE_OPTION_SETS["word"])
         self.assertEqual(receipt.gonol.scale, "word")
         self.assertEqual(receipt.gonol.source_units, ("c", "u", "t"))
+        self.assertEqual([item.scale for item in receipt.gonol.source_characters], ["character", "character", "character"])
+        self.assertEqual([item.source_units for item in receipt.gonol.source_characters], [("c",), ("u",), ("t",)])
         self.assertEqual(receipt.gonol.relation, "word-closure")
+        self.assertEqual(receipt.gonol.receipt_digest, receipt.receipt_digest)
 
-    def test_base_construction_survives_absent_ucns_without_sys_path_mutation(self) -> None:
+    def test_base_construction_survives_absent_ucns_without_sys_path_mutation_or_ambient_import(self) -> None:
         before = tuple(sys.path)
-        with patch("edcm.gonol.importlib.import_module", side_effect=ImportError("no ucns")):
-            receipt = construct_gonol(scale="word", source="cut", source_id="fixture:no-ucns")
+        receipt = construct_gonol(scale="word", source="cut", source_id="fixture:no-ucns")
         self.assertEqual(tuple(sys.path), before)
         self.assertEqual(receipt.geometry["state"], "hmmm")
-        self.assertEqual(receipt.geometry["reason"], "ucns.public_gonol not normally importable")
+        self.assertEqual(receipt.geometry["authority_binding"], "not-supplied")
+        self.assertEqual(receipt.geometry["reason"], "UCNS Public Gonol authority not supplied")
         self.assertEqual(receipt.gonol.kind_id[0], "word")
 
-    def test_importable_geometry_is_observed_without_operation_claim(self) -> None:
-        fake = SimpleNamespace(
-            PUBLIC_GONOL_SHA256=PINNED_PUBLIC_GONOL_SHA256,
-            public_gonol_position=lambda glyph: {" ": 0, "A": 1}.get(glyph),
-        )
-        with patch("edcm.gonol.importlib.import_module", return_value=fake):
-            receipt = construct_gonol(scale="character", source="A", source_id="fixture:A")
+    def test_explicit_geometry_is_observed_without_operation_claim(self) -> None:
+        digest, fake = _fake_public_gonol_authority()
+        with patch("edcm.gonol.PINNED_PUBLIC_GONOL_SHA256", digest):
+            receipt = construct_gonol(
+                scale="character",
+                source="A",
+                source_id="fixture:A",
+                geometry_authority=fake,
+            )
         self.assertEqual(receipt.geometry["state"], "observed")
-        self.assertEqual(receipt.geometry["positions"], [1])
+        self.assertEqual(receipt.geometry["authority_binding"], "explicit")
+        self.assertEqual(receipt.geometry["positions"], (1,))
         self.assertIn("not a UCNS geometric function operation", receipt.nonclaims)
         self.assertIn("exact UCNS geometric operation", receipt.hmmm[0])
+        with self.assertRaises(TypeError):
+            receipt.geometry["carrier_digest"] = "changed"  # type: ignore[index]
 
     def test_digest_mismatch_fails_closed(self) -> None:
+        _digest, fake = _fake_public_gonol_authority()
         fake = SimpleNamespace(
+            PUBLIC_GONOL_157=fake.PUBLIC_GONOL_157,
             PUBLIC_GONOL_SHA256="0" * 64,
-            public_gonol_position=lambda _glyph: 0,
+            public_gonol_position=fake.public_gonol_position,
         )
-        with patch("edcm.gonol.importlib.import_module", return_value=fake):
-            with self.assertRaisesRegex(GonolConstructionError, "digest mismatch"):
-                construct_gonol(scale="character", source="A", source_id="fixture:mismatch")
+        with self.assertRaisesRegex(GonolConstructionError, "digest mismatch"):
+            construct_gonol(
+                scale="character",
+                source="A",
+                source_id="fixture:mismatch",
+                geometry_authority=fake,
+            )
 
     def test_closed_gonols_participate_directly_without_ladder(self) -> None:
         character = construct_gonol(scale="character", source="c", source_id="fixture:c")
@@ -141,11 +170,7 @@ class GonolConstructorTest(unittest.TestCase):
         self.assertNotIn("final-y-after-consonant", repr(SCALE_OPTION_SETS["suffix-coupling"]))
         self.assertNotIn("preserve-y", repr(SCALE_OPTION_SETS["suffix-coupling"]))
 
-        replay = replay_gonol(
-            scale="suffix-coupling",
-            participants=(base.gonol, ing.gonol),
-            source_id="fixture:trying",
-        )
+        replay = replay_gonol(receipt=coupling)
         self.assertEqual(coupling.receipt_digest, replay.receipt_digest)
 
     def test_suffix_carried_options_are_part_of_identity_and_fail_closed(self) -> None:
@@ -201,6 +226,7 @@ class GonolConstructorTest(unittest.TestCase):
 
     def test_recursive_requires_relation_and_two_closed_participants(self) -> None:
         word = construct_gonol(scale="word", source="cut", source_id="fixture:one")
+        self.assertEqual(SCALE_OPTION_SETS["recursive"].arity_policy, "minimum-two-closed-participants")
         with self.assertRaisesRegex(GonolConstructionError, "relation must be exact"):
             construct_gonol(scale="recursive", participants=(word.gonol, word.gonol), source_id="bad")
         with self.assertRaisesRegex(GonolConstructionError, "at least two closed participants"):
@@ -239,17 +265,73 @@ class GonolConstructorTest(unittest.TestCase):
             "source_id": "fixture:replay",
         }
         first = construct_gonol(**kwargs)
-        second = replay_gonol(**kwargs)
+        second = replay_gonol(receipt=first)
         self.assertEqual(first.receipt_digest, second.receipt_digest)
         self.assertEqual(first.gonol.atomic_id, second.gonol.atomic_id)
+        tampered = replace(first, geometry={"state": "hmmm", "positions": ()})
+        with self.assertRaisesRegex(GonolConstructionError, "geometry digest"):
+            replay_gonol(receipt=tampered)
 
     def test_character_and_word_validation_fail_closed(self) -> None:
         with self.assertRaisesRegex(GonolConstructionError, "exactly one Unicode scalar"):
             construct_gonol(scale="character", source="ab", source_id="fixture:bad-char")
         with self.assertRaisesRegex(GonolConstructionError, "surrogate"):
             construct_gonol(scale="character", source="\ud800", source_id="fixture:bad-surrogate")
+        with self.assertRaisesRegex(GonolConstructionError, "source_id contains a surrogate"):
+            construct_gonol(scale="word", source="bad", source_id="fixture:\ud800")
+        with self.assertRaisesRegex(GonolConstructionError, "relation contains a surrogate"):
+            construct_gonol(scale="definition", source="bad", relation="fixture:\ud800", source_id="fixture:bad")
         with self.assertRaisesRegex(GonolConstructionError, "whitespace-delimited"):
             construct_gonol(scale="word", source="two words", source_id="fixture:bad-word")
+
+    def test_declared_default_relation_and_registry_are_frozen(self) -> None:
+        with self.assertRaisesRegex(GonolConstructionError, "declared default"):
+            construct_gonol(
+                scale="character",
+                source="A",
+                source_id="fixture:bad-relation",
+                relation="fixture:custom-character",
+            )
+        with self.assertRaises(TypeError):
+            SCALE_OPTION_SETS["character"] = SCALE_OPTION_SETS["word"]  # type: ignore[index]
+
+    def test_participant_receipt_identity_is_bound_into_parent_closure(self) -> None:
+        digest, fake = _fake_public_gonol_authority()
+        absent = construct_gonol(scale="word", source="A", source_id="fixture:A")
+        with patch("edcm.gonol.PINNED_PUBLIC_GONOL_SHA256", digest):
+            observed = construct_gonol(
+                scale="word",
+                source="A",
+                source_id="fixture:A",
+                geometry_authority=fake,
+            )
+        self.assertEqual(absent.gonol.source_units, observed.gonol.source_units)
+        self.assertNotEqual(absent.gonol.geometry_digest, observed.gonol.geometry_digest)
+        self.assertNotEqual(absent.receipt_digest, observed.receipt_digest)
+        first = construct_gonol(
+            scale="recursive",
+            relation="fixture:geometry-sensitive",
+            participants=(absent.gonol, absent.gonol),
+            source_id="fixture:parent",
+        )
+        second = construct_gonol(
+            scale="recursive",
+            relation="fixture:geometry-sensitive",
+            participants=(observed.gonol, observed.gonol),
+            source_id="fixture:parent",
+        )
+        self.assertNotEqual(first.receipt_digest, second.receipt_digest)
+
+    def test_tampered_closed_participants_fail_before_parent_hashing(self) -> None:
+        word = construct_gonol(scale="word", source="cut", source_id="fixture:cut")
+        tampered = replace(word.gonol, source_units=("X",))
+        with self.assertRaisesRegex(GonolConstructionError, "source character gonol count"):
+            construct_gonol(
+                scale="recursive",
+                relation="fixture:tampered",
+                participants=(tampered, word.gonol),
+                source_id="fixture:tampered-parent",
+            )
 
     def test_receipt_remains_candidate(self) -> None:
         receipt = construct_gonol(scale="word", source="cut", source_id="fixture:standing")

@@ -268,7 +268,7 @@ python -m edcm.ucns_edcm_experiments_v4 \
 
 Every report is research evidence. No report is a canon file, and no report may be renamed or imported as one.
 
-For new text-gonol work, start in EDCM: resolve the EDCM source/admission profile, import current METAPAT affixiation invariants, consume current UCNS geometry, construct and replay the EDCM gonols, and freeze any measurement separately. Do not move language semantics back into UCNS merely because UCNS supplies the carrier geometry.
+For new text-gonol work, start in EDCM: resolve the EDCM source/admission profile, import current METAPAT affixiation invariants, supply explicit current UCNS geometry authority when geometry is claimed, construct and replay the EDCM gonols, and freeze any measurement separately. Do not move language semantics back into UCNS merely because UCNS supplies the carrier geometry.
 
 ## hmmm
 

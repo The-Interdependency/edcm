@@ -717,9 +717,9 @@ export default defineMsdmdCollection({
       "block": "CONTRACTS",
       "fields": {
         "class": "safety",
-        "given": "ucns.public_gonol is not normally importable",
+        "given": "UCNS Public Gonol geometry authority is not explicitly supplied",
         "since": "2026-08-22",
-        "then": "construction records geometry as hmmm and does not mutate sys.path or fail base-package CI"
+        "then": "construction records geometry as hmmm, does not probe ambient imports, and does not fail base-package CI"
       },
       "file": "edcm/gonol.py",
       "id": "construction_survives_absent_ucns_geometry"
@@ -728,7 +728,7 @@ export default defineMsdmdCollection({
       "block": "CONTRACTS",
       "fields": {
         "class": "safety",
-        "given": "importable UCNS Public Gonol geometry has a digest different from the pinned identity",
+        "given": "supplied UCNS Public Gonol geometry has a digest different from the pinned identity",
         "since": "2026-08-22",
         "then": "construction raises rather than consuming or copying mismatched geometry"
       },
@@ -772,8 +772,8 @@ export default defineMsdmdCollection({
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
-        "auth_boundary": "EDCM owns text-domain closure; UCNS Public Gonol geometry is optional observation unless normally importable with matching digest; METAPAT affixiation semantics are consumed, not redefined",
-        "internal_surface": "_option_set, _require_text, _source_units, _closed_participants, _carried_option_pairs, _has_suffix_coupling_options, _relation_value, _load_optional_public_gonol, _geometry_observation, _participant_payload, _atomic_payload, _receipt_payload, _digest",
+        "auth_boundary": "EDCM owns text-domain closure; UCNS Public Gonol geometry is optional observation only when supplied as an explicit matching authority; METAPAT affixiation semantics are consumed, not redefined",
+        "internal_surface": "_option_set, _require_text, _source_units, _closed_participants, _validate_closed_gonol, _carried_option_pairs, _has_suffix_coupling_options, _relation_value, _geometry_observation, _source_character_gonols, _participant_payload, _atomic_payload, _receipt_payload, _digest",
         "module_kind": "engine",
         "module_name": "gonol",
         "network_boundary": "none",
@@ -1957,7 +1957,7 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
-        "call": "self::test_base_construction_survives_absent_ucns_without_sys_path_mutation",
+        "call": "self::test_base_construction_survives_absent_ucns_without_sys_path_mutation_or_ambient_import",
         "cleanup": "none",
         "mutates": "none",
         "proves": "construction_survives_absent_ucns_geometry",
@@ -4844,7 +4844,7 @@ export default defineMsdmdCollection({
       "kind": "calls",
       "source_block": "CHECKS",
       "source_id": "construction_survives_absent_ucns_geometry_check",
-      "to": "self::test_base_construction_survives_absent_ucns_without_sys_path_mutation"
+      "to": "self::test_base_construction_survives_absent_ucns_without_sys_path_mutation_or_ambient_import"
     },
     {
       "from": "construction_survives_absent_ucns_geometry_check",
