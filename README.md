@@ -62,7 +62,7 @@ every admitted character is a gonol
 
 EDCM owns the source/profile that determines what is admitted as a character. If a profile has not selected Unicode code point, grapheme, exact Public Gonol glyph inventory, or another explicit unit, that admission boundary remains `hmmm`; UCNS does not silently choose it merely because UCNS owns the geometry.
 
-Current EDCM text construction uses declared scale option sets rather than a mandatory adjacent-scale ladder. `edcm.gonol` is the implemented candidate constructor for closing one gonol at an admissible scale. None of its scale options is selected canon, and construction does not activate measurement. UCNS coupling geometry remains `hmmm`.
+Current EDCM text construction uses declared scale option sets rather than a mandatory adjacent-scale ladder. `edcm.gonol` is the implemented candidate constructor for closing one gonol at an admissible scale. None of its scale options is selected canon, and construction does not activate measurement. Suffix-coupling exceptions are carried by the closed suffix gonol, such as `ing` carrying `suffix-coupling.final-y-after-consonant = preserve-y`, rather than by a global morphology law. UCNS coupling geometry remains `hmmm`.
 
 Affixiation is defined by METAPAT. UCNS owns any exact geometric realization. EDCM applies affixiation to text-domain gonols. Once closed, a gonol is atomic at any scale. Closed gonols may participate directly at any admissible scale without reopening, while constituent identity and provenance remain recoverable.
 

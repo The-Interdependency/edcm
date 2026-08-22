@@ -749,6 +749,17 @@ export default defineMsdmdCollection({
     {
       "block": "CONTRACTS",
       "fields": {
+        "class": "construction",
+        "given": "suffix coupling has a final-y exception such as ing preserving y after a consonant",
+        "since": "2026-08-22",
+        "then": "the exception is stored on the closed suffix gonol participant and replayed through participant provenance rather than global morphology law"
+      },
+      "file": "edcm/gonol.py",
+      "id": "suffix_exception_carried_by_suffix_gonol"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
         "class": "doctrine",
         "given": "a receipt is minted",
         "since": "2026-08-22",
@@ -762,7 +773,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "EDCM owns text-domain closure; UCNS Public Gonol geometry is optional observation unless normally importable with matching digest; METAPAT affixiation semantics are consumed, not redefined",
-        "internal_surface": "_option_set, _require_text, _source_units, _load_optional_public_gonol, _geometry_observation, _participant_payload, _atomic_payload, _receipt_payload, _digest",
+        "internal_surface": "_option_set, _require_text, _source_units, _closed_participants, _carried_option_pairs, _relation_value, _load_optional_public_gonol, _geometry_observation, _participant_payload, _atomic_payload, _receipt_payload, _digest",
         "module_kind": "engine",
         "module_name": "gonol",
         "network_boundary": "none",
@@ -773,7 +784,7 @@ export default defineMsdmdCollection({
         "rollout": "explicit candidate constructor; no canon selection, measurement activation, UCNS function operation, or Mobius coupling promotion",
         "since": "2026-08-22",
         "storage_boundary": "none; receipts remain caller-owned in-memory objects",
-        "summary": "unified EDCM candidate constructor that closes gonols through declared scale option sets while preserving closed-gonol atomicity, deterministic replay, and UCNS/METAPAT authority boundaries",
+        "summary": "unified EDCM candidate constructor that closes gonols through declared scale option sets while preserving closed-gonol atomicity, carried suffix options, deterministic replay, and UCNS/METAPAT authority boundaries",
         "tests": "tests.test_gonol_constructor",
         "unresolved": "exact UCNS geometric operation of Public Gonol function positions; Mobius-carrier affixiation/coupling law; which scales and relations are later selected; complete English morphology law",
         "user_data_boundary": "caller-supplied source, relation, participants, and source_id remain in memory and are not transmitted"
@@ -1978,6 +1989,18 @@ export default defineMsdmdCollection({
       },
       "file": "tests/test_gonol_constructor.py",
       "id": "single_constructor_uses_scale_option_sets_check"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_suffix_coupling_exception_is_carried_by_closed_suffix",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "suffix_exception_carried_by_suffix_gonol",
+        "timeout": "30"
+      },
+      "file": "tests/test_gonol_constructor.py",
+      "id": "suffix_exception_carried_by_suffix_gonol_check"
     },
     {
       "block": "CHECKS",
@@ -4941,6 +4964,20 @@ export default defineMsdmdCollection({
       "source_block": "CHECKS",
       "source_id": "single_constructor_uses_scale_option_sets_check",
       "to": "single_constructor_uses_scale_option_sets"
+    },
+    {
+      "from": "suffix_exception_carried_by_suffix_gonol_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "suffix_exception_carried_by_suffix_gonol_check",
+      "to": "self::test_suffix_coupling_exception_is_carried_by_closed_suffix"
+    },
+    {
+      "from": "suffix_exception_carried_by_suffix_gonol_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "suffix_exception_carried_by_suffix_gonol_check",
+      "to": "suffix_exception_carried_by_suffix_gonol"
     },
     {
       "from": "unified_candidate_does_not_select_canon_check",

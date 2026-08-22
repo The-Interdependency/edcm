@@ -50,7 +50,7 @@ Current EDCM text construction uses declared scale option sets rather than a man
 
 Once closed, a gonol is atomic at any scale. Closed gonols may participate directly at any admissible scale without reopening, while identity, order, multiplicity, source positions, relation identity, and provenance remain recoverable.
 
-`edcm.gonol` is the implemented candidate constructor for closing one gonol through a declared scale option set. Its current option sets include character, word, definition, and recursive relation scales. None is selected canon. UCNS coupling geometry remains `hmmm`, and absent `ucns.public_gonol` does not prevent candidate construction.
+`edcm.gonol` is the implemented candidate constructor for closing one gonol through a declared scale option set. Its current option sets include character, word, suffix, suffix-coupling, definition, and recursive relation scales. None is selected canon. UCNS coupling geometry remains `hmmm`, and absent `ucns.public_gonol` does not prevent candidate construction.
 
 Relationships that constitute a gonol enter the construction. They are not merely external semantic edges. Sidecars may index, cache, project, or record provenance; they do not replace intrinsic relational content.
 
@@ -63,6 +63,8 @@ METAPAT defines affixiation as a declared relation among already-bounded partici
 UCNS owns any exact geometric realization of that operation. The native Möbius/Public Gonol carrier is the current geometric authority. Where the precise coupling operation has not yet been constructed, it remains `hmmm`; EDCM must not fill the gap with an invented carrier, topology, scale increment, arity rule, containment rule, or coupling law.
 
 EDCM applies affixiation to text-domain gonols. Linguistic prefixes and suffixes are one instance of affixiation; they do not define affixiation.
+
+Suffix-coupling options that affect a suffix relation are carried by the relevant closed suffix gonol. For example, a closed `ing` suffix gonol may carry `suffix-coupling.final-y-after-consonant = preserve-y`; the suffix-coupling construction preserves that option through the suffix participant instead of storing an `ing` exception in a global morphology law or reopening the suffix.
 
 The complete English root, stem, affix, irregular-transformation, and family law remains unresolved unless source-backed EDCM evidence establishes it. EDCM must not invent decomposition to complete a pipeline.
 
@@ -119,7 +121,13 @@ Copy-pasteable unified candidate:
 ```python
 from edcm.gonol import construct_gonol, replay_gonol
 
-word = construct_gonol(scale="word", source="cut", source_id="example:cut")
+word = construct_gonol(scale="word", source="try", source_id="example:try")
+ing = construct_gonol(
+    scale="suffix",
+    source="ing",
+    source_id="example:ing",
+    carried_options=(("suffix-coupling.final-y-after-consonant", "preserve-y"),),
+)
 definition = construct_gonol(
     scale="definition",
     relation="example:definition-evidence",
@@ -133,11 +141,21 @@ recursive = construct_gonol(
     participants=(word.gonol, definition.gonol),
     source_id="example:relation#1",
 )
+suffix_coupling = construct_gonol(
+    scale="suffix-coupling",
+    participants=(word.gonol, ing.gonol),
+    source_id="example:trying#1",
+)
 assert recursive.receipt_digest == replay_gonol(
     scale="recursive",
     relation="example:mentions",
     participants=(word.gonol, definition.gonol),
     source_id="example:relation#1",
+).receipt_digest
+assert suffix_coupling.receipt_digest == replay_gonol(
+    scale="suffix-coupling",
+    participants=(word.gonol, ing.gonol),
+    source_id="example:trying#1",
 ).receipt_digest
 ```
 

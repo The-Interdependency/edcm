@@ -13,6 +13,13 @@
 #   mutates: none
 #   cleanup: none
 #
+# id: suffix_exception_carried_by_suffix_gonol_check
+#   proves: suffix_exception_carried_by_suffix_gonol
+#   call: self::test_suffix_coupling_exception_is_carried_by_closed_suffix
+#   timeout: 30
+#   mutates: none
+#   cleanup: none
+#
 # id: construction_survives_absent_ucns_geometry_check
 #   proves: construction_survives_absent_ucns_geometry
 #   call: self::test_base_construction_survives_absent_ucns_without_sys_path_mutation
@@ -107,6 +114,82 @@ class GonolConstructorTest(unittest.TestCase):
         self.assertEqual([item.scale for item in definition.gonol.participants], ["character", "word"])
         self.assertNotIn("mandatory character-word-definition-recursive ladder", definition.receipt_digest)
         self.assertIn("not a mandatory character-word-definition-recursive ladder", definition.nonclaims)
+
+    def test_suffix_coupling_exception_is_carried_by_closed_suffix(self) -> None:
+        base = construct_gonol(scale="word", source="try", source_id="fixture:try")
+        ing = construct_gonol(
+            scale="suffix",
+            source="ing",
+            source_id="fixture:ing",
+            carried_options=(("suffix-coupling.final-y-after-consonant", "preserve-y"),),
+        )
+        coupling = construct_gonol(
+            scale="suffix-coupling",
+            participants=(base.gonol, ing.gonol),
+            source_id="fixture:trying",
+        )
+
+        self.assertEqual(coupling.option_set, SCALE_OPTION_SETS["suffix-coupling"])
+        self.assertEqual(coupling.gonol.relation, "suffix-coupling")
+        self.assertEqual(coupling.gonol.participants, (base.gonol, ing.gonol))
+        self.assertEqual(
+            coupling.gonol.participants[1].carried_options,
+            (("suffix-coupling.final-y-after-consonant", "preserve-y"),),
+        )
+        self.assertEqual(coupling.gonol.carried_options, ())
+        self.assertIn(("carried_option", "suffix-coupling.final-y-after-consonant=preserve-y"), ing.gonol.provenance)
+        self.assertNotIn("final-y-after-consonant", repr(SCALE_OPTION_SETS["suffix-coupling"]))
+        self.assertNotIn("preserve-y", repr(SCALE_OPTION_SETS["suffix-coupling"]))
+
+        replay = replay_gonol(
+            scale="suffix-coupling",
+            participants=(base.gonol, ing.gonol),
+            source_id="fixture:trying",
+        )
+        self.assertEqual(coupling.receipt_digest, replay.receipt_digest)
+
+    def test_suffix_carried_options_are_part_of_identity_and_fail_closed(self) -> None:
+        base = construct_gonol(scale="word", source="try", source_id="fixture:try")
+        ing_preserve = construct_gonol(
+            scale="suffix",
+            source="ing",
+            source_id="fixture:ing",
+            carried_options=(("suffix-coupling.final-y-after-consonant", "preserve-y"),),
+        )
+        ing_change = construct_gonol(
+            scale="suffix",
+            source="ing",
+            source_id="fixture:ing",
+            carried_options=(("suffix-coupling.final-y-after-consonant", "change-y-to-i"),),
+        )
+        self.assertNotEqual(ing_preserve.gonol.atomic_id, ing_change.gonol.atomic_id)
+
+        preserved = construct_gonol(
+            scale="suffix-coupling",
+            participants=(base.gonol, ing_preserve.gonol),
+            source_id="fixture:trying",
+        )
+        changed = construct_gonol(
+            scale="suffix-coupling",
+            participants=(base.gonol, ing_change.gonol),
+            source_id="fixture:trying",
+        )
+        self.assertNotEqual(preserved.gonol.atomic_id, changed.gonol.atomic_id)
+
+        with self.assertRaisesRegex(GonolConstructionError, "carried by the closed suffix participant"):
+            construct_gonol(
+                scale="suffix-coupling",
+                participants=(base.gonol, ing_preserve.gonol),
+                carried_options=(("suffix-coupling.final-y-after-consonant", "preserve-y"),),
+                source_id="fixture:bad-carrier",
+            )
+
+        with self.assertRaisesRegex(GonolConstructionError, "closed base and closed suffix"):
+            construct_gonol(
+                scale="suffix-coupling",
+                participants=(ing_preserve.gonol, base.gonol),
+                source_id="fixture:bad-order",
+            )
 
     def test_recursive_requires_relation_and_two_closed_participants(self) -> None:
         word = construct_gonol(scale="word", source="cut", source_id="fixture:one")

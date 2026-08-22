@@ -8,18 +8,22 @@ declared scale using the scale's option set. It does not encode a mandatory
 
     from edcm.gonol import construct_gonol, replay_gonol
 
-    word = construct_gonol(scale="word", source="cut", source_id="example:cut")
+    word = construct_gonol(scale="word", source="try", source_id="example:try")
+    ing = construct_gonol(
+        scale="suffix",
+        source="ing",
+        source_id="example:ing",
+        carried_options=(("suffix-coupling.final-y-after-consonant", "preserve-y"),),
+    )
     rel = construct_gonol(
-        scale="recursive",
-        relation="example:pair",
-        participants=(word.gonol, word.gonol),
-        source_id="example:pair#1",
+        scale="suffix-coupling",
+        participants=(word.gonol, ing.gonol),
+        source_id="example:trying#1",
     )
     assert rel.receipt_digest == replay_gonol(
-        scale="recursive",
-        relation="example:pair",
-        participants=(word.gonol, word.gonol),
-        source_id="example:pair#1",
+        scale="suffix-coupling",
+        participants=(word.gonol, ing.gonol),
+        source_id="example:trying#1",
     ).receipt_digest
 
 Frozen choices for ``edcm.gonol/v1``:
@@ -32,6 +36,8 @@ Frozen choices for ``edcm.gonol/v1``:
   folding, trimming, deduplication, or token substitution;
 - relation identity is exact caller-supplied text where the option set requires
   it;
+- suffix-coupling exceptions are carried by the closed suffix gonol, not by a
+  global morphology law or by reopening the suffix during coupling;
 - UCNS Public Gonol geometry is consumed only when normally importable, and
   absence remains ``hmmm`` rather than a base-package failure;
 - no UCNS function operation or Mobius coupling law is invented.
@@ -41,10 +47,10 @@ Frozen choices for ``edcm.gonol/v1``:
 # id: edcm_gonol
 #   module_name: gonol
 #   module_kind: engine
-#   summary: unified EDCM candidate constructor that closes gonols through declared scale option sets while preserving closed-gonol atomicity, deterministic replay, and UCNS/METAPAT authority boundaries
+#   summary: unified EDCM candidate constructor that closes gonols through declared scale option sets while preserving closed-gonol atomicity, carried suffix options, deterministic replay, and UCNS/METAPAT authority boundaries
 #   owner: Erin Spencer
 #   public_surface: CONSTRUCTOR_ID, CONSTRUCTOR_VERSION, PINNED_PUBLIC_GONOL_SHA256, ScaleOptionSet, ClosedGonol, GonolReceipt, GonolConstructionError, SCALE_OPTION_SETS, construct_gonol, replay_gonol, canonical_receipt_bytes
-#   internal_surface: _option_set, _require_text, _source_units, _load_optional_public_gonol, _geometry_observation, _participant_payload, _atomic_payload, _receipt_payload, _digest
+#   internal_surface: _option_set, _require_text, _source_units, _closed_participants, _carried_option_pairs, _relation_value, _load_optional_public_gonol, _geometry_observation, _participant_payload, _atomic_payload, _receipt_payload, _digest
 #   auth_boundary: EDCM owns text-domain closure; UCNS Public Gonol geometry is optional observation unless normally importable with matching digest; METAPAT affixiation semantics are consumed, not redefined
 #   storage_boundary: none; receipts remain caller-owned in-memory objects
 #   network_boundary: none
@@ -68,6 +74,12 @@ Frozen choices for ``edcm.gonol/v1``:
 # id: closed_gonol_atomic_at_any_scale
 #   given: a closed gonol participates in another construction
 #   then: the participant is consumed by atomic identity while recoverable provenance and nested structure remain available
+#   class: construction
+#   since: 2026-08-22
+#
+# id: suffix_exception_carried_by_suffix_gonol
+#   given: suffix coupling has a final-y exception such as ing preserving y after a consonant
+#   then: the exception is stored on the closed suffix gonol participant and replayed through participant provenance rather than global morphology law
 #   class: construction
 #   since: 2026-08-22
 #
@@ -142,6 +154,7 @@ class ScaleOptionSet:
     default_relation: str | None
     closure_policy: str
     geometry_policy: str
+    carried_option_policy: str
 
 
 SCALE_OPTION_SETS: Mapping[str, ScaleOptionSet] = {
@@ -154,6 +167,7 @@ SCALE_OPTION_SETS: Mapping[str, ScaleOptionSet] = {
         default_relation="admitted-character",
         closure_policy="close-one-source-unit",
         geometry_policy="observe-public-gonol-position-if-importable",
+        carried_option_policy="none",
     ),
     "word": ScaleOptionSet(
         scale="word",
@@ -164,6 +178,29 @@ SCALE_OPTION_SETS: Mapping[str, ScaleOptionSet] = {
         default_relation="word-closure",
         closure_policy="close-declared-word-scale-object",
         geometry_policy="observe-public-gonol-positions-if-importable",
+        carried_option_policy="declared-on-closed-gonol",
+    ),
+    "suffix": ScaleOptionSet(
+        scale="suffix",
+        option_set_id="edcm.gonol.scale.suffix/v1",
+        source_policy="exact-source-string",
+        participant_policy="none",
+        relation_policy="declared-default",
+        default_relation="suffix-form",
+        closure_policy="close-declared-suffix-scale-object",
+        geometry_policy="observe-public-gonol-positions-if-importable",
+        carried_option_policy="declared-on-closed-suffix-gonol",
+    ),
+    "suffix-coupling": ScaleOptionSet(
+        scale="suffix-coupling",
+        option_set_id="edcm.gonol.scale.suffix-coupling/v1",
+        source_policy="optional-exact-source-evidence",
+        participant_policy="closed-base-and-closed-suffix-without-reopening",
+        relation_policy="caller-supplied-or-declared-default",
+        default_relation="suffix-coupling",
+        closure_policy="close-relation-over-atomic-base-and-suffix",
+        geometry_policy="observe-public-gonol-positions-if-importable",
+        carried_option_policy="consume-carried-options-from-suffix-participant",
     ),
     "definition": ScaleOptionSet(
         scale="definition",
@@ -174,6 +211,7 @@ SCALE_OPTION_SETS: Mapping[str, ScaleOptionSet] = {
         default_relation="definition-evidence",
         closure_policy="close-declared-definition-scale-object",
         geometry_policy="observe-public-gonol-positions-if-importable",
+        carried_option_policy="declared-on-closed-gonol",
     ),
     "recursive": ScaleOptionSet(
         scale="recursive",
@@ -184,6 +222,7 @@ SCALE_OPTION_SETS: Mapping[str, ScaleOptionSet] = {
         default_relation=None,
         closure_policy="close-relation-over-atomic-participants",
         geometry_policy="observe-public-gonol-positions-if-importable",
+        carried_option_policy="declared-on-closed-gonol",
     ),
 }
 
@@ -199,6 +238,7 @@ class ClosedGonol:
     source_id: str
     source_units: tuple[str, ...]
     participants: tuple["ClosedGonol", ...]
+    carried_options: tuple[tuple[str, str], ...]
     atomic_id: str
     provenance: tuple[tuple[str, str], ...]
 
@@ -253,8 +293,10 @@ def _source_units(source: str | None, *, options: ScaleOptionSet) -> tuple[str, 
             raise GonolConstructionError("surrogate code points are not Unicode scalars")
     if options.scale == "character" and len(units) != 1:
         raise GonolConstructionError("character scale closes exactly one Unicode scalar")
-    if options.scale == "word" and any(unit.isspace() for unit in units):
-        raise GonolConstructionError("word scale source must be one closed source unit, not whitespace-delimited text")
+    if options.scale in {"word", "suffix"} and any(unit.isspace() for unit in units):
+        raise GonolConstructionError(
+            f"{options.scale} scale source must be one closed source unit, not whitespace-delimited text"
+        )
     return units
 
 
@@ -268,6 +310,26 @@ def _closed_participants(participants: Sequence[ClosedGonol] | None) -> tuple[Cl
         if not isinstance(item, ClosedGonol):
             raise GonolConstructionError("participants must already be closed gonols")
     return closed
+
+
+def _carried_option_pairs(
+    carried_options: Sequence[Sequence[str]] | None,
+) -> tuple[tuple[str, str], ...]:
+    if carried_options is None:
+        return ()
+    if not isinstance(carried_options, Sequence) or isinstance(carried_options, (str, bytes)):
+        raise GonolConstructionError("carried_options must be an ordered sequence of exact text pairs")
+    pairs: list[tuple[str, str]] = []
+    for pair in carried_options:
+        if not isinstance(pair, Sequence) or isinstance(pair, (str, bytes)) or len(pair) != 2:
+            raise GonolConstructionError("each carried option must be an exact text pair")
+        key, value = pair
+        if not isinstance(key, str) or not key or key.isspace():
+            raise GonolConstructionError("carried option key must be exact non-empty text")
+        if not isinstance(value, str) or not value or value.isspace():
+            raise GonolConstructionError("carried option value must be exact non-empty text")
+        pairs.append((key, value))
+    return tuple(pairs)
 
 
 def _relation_value(relation: str | None, *, options: ScaleOptionSet) -> str:
@@ -332,6 +394,7 @@ def _option_payload(options: ScaleOptionSet) -> dict[str, str | None]:
         "default_relation": options.default_relation,
         "closure_policy": options.closure_policy,
         "geometry_policy": options.geometry_policy,
+        "carried_option_policy": options.carried_option_policy,
     }
 
 
@@ -344,6 +407,7 @@ def _participant_payload(item: ClosedGonol) -> dict[str, Any]:
         "kind_id": _kind_payload(item.kind_id),
         "atomic_id": item.atomic_id,
         "option_set_id": item.option_set_id,
+        "carried_options": [list(pair) for pair in item.carried_options],
         "provenance": [list(pair) for pair in item.provenance],
     }
 
@@ -356,6 +420,7 @@ def _atomic_payload(
     relation: str,
     source_units: tuple[str, ...],
     participants: tuple[ClosedGonol, ...],
+    carried_options: tuple[tuple[str, str], ...],
 ) -> dict[str, Any]:
     return {
         "constructor_id": CONSTRUCTOR_ID,
@@ -368,6 +433,7 @@ def _atomic_payload(
         "relation": relation,
         "source_units": list(source_units),
         "participants": [_participant_payload(item) for item in participants],
+        "carried_options": [list(pair) for pair in carried_options],
         "closure_invariant": "once closed, a gonol is atomic at any scale",
     }
 
@@ -393,6 +459,7 @@ def _receipt_payload(
             relation=gonol.relation,
             source_units=gonol.source_units,
             participants=gonol.participants,
+            carried_options=gonol.carried_options,
         ),
         "atomic_id": gonol.atomic_id,
         "geometry": dict(geometry),
@@ -420,6 +487,7 @@ def construct_gonol(
     source: str | None = None,
     participants: Sequence[ClosedGonol] | None = None,
     relation: str | None = None,
+    carried_options: Sequence[Sequence[str]] | None = None,
     occurrence: int = 0,
 ) -> GonolReceipt:
     """Close one gonol at a declared scale using its option set."""
@@ -430,8 +498,22 @@ def construct_gonol(
         raise GonolConstructionError("occurrence must be a non-negative integer")
     units = _source_units(source, options=options)
     closed = _closed_participants(participants)
+    carried = _carried_option_pairs(carried_options)
     if options.scale == "character" and closed:
         raise GonolConstructionError("character scale does not accept closed participants")
+    if options.scale == "character" and carried:
+        raise GonolConstructionError("character scale does not carry declared options")
+    if options.scale == "suffix" and closed:
+        raise GonolConstructionError("suffix scale does not accept closed participants")
+    if options.scale == "suffix-coupling":
+        if len(closed) != 2 or closed[1].scale != "suffix":
+            raise GonolConstructionError(
+                "suffix-coupling scale requires ordered closed base and closed suffix participants"
+            )
+        if carried:
+            raise GonolConstructionError(
+                "suffix-coupling options must be carried by the closed suffix participant"
+            )
     if not units and not closed:
         raise GonolConstructionError("construction requires source evidence or closed participants")
     if options.scale == "recursive" and len(closed) < 2:
@@ -445,13 +527,14 @@ def construct_gonol(
         relation=relation_value,
         source_units=units,
         participants=closed,
+        carried_options=carried,
     )
     atomic_id = _digest(atomic_payload)
     provenance = (
         ("constructor", f"{CONSTRUCTOR_ID}/{CONSTRUCTOR_VERSION}"),
         ("source_id", source_id),
         ("option_set", options.option_set_id),
-    )
+    ) + tuple(("carried_option", f"{key}={value}") for key, value in carried)
     gonol = ClosedGonol(
         occurrence=occurrence,
         scale=options.scale,
@@ -460,6 +543,7 @@ def construct_gonol(
         source_id=source_id,
         source_units=units,
         participants=closed,
+        carried_options=carried,
         atomic_id=atomic_id,
         provenance=provenance,
     )
@@ -491,6 +575,7 @@ def replay_gonol(
     source: str | None = None,
     participants: Sequence[ClosedGonol] | None = None,
     relation: str | None = None,
+    carried_options: Sequence[Sequence[str]] | None = None,
     occurrence: int = 0,
 ) -> GonolReceipt:
     """Independently reconstruct the same declared gonol closure."""
@@ -501,6 +586,7 @@ def replay_gonol(
         source=source,
         participants=participants,
         relation=relation,
+        carried_options=carried_options,
         occurrence=occurrence,
     )
 
