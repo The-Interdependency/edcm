@@ -45,7 +45,7 @@ importable. The constructor fails closed on a Public Gonol digest mismatch.
 #   rollback: remove this module; historical lexical-floor and word-gonol observation adapters remain unchanged
 #   requires: ucns.public_gonol
 #   since: 2026-08-21
-#   unresolved: UCNS geometric operation of each Public Gonol function position; Möbius-carrier affixiation/coupling law; recursive gonol constructor; complete English morphology law
+#   unresolved: UCNS geometric operation of each Public Gonol function position; Möbius-carrier affixiation/coupling law; which recursive relations are later selected; complete English morphology law
 # === END MODULE_BUILD ===
 
 # === CONTRACTS ===
@@ -122,8 +122,8 @@ NONCLAIMS: tuple[str, ...] = (
 HMMM: tuple[str, ...] = (
     "exact UCNS geometric operation of each Public Gonol function position",
     "UCNS Möbius-carrier affixiation/coupling law",
-    "definition gonol constructor",
-    "recursive gonol-relation constructor",
+    "which definition source, if any, is later selected",
+    "which recursive relations, if any, are later selected",
     "source-supported complete English morphology law",
 )
 

@@ -111,7 +111,7 @@ class CharacterWordGonolTest(unittest.TestCase):
         self.assertEqual(receipt.selection_effect, "none")
         self.assertIn("not selected canon", receipt.nonclaims)
         self.assertIn("not EDCM measurement validity", receipt.nonclaims)
-        self.assertIn("definition gonol constructor", receipt.hmmm)
+        self.assertIn("which definition source, if any, is later selected", receipt.hmmm)
 
     def test_identity_is_structure_not_hash(self) -> None:
         receipt = construct_character_word_gonols("aa", source_id="fixture-identity")

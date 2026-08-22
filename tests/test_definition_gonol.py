@@ -148,7 +148,7 @@ class DefinitionGonolTest(unittest.TestCase):
         self.assertEqual(receipt.selection_effect, "none")
         self.assertIn("not a dictionary or sense inventory", receipt.nonclaims)
         self.assertIn("not OEWN or lexical-floor revival", receipt.nonclaims)
-        self.assertIn("recursive gonol-relation constructor", receipt.hmmm)
+        self.assertIn("which recursive relations, if any, are later selected", receipt.hmmm)
 
     def test_identity_is_structure_not_hash(self) -> None:
         receipt = construct_definition_gonol(

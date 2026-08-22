@@ -111,7 +111,7 @@ definitions
 recursive gonol relations
 ```
 
-This order is load-bearing. `edcm.character_word` is the implemented candidate for character admission and word closure. `edcm.definition_gonol` is the implemented candidate for definition gonols from exact source definition evidence. Morphology is not a required stage. Do not reopen a completed word gonol or insert another required scale merely because a conventional NLP pipeline contains one.
+This order is load-bearing. `edcm.character_word`, `edcm.definition_gonol`, and `edcm.recursive_gonol` are the implemented candidates for that sequence. Morphology is not a required stage. Do not reopen a completed gonol or invent UCNS coupling geometry.
 
 Do not insert a conventional NLP tokenizer, token IDs, subword pieces, opaque external vector lookup, or whole-string hash as a substitute for gonol identity. Source prose, dictionaries, corpora, labels, and annotations may remain evidence and provenance; they become gonol semantics only through a source-bound EDCM construction whose admission, relation, closure, and replay boundaries are explicit.
 

@@ -60,7 +60,7 @@ identity.
 #   rollback: remove this module; character_word and historical lexical-floor evidence remain unchanged
 #   requires: edcm_character_word_gonol
 #   since: 2026-08-21
-#   unresolved: UCNS geometric operation of each Public Gonol function position; Möbius-carrier affixiation/coupling law; recursive gonol constructor; complete English morphology law; selection among competing definition sources
+#   unresolved: UCNS geometric operation of each Public Gonol function position; Möbius-carrier affixiation/coupling law; which recursive relations are later selected; complete English morphology law; selection among competing definition sources
 # === END MODULE_BUILD ===
 
 # === CONTRACTS ===
@@ -128,7 +128,7 @@ NONCLAIMS: tuple[str, ...] = (
 HMMM: tuple[str, ...] = (
     "exact UCNS geometric operation of each Public Gonol function position",
     "UCNS Möbius-carrier affixiation/coupling law",
-    "recursive gonol-relation constructor",
+    "which recursive relations, if any, are later selected",
     "source-supported complete English morphology law",
     "which definition source, if any, is later selected",
 )

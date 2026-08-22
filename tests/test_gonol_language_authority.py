@@ -36,6 +36,7 @@ def test_live_surfaces_route_gonol_authority_consistently() -> None:
     assert "This order is load-bearing" in boundary
     assert "edcm.character_word" in boundary
     assert "edcm.definition_gonol" in boundary
+    assert "edcm.recursive_gonol" in boundary
     assert "Morphology is not a required stage" in boundary
 
 

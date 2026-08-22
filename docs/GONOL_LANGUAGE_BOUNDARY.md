@@ -62,7 +62,7 @@ This order is load-bearing. Every admitted character is a gonol. Ordered charact
 
 Do not insert another required stage into this sequence unless the governing contract is explicitly changed. Morphology is not a required stage. Historical morphology evidence remains historical; the complete English morphology law remains `hmmm`.
 
-`edcm.character_word` is the implemented candidate for character admission and word closure. `edcm.definition_gonol` is the implemented candidate for definition gonols from already-closed word gonols and exact caller-supplied definition evidence. Neither is selected canon.
+`edcm.character_word` is the implemented candidate for character admission and word closure. `edcm.definition_gonol` is the implemented candidate for definition gonols from already-closed word gonols and exact caller-supplied definition evidence. `edcm.recursive_gonol` is the implemented candidate for recursive relations over already-closed gonols. None is selected canon. UCNS coupling geometry remains `hmmm`.
 
 Relationships that constitute a gonol enter the construction. They are not merely external semantic edges. Sidecars may index, cache, project, or record provenance; they do not replace intrinsic relational content.
 
@@ -156,6 +156,26 @@ assert first.receipt_digest == second.receipt_digest
 assert first.definition.relation == "definition-of"
 ```
 
+Copy-pasteable recursive candidate:
+
+```python
+from edcm.character_word import construct_character_word_gonols
+from edcm.recursive_gonol import construct_recursive_gonol, replay_recursive_gonol
+
+words = construct_character_word_gonols("cut divide", source_id="example")
+first = construct_recursive_gonol(
+    relation="example:ordered-pair",
+    participants=words.words,
+    source_id="example:pair#1",
+)
+second = replay_recursive_gonol(
+    relation="example:ordered-pair",
+    participants=words.words,
+    source_id="example:pair#1",
+)
+assert first.receipt_digest == second.receipt_digest
+```
+
 Set `UCNS_SOURCE_ROOT` to a current UCNS checkout if `ucns.public_gonol` is not importable.
 
 For new text-gonol work:
@@ -164,7 +184,7 @@ For new text-gonol work:
 2. resolve the exact EDCM source/admission profile;
 3. import current METAPAT affixiation invariants rather than redefining them;
 4. consume current UCNS geometry rather than moving text semantics into UCNS;
-5. construct characters, words, definitions, and recursive relations under explicit EDCM receipts; use `edcm.character_word` then `edcm.definition_gonol`;
+5. construct characters, words, definitions, and recursive relations under explicit EDCM receipts; use `edcm.character_word`, `edcm.definition_gonol`, then `edcm.recursive_gonol`;
 6. keep unresolved UCNS geometric operations as `hmmm`;
 7. replay the complete declared construction before claiming completion; and
 8. freeze any later EDCM measurement separately.
@@ -176,5 +196,6 @@ For UCNS geometry work, work in UCNS. For changes to the meaning of affixiation,
 - the exact EDCM character-admission unit for any source/profile that has not yet selected one;
 - the source-supported complete English morphology law;
 - the exact UCNS Möbius-carrier affixiation/coupling law exposed by implementation;
+- which recursive relations, if any, are later selected, and the exact UCNS geometry for those relations;
 - executable direct coupling across distant recursive scales;
 - the EDCM projection, information-loss accounting, metric, benchmark, and falsifier for recursive text-gonol evaluation.
