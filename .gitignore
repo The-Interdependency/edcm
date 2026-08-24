@@ -31,3 +31,6 @@ generated/
 
 # OS / editor cruft
 .DS_Store
+
+# Local secrets
+.env
