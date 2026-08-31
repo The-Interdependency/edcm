@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512" role="img" aria-label="edcm icon">
+  <title>edcm — measurement authority</title>
+  <rect width="100" height="100" rx="18" fill="#070b16"/>
+  <circle cx="50" cy="50" r="44" fill="none" stroke="#7d89a8" stroke-width="0.55"/>
+  <circle cx="50" cy="50" r="36" fill="none" stroke="#7d89a8" stroke-width="0.35" opacity="0.7"/>
+  <circle cx="50" cy="50" r="28" fill="none" stroke="#7d89a8" stroke-width="0.25" opacity="0.45"/>
+  <g stroke="#7d89a8" stroke-width="0.45" opacity="0.55">
+    <line x1="50" y1="6.5" x2="50" y2="11"/>
+    <line x1="50" y1="89" x2="50" y2="93.5"/>
+    <line x1="6.5" y1="50" x2="11" y2="50"/>
+    <line x1="89" y1="50" x2="93.5" y2="50"/>
+  </g>
+  <path d="M50 32 A18 18 0 0 1 68 50" fill="none" stroke="#6ec8d4" stroke-width="2.1" stroke-linecap="round"/>
+  <path d="M68 50 A18 18 0 0 1 50 68" fill="none" stroke="#9aa4d6" stroke-width="2.1" stroke-linecap="round"/>
+  <path d="M50 68 A18 18 0 0 1 32 50" fill="none" stroke="#c4b08a" stroke-width="2.1" stroke-linecap="round"/>
+  <path d="M32 50 A18 18 0 0 1 50 32" fill="none" stroke="#d7deef" stroke-width="2.1" stroke-linecap="round"/>
+  <circle cx="50" cy="50" r="3" fill="none" stroke="#7d89a8" stroke-width="1"/>
+</svg>
