@@ -35,6 +35,44 @@ description: Protocol and workflow for all tasks involving The Interdependency o
 - **Usage guidance requirement**: Every code file, SKILL.md update, README change, research summary, or artifact produced under this skill **must contain clear, actionable usage guidance**. This is non-negotiable for accessibility, onboarding, and reducing signal loss.
 - **Research & canon alignment**: Ground all claims in source-backed canon (cross-load `canon` skill). Use `char-compress` for context handoff. Leave genuine uncertainty as `hmmm`.
 
+## Operator workflow contract
+
+These constraints govern how work is selected and executed; they do not override repository-local authority about what a project means.
+
+- **Audit before assent**: Test a proposal against current code, canon, evidence, constraints, and failure modes before agreeing with it. Agreement is a conclusion, not a conversational default.
+- **Preserve concepts; reject bad placement**: When a proposal is useful but architecturally misplaced, preserve the concept and move or re-scope it to the owning layer rather than either accepting the wrong placement or discarding the idea.
+- **Useful, good, true**: Do not generate work merely to create activity. Prefer artifacts and actions that are useful to the stated goal, operationally sound, and truthfully supported by evidence or explicit status.
+- **KISS under reality contact**: Prefer the smallest skilled design that survives actual execution. A clever mechanism that is fragile, opaque, untestable, or needlessly expensive is not simpler than a slightly longer mechanism that works.
+- **Prior planning before execution**: Resolve authority, placement, dependency order, resource needs, validation, rollback, and terminal condition before expensive or destructive work begins. Planning exists to prevent avoidable failure, not to create an approval ceremony.
+- **Complete within granted scope**: When the request, authority, and safety boundary already permit the next action, continue through the coherent workflow instead of repeatedly asking the operator to approve each obvious intermediate step. Ask only when a real unresolved decision cannot be recovered from authoritative sources or safely isolated as `hmmm`.
+- **Usage-limit aware orchestration**: Treat model-plan limits, API quotas, tool-call limits, rate limits, context budgets, and session durability as real resources during preflight. Stage or redistribute work before launch so a workflow does not predictably die midway from exhaustion. Do not silently downgrade evidence quality merely to fit a limit.
+- **Purposeful functions**: Every function, script, workflow step, and abstraction must have a defensible purpose, coherent inputs/outputs, failure behavior, and a reason to exist at that layer. Remove dead indirection and mechanisms whose only justification is that they already exist.
+- **Deprecation is removal plus replacement when capability remains required**: Once a mechanism is declared deprecated, stop routing new work through it and provide or identify its supported replacement when the retired capability remains required. If the capability is intentionally retired as unnecessary, complete removal is the replacement outcome. Do not preserve deprecated behavior by default out of inertia.
+- **`hmmm` is mandatory honest incompletion**: `hmmm` is the boundary object for unresolved constraints, missing authority, incomplete evidence, or a living continuation. Never erase an unresolved merely to make an artifact look finished. Where the boundary would otherwise be empty, leave a brief apropos, cogent, or humorous nonsequitur rather than silently dropping it.
+
+## Operational authority topology
+
+This section records durable ownership boundaries, not a frozen inventory of the operator's current machines, clients, logins, quotas, or provider sessions.
+
+- **GitHub repository boundary**: GitHub is the canonical remote source, review, and merge surface for repositories under `The-Interdependency`. GitHub Actions is validation evidence only where a repository's current workflows actually execute the claimed gates; inspect those jobs rather than inferring health from a green badge.
+- **VM control-plane authority**: `skill-lib/vm-mcp` owns reusable VM MCP implementation and doctrine. Its authority profiles are deployment choices: bounded defaults remain appropriate for shared or first-contact environments, while the explicit `personal-console` profile is available for a deliberately configured single-owner private VM. The personal-console profile entered canonical skill-lib in merged #81 at `222ba4d4348022d81950c3fad054bae7e528b6a0`. Repository tests do not prove that any particular VM currently satisfies that profile.
+- **Stack deployment authority**: `The-Interdependency/stack` owns stack-specific deployment and operational-use guidance. Stack's consumption of the canonical `vm-mcp` personal console entered stack in merged #12 at `22b74340d0c603883193a4ecf53e2ef3f9c3e780`. When stack deployment consumes `vm-mcp`, resolve that exact pinned skill-lib identity and the current `stack/backend/deploy` instructions before acting. No implementation or doctrine authority transfers from skill-lib into stack merely because stack consumes it.
+- **Concrete host/client facts are runtime evidence**: A hostname or alias such as `a0`, a client such as Termux, Git transport/authentication method, tunnel state, installed CLI, provider login, exact version, quota, and API availability must be discovered from the current deployment/operator environment before use. This skill must not elevate those transient facts into unconditional organization-wide routing doctrine.
+- **Provider execution capacity is not source authority**: OpenAI/Codex, xAI/Grok, DeepSeek/DeepCode, or another provider may be usable execution capacity when currently authenticated and within quota. Their availability must be checked at runtime, and choosing an executor does not transfer repository, semantic, mathematical, measurement, or publication authority.
+- **Deprecated/stale routes do not revive themselves**: Historical services, hosts, clients, authentication paths, or provider assumptions are not automatic fallbacks. If a route is deprecated, migrate to its supported replacement and remove obsolete routing when compatibility permits; otherwise preserve the unresolved deployment boundary as `hmmm`.
+
+### Operational usage guidance
+
+Before routing work to a machine or provider:
+
+1. resolve the repository and exact commit that owns the work;
+2. read the current deployment instructions owned by the consuming repository;
+3. verify the actual host/client/authentication/tunnel/provider state;
+4. choose only the authority profile and executor justified by that evidence; and
+5. keep human recovery access independent where the deployment contract requires it.
+
+A statement like "use `a0`" is therefore a runtime/operator decision backed by current deployment evidence, not standing organization canon in this skill.
+
 ## METAPAT consultation test
 
 Ask one question before conceptual or architectural commitment:
@@ -97,6 +135,7 @@ When consultation triggers, inspect the current METAPAT repository state before 
 - Using METAPAT to decorate a routine implementation decision.
 - Making a conceptual architecture choice that crosses the METAPAT gate without consulting current METAPAT.
 - Copying METAPAT doctrine into skill-lib and allowing the copy to become a competing authority.
+- Treating a concrete host, client, provider login, or quota as standing organization authority without current deployment evidence.
 
 ## Output Rubric (active whenever this skill is loaded)
 
@@ -112,3 +151,4 @@ hmmm
 - Whether the historical `meta` skill should remain as a compatibility router or be removed after all consumers propagate this gate.
 - Whether a companion metadata-block skill (e.g. `# === TIW_WORKFLOW ===` or `# === INTERDEPENDENCY ===`) should be added for self-declaring modules inside The-Interdependency repos.
 - Exact canonical reference for the full EDCMBONE transcript assembly protocol — should the detailed steps live in this skill or be expanded inside the edcmbone repo's own skill definitions?
+- Actual VM state, current client/private-tunnel state, provider sessions, and quotas remain runtime evidence outside this skill.
