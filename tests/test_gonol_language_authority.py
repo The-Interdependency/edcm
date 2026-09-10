@@ -32,12 +32,26 @@ def test_live_surfaces_route_gonol_authority_consistently() -> None:
     assert "UCNS owns any exact geometric realization" in boundary
     assert "EDCM applies affixiation to text-domain gonols" in boundary
     for text in (boundary, canon, agents):
-        assert "scale option sets" in text
+        assert "characters -> words -> definitions -> recursive gonol relations" in text
         assert "edcm.gonol" in text
-        assert "Once closed, a gonol is atomic at any scale" in text
-    assert "mandatory adjacent-scale ladder" in boundary
-    assert "Closed gonols may participate directly at any admissible scale" in boundary
+        assert "next declared scale" in text
+    assert "This order is load-bearing" in boundary
+    assert "Pronunciation is source metadata" in canon
     assert "does not mutate `sys.path`" in boundary
+
+
+def test_live_surfaces_reject_retired_construction_paths() -> None:
+    forbidden = (
+        "scale option sets",
+        "mandatory adjacent-scale ladder",
+        "suffix-coupling",
+        "Once closed, a gonol is atomic at any scale",
+        "Closed gonols may participate directly at any admissible scale",
+    )
+    for path in LIVE_SURFACES:
+        text = _compact(path)
+        for phrase in forbidden:
+            assert phrase not in text, f"retired construction path in {path.relative_to(ROOT)}: {phrase}"
 
 
 def test_live_surfaces_do_not_restore_ucns_language_ownership() -> None:

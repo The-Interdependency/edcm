@@ -99,7 +99,7 @@ every admitted character is a gonol
 
 This is an EDCM text-domain rule. EDCM owns the source/profile that decides what is admitted as a character. If a profile has not selected Unicode code point, grapheme, exact Public Gonol glyph inventory, or another explicit unit, that admission boundary remains `hmmm`; UCNS does not silently decide it merely because UCNS supplies the geometry.
 
-Active construction uses declared scale option sets rather than a mandatory adjacent-scale ladder. `edcm.gonol` is the implemented candidate constructor for closing one gonol at a declared scale. Once closed, a gonol is atomic at any scale; do not reopen a completed gonol or invent UCNS coupling geometry.
+Active construction requires `characters -> words -> definitions -> recursive gonol relations`. This order is load-bearing, and `edcm.gonol` is the implemented candidate constructor for those four stages. Close each completed gonol before it participates atomically at the next declared scale; do not reopen it or invent UCNS coupling geometry. Pronunciation is not part of the current construction.
 
 Do not insert a conventional NLP tokenizer, token IDs, subword pieces, opaque external vector lookup, or whole-string hash as a substitute for gonol identity. Source prose, dictionaries, corpora, labels, and annotations may remain evidence and provenance; they become gonol semantics only through a source-bound EDCM construction whose admission, relation, closure, and replay boundaries are explicit.
 
@@ -300,7 +300,7 @@ Optional skips are explicit. Fake sibling implementations may test adversarial c
 - Historical measurement modules retain provenance until the explicit metadata-reconciliation pass.
 - Code and documentation include runnable usage guidance, integration notes, limitations, and `hmmm` boundaries.
 - EDCM vendors the bounded build/evidence subset from
-  `The-Interdependency/skill-lib@a1c6a7124af537ee9937b6fc6084940091982fe5`.
+  `The-Interdependency/skill-lib@c14ee9d500579a4b5d6821f62c9d82ca96e73608`.
   The canonical drift checker and msdmd collector run in
   `.github/workflows/skill-compliance.yml`; repo-local copies are consumers,
   never authority.

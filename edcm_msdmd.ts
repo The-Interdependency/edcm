@@ -708,10 +708,10 @@ export default defineMsdmdCollection({
         "class": "construction",
         "given": "a closed gonol participates in another construction",
         "since": "2026-08-22",
-        "then": "the participant is consumed by atomic identity while recoverable provenance and nested structure remain available"
+        "then": "the participant is consumed atomically at a legal next stage while recoverable provenance and nested structure remain available"
       },
       "file": "edcm/gonol.py",
-      "id": "closed_gonol_atomic_at_any_scale"
+      "id": "closed_gonol_atomic_at_next_stage"
     },
     {
       "block": "CONTRACTS",
@@ -723,6 +723,17 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/gonol.py",
       "id": "construction_survives_absent_ucns_geometry"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "construction",
+        "given": "a definition gonol is requested",
+        "since": "2026-09-10",
+        "then": "exact definition source and one or more already-closed word gonols are required"
+      },
+      "file": "edcm/gonol.py",
+      "id": "definition_requires_words_and_exact_evidence"
     },
     {
       "block": "CONTRACTS",
@@ -739,23 +750,23 @@ export default defineMsdmdCollection({
       "block": "CONTRACTS",
       "fields": {
         "class": "construction",
-        "given": "a caller closes source evidence or closed gonol participants",
-        "since": "2026-08-22",
-        "then": "edcm.gonol uses the declared scale option set rather than dispatching through specialized ladder constructors"
+        "given": "a recursive gonol is requested",
+        "since": "2026-09-10",
+        "then": "ordered closed word, definition, or recursive gonols are accepted and raw character gonols are rejected"
       },
       "file": "edcm/gonol.py",
-      "id": "single_constructor_uses_scale_option_sets"
+      "id": "recursive_rejects_character_bypass"
     },
     {
       "block": "CONTRACTS",
       "fields": {
         "class": "construction",
-        "given": "suffix coupling has a final-y exception such as ing preserving y after a consonant",
-        "since": "2026-08-22",
-        "then": "the exception is stored on the closed suffix gonol participant and replayed through participant provenance rather than global morphology law"
+        "given": "a caller constructs a character, word, definition, or recursive gonol",
+        "since": "2026-09-10",
+        "then": "edcm.gonol permits only the current four stages and rejects construction that bypasses their declared input boundary"
       },
       "file": "edcm/gonol.py",
-      "id": "suffix_exception_carried_by_suffix_gonol"
+      "id": "single_constructor_enforces_required_order"
     },
     {
       "block": "CONTRACTS",
@@ -763,17 +774,28 @@ export default defineMsdmdCollection({
         "class": "doctrine",
         "given": "a receipt is minted",
         "since": "2026-08-22",
-        "then": "standing is implemented-candidate, selection_effect is none, and measurement, UCNS operation, and METAPAT promotion remain nonclaims"
+        "then": "standing is implemented-candidate, selection_effect is none, and measurement, UCNS operation, and phonology remain nonclaims"
       },
       "file": "edcm/gonol.py",
       "id": "unified_candidate_does_not_select_canon"
     },
     {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "construction",
+        "given": "exact one-word source evidence is admitted",
+        "since": "2026-09-10",
+        "then": "every Unicode scalar closes as an ordered character gonol before the word closes"
+      },
+      "file": "edcm/gonol.py",
+      "id": "word_closes_ordered_character_gonols"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
-        "auth_boundary": "EDCM owns text-domain closure; UCNS Public Gonol geometry is optional observation only when supplied as an explicit matching authority; METAPAT affixiation semantics are consumed, not redefined",
-        "internal_surface": "_option_set, _require_text, _source_units, _closed_participants, _validate_closed_gonol, _carried_option_pairs, _has_suffix_coupling_options, _relation_value, _geometry_observation, _source_character_gonols, _participant_payload, _atomic_payload, _receipt_payload, _digest",
+        "auth_boundary": "EDCM owns text-domain closure; UCNS Public Gonol geometry is optional observation only when supplied as an explicit matching authority",
+        "internal_surface": "_option_set, _require_text, _source_units, _closed_participants, _validate_closed_gonol, _validate_stage_inputs, _relation_value, _geometry_observation, _source_character_gonols, _participant_payload, _atomic_payload, _receipt_payload, _digest",
         "module_kind": "engine",
         "module_name": "gonol",
         "network_boundary": "none",
@@ -781,12 +803,12 @@ export default defineMsdmdCollection({
         "public_surface": "CONSTRUCTOR_ID, CONSTRUCTOR_VERSION, PINNED_PUBLIC_GONOL_SHA256, ScaleOptionSet, ClosedGonol, GonolReceipt, GonolConstructionError, SCALE_OPTION_SETS, construct_gonol, replay_gonol, canonical_receipt_bytes",
         "requires": "none",
         "rollback": "remove this module; historical lexical-floor and UCNS observation adapters remain unchanged",
-        "rollout": "explicit candidate constructor; no canon selection, measurement activation, UCNS function operation, or Mobius coupling promotion",
+        "rollout": "explicit v2 candidate constructor; no canon selection, measurement activation, UCNS function operation, or Mobius coupling promotion",
         "since": "2026-08-22",
         "storage_boundary": "none; receipts remain caller-owned in-memory objects",
-        "summary": "unified EDCM candidate constructor that closes gonols through declared scale option sets while preserving closed-gonol atomicity, carried suffix options, deterministic replay, and UCNS/METAPAT authority boundaries",
+        "summary": "unified EDCM candidate constructor that enforces character-to-word-to-definition-to-recursive construction while preserving closed-gonol atomicity, deterministic replay, and UCNS geometry boundaries",
         "tests": "tests.test_gonol_constructor",
-        "unresolved": "exact UCNS geometric operation of Public Gonol function positions; Mobius-carrier affixiation/coupling law; which scales and relations are later selected; complete English morphology law",
+        "unresolved": "exact UCNS geometric operation of Public Gonol function positions; Mobius-carrier coupling law; which definition sources and recursive relations are later selected; any future construction that explicitly adds phonology or another stage",
         "user_data_boundary": "caller-supplied source, relation, participants, and source_id remain in memory and are not transmitted"
       },
       "file": "edcm/gonol.py",
@@ -1945,14 +1967,14 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
-        "call": "self::test_closed_gonols_participate_directly_without_ladder",
+        "call": "self::test_closed_gonols_participate_without_reopening",
         "cleanup": "none",
         "mutates": "none",
-        "proves": "closed_gonol_atomic_at_any_scale",
+        "proves": "closed_gonol_atomic_at_next_stage",
         "timeout": "30"
       },
       "file": "tests/test_gonol_constructor.py",
-      "id": "closed_gonol_atomic_at_any_scale_check"
+      "id": "closed_gonol_atomic_at_next_stage_check"
     },
     {
       "block": "CHECKS",
@@ -1969,6 +1991,18 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
+        "call": "self::test_definition_requires_closed_words_and_exact_evidence",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "definition_requires_words_and_exact_evidence",
+        "timeout": "30"
+      },
+      "file": "tests/test_gonol_constructor.py",
+      "id": "definition_requires_words_and_exact_evidence_check"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
         "call": "self::test_digest_mismatch_fails_closed",
         "cleanup": "none",
         "mutates": "none",
@@ -1981,26 +2015,26 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
-        "call": "self::test_constructor_uses_declared_scale_option_set",
+        "call": "self::test_recursive_accepts_closed_higher_stages_and_rejects_characters",
         "cleanup": "none",
         "mutates": "none",
-        "proves": "single_constructor_uses_scale_option_sets",
+        "proves": "recursive_rejects_character_bypass",
         "timeout": "30"
       },
       "file": "tests/test_gonol_constructor.py",
-      "id": "single_constructor_uses_scale_option_sets_check"
+      "id": "recursive_rejects_character_bypass_check"
     },
     {
       "block": "CHECKS",
       "fields": {
-        "call": "self::test_suffix_coupling_exception_is_carried_by_closed_suffix",
+        "call": "self::test_constructor_exposes_only_required_stages",
         "cleanup": "none",
         "mutates": "none",
-        "proves": "suffix_exception_carried_by_suffix_gonol",
+        "proves": "single_constructor_enforces_required_order",
         "timeout": "30"
       },
       "file": "tests/test_gonol_constructor.py",
-      "id": "suffix_exception_carried_by_suffix_gonol_check"
+      "id": "single_constructor_enforces_required_order_check"
     },
     {
       "block": "CHECKS",
@@ -2013,6 +2047,18 @@ export default defineMsdmdCollection({
       },
       "file": "tests/test_gonol_constructor.py",
       "id": "unified_candidate_does_not_select_canon_check"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_word_closes_ordered_source_characters",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "word_closes_ordered_character_gonols",
+        "timeout": "30"
+      },
+      "file": "tests/test_gonol_constructor.py",
+      "id": "word_closes_ordered_character_gonols_check"
     },
     {
       "block": "CHECKS",
@@ -4826,18 +4872,18 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
-      "from": "closed_gonol_atomic_at_any_scale_check",
+      "from": "closed_gonol_atomic_at_next_stage_check",
       "kind": "calls",
       "source_block": "CHECKS",
-      "source_id": "closed_gonol_atomic_at_any_scale_check",
-      "to": "self::test_closed_gonols_participate_directly_without_ladder"
+      "source_id": "closed_gonol_atomic_at_next_stage_check",
+      "to": "self::test_closed_gonols_participate_without_reopening"
     },
     {
-      "from": "closed_gonol_atomic_at_any_scale_check",
+      "from": "closed_gonol_atomic_at_next_stage_check",
       "kind": "claims_proves",
       "source_block": "CHECKS",
-      "source_id": "closed_gonol_atomic_at_any_scale_check",
-      "to": "closed_gonol_atomic_at_any_scale"
+      "source_id": "closed_gonol_atomic_at_next_stage_check",
+      "to": "closed_gonol_atomic_at_next_stage"
     },
     {
       "from": "construction_survives_absent_ucns_geometry_check",
@@ -4852,6 +4898,20 @@ export default defineMsdmdCollection({
       "source_block": "CHECKS",
       "source_id": "construction_survives_absent_ucns_geometry_check",
       "to": "construction_survives_absent_ucns_geometry"
+    },
+    {
+      "from": "definition_requires_words_and_exact_evidence_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "definition_requires_words_and_exact_evidence_check",
+      "to": "self::test_definition_requires_closed_words_and_exact_evidence"
+    },
+    {
+      "from": "definition_requires_words_and_exact_evidence_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "definition_requires_words_and_exact_evidence_check",
+      "to": "definition_requires_words_and_exact_evidence"
     },
     {
       "from": "geometry_mismatch_fails_closed_check",
@@ -4952,32 +5012,32 @@ export default defineMsdmdCollection({
       "to": "oewn_source_is_exact_pinned_and_resumable"
     },
     {
-      "from": "single_constructor_uses_scale_option_sets_check",
+      "from": "recursive_rejects_character_bypass_check",
       "kind": "calls",
       "source_block": "CHECKS",
-      "source_id": "single_constructor_uses_scale_option_sets_check",
-      "to": "self::test_constructor_uses_declared_scale_option_set"
+      "source_id": "recursive_rejects_character_bypass_check",
+      "to": "self::test_recursive_accepts_closed_higher_stages_and_rejects_characters"
     },
     {
-      "from": "single_constructor_uses_scale_option_sets_check",
+      "from": "recursive_rejects_character_bypass_check",
       "kind": "claims_proves",
       "source_block": "CHECKS",
-      "source_id": "single_constructor_uses_scale_option_sets_check",
-      "to": "single_constructor_uses_scale_option_sets"
+      "source_id": "recursive_rejects_character_bypass_check",
+      "to": "recursive_rejects_character_bypass"
     },
     {
-      "from": "suffix_exception_carried_by_suffix_gonol_check",
+      "from": "single_constructor_enforces_required_order_check",
       "kind": "calls",
       "source_block": "CHECKS",
-      "source_id": "suffix_exception_carried_by_suffix_gonol_check",
-      "to": "self::test_suffix_coupling_exception_is_carried_by_closed_suffix"
+      "source_id": "single_constructor_enforces_required_order_check",
+      "to": "self::test_constructor_exposes_only_required_stages"
     },
     {
-      "from": "suffix_exception_carried_by_suffix_gonol_check",
+      "from": "single_constructor_enforces_required_order_check",
       "kind": "claims_proves",
       "source_block": "CHECKS",
-      "source_id": "suffix_exception_carried_by_suffix_gonol_check",
-      "to": "suffix_exception_carried_by_suffix_gonol"
+      "source_id": "single_constructor_enforces_required_order_check",
+      "to": "single_constructor_enforces_required_order"
     },
     {
       "from": "unified_candidate_does_not_select_canon_check",
@@ -4992,6 +5052,20 @@ export default defineMsdmdCollection({
       "source_block": "CHECKS",
       "source_id": "unified_candidate_does_not_select_canon_check",
       "to": "unified_candidate_does_not_select_canon"
+    },
+    {
+      "from": "word_closes_ordered_character_gonols_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "word_closes_ordered_character_gonols_check",
+      "to": "self::test_word_closes_ordered_source_characters"
+    },
+    {
+      "from": "word_closes_ordered_character_gonols_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "word_closes_ordered_character_gonols_check",
+      "to": "word_closes_ordered_character_gonols"
     },
     {
       "from": "edcm_ucns_fork_lint_docs",

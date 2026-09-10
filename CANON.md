@@ -56,9 +56,9 @@ every admitted character is a gonol
 
 This is an EDCM text-domain rule. EDCM owns the declared source/profile that determines what is admitted as a character. If a construction has not yet selected its exact unit—Unicode code point, grapheme, Public Gonol glyph inventory, or another explicit unit—that admission boundary remains `hmmm`. UCNS may realize admitted characters geometrically; UCNS does not own the linguistic admission rule merely because it owns the geometry.
 
-Current EDCM text construction uses declared scale option sets rather than a mandatory adjacent-scale ladder. `edcm.gonol` is the implemented candidate constructor for closing one gonol through a declared scale option set. Admissible scales may include character, word, suffix, suffix-coupling, definition, recursive relation, morphology, punctuation-function, source-specific, or later named scales when the governing construction declares their options.
+Current EDCM text construction requires `characters -> words -> definitions -> recursive gonol relations`. This order is load-bearing. `edcm.gonol` is the implemented candidate constructor for these four stages. It is not selected canon, and construction does not activate measurement. Pronunciation is source metadata and must not alter identity, closure, ordering, or relations unless a later explicitly declared experiment changes the construction contract.
 
-Once closed, a gonol is atomic at any scale. Closed gonols may participate directly at any admissible scale without reopening, while identity, order, multiplicity, source positions, relation identity, and provenance remain recoverable. Suffix-coupling exceptions are carried by the closed suffix gonol, such as `ing` carrying `suffix-coupling.final-y-after-consonant = preserve-y`, rather than by a global morphology law. Historical morphology evidence remains historical; the complete English morphology law remains `hmmm`.
+Each completed gonol closes before it participates atomically at the next declared scale. Construction does not reopen it, while identity, order, multiplicity, source positions, relation identity, and provenance remain recoverable. Affixiation or morphology may be exact source evidence or a named recursive relation over eligible closed gonols; neither is another required construction stage. Historical morphology evidence remains historical; the complete English morphology law remains `hmmm`.
 
 Affixiation is defined by METAPAT, not by EDCM and not by UCNS. EDCM applies affixiation to text-domain gonols. UCNS owns any exact geometric realization on the native Möbius/Public Gonol carrier. An unresolved UCNS coupling law remains `hmmm`; neither EDCM nor UCNS may fill it by importing an invented carrier, topology, scale increment, arity rule, containment rule, or linguistic convention.
 
@@ -235,7 +235,7 @@ This phase may implement:
 - positive unresolved-reference and alternative-bundle evidence;
 - reproducible reports and policy-preservation findings;
 - CI execution against exact UCNS commits where experiments require them;
-- source-bound EDCM gonol candidate construction through declared scale option sets under the current authority split;
+- source-bound EDCM gonol candidate construction through the required character, word, definition, and recursive-relation stages under the current authority split;
 - candidate UCNS Möbius-carrier realizations of affixiation under fixed METAPAT invariants; and
 - preregistered EDCM measurements of completed text-gonol constructions.
 

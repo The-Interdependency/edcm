@@ -37,7 +37,7 @@ METAPAT affixiation semantics: The-Interdependency/metapat at the current govern
 UCNS gonol geometry:          The-Interdependency/ucns at the current governing or experiment-pinned commit
 EDCM text construction:       The-Interdependency/edcm current canon/profile
 EDCM baseline measurement:    The-Interdependency/edcm:edcm/measurement
-organization skills:          The-Interdependency/skill-lib@a1c6a7124af537ee9937b6fc6084940091982fe5
+organization skills:          The-Interdependency/skill-lib@c14ee9d500579a4b5d6821f62c9d82ca96e73608
 experiment evidence:          exact report, corpus, candidate, and workflow identities
 ```
 
@@ -56,7 +56,7 @@ EDCM owns the character-admission profile and linguistic/semantic construction. 
 - `edcm/measurement/` is the frozen maintained baseline candidate.
 - `edcm.ucns_edcm_experiments` is the first joint experiment runner.
 - EDCM owns current text-domain gonol admission and construction; measurement remains separately frozen and evaluated.
-- `edcm.gonol` is the implemented candidate constructor for closing gonols through declared scale option sets. None is selected canon.
+- `edcm.gonol` is the implemented candidate constructor for the required `characters -> words -> definitions -> recursive gonol relations` order. It is not selected canon.
 - UCNS structural policies, product-character candidates, faithful-breadth candidates, and unresolved Möbius coupling laws remain noncanonical unless current UCNS authority says otherwise.
 - EDCM axes, thresholds, marker lists, and circuit parameters remain candidates unless an explicit canon decision says otherwise.
 - A passing hypothesis is experiment-supported evidence, not canon.
@@ -104,7 +104,7 @@ python -m twine check dist/*
 
 ## Usage guidance
 
-For new text-gonol construction, begin in EDCM. Resolve the exact EDCM source/admission profile, import METAPAT affixiation invariants without redefining them, consume current UCNS geometry where normally available, and close gonols with `edcm.gonol` scale option sets. Once closed, a gonol is atomic at any scale; admissible larger-scale construction may consume closed gonols directly without reopening. Replay independently before claiming completion. Freeze any EDCM measurement only after construction and keep its evidence status separate.
+For new text-gonol construction, begin in EDCM. Resolve the exact EDCM source/admission profile, import METAPAT affixiation invariants without redefining them, consume current UCNS geometry where normally available, and keep the `edcm.gonol` order load-bearing: `characters -> words -> definitions -> recursive gonol relations`. Close each completed gonol before it participates atomically at the next declared scale, without reopening it. Pronunciation is source metadata, not a construction stage. Replay independently before claiming completion. Freeze any EDCM measurement only after construction and keep its evidence status separate.
 
 For historical experiments, reproduce the exact historical producer epoch and names. Historical UCNS-owned lexical artifacts remain evidence; they do not restore current language authority to UCNS.
 

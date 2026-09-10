@@ -8,7 +8,8 @@ Usage:
 The checker is intentionally repository-specific. Canonical block parsing and
 collection remain owned by skill-lib/msdmd; this gate enforces EDCM's declared
 native-module policy and verifies that metadata test references resolve to real
-files.
+files. It also keeps the live skill-lib identity synchronized with the commit
+used by CI.
 """
 
 from __future__ import annotations
@@ -54,6 +55,21 @@ REQUIRED_FIELDS = (
 )
 
 NON_HMMM_FIELDS = tuple(field for field in REQUIRED_FIELDS if field != "unresolved")
+
+SKILL_LIB_SHA_RE = re.compile(
+    r"The-Interdependency/skill-lib@(?P<sha>[0-9a-f]{40})"
+)
+WORKFLOW_REF_RE = re.compile(
+    r"^[ \t]*repository:\s*The-Interdependency/skill-lib\s*$"
+    r"\s*^[ \t]*ref:\s*(?P<sha>[0-9a-f]{40})\s*$",
+    re.MULTILINE,
+)
+WORKFLOW_SHA_RE = re.compile(r"--sha\s+(?P<sha>[0-9a-f]{40})(?:\s|\\|$)")
+LIVE_SKILL_LIB_SURFACES = (
+    Path("AGENTS.md"),
+    Path("CLAUDE.md"),
+    Path("docs/integrity-gates.md"),
+)
 
 
 @dataclass(frozen=True)
@@ -166,11 +182,75 @@ def verify_test_references(path: Path, tests_field: str, root: Path) -> list[Fin
     return findings
 
 
+def verify_skill_lib_identity(root: Path) -> list[Finding]:
+    """Require live documentation to match the exact skill-lib commit used by CI."""
+
+    findings: list[Finding] = []
+    workflow_path = root / ".github" / "workflows" / "skill-compliance.yml"
+    workflow_relative = workflow_path.relative_to(root).as_posix()
+    if not workflow_path.is_file():
+        return [
+            Finding(
+                workflow_relative,
+                "MISSING_SKILL_LIB_WORKFLOW",
+                "skill-compliance workflow is required to establish canonical skill-lib identity",
+            )
+        ]
+
+    workflow = workflow_path.read_text(encoding="utf-8")
+    checkout_shas = tuple(match.group("sha") for match in WORKFLOW_REF_RE.finditer(workflow))
+    checker_shas = tuple(match.group("sha") for match in WORKFLOW_SHA_RE.finditer(workflow))
+    workflow_shas = set(checkout_shas + checker_shas)
+    if not checkout_shas or not checker_shas or len(workflow_shas) != 1:
+        findings.append(
+            Finding(
+                workflow_relative,
+                "SKILL_LIB_WORKFLOW_DRIFT",
+                "skill-lib checkout refs and drift-checker --sha values must exist and agree",
+            )
+        )
+        return findings
+
+    canonical_sha = next(iter(workflow_shas))
+    for relative_path in LIVE_SKILL_LIB_SURFACES:
+        path = root / relative_path
+        relative = relative_path.as_posix()
+        if not path.is_file():
+            findings.append(
+                Finding(relative, "MISSING_SKILL_LIB_SURFACE", "live authority surface is missing")
+            )
+            continue
+        declared = tuple(
+            match.group("sha")
+            for match in SKILL_LIB_SHA_RE.finditer(path.read_text(encoding="utf-8"))
+        )
+        if not declared:
+            findings.append(
+                Finding(
+                    relative,
+                    "MISSING_SKILL_LIB_IDENTITY",
+                    "live authority surface does not declare the pinned skill-lib commit",
+                )
+            )
+            continue
+        mismatches = sorted({sha for sha in declared if sha != canonical_sha})
+        if mismatches:
+            findings.append(
+                Finding(
+                    relative,
+                    "SKILL_LIB_IDENTITY_DRIFT",
+                    f"expected {canonical_sha}; found {', '.join(mismatches)}",
+                )
+            )
+    return findings
+
+
 def run(root: Path) -> Report:
     root = root.resolve()
     findings: list[Finding] = []
     seen_ids: dict[str, str] = {}
     modules = native_modules(root)
+    findings.extend(verify_skill_lib_identity(root))
 
     for path in modules:
         block_id, fields, module_findings = parse_module_build(path)

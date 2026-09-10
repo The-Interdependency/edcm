@@ -1,21 +1,35 @@
 # === CHECKS ===
-# id: single_constructor_uses_scale_option_sets_check
-#   proves: single_constructor_uses_scale_option_sets
-#   call: self::test_constructor_uses_declared_scale_option_set
+# id: single_constructor_enforces_required_order_check
+#   proves: single_constructor_enforces_required_order
+#   call: self::test_constructor_exposes_only_required_stages
 #   timeout: 30
 #   mutates: none
 #   cleanup: none
 #
-# id: closed_gonol_atomic_at_any_scale_check
-#   proves: closed_gonol_atomic_at_any_scale
-#   call: self::test_closed_gonols_participate_directly_without_ladder
+# id: closed_gonol_atomic_at_next_stage_check
+#   proves: closed_gonol_atomic_at_next_stage
+#   call: self::test_closed_gonols_participate_without_reopening
 #   timeout: 30
 #   mutates: none
 #   cleanup: none
 #
-# id: suffix_exception_carried_by_suffix_gonol_check
-#   proves: suffix_exception_carried_by_suffix_gonol
-#   call: self::test_suffix_coupling_exception_is_carried_by_closed_suffix
+# id: word_closes_ordered_character_gonols_check
+#   proves: word_closes_ordered_character_gonols
+#   call: self::test_word_closes_ordered_source_characters
+#   timeout: 30
+#   mutates: none
+#   cleanup: none
+#
+# id: definition_requires_words_and_exact_evidence_check
+#   proves: definition_requires_words_and_exact_evidence
+#   call: self::test_definition_requires_closed_words_and_exact_evidence
+#   timeout: 30
+#   mutates: none
+#   cleanup: none
+#
+# id: recursive_rejects_character_bypass_check
+#   proves: recursive_rejects_character_bypass
+#   call: self::test_recursive_accepts_closed_higher_stages_and_rejects_characters
 #   timeout: 30
 #   mutates: none
 #   cleanup: none
@@ -76,7 +90,15 @@ def _fake_public_gonol_authority() -> tuple[str, SimpleNamespace]:
 
 
 class GonolConstructorTest(unittest.TestCase):
-    def test_constructor_uses_declared_scale_option_set(self) -> None:
+    def test_constructor_exposes_only_required_stages(self) -> None:
+        self.assertEqual(tuple(SCALE_OPTION_SETS), ("character", "word", "definition", "recursive"))
+        with self.assertRaisesRegex(
+            GonolConstructionError,
+            "scale must be one of: character, definition, recursive, word",
+        ):
+            construct_gonol(scale="suffix", source="ing", source_id="fixture:retired-suffix")
+
+    def test_word_closes_ordered_source_characters(self) -> None:
         receipt = construct_gonol(scale="word", source="cut", source_id="fixture:cut")
         self.assertEqual(receipt.constructor_id, CONSTRUCTOR_ID)
         self.assertEqual(receipt.constructor_version, CONSTRUCTOR_VERSION)
@@ -129,99 +151,73 @@ class GonolConstructorTest(unittest.TestCase):
                 geometry_authority=fake,
             )
 
-    def test_closed_gonols_participate_directly_without_ladder(self) -> None:
+    def test_closed_gonols_participate_without_reopening(self) -> None:
         character = construct_gonol(scale="character", source="c", source_id="fixture:c")
         word = construct_gonol(scale="word", source="cut", source_id="fixture:cut")
         definition = construct_gonol(
             scale="definition",
-            relation="fixture:defines-directly",
-            participants=(character.gonol, word.gonol),
+            participants=(word.gonol,),
             source="direct cross-scale evidence",
             source_id="fixture:def",
         )
-        self.assertEqual(definition.gonol.participants, (character.gonol, word.gonol))
-        self.assertEqual([item.scale for item in definition.gonol.participants], ["character", "word"])
-        self.assertNotIn("mandatory character-word-definition-recursive ladder", definition.receipt_digest)
-        self.assertIn("not a mandatory character-word-definition-recursive ladder", definition.nonclaims)
+        self.assertEqual(definition.gonol.participants, (word.gonol,))
+        self.assertEqual(definition.gonol.participants[0].source_characters, word.gonol.source_characters)
+        self.assertEqual(character.gonol.scale, "character")
 
-    def test_suffix_coupling_exception_is_carried_by_closed_suffix(self) -> None:
-        base = construct_gonol(scale="word", source="try", source_id="fixture:try")
-        ing = construct_gonol(
-            scale="suffix",
-            source="ing",
-            source_id="fixture:ing",
-            carried_options=(("suffix-coupling.final-y-after-consonant", "preserve-y"),),
+    def test_definition_requires_closed_words_and_exact_evidence(self) -> None:
+        word = construct_gonol(scale="word", source="cut", source_id="fixture:cut")
+        definition = construct_gonol(
+            scale="definition",
+            source="to divide",
+            participants=(word.gonol,),
+            source_id="fixture:cut#1",
         )
-        coupling = construct_gonol(
-            scale="suffix-coupling",
-            participants=(base.gonol, ing.gonol),
-            source_id="fixture:trying",
-        )
-
-        self.assertEqual(coupling.option_set, SCALE_OPTION_SETS["suffix-coupling"])
-        self.assertEqual(coupling.gonol.relation, "suffix-coupling")
-        self.assertEqual(coupling.gonol.participants, (base.gonol, ing.gonol))
-        self.assertEqual(
-            coupling.gonol.participants[1].carried_options,
-            (("suffix-coupling.final-y-after-consonant", "preserve-y"),),
-        )
-        self.assertEqual(coupling.gonol.carried_options, ())
-        self.assertIn(("carried_option", "suffix-coupling.final-y-after-consonant=preserve-y"), ing.gonol.provenance)
-        self.assertNotIn("final-y-after-consonant", repr(SCALE_OPTION_SETS["suffix-coupling"]))
-        self.assertNotIn("preserve-y", repr(SCALE_OPTION_SETS["suffix-coupling"]))
-
-        replay = replay_gonol(receipt=coupling)
-        self.assertEqual(coupling.receipt_digest, replay.receipt_digest)
-
-    def test_suffix_carried_options_are_part_of_identity_and_fail_closed(self) -> None:
-        base = construct_gonol(scale="word", source="try", source_id="fixture:try")
-        ing_preserve = construct_gonol(
-            scale="suffix",
-            source="ing",
-            source_id="fixture:ing",
-            carried_options=(("suffix-coupling.final-y-after-consonant", "preserve-y"),),
-        )
-        ing_change = construct_gonol(
-            scale="suffix",
-            source="ing",
-            source_id="fixture:ing",
-            carried_options=(("suffix-coupling.final-y-after-consonant", "change-y-to-i"),),
-        )
-        self.assertNotEqual(ing_preserve.gonol.atomic_id, ing_change.gonol.atomic_id)
-
-        preserved = construct_gonol(
-            scale="suffix-coupling",
-            participants=(base.gonol, ing_preserve.gonol),
-            source_id="fixture:trying",
-        )
-        changed = construct_gonol(
-            scale="suffix-coupling",
-            participants=(base.gonol, ing_change.gonol),
-            source_id="fixture:trying",
-        )
-        self.assertNotEqual(preserved.gonol.atomic_id, changed.gonol.atomic_id)
-
-        with self.assertRaisesRegex(GonolConstructionError, "carried by a closed suffix gonol"):
+        self.assertEqual(definition.gonol.relation, "definition-of")
+        self.assertEqual(definition.gonol.participants, (word.gonol,))
+        with self.assertRaisesRegex(GonolConstructionError, "requires exact source evidence"):
             construct_gonol(
-                scale="suffix-coupling",
-                participants=(base.gonol, ing_preserve.gonol),
-                carried_options=(("suffix-coupling.final-y-after-consonant", "preserve-y"),),
-                source_id="fixture:bad-carrier",
+                scale="definition",
+                participants=(word.gonol,),
+                source_id="fixture:no-definition",
+            )
+        with self.assertRaisesRegex(GonolConstructionError, "at least one already-closed word"):
+            construct_gonol(
+                scale="definition",
+                source="to divide",
+                source_id="fixture:no-word",
+            )
+        character = construct_gonol(scale="character", source="c", source_id="fixture:c")
+        with self.assertRaisesRegex(GonolConstructionError, "only already-closed word"):
+            construct_gonol(
+                scale="definition",
+                source="to divide",
+                participants=(character.gonol,),
+                source_id="fixture:character-bypass",
             )
 
-        with self.assertRaisesRegex(GonolConstructionError, "carried by a closed suffix gonol"):
+    def test_recursive_accepts_closed_higher_stages_and_rejects_characters(self) -> None:
+        cut = construct_gonol(scale="word", source="cut", source_id="fixture:cut")
+        divide = construct_gonol(scale="word", source="divide", source_id="fixture:divide")
+        definition = construct_gonol(
+            scale="definition",
+            source="to divide",
+            participants=(cut.gonol, divide.gonol),
+            source_id="fixture:definition",
+        )
+        recursive = construct_gonol(
+            scale="recursive",
+            relation="fixture:uses",
+            participants=(definition.gonol, cut.gonol),
+            source_id="fixture:recursive",
+        )
+        self.assertEqual(recursive.gonol.participants, (definition.gonol, cut.gonol))
+        character = construct_gonol(scale="character", source="c", source_id="fixture:c")
+        with self.assertRaisesRegex(GonolConstructionError, "close characters into words first"):
             construct_gonol(
-                scale="word",
-                source="try",
-                source_id="fixture:bad-word-carrier",
-                carried_options=(("suffix-coupling.final-y-after-consonant", "preserve-y"),),
-            )
-
-        with self.assertRaisesRegex(GonolConstructionError, "closed base and closed suffix"):
-            construct_gonol(
-                scale="suffix-coupling",
-                participants=(ing_preserve.gonol, base.gonol),
-                source_id="fixture:bad-order",
+                scale="recursive",
+                relation="fixture:bypass",
+                participants=(character.gonol, cut.gonol),
+                source_id="fixture:bypass",
             )
 
     def test_recursive_requires_relation_and_two_closed_participants(self) -> None:
@@ -238,8 +234,8 @@ class GonolConstructorTest(unittest.TestCase):
             )
 
     def test_order_and_multiplicity_are_preserved_in_atomic_identity(self) -> None:
-        a = construct_gonol(scale="character", source="a", source_id="fixture:a")
-        b = construct_gonol(scale="character", source="b", source_id="fixture:b")
+        a = construct_gonol(scale="word", source="a", source_id="fixture:a")
+        b = construct_gonol(scale="word", source="b", source_id="fixture:b")
         first = construct_gonol(
             scale="recursive",
             relation="fixture:sequence",
@@ -274,13 +270,21 @@ class GonolConstructorTest(unittest.TestCase):
 
     def test_character_and_word_validation_fail_closed(self) -> None:
         with self.assertRaisesRegex(GonolConstructionError, "exactly one Unicode scalar"):
+            construct_gonol(scale="character", source_id="fixture:missing-char")
+        with self.assertRaisesRegex(GonolConstructionError, "exactly one Unicode scalar"):
             construct_gonol(scale="character", source="ab", source_id="fixture:bad-char")
         with self.assertRaisesRegex(GonolConstructionError, "surrogate"):
             construct_gonol(scale="character", source="\ud800", source_id="fixture:bad-surrogate")
         with self.assertRaisesRegex(GonolConstructionError, "source_id contains a surrogate"):
             construct_gonol(scale="word", source="bad", source_id="fixture:\ud800")
         with self.assertRaisesRegex(GonolConstructionError, "relation contains a surrogate"):
-            construct_gonol(scale="definition", source="bad", relation="fixture:\ud800", source_id="fixture:bad")
+            word = construct_gonol(scale="word", source="bad", source_id="fixture:relation-word")
+            construct_gonol(
+                scale="recursive",
+                participants=(word.gonol, word.gonol),
+                relation="fixture:\ud800",
+                source_id="fixture:bad",
+            )
         with self.assertRaisesRegex(GonolConstructionError, "whitespace-delimited"):
             construct_gonol(scale="word", source="two words", source_id="fixture:bad-word")
 
@@ -339,7 +343,7 @@ class GonolConstructorTest(unittest.TestCase):
         self.assertEqual(receipt.selection_effect, "none")
         self.assertIn("not selected canon", receipt.nonclaims)
         self.assertIn("not EDCM measurement validity", receipt.nonclaims)
-        self.assertIn("which scales and relations, if any, are later selected", receipt.hmmm)
+        self.assertIn("which definition sources and recursive relations, if any, are later selected", receipt.hmmm)
 
 
 if __name__ == "__main__":
