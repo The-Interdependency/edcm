@@ -5,11 +5,12 @@ the identities or authority of its contributors.
 
 ```text
 schema_id: edcm.shared-stack-result
-schema_version: 1.2.0
+schema_version: 2.0.0
 ```
 
-Version 1.2 adds the exact EDCM UCNS profile-observation compartment and keeps
-geometry and factorization independently typed.
+Version 2 rejects caller-supplied output fields and unsupported evidence, validates
+completed measurement state, and binds every emitted compartment into result identity.
+See [migration guidance](migrations/0.2.0-audit-repair.md).
 
 ## Compartments
 
@@ -35,6 +36,8 @@ geometry and factorization independently typed.
 
 `epoch_identity` binds:
 
+- the result-schema version;
+
 - METAPAT canon and provenance;
 - UCNS profile id, version, scope, exact options, and pinned source commit;
 - the Unicode-scalar source domain and exact ordered 25-value SPACE pin,
@@ -42,10 +45,18 @@ geometry and factorization independently typed.
 - EDCM policy-manifest identity;
 - selected semantic-authority, UCNS-profile, and measurement implementations.
 
-`result_identity` additionally binds source evidence, exact profile
-observations, EDCM readouts, independently attached evidence, and status flags.
+`result_identity` is SHA-256 of the entire emitted contract except
+`result_identity`, serialized as UTF-8 sorted-key compact JSON with
+`ensure_ascii=False` and `allow_nan=False`. This includes both typed absence
+compartments, all implementation provenance and unresolved constraints.
 Changing corpus evidence changes result identity without pretending that the
-profile configuration changed.
+profile configuration changed. These digests are content identities, not signatures.
+
+The public ingress is `build_default_layers().run(raw_inputs)`. Supplied rounds,
+projections, statuses, execution flags and results are rejected.
+`build_result_contract()` is an assembly helper for trusted in-process completed
+layer state; it validates measurement shape, finite ranges, ordered indices and
+source presence, but cannot authenticate a caller controlling Python execution.
 
 ## Full-stack usage
 
@@ -78,7 +89,7 @@ The current path fails closed for profile identity or option drift, checkout
 package bytes that differ from the pinned tree, installed-package inventory or
 hash drift, executable-bytecode drift, malformed producer metadata, public
 alphabet drift, malformed turn containers, retired bridge/object/factorization
-inputs, malformed METAPAT evidence, and transitive import failures. Only direct
+inputs even without optional packages, caller-supplied output fields, malformed METAPAT evidence, and transitive import failures. Only direct
 optional-package absence becomes typed unavailability.
 
 ## hmmm

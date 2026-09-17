@@ -685,7 +685,7 @@ def _candidate_values_for_case(
                 case.case_id,
                 tuple((f"{prefix}.{key}", value) for key, value in sorted(values.items())),
                 (
-                    "The-Interdependency/edcm:edcm/measurement@0.1.0"
+                    "The-Interdependency/edcm:edcm/measurement@0.2.0"
                     if candidate_id == BASELINE_CANDIDATE_ID
                     else "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2"
                 ),
@@ -928,7 +928,7 @@ def run_v2_experiments(
         True,
         cases,
         (
-            (BASELINE_CANDIDATE_ID, "The-Interdependency/edcm:edcm/measurement@0.1.0"),
+            (BASELINE_CANDIDATE_ID, "The-Interdependency/edcm:edcm/measurement@0.2.0"),
             (
                 OCCURRENCE_CANDIDATE_ID,
                 "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2",

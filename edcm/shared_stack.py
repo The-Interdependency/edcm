@@ -10,9 +10,10 @@ measured readouts, typed absence, unresolved fields, and attachment states in
 separate compartments.
 
 ``epoch_identity`` changes when the METAPAT canon/provenance identity, UCNS
-profile configuration, EDCM policy manifest, or selected implementation
-changes. ``result_identity`` additionally binds source evidence, exact profile
-observations, readouts, and any independently attached evidence.
+profile configuration, result schema, EDCM policy manifest, or selected implementation
+changes. ``result_identity`` binds every emitted field except its own digest.
+Public raw inputs enter through the layer pipeline; this module assembles trusted
+in-process layer state and does not authenticate producers.
 """
 
 # === MODULE_BUILD ===
@@ -22,13 +23,13 @@ observations, readouts, and any independently attached evidence.
 #   summary: deterministic final EDCM result contract separating source evidence, METAPAT semantic authority, exact UCNS word-gonol observations, typed UCNS geometry and factorization absence, EDCM policy identity, implementation provenance, readouts/NA, unresolved constraints, and attachment states.
 #   owner: Erin Spencer
 #   public_surface: RESULT_SCHEMA_ID, RESULT_SCHEMA_VERSION, EDCMResultContract, build_result_contract
-#   internal_surface: _canonical_bytes, _digest, _source_evidence, _typed_absence, _readouts, _collect_unresolved
+#   internal_surface: _canonical_bytes, _digest, _source_evidence, _typed_absence, _readouts, _validate_measurement, _collect_unresolved
 #   auth_boundary: none
 #   storage_boundary: no persistence; emits deterministic JSON-compatible records
 #   network_boundary: none
 #   user_data_boundary: hashes caller transcript content and preserves caller source reference without external transmission
 #   admin_only: false
-#   tests: tests.test_shared_stack_contract, tests.test_ucns_adapter
+#   tests: tests.test_shared_stack_contract, tests.test_ucns_adapter, tests.test_audit_regressions
 #   rollout: default_enabled
 #   rollback: remove the profile-observation compartment and restore the prior result schema only with a versioned migration
 #   requires: edcmucns_manifest, edcm_metapat_adapter, edcm_ucns_adapter, edcm_measurement
@@ -40,13 +41,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from dataclasses import asdict, dataclass
 from typing import Any, Mapping
 
 from .edcmucns.manifest import PolicyManifest
 
 RESULT_SCHEMA_ID = "edcm.shared-stack-result"
-RESULT_SCHEMA_VERSION = "1.2.0"
+RESULT_SCHEMA_VERSION = "2.0.0"
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -55,6 +57,7 @@ def _canonical_bytes(value: Any) -> bytes:
         ensure_ascii=False,
         sort_keys=True,
         separators=(",", ":"),
+        allow_nan=False,
     ).encode("utf-8")
 
 
@@ -90,7 +93,7 @@ def _source_evidence(payload: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _readouts(payload: Mapping[str, Any]) -> dict[str, Any]:
-    measured = "rounds" in payload
+    measured = payload.get("measurement_computed") is True
     if not measured:
         return {
             "state": "NA",
@@ -106,6 +109,7 @@ def _readouts(payload: Mapping[str, Any]) -> dict[str, Any]:
                 "structural_density",
             ),
         }
+    _validate_measurement(payload)
     return {
         "state": "measured",
         "rounds": payload.get("rounds"),
@@ -114,6 +118,39 @@ def _readouts(payload: Mapping[str, Any]) -> dict[str, Any]:
         "structural_density": payload.get("structural_density"),
         "na_fields": (),
     }
+
+
+def _validate_measurement(payload: Mapping[str, Any]) -> None:
+    """Validate completed layer state; this is not producer authentication."""
+    def bounded(value: Any, low: float = 0.0) -> bool:
+        return (isinstance(value, (int, float)) and not isinstance(value, bool)
+                and math.isfinite(value) and low <= value <= 1.0)
+
+    transcript = payload.get("transcript")
+    rounds, projections, alerts = (payload.get(name) for name in ("rounds", "agent_metrics", "alerts"))
+    if not isinstance(transcript, str) or not transcript.strip():
+        raise ValueError("completed measurement requires a non-empty source transcript")
+    if not isinstance(rounds, list) or not rounds:
+        raise ValueError("completed measurement requires non-empty rounds")
+    if not all(isinstance(rows, list) and len(rows) == len(rounds) for rows in (projections, alerts)):
+        raise ValueError("measurement projections and alerts must cover every round")
+    if not bounded(payload.get("structural_density")):
+        raise ValueError("measurement structural density must be finite and bounded")
+    axes = ("C", "R", "F", "E", "D", "N", "I", "O", "L", "P", "kappa", "dissonance_energy")
+    for index, (row, projection, flags) in enumerate(zip(rounds, projections, alerts, strict=True)):
+        if not isinstance(row, Mapping) or not isinstance(projection, Mapping):
+            raise ValueError("measurement records must be mappings")
+        if any(type(record.get("round_index")) is not int or record["round_index"] != index
+               for record in (row, projection)):
+            raise ValueError("measurement round indices must be complete and ordered")
+        if not all(bounded(row.get(axis), -1.0 if axis == "O" else 0.0) for axis in axes):
+            raise ValueError("measurement axes must be present, finite and bounded")
+        if not all(type(row.get(key)) is int and row[key] >= 0 for key in ("token_count", "bone_count")):
+            raise ValueError("measurement counts must be nonnegative integers")
+        if not all(bounded(projection.get(axis)) for axis in ("CM", "DA", "DRIFT", "DVG", "INT", "TBF")):
+            raise ValueError("measurement projections must be present, finite and bounded")
+        if not isinstance(flags, list) or not all(isinstance(flag, str) for flag in flags):
+            raise ValueError("measurement alerts must be a list of names per round")
 
 
 def _collect_unresolved(payload: Mapping[str, Any]) -> tuple[str, ...]:
@@ -161,7 +198,13 @@ def build_result_contract(
     payload: Mapping[str, Any],
     manifest: PolicyManifest,
 ) -> EDCMResultContract:
-    """Build the deterministic final contract from completed layer state."""
+    """Build from completed, trusted in-process layer state, not raw input.
+
+    Use build_default_layers().run() for public input validation. Python callers
+    controlling layer implementations remain trusted; hashes are not signatures.
+    """
+    if any(key in payload for key in ("ucns_geometry", "ucns_factorization_evidence")):
+        raise ValueError("unsupported geometry or factorization evidence in result state")
 
     source = _source_evidence(payload)
     metapat = payload.get("metapat_semantics")
@@ -182,23 +225,14 @@ def build_result_contract(
     else:
         profile_record = {"state": "attached", **dict(profile_observation)}
 
-    ucns_geometry = payload.get("ucns_geometry")
-    if not isinstance(ucns_geometry, Mapping):
-        geometry_record = _typed_absence(
-            "ucns_geometry_identity",
-            "the EDCM word-gonol observation profile does not supply UCNS geometry",
-        )
-    else:
-        geometry_record = {"state": "attached", **dict(ucns_geometry)}
-
-    factorization = payload.get("ucns_factorization_evidence")
-    if not isinstance(factorization, Mapping):
-        factorization_record = _typed_absence(
-            "ucns_factorization_evidence",
-            "no validated UCNS factorization evidence was attached",
-        )
-    else:
-        factorization_record = {"state": "attached", **dict(factorization)}
+    geometry_record = _typed_absence(
+        "ucns_geometry_identity",
+        "the EDCM word-gonol observation profile does not supply UCNS geometry",
+    )
+    factorization_record = _typed_absence(
+        "ucns_factorization_evidence",
+        "no factorization producer is authorized by this profile",
+    )
 
     manifest_record = {
         "schema": "edcm.policy-manifest.v031",
@@ -241,6 +275,7 @@ def build_result_contract(
     unresolved = _collect_unresolved(payload)
 
     epoch_fields = {
+        "result_schema_version": RESULT_SCHEMA_VERSION,
         "metapat_canon_digest": metapat_record.get("canon_digest"),
         "metapat_provenance_digest": metapat_record.get("provenance_digest"),
         "ucns_profile_id": profile_record.get("profile_id"),
@@ -254,22 +289,10 @@ def build_result_contract(
         "measurement_implementation": implementation.get("measurement"),
     }
     epoch_identity = _digest(epoch_fields)
-    result_identity = _digest(
-        {
-            "epoch_identity": epoch_identity,
-            "source_evidence": source,
-            "ucns_profile_observation": profile_record,
-            "readouts": readouts,
-            "ucns_factorization_evidence": factorization_record,
-            "status_evidence": status_evidence,
-        }
-    )
-
-    return EDCMResultContract(
+    result_fields = dict(
         schema_id=RESULT_SCHEMA_ID,
         schema_version=RESULT_SCHEMA_VERSION,
         epoch_identity=epoch_identity,
-        result_identity=result_identity,
         source_evidence=source,
         metapat_semantic_constraints=metapat_record,
         ucns_profile_observation=profile_record,
@@ -281,6 +304,7 @@ def build_result_contract(
         status_evidence=status_evidence,
         unresolved_constraints=unresolved,
     )
+    return EDCMResultContract(result_identity=_digest(result_fields), **result_fields)
 
 
 __all__ = [

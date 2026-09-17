@@ -53,7 +53,7 @@ FROZEN_CANON_GIT_BLOBS = {
 EXPECTED_MEASUREMENT_AUTHORITY = {
     "canonical": True,
     "source_of_truth": "The-Interdependency/edcm:edcm/measurement",
-    "implementation_version": "0.1.0",
+    "implementation_version": "0.2.0",
     "compatibility_policy": "edcmbone-provenance-only-v1",
     "consolidation_source_repository": "https://github.com/The-Interdependency/edcmbone",
     "consolidation_source_path": "backend_old/src/edcmbone/",

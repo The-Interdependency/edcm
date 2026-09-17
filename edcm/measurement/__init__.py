@@ -23,7 +23,7 @@ drift tooling instead of inferring authority from package availability.
 """
 
 # Version of the maintained EDCM measurement surface.
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 CONSOLIDATION_SOURCE_REPOSITORY = "https://github.com/The-Interdependency/edcmbone"
 CONSOLIDATION_SOURCE_PATH = "backend_old/src/edcmbone/"

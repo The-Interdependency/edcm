@@ -7,28 +7,6 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "validate_report, canonical_bytes, digest",
-        "module_kind": "instrument",
-        "module_name": "portfolio_plan",
-        "network_boundary": "none",
-        "owner": "The-Interdependency/skill-lib maintainers",
-        "public_surface": "load_report, build_portfolio, main",
-        "rollback": "remove the aggregator, schemas, companion docs, and portfolio projection section without changing repo-owned source claims",
-        "rollout": "explicit CLI or library invocation after repo reports are supplied",
-        "storage_boundary": "none",
-        "summary": "validates repo-owned plan reports and derives a deterministic cross-repository portfolio projection without transferring authority",
-        "tests": "tests/test_interdependent_work_graph_portfolio_plan.py",
-        "unresolved": "automatic portfolio membership discovery, persistent live service, cryptographic producer authentication",
-        "user_data_boundary": "none"
-      },
-      "file": ".agents/skills/interdependent-work-graph/portfolio_plan.py",
-      "id": "interdependent_work_graph_portfolio_plan"
-    },
-    {
-      "block": "MODULE_BUILD",
-      "fields": {
-        "admin_only": "false",
-        "auth_boundary": "none",
         "internal_surface": "none",
         "module_kind": "engine",
         "module_name": "edcm",
@@ -1114,7 +1092,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_record_layer, _local_provenance",
+        "internal_surface": "_record_layer, _local_provenance, _reject_retired_inputs",
         "module_kind": "engine",
         "module_name": "layers",
         "network_boundary": "none",
@@ -1126,7 +1104,7 @@ export default defineMsdmdCollection({
         "since": "2026-06-02",
         "storage_boundary": "none",
         "summary": "Provenance-bearing EDCM stack with independently selected METAPAT semantic authority, exact UCNS word-gonol observation profile or typed absence, canonical local measurement, shared-stack composition, and final result-contract delivery.",
-        "tests": "tests.test_measurement, tests.test_ucns_adapter, tests.test_metapat_adapter, tests.test_shared_stack_contract",
+        "tests": "tests.test_measurement, tests.test_ucns_adapter, tests.test_metapat_adapter, tests.test_shared_stack_contract, tests.test_audit_regressions",
         "unresolved": "formal Mobius coordinates and higher-gonol composition remain unattached; profile observations do not supply geometry, factorization, or theorem status",
         "user_data_boundary": "threads caller payloads through deterministic package-local layers; transcript content is hashed in final result identity"
       },
@@ -1173,8 +1151,8 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-06-02",
         "storage_boundary": "none",
-        "summary": "lossless EDCM-aware codec for ParsedTranscript + RoundMetrics (separate bone/flesh streams, zlib entropy coding)",
-        "tests": "hmmm",
+        "summary": "version 2 codec preserving source text, interleaved token records with full bone entries, and optional complete round metrics; zlib byte encoding",
+        "tests": "tests.test_measurement, tests.test_audit_regressions",
         "unresolved": "none",
         "user_data_boundary": "none"
       },
@@ -1318,7 +1296,7 @@ export default defineMsdmdCollection({
         "since": "2026-06-02",
         "storage_boundary": "none",
         "summary": "embedded rule-based transcript parser (canon-driven, no ML deps) producing bones/flesh tokens, turns, and rounds",
-        "tests": "tests.test_apostrophe_normalization_and_tokenization",
+        "tests": "tests.test_measurement, tests.test_audit_regressions",
         "unresolved": "none",
         "user_data_boundary": "none"
       },
@@ -1516,7 +1494,7 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_canonical_bytes, _digest, _source_evidence, _typed_absence, _readouts, _collect_unresolved",
+        "internal_surface": "_canonical_bytes, _digest, _source_evidence, _typed_absence, _readouts, _validate_measurement, _collect_unresolved",
         "module_kind": "schema",
         "module_name": "shared_stack",
         "network_boundary": "none",
@@ -1528,7 +1506,7 @@ export default defineMsdmdCollection({
         "since": "2026-07-12",
         "storage_boundary": "no persistence; emits deterministic JSON-compatible records",
         "summary": "deterministic final EDCM result contract separating source evidence, METAPAT semantic authority, exact UCNS word-gonol observations, typed UCNS geometry and factorization absence, EDCM policy identity, implementation provenance, readouts/NA, unresolved constraints, and attachment states.",
-        "tests": "tests.test_shared_stack_contract, tests.test_ucns_adapter",
+        "tests": "tests.test_shared_stack_contract, tests.test_ucns_adapter, tests.test_audit_regressions",
         "unresolved": "UCNS observation digests provide content identity but not signed producer authentication; profile observations do not supply formal geometry",
         "user_data_boundary": "hashes caller transcript content and preserves caller source reference without external transmission"
       },
@@ -6301,13 +6279,6 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcmucns_validation",
       "to": "edcmucns_types"
-    },
-    {
-      "from": "interdependent_work_graph_portfolio_plan",
-      "kind": "owns",
-      "source_block": "MODULE_BUILD",
-      "source_id": "interdependent_work_graph_portfolio_plan",
-      "to": "The-Interdependency/skill-lib maintainers"
     },
     {
       "from": "recovered_dissonance_controlled_gate",

@@ -21,13 +21,13 @@ never represented only by a bare ``default`` label.
 #   summary: Provenance-bearing EDCM stack with independently selected METAPAT semantic authority, exact UCNS word-gonol observation profile or typed absence, canonical local measurement, shared-stack composition, and final result-contract delivery.
 #   owner: Erin Spencer
 #   public_surface: LayerProvenance, MeasurementLayer, SemanticsLayer, CompositionLayer, DeliveryLayer, DefaultMeasurementLayer, DefaultCompositionLayer, DefaultDeliveryLayer, MissingMetapatSemanticAuthorityLayer, MetapatSemanticAuthorityLayer, MissingUCNSProfileLayer, UCNSProfileLayer, CompositeSemanticsLayer, ConsolidatedMeasurementLayer, SharedStackCompositionLayer, SharedStackDeliveryLayer, EDCMLayers, build_default_layers
-#   internal_surface: _record_layer, _local_provenance
+#   internal_surface: _record_layer, _local_provenance, _reject_retired_inputs
 #   auth_boundary: none
 #   storage_boundary: none
 #   network_boundary: none
 #   user_data_boundary: threads caller payloads through deterministic package-local layers; transcript content is hashed in final result identity
 #   admin_only: false
-#   tests: tests.test_measurement, tests.test_ucns_adapter, tests.test_metapat_adapter, tests.test_shared_stack_contract
+#   tests: tests.test_measurement, tests.test_ucns_adapter, tests.test_metapat_adapter, tests.test_shared_stack_contract, tests.test_audit_regressions
 #   rollout: default_enabled
 #   rollback: restore prior layer assembly and remove shared-stack result delivery
 #   requires: edcm_metapat_adapter, edcm_ucns_adapter, edcm_measurement, edcm_shared_stack
@@ -52,10 +52,29 @@ from .metapat_adapter import (
 from .shared_stack import build_result_contract
 from .ucns_adapter import (
     ActualUCNSAdapter,
+    REJECTED_LEGACY_INPUTS,
     UCNSIntegrationStatus,
     missing_ucns_status,
     select_ucns_adapter,
 )
+
+
+# Raw input and completed layer state are different contracts. Reject stale
+# output dictionaries instead of attributing their contents to this execution.
+_MEASUREMENT_FIELDS = frozenset({
+    "rounds", "agent_metrics", "alerts", "structural_density", "measurement_computed",
+})
+_OUTPUT_FIELDS = _MEASUREMENT_FIELDS | frozenset({
+    "measurement", "semantic_authority", "metapat_integration", "metapat_semantics",
+    "ucns_integration", "ucns_profile", "ucns_profile_observation", "ucns_geometry",
+    "semantics", "composition", "delivery", "layer_provenance", "edcm_result",
+})
+
+
+def _reject_retired_inputs(payload: Mapping[str, Any]) -> None:
+    legacy = sorted(REJECTED_LEGACY_INPUTS.intersection(payload))
+    if legacy:
+        raise ValueError("retired UCNS inputs are rejected: " + ", ".join(legacy))
 
 
 @dataclass(frozen=True)
@@ -162,6 +181,9 @@ class ConsolidatedMeasurementLayer:
     def measure(self, payload: dict[str, Any]) -> dict[str, Any]:
         transcript = payload.get("transcript")
         state = dict(payload)
+        for field in _MEASUREMENT_FIELDS:
+            state.pop(field, None)
+        state["measurement_computed"] = False
         state["measurement"] = "edcm.measurement"
 
         if not isinstance(transcript, str) or not transcript.strip():
@@ -180,6 +202,7 @@ class ConsolidatedMeasurementLayer:
             agent_metrics=[am.as_dict() for am in projections],
             alerts=[m.fire_alerts(am) for am in projections],
             structural_density=stats["structural_density"],
+            measurement_computed=True,
         )
         return _record_layer(state, "measurement", self.provenance)
 
@@ -254,6 +277,8 @@ class MissingUCNSProfileLayer:
 
     def normalize(self, payload: dict[str, Any]) -> dict[str, Any]:
         state = dict(payload)
+        _reject_retired_inputs(state)
+        state.pop("ucns_geometry", None)
         state["ucns_profile"] = "unavailable"
         state["ucns_integration"] = self._status.as_dict()
         state.pop("ucns_profile_observation", None)
@@ -372,6 +397,11 @@ class EDCMLayers:
     delivery: DeliveryLayer
 
     def run(self, payload: dict[str, Any]) -> dict[str, Any]:
+        """Execute raw inputs; derived output fields must never be resubmitted."""
+        _reject_retired_inputs(payload)
+        supplied_outputs = sorted(_OUTPUT_FIELDS.intersection(payload))
+        if supplied_outputs:
+            raise ValueError("output-only fields in pipeline input: " + ", ".join(supplied_outputs))
         state = self.semantics.normalize(payload)
         state = self.measurement.measure(state)
         state = self.composition.compose(state)
