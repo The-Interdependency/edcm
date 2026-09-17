@@ -1,12 +1,12 @@
 """
 edcmbone.compress
 ~~~~~~~~~~~~~~~~~
-Lossless codec for ParsedTranscript + RoundMetrics.
+Version 2 lossless codec for parser-produced ParsedTranscript + RoundMetrics.
 
-The encoding scheme is EDCM-aware: bones and flesh are stored in separate
-streams, making the structural (constraint-skeleton) layer addressable without
-full decompression.  The final byte form uses zlib (DEFLATE) for entropy
-coding; the EDCM structure does most of the modelling work.
+The encoding keeps bone and flesh records interleaved in original token order,
+including full bone entries and exact source text. The final byte form uses
+zlib (DEFLATE); inspecting the JSON records requires decompression. Unsupported
+versions are rejected rather than silently inventing discarded token metadata.
 
 Lossless guarantee
 ------------------
@@ -16,8 +16,8 @@ Lossless guarantee
 Compression-metric connection
 ------------------------------
 The bone family sequence is treated as the "compressed structural text".
-Its Shannon entropy is the theoretical minimum bits-per-bone under optimal
-coding.  compression_stats() returns this alongside byte-level ratios,
+Its empirical Shannon entropy describes the observed family frequencies; it
+is not a guarantee of achievable compression for this complete codec.  compression_stats() returns this alongside byte-level ratios,
 linking the codec directly to the EDCM metric mathematics (§2, §11).
 
 Public API
@@ -33,7 +33,7 @@ Public API
 # id: edcmbone_compress
 #   module_name: compress
 #   module_kind: engine
-#   summary: lossless EDCM-aware codec for ParsedTranscript + RoundMetrics (separate bone/flesh streams, zlib entropy coding)
+#   summary: version 2 codec preserving source text, interleaved token records with full bone entries, and optional complete round metrics; zlib byte encoding
 #   owner: Erin Spencer
 #   public_surface: encode,decode,to_bytes,from_bytes,compression_stats
 #   internal_surface: _tok_to_dict,_dict_to_tok,_metrics_to_dict,_dict_to_metrics,_build_huffman_codes,_huffman_expected_bits
@@ -42,7 +42,7 @@ Public API
 #   network_boundary: none
 #   user_data_boundary: none
 #   admin_only: false
-#   tests: hmmm
+#   tests: tests.test_measurement, tests.test_audit_regressions
 #   rollout: default_enabled
 #   rollback: remove module; transcripts persist uncompressed
 #   requires: edcmbone_parser_turns_rounds,edcmbone_metrics_compute
@@ -53,6 +53,7 @@ Public API
 
 from __future__ import annotations
 
+import copy
 import heapq
 import json
 import math
@@ -69,7 +70,7 @@ from .metrics.stats import shannon_entropy
 # ---------------------------------------------------------------------------
 # Format version — bump when encoding changes
 # ---------------------------------------------------------------------------
-_FORMAT_VERSION = 1
+_FORMAT_VERSION = 2
 
 
 # ---------------------------------------------------------------------------
@@ -85,6 +86,7 @@ def _tok_to_dict(tok):
             "f": tok.families,
             "t": tok.bone_type,
             "n": tok.normalized,
+            "e": copy.deepcopy(tok.entry),
         }
     return {"k": "F", "s": tok.surface}
 
@@ -93,11 +95,11 @@ def _dict_to_tok(rec):
     if rec["k"] == "B":
         return BoneToken(
             surface=rec["s"],
-            normalized=rec.get("n", rec["s"].lower()),
+            normalized=rec["n"],
             bone_type=rec["t"],
             primary=rec["p"],
             families=rec["f"],
-            entry={},
+            entry=copy.deepcopy(rec["e"]),
         )
     return FleshToken(surface=rec["s"])
 
@@ -124,6 +126,8 @@ def encode(parsed, metrics=None):
     The dict is JSON-serialisable and self-describing.  Bones and flesh are
     interleaved in token order so reconstruction is exact.
     """
+    if metrics is not None and len(metrics) != len(parsed.rounds):
+        raise ValueError("metrics must contain exactly one record per round")
     rounds_out = []
     for i, rnd in enumerate(parsed.rounds):
         turns_out = []
@@ -134,12 +138,14 @@ def encode(parsed, metrics=None):
                 "tk": [_tok_to_dict(t) for t in turn.tokens],
             })
         rec = {"i": rnd.index, "turns": turns_out}
-        if metrics is not None and i < len(metrics):
+        if metrics is not None:
             rec["m"] = _metrics_to_dict(metrics[i])
         rounds_out.append(rec)
 
     return {
         "v": _FORMAT_VERSION,
+        "source_text": parsed.source_text,
+        "metrics_present": metrics is not None,
         "speakers": parsed.speakers,
         "rounds": rounds_out,
     }
@@ -152,11 +158,19 @@ def decode(data):
     -------
     (ParsedTranscript, list[RoundMetrics] | None)
     """
+    if data.get("v") != _FORMAT_VERSION:
+        raise ValueError("unsupported codec version; replay v1 with its original pinned producer")
+    if not isinstance(data.get("metrics_present"), bool):
+        raise ValueError("codec metrics presence must be explicit")
+    if data.get("source_text") is not None and not isinstance(data["source_text"], str):
+        raise ValueError("codec source_text must be a string or null")
     rounds = []
     all_turns = []
     metrics_out = []
 
     for rec in data["rounds"]:
+        if ("m" in rec) != data["metrics_present"]:
+            raise ValueError("codec metrics must cover all rounds or none")
         turns = []
         for trec in rec["turns"]:
             tokens = [_dict_to_tok(t) for t in trec["tk"]]
@@ -170,8 +184,8 @@ def decode(data):
         if "m" in rec:
             metrics_out.append(_dict_to_metrics(rec["m"]))
 
-    pt = ParsedTranscript(rounds=rounds, turns=all_turns)
-    return pt, (metrics_out if metrics_out else None)
+    pt = ParsedTranscript(rounds=rounds, turns=all_turns, source_text=data["source_text"])
+    return pt, (metrics_out if data["metrics_present"] else None)
 
 
 # ---------------------------------------------------------------------------

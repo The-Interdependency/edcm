@@ -1,15 +1,10 @@
 # EDCM
 
-EDCM is the Energy–Dissonance Circuit Model research, text-gonol construction, and measurement repository.
+EDCM is the Energy–Dissonance Circuit Model measurement and evaluation repository.
 
-The repository has four deliberately separate surfaces:
+The active package is **0.2.0**, candidate `edcm-measurement-v2`. It preserves the frozen v1 canon data and metric equations while repairing transcript intake, result provenance and codec fidelity. Result schema **2.0.0** hashes every emitted compartment; codec **2** retains source text and token canon records. See the [migration and repair record](docs/migrations/0.2.0-audit-repair.md).
 
-1. **Frozen maintained baseline:** `edcm/measurement/`, preserved as candidate `edcm-measurement-v1` with byte-checked canon and provenance.
-2. **Text-domain gonol construction:** EDCM-owned character admission and linguistic/semantic construction using current METAPAT affixiation semantics and current UCNS geometry.
-3. **Experiment-first joint program:** reproducible UCNS–EDCM experiments that determine which structural and measurement candidates deserve later canon review.
-4. **Historical corpus-observation profiles:** pinned EDCM/UCNS producer epochs used to expose assumptions against full real-system corpora. They are observation/replay evidence, not the definition of current text construction.
-
-The baseline is executable. Text construction does not activate measurement. Neither is automatically the final UCNS–EDCM canon.
+The repository separates current measurement, candidate experiments, and exact historical corpus/construction replay. Active language construction belongs to Stack and consumes UCNS constructors. No package, representation or passing test establishes empirical validity or selects canon.
 
 ## UCNS–EDCM canon
 
@@ -44,35 +39,20 @@ may carry a source-pinned copy but is not the mathematical authority.
 
 ## Gonol language boundary
 
-The active authority split is:
+The current authority split is:
 
-```text
-METAPAT   -> affixiation semantics and relational-integration invariants
-UCNS      -> gonol geometry, native Möbius/Public Gonol carrier,
-             geometrically established operations
-EDCM      -> text-domain admission and linguistic/semantic gonol construction
-EDCM      -> separately frozen measurement projections and falsifiers
-```
+| Owner | Responsibility |
+|---|---|
+| METAPAT | Affixiation semantics and relational-integration invariants |
+| UCNS | Gonol objects, constructors, and geometry |
+| Stack | Active language-gonol construction research and source/admission profiles |
+| EDCM | Measurement/evaluation only |
 
-For active EDCM text construction:
+For new language construction, start in [Stack English](https://github.com/The-Interdependency/stack/tree/250a0afb7077b036a6c537411d004fa095c8b24a/research/english-gonol) or [Stack Python](https://github.com/The-Interdependency/stack/tree/250a0afb7077b036a6c537411d004fa095c8b24a/research/python-gonol), consuming UCNS constructors and geometry. These source links pin the authority comparison used for this repair; resolve current owning commits before new research.
 
-```text
-every admitted character is a gonol
-```
+Historical `edcm.gonol`, `edcm.language`, lexical-floor and sealed profile artifacts remain explicit replay surfaces. They confer no active construction authority on EDCM. There is no universal mandatory adjacent-scale ladder. Construction reproducibility does not validate EDCM measurement; an unresolved UCNS operation remains `hmmm`.
 
-EDCM owns the source/profile that determines what is admitted as a character. If a profile has not selected Unicode code point, grapheme, exact Public Gonol glyph inventory, or another explicit unit, that admission boundary remains `hmmm`; UCNS does not silently choose it merely because UCNS owns the geometry.
-
-Current EDCM text construction uses declared scale option sets rather than a mandatory adjacent-scale ladder. `edcm.gonol` is the implemented candidate constructor for closing one gonol at an admissible scale. None of its scale options is selected canon, and construction does not activate measurement. Suffix-coupling exceptions are carried by the closed suffix gonol, such as `ing` carrying `suffix-coupling.final-y-after-consonant = preserve-y`, rather than by a global morphology law. UCNS coupling geometry remains `hmmm` unless an explicit matching geometry authority is supplied.
-
-Affixiation is defined by METAPAT. UCNS owns any exact geometric realization. EDCM applies affixiation to text-domain gonols. Once closed, a gonol is atomic at any scale. Closed gonols may participate directly at any admissible scale without reopening, while constituent identity and provenance remain recoverable.
-
-Do not insert conventional NLP token IDs, subword pieces, opaque external embedding vectors, or whole-string hashes as substitutes for gonol identity. Source prose, dictionaries, corpora, labels, and annotations may remain evidence and provenance; they become gonol semantics only through explicit EDCM construction.
-
-Public Gonol operations are usable only where current UCNS geometry establishes them. Unicode names, dictionary definitions, glyph shape, adjacency, and conventional punctuation grammar do not define a UCNS operation. Unresolved geometry remains `hmmm` rather than being filled with an invented carrier, scale rule, or semantic inference.
-
-A reproducible gonol construction establishes only that construction. Any EDCM measurement projection is frozen and evaluated separately.
-
-See [`docs/GONOL_LANGUAGE_BOUNDARY.md`](docs/GONOL_LANGUAGE_BOUNDARY.md).
+See [the language boundary](docs/GONOL_LANGUAGE_BOUNDARY.md) and [the 0.2 migration](docs/migrations/0.2.0-audit-repair.md).
 
 ## First joint experiment
 
@@ -195,7 +175,7 @@ retroactively turn the profile observation into formal geometry or empirical
 validation. `canon_selection` remains null, and EDCM/METAPAT activation remains
 inactive.
 
-## Frozen maintained baseline
+## Maintained measurement candidate
 
 `edcm/measurement/` consolidates the reviewed structural-measurement lineage from:
 
@@ -211,7 +191,7 @@ It contains:
 - projection and risk surfaces;
 - provenance and integrity gates.
 
-Its maintained identity is useful as a baseline candidate. Integrity means the implementation did not drift; it does not mean the readouts are empirically validated.
+The v1 implementation remains frozen at its historical commits; 0.2 uses candidate v2. Its maintained identity is useful as a baseline candidate. Integrity means the implementation did not drift; it does not mean the readouts are empirically validated.
 
 ## Install and validate the baseline
 
@@ -314,9 +294,9 @@ A legitimate baseline-canon change requires a new versioned file and migration r
 
 The active shared-stack boundary separates:
 
-- source evidence and EDCM text-admission profile;
+- exact source evidence and the declared measurement input profile;
 - METAPAT semantic/affixiation authority;
-- EDCM text-gonol construction identity and receipts;
+- externally constructed gonol identities and receipts where a declared evaluator consumes them;
 - UCNS carrier/geometry identity and unresolved geometry;
 - exact pinned historical UCNS word-gonol observations where replay profiles are used;
 - typed UCNS geometry and factorization absence in historical adapters;
@@ -338,7 +318,7 @@ Unavailable evidence is typed absence. A candidate may fail scope, return an exp
 
 No UCNS or METAPAT status validates EDCM readouts, external truth, diagnosis, intention, morality, or consciousness.
 
-A completed EDCM text-gonol construction likewise does not establish measurement validity.
+A completed gonol construction likewise does not establish measurement validity.
 
 ## Repository provenance
 
@@ -346,10 +326,12 @@ Historical implementation, source packets, repair handoffs, and prior adapter co
 
 ## Usage guidance
 
-For new text-gonol work, start in EDCM and follow [`docs/GONOL_LANGUAGE_BOUNDARY.md`](docs/GONOL_LANGUAGE_BOUNDARY.md): resolve the source/admission profile, import METAPAT affixiation semantics, supply explicit UCNS geometry authority when geometry is claimed, build and replay the declared construction, and freeze any later measurement separately.
+Use `edcm.build_default_layers().run({"transcript": text})` with raw input fields. Output-only fields are rejected; submit the original input rather than a previous result. The parser retains continuation lines and mixed recognized label formats; `parsed.source_text` retains exact input bytes after UTF-8 encoding. A line matching a speaker-label grammar starts a new turn; disambiguate label-like prose before measurement.
 
-For historical experiment replay, use the exact historical producer commit and profile named by the artifact; do not repin or reinterpret sealed evidence as current authority.
+For active construction use the Stack workspaces above. For historical replay use both the exact EDCM and UCNS producer commits named by the artifact. New executions with 0.2 are new evidence, not byte-identical historical reruns.
+
+See [upgrade avenues](docs/UPGRADE_AVENUES.md) for the next candidate and usability decisions.
 
 ## hmmm
 
-The exact EDCM character-admission unit remains profile-specific where not selected. The source-supported complete English morphology law, exact UCNS native Möbius-carrier affixiation/coupling geometry, and direct distant-scale coupling remain unresolved. EDCM has not selected a lawful projection, information-loss account, metric, benchmark, or falsifier for evaluating completed recursive text-gonol constructions. Historical MultiWOZ seals remain represented evidence, not measurement validity; external replication and broader carrier coverage remain separate unresolveds.
+Language admission is owned by its Stack workspace. The source-supported complete English morphology law, exact UCNS native Möbius-carrier affixiation/coupling geometry, and direct distant-scale coupling remain unresolved. EDCM has not selected a lawful projection, information-loss account, metric, benchmark, or falsifier for evaluating completed recursive text-gonol constructions. Historical MultiWOZ seals remain represented evidence, not measurement validity; external replication and broader carrier coverage remain separate unresolveds.

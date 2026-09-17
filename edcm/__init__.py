@@ -28,7 +28,7 @@ invented semantics or certification.
 #   unresolved: UCNS observation digests and historical fork topology bindings provide content identity but not cryptographic producer authentication; formal Mobius coordinates and higher-gonol composition remain open
 # === END MODULE_BUILD ===
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 from . import edcmucns
 from . import measurement

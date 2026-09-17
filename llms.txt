@@ -1,0 +1,16 @@
+# LLM Instructions for edcm
+
+## Project Overview
+EDCM owns measurement/evaluation only. Package 0.2.0 supplies candidate edcm-measurement-v2, result schema 2.0.0 and codec 2. Frozen v1 canon data and historical reports retain their exact identities. UCNS owns gonol objects, constructors and geometry; Stack owns active language construction; METAPAT owns its semantic contracts. No proof or empirical status transfers.
+
+## Key Definitions (never infer or expand these)
+- **NA** = Required evidence, context, geometry, or authority is unavailable; never numeric zero
+- **hmmm** = An unresolved constraint carried forward rather than guessed
+
+## Architecture Summary
+The public pipeline validates raw inputs, selects independent METAPAT and UCNS adapters, measures transcripts with edcm.measurement, and assembles a complete hashed result. Optional absence is typed. UCNS geometry and factorization remain NA. Current language construction belongs to Stack/UCNS; retained EDCM construction modules serve historical replay.
+
+## How to Use This Repo with LLMs / Agents
+Read CANON.md, CLAUDE.md, docs/GONOL_LANGUAGE_BOUNDARY.md and docs/migrations/0.2.0-audit-repair.md. Submit raw inputs to build_default_layers().run(); output-only and retired inputs fail closed. For active language construction start in the owning Stack workspace using UCNS constructors. Historical replay uses exact original EDCM and producer commits. Preserve NA != 0 and unresolved hmmm.
+
+This file is the single source of truth. If something is not explicitly stated in the files listed above, it does not exist in this repository.

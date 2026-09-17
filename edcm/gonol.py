@@ -1,3 +1,5 @@
+# Historical replay surface; active construction belongs to Stack and UCNS.
+# See docs/GONOL_LANGUAGE_BOUNDARY.md; no active construction authority here.
 """Unified EDCM gonol candidate constructor.
 
 Usage guidance
