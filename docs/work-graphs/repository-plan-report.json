@@ -10,7 +10,7 @@
   },
   "source": {
     "branch": "repair/edcm-audit-contracts-20260917",
-    "commit": "079d62f7a78ac1fa1bbd767125efbe1df2ebdd36",
+    "commit": "ac2f8653f95483a59624f675e03c00fbd962a7fb",
     "generated_at": "2026-09-17",
     "note": "Describes the cited 0.2.0 repair implementation and the current repo-owned plan. This report-only commit does not change implementation or evidence status. Current routing was checked against skill-lib dd5027d99516831c0dcb83a176a67140d3819b66 and Stack 250a0afb7077b036a6c537411d004fa095c8b24a. Proposed repairs and plans do not imply a merged release or empirical validation."
   },
