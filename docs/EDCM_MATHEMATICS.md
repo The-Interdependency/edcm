@@ -72,6 +72,11 @@ line independently, retaining continuation lines and preamble. Exact raw labels,
 spacing and line endings are retained separately in `source_text`; turn text
 excludes recognized label syntax. See the [migration](migrations/0.2.0-audit-repair.md).
 
+Turn-content boundary: one terminal line ending before the next label or at
+document end is separator syntax. Interior continuation and blank lines remain
+content. Exact separator bytes remain available in `source_text`; they cannot
+create an utterance identity difference merely because turns were reordered.
+
 The maintained parser supports two round partitions:
 
 - `cycle`: the first observed speaker is the anchor; a new round begins when

@@ -134,3 +134,14 @@ def test_codec_refuses_partial_metric_lists():
     parsed = parse_transcript("A: first\nB: second\nA: third")
     with pytest.raises(ValueError, match="metrics"):
         compress.encode(parsed, compute_transcript(parsed)[:1])
+
+
+@pytest.mark.parametrize("ending", ["\n", "\r\n", "\r"])
+def test_turn_delimiters_do_not_create_order_signals(ending):
+    left = parse_transcript(f"A: first{ending}B: second")
+    right = parse_transcript(f"B: second{ending}A: first{ending}")
+    assert sorted((t.speaker, t.text) for t in left.turns) == sorted((t.speaker, t.text) for t in right.turns)
+    source = f"A: first{ending}continued{ending}{ending}B: second{ending}"
+    parsed = parse_transcript(source)
+    assert [t.text for t in parsed.turns] == [f"first{ending}continued{ending}", "second"]
+    assert parsed.source_text == source

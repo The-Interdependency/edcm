@@ -180,6 +180,8 @@ def _split_turns(text):
     Unlabelled lines continue the current turn. Preamble has speaker SPEAKER.
     Label-like lines are syntax, not inferred speaker identities; callers must
     disambiguate prose that has that form. Exact label bytes live in source_text.
+    A single terminal line ending separates turns (or terminates the document);
+    it is syntax, not utterance content. Interior blank lines remain content.
     """
     if not text.strip():
         return []
@@ -193,7 +195,7 @@ def _split_turns(text):
         match = next((m for pattern in _TURN_PATTERNS if (m := pattern.fullmatch(body))), None)
         if match:
             if chunks or labelled:
-                turns.append((speaker, "".join(chunks)))
+                turns.append((speaker, "".join(chunks).removesuffix("\n").removesuffix("\r")))
             speaker = match.group("speaker").strip()
             if not speaker:
                 raise ValueError("speaker label must be non-empty")
@@ -202,7 +204,7 @@ def _split_turns(text):
         else:
             chunks.append(line)
     if chunks or labelled:
-        turns.append((speaker, "".join(chunks)))
+        turns.append((speaker, "".join(chunks).removesuffix("\n").removesuffix("\r")))
     return turns
 
 
