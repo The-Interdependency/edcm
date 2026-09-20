@@ -5,7 +5,17 @@ compress), the layers-bootstrap wiring, and the no-fork guarantee that the
 mirror's orthogonality surface is edcm.ucns_objects itself.
 """
 
+# === CHECKS ===
+# id: check_compress_rejects_incomplete_metric_records
+#   proves: compress_rejects_incomplete_metric_records
+#   call: self::test_decode_rejects_incomplete_metric_records
+#   mutates: none
+#   cleanup: none
+# === END CHECKS ===
+
 from __future__ import annotations
+
+import pytest
 
 import edcm
 from edcm import build_default_layers
@@ -63,6 +73,17 @@ def test_compress_roundtrip_and_structural_density():
     stats = codec.compression_stats(TRANSCRIPT, blob, parsed)
     # F (structural density) is a ratio readout.
     assert 0.0 <= stats["structural_density"] <= 1.0
+
+
+def test_decode_rejects_incomplete_metric_records():
+    _, parsed, metrics = _pipeline()
+    encoded = codec.encode(parsed, metrics)
+    first_metric = encoded["rounds"][0]["m"]
+    assert first_metric["token_count"] > 0
+    del first_metric["token_count"]
+
+    with pytest.raises(ValueError, match=r"round 0.*token_count"):
+        codec.decode(encoded)
 
 
 def test_canon_loader_lookups():
