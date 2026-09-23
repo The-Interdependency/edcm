@@ -187,7 +187,6 @@ def test_joint_runner_preserves_no_canon(tmp_path) -> None:
             "test-edcm-commit",
             "--ucns-commit",
             EXPECTED_UCNS_COMMIT,
-    PROGRAM_VERSION, PROGRAM_SCHEMA, BASELINE_CANDIDATE_ID,
             "--ucns-source-root",
             str(source_root),
         ]
