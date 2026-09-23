@@ -14,7 +14,7 @@ from edcm import compute_transcript, parse_transcript
 from edcm.edcmucns import PolicyManifest
 from edcm.measurement import compress
 from edcm.metapat_adapter import MetapatAdapterSelection, missing_metapat_status
-from edcm.shared_stack import build_result_contract
+from edcm.shared_stack import EDCMResultContract, build_result_contract
 from edcm.ucns_adapter import REJECTED_LEGACY_INPUTS, UCNSAdapterSelection, missing_ucns_status
 
 
@@ -53,9 +53,9 @@ def test_empty_speaker_line_does_not_consume_next_speaker():
     assert "continued" in parsed.turns[1].text
 
 
-@pytest.mark.parametrize("field", ["rounds", "agent_metrics", "alerts", "structural_density", "measurement_computed", "layer_provenance", "edcm_result", "ucns_geometry"])
+@pytest.mark.parametrize("field", ["rounds", "agent_metrics", "alerts", "structural_density", "measurement_computed", "layer_provenance", "edcm_result", "ucns_geometry", *EDCMResultContract.__dataclass_fields__])
 def test_public_pipeline_rejects_output_fields(pipeline, field):
-    with pytest.raises(ValueError, match="output-only"):
+    with pytest.raises(ValueError, match="output-only|retired"):
         pipeline.run({field: []})
 
 
@@ -136,7 +136,7 @@ def test_codec_refuses_partial_metric_lists():
         compress.encode(parsed, compute_transcript(parsed)[:1])
 
 
-@pytest.mark.parametrize("ending", ["\n", "\r\n", "\r"])
+@pytest.mark.parametrize("ending", ["\n", "\r\n", "\r", "\v", "\f", "\x1c", "\x1d", "\x1e", "\x85", "\u2028", "\u2029"])
 def test_turn_delimiters_do_not_create_order_signals(ending):
     left = parse_transcript(f"A: first{ending}B: second")
     right = parse_transcript(f"B: second{ending}A: first{ending}")

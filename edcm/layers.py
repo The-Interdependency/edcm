@@ -49,7 +49,7 @@ from .metapat_adapter import (
     missing_metapat_status,
     select_metapat_adapter,
 )
-from .shared_stack import build_result_contract
+from .shared_stack import EDCMResultContract, build_result_contract
 from .ucns_adapter import (
     ActualUCNSAdapter,
     REJECTED_LEGACY_INPUTS,
@@ -64,7 +64,7 @@ from .ucns_adapter import (
 _MEASUREMENT_FIELDS = frozenset({
     "rounds", "agent_metrics", "alerts", "structural_density", "measurement_computed",
 })
-_OUTPUT_FIELDS = _MEASUREMENT_FIELDS | frozenset({
+_OUTPUT_FIELDS = _MEASUREMENT_FIELDS | frozenset(EDCMResultContract.__dataclass_fields__) | frozenset({
     "measurement", "semantic_authority", "metapat_integration", "metapat_semantics",
     "ucns_integration", "ucns_profile", "ucns_profile_observation", "ucns_geometry",
     "semantics", "composition", "delivery", "layer_provenance", "edcm_result",

@@ -50,6 +50,13 @@ Public API
 #   unresolved: none
 # === END MODULE_BUILD ===
 
+# === CONTRACTS ===
+# id: compress_rejects_incomplete_metric_records
+#   given: decode receives a round metric record missing any RoundMetrics slot
+#   then: raises ValueError naming the round and missing fields before constructing metrics; absence never becomes zero
+#   class: correctness
+# === END CONTRACTS ===
+
 
 from __future__ import annotations
 
@@ -112,7 +119,18 @@ def _metrics_to_dict(m):
     return {slot: getattr(m, slot) for slot in m.__slots__}
 
 
-def _dict_to_metrics(d):
+def _dict_to_metrics(d, *, round_index):
+    if not isinstance(d, dict):
+        raise ValueError(f"round {round_index} metrics must be an object")
+
+    missing = [slot for slot in RoundMetrics.__slots__ if slot not in d]
+    if missing:
+        missing_fields = ", ".join(missing)
+        raise ValueError(
+            f"round {round_index} metric record missing required fields: "
+            f"{missing_fields}"
+        )
+
     return RoundMetrics(**d)
 
 
@@ -154,6 +172,9 @@ def encode(parsed, metrics=None):
 def decode(data):
     """Decode a dict produced by encode().
 
+    Every present metric record must contain every ``RoundMetrics`` slot.
+    Incomplete records raise ``ValueError`` so absence cannot decode as zero.
+
     Returns
     -------
     (ParsedTranscript, list[RoundMetrics] | None)
@@ -182,7 +203,7 @@ def decode(data):
         rounds.append(rnd)
 
         if "m" in rec:
-            metrics_out.append(_dict_to_metrics(rec["m"]))
+            metrics_out.append(_dict_to_metrics(rec["m"], round_index=rec["i"]))
 
     pt = ParsedTranscript(rounds=rounds, turns=all_turns, source_text=data["source_text"])
     return pt, (metrics_out if data["metrics_present"] else None)

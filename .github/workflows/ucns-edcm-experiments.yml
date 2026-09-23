@@ -62,7 +62,7 @@ jobs:
             tests/test_ucns_edcm_experiments_v3.py \
             tests/test_ucns_edcm_experiments_v4.py
 
-      - name: Run v0.1 through v0.4 twice
+      - name: Run current candidate programs twice
         working-directory: edcm
         run: |
           mkdir -p artifacts
@@ -70,13 +70,13 @@ jobs:
             --edcm-commit "${GITHUB_SHA}" \
             --ucns-commit 5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed \
             --ucns-source-root ../ucns \
-            --output artifacts/ucns-edcm-v0.1.0.json
+            --output artifacts/ucns-edcm-v0.1.1.json
           python -m edcm.ucns_edcm_experiments \
             --edcm-commit "${GITHUB_SHA}" \
             --ucns-commit 5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed \
             --ucns-source-root ../ucns \
-            --output artifacts/ucns-edcm-v0.1.0-repeat.json
-          diff -u artifacts/ucns-edcm-v0.1.0.json artifacts/ucns-edcm-v0.1.0-repeat.json
+            --output artifacts/ucns-edcm-v0.1.1-repeat.json
+          diff -u artifacts/ucns-edcm-v0.1.1.json artifacts/ucns-edcm-v0.1.1-repeat.json
 
           python -m edcm.ucns_edcm_experiments_v2 \
             --edcm-commit "${GITHUB_SHA}" \
@@ -121,7 +121,7 @@ jobs:
           import json
           from pathlib import Path
           for name in (
-              "ucns-edcm-v0.1.0.json",
+              "ucns-edcm-v0.1.1.json",
               "ucns-edcm-v0.2.0.json",
               "ucns-edcm-v0.3.0.json",
               "ucns-edcm-v0.4.0.json",
@@ -147,8 +147,8 @@ jobs:
         with:
           name: ucns-edcm-experiment-reports
           path: |
-            edcm/artifacts/ucns-edcm-v0.1.0.json
-            edcm/artifacts/ucns-edcm-v0.1.0-repeat.json
+            edcm/artifacts/ucns-edcm-v0.1.1.json
+            edcm/artifacts/ucns-edcm-v0.1.1-repeat.json
             edcm/artifacts/ucns-edcm-v0.2.0.json
             edcm/artifacts/ucns-edcm-v0.2.0-repeat.json
             edcm/artifacts/ucns-edcm-v0.3.0.json

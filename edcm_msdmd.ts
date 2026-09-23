@@ -1136,6 +1136,16 @@ export default defineMsdmdCollection({
       "id": "edcmbone_canon_loader"
     },
     {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "correctness",
+        "given": "decode receives a round metric record missing any RoundMetrics slot",
+        "then": "raises ValueError naming the round and missing fields before constructing metrics; absence never becomes zero"
+      },
+      "file": "edcm/measurement/compress.py",
+      "id": "compress_rejects_incomplete_metric_records"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
@@ -2015,6 +2025,17 @@ export default defineMsdmdCollection({
       },
       "file": "tests/test_language_relational_bridge.py",
       "id": "oewn_builder_order_check"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_decode_rejects_incomplete_metric_records",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "compress_rejects_incomplete_metric_records"
+      },
+      "file": "tests/test_measurement.py",
+      "id": "check_compress_rejects_incomplete_metric_records"
     },
     {
       "block": "CHECKS",
@@ -3346,6 +3367,20 @@ export default defineMsdmdCollection({
       "source_block": "CAPABILITIES",
       "source_id": "edcm_fail_closed_ucns_fork_lint",
       "to": "user_data:semantic provenance only"
+    },
+    {
+      "from": "check_compress_rejects_incomplete_metric_records",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_compress_rejects_incomplete_metric_records",
+      "to": "self::test_decode_rejects_incomplete_metric_records"
+    },
+    {
+      "from": "check_compress_rejects_incomplete_metric_records",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_compress_rejects_incomplete_metric_records",
+      "to": "compress_rejects_incomplete_metric_records"
     },
     {
       "from": "check_contrastive_order_multiplicity_resolution",

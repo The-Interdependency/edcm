@@ -48,8 +48,8 @@ from typing import Any, Callable, Iterable, Mapping
 
 from .measurement import compute_transcript, parse_transcript
 
-PROGRAM_SCHEMA = "edcm.ucns-edcm-experiment-report/0.1.0"
-PROGRAM_VERSION = "0.1.0"
+PROGRAM_SCHEMA = "edcm.ucns-edcm-experiment-report/0.1.1"
+PROGRAM_VERSION = "0.1.1"
 EXPECTED_UCNS_COMMIT = "5331ae9a4cf7eddfa1de72b8caed28e2358cc0ed"
 BASELINE_CANDIDATE_ID = "edcm-measurement-v2"
 CONTRASTIVE_CANDIDATE_ID = "edcm-contrastive-v0"

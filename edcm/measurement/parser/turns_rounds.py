@@ -174,6 +174,15 @@ _TURN_PATTERNS = [
 ]
 
 
+def _remove_line_ending(text):
+    """Remove exactly one delimiter recognized by str.splitlines."""
+    if text.endswith("\r\n"):
+        return text[:-2]
+    if text and text[-1] in "\n\r\v\f\x1c\x1d\x1e\x85\u2028\u2029":
+        return text[:-1]
+    return text
+
+
 def _split_turns(text):
     """Retain every line; a recognized label starts a turn in any format.
 
@@ -190,12 +199,12 @@ def _split_turns(text):
     chunks = []
     labelled = False
     for line in text.splitlines(keepends=True):
-        body = line.rstrip("\r\n")
+        body = _remove_line_ending(line)
         ending = line[len(body):]
         match = next((m for pattern in _TURN_PATTERNS if (m := pattern.fullmatch(body))), None)
         if match:
             if chunks or labelled:
-                turns.append((speaker, "".join(chunks).removesuffix("\n").removesuffix("\r")))
+                turns.append((speaker, _remove_line_ending("".join(chunks))))
             speaker = match.group("speaker").strip()
             if not speaker:
                 raise ValueError("speaker label must be non-empty")
@@ -204,7 +213,7 @@ def _split_turns(text):
         else:
             chunks.append(line)
     if chunks or labelled:
-        turns.append((speaker, "".join(chunks).removesuffix("\n").removesuffix("\r")))
+        turns.append((speaker, _remove_line_ending("".join(chunks))))
     return turns
 
 

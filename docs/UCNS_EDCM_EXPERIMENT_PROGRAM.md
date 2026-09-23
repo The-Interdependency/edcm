@@ -2,7 +2,14 @@
 
 **Status:** executable research specification; no canon selection.  
 **UCNS experiment authority:** exact commit pinned by the workflow and report.  
-**EDCM baseline:** `edcm.measurement` retained as candidate `edcm-measurement-v1`.
+**Current runner:** program 0.1.1, schema `edcm.ucns-edcm-experiment-report/0.1.1`,
+using candidate `edcm-measurement-v2`. This is new evidence under the revised
+transcript intake; it is not a replay of the historical 0.1.0/v1 program.
+
+For the historical 0.1.0 experiment, use a separate checkout of EDCM commit
+`211ce860446d3576ae2930a101eefdd07d3e3dcc` and its exact UCNS dependency.
+Keep its v1 reports separate. The commands below execute the current 0.1.1
+program; no historical receipt is rewritten.
 
 ## Purpose
 
