@@ -9,7 +9,7 @@ import edcm
 
 
 def test_public_version_is_declared() -> None:
-    assert edcm.__version__ == "0.1.0"
+    assert edcm.__version__ == "0.2.0"
 
 
 def test_installed_metadata_matches_public_version() -> None:

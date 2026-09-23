@@ -583,7 +583,7 @@ def _scope_signatures(case: ExperimentCase, support_policy: str, ucns_api: Mappi
 def _candidate_values_for_case(case: ExperimentCase, ucns_api: Mapping[str, Any]) -> tuple[list[CandidateReadout], list[ScopeSignatureRecord], tuple[ScopeEvent, ...]]:
     readouts: list[CandidateReadout] = []
     for candidate_id, prefix, evaluator, identity in (
-        (BASELINE_CANDIDATE_ID, "edcm.baseline", baseline_readout, "The-Interdependency/edcm:edcm/measurement@0.1.0"),
+        (BASELINE_CANDIDATE_ID, "edcm.baseline", baseline_readout, "The-Interdependency/edcm:edcm/measurement@0.2.0"),
         (OCCURRENCE_CANDIDATE_ID, "edcm.occurrence", occurrence_coverage_readout, "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2"),
         (SCOPE_CANDIDATE_ID, "edcm.scope", scope_assertion_readout, "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v3"),
     ):
@@ -677,7 +677,7 @@ def run_v3_experiments(*, edcm_commit: str | None = None, ucns_commit: str = EXP
         cases,
         tuple(all_events),
         (
-            (BASELINE_CANDIDATE_ID, "The-Interdependency/edcm:edcm/measurement@0.1.0"),
+            (BASELINE_CANDIDATE_ID, "The-Interdependency/edcm:edcm/measurement@0.2.0"),
             (OCCURRENCE_CANDIDATE_ID, "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v2"),
             (SCOPE_CANDIDATE_ID, "The-Interdependency/edcm:edcm.ucns_edcm_experiments_v3"),
             ("ucns-scope-candidate-packs", f"The-Interdependency/ucns@{verified_commit}"),

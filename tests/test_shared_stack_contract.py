@@ -29,7 +29,7 @@ def test_base_mode_is_explicit_and_na_is_not_zero(monkeypatch):
     _force_base_mode(monkeypatch)
     result = layers_module.build_default_layers().run({"input": "no transcript"})
     contract = result["edcm_result"]
-    assert contract["schema_version"] == "1.2.0"
+    assert contract["schema_version"] == "2.0.0"
     assert contract["source_evidence"]["state"] == "NA"
     assert contract["readouts"]["state"] == "NA"
     assert contract["readouts"]["structural_density"] is None

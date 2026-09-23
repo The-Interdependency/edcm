@@ -1189,6 +1189,8 @@ class ActualUCNSAdapter:
                 + ", ".join(legacy)
             )
 
+        # Unsupported geometry never survives an early return without turns.
+        state.pop("ucns_geometry", None)
         raw_turns = state.get("ucns_turns")
         if raw_turns is None:
             state["ucns_integration"] = self.status.as_dict()

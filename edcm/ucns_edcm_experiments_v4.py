@@ -855,9 +855,9 @@ def run_v4_experiments(
     for case in cases:
         try:
             baseline = baseline_readout(case.source)
-            readouts.append(CandidateReadout(BASELINE_CANDIDATE_ID, case.source.case_id, tuple((f"edcm.baseline.{key}", value) for key, value in sorted(baseline.items())), "The-Interdependency/edcm:edcm-measurement-v1"))
+            readouts.append(CandidateReadout(BASELINE_CANDIDATE_ID, case.source.case_id, tuple((f"edcm.baseline.{key}", value) for key, value in sorted(baseline.items())), "The-Interdependency/edcm:edcm-measurement-v2"))
         except Exception as exc:
-            readouts.append(CandidateReadout(BASELINE_CANDIDATE_ID, case.source.case_id, (), "The-Interdependency/edcm:edcm-measurement-v1", f"{type(exc).__name__}: {exc}"))
+            readouts.append(CandidateReadout(BASELINE_CANDIDATE_ID, case.source.case_id, (), "The-Interdependency/edcm:edcm-measurement-v2", f"{type(exc).__name__}: {exc}"))
         try:
             scope = scope_assertion_readout(case.source)
             readouts.append(CandidateReadout("edcm-scope-assertion-v1", case.source.case_id, tuple((f"edcm.scope.{key}", value) for key, value in sorted(scope.items())), "The-Interdependency/edcm:edcm-scope-assertion-v1"))

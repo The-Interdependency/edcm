@@ -59,7 +59,8 @@ jobs:
             tests/test_ucns_adapter.py \
             tests/test_ucns_dependency.py \
             tests/test_measurement.py \
-            tests/test_shared_stack_contract.py
+            tests/test_shared_stack_contract.py \
+            tests/test_audit_regressions.py
       - name: Prove transcript measurement survives absent UCNS
         run: |
           python - <<'PY'
@@ -131,7 +132,8 @@ jobs:
             tests/test_multiwoz21_corpus.py \
             tests/test_ucns_dependency.py \
             tests/test_measurement.py \
-            tests/test_shared_stack_contract.py
+            tests/test_shared_stack_contract.py \
+            tests/test_audit_regressions.py
       - name: Prove exact word-gonol observations survive the complete stack
         run: |
           python - <<'PY'
@@ -211,6 +213,8 @@ jobs:
       - name: Smoke-test installed base package
         run: |
           .wheel-venv/bin/python - <<'PY'
+          import os
+          os.chdir("/tmp")
           from importlib.metadata import version
           from importlib.resources import files
           import edcm
@@ -220,6 +224,19 @@ jobs:
           assert callable(edcm.select_metapat_adapter)
           assert callable(edcm.build_result_contract)
           assert edcm.run_integrity_gate().passed is True
+          assert "/site-packages/" in edcm.__file__
+          from edcm.measurement import compress
+          source = "A: Here is the plan.\nI cannot do this.\nB: Accepted."
+          parsed = edcm.parse_transcript(source)
+          restored, _ = compress.from_bytes(compress.to_bytes(parsed))
+          assert restored.source_text == source
+          assert "I cannot do this." in restored.turns[0].text
+          try:
+              edcm.build_default_layers().run({"rounds": []})
+          except ValueError:
+              pass
+          else:
+              raise AssertionError("caller output accepted")
           assert files("edcm.measurement.canon").joinpath("data", "markers_v1.json").is_file()
           corpus_data = files("edcm.corpora").joinpath("data")
           assert corpus_data.joinpath("multiwoz_2_1_admission.json").is_file()

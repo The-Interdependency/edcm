@@ -1,8 +1,8 @@
 # EDCM mathematical reference
 
-Version: 0.1.0
+Version: 0.2.0
 
-Date: 2026-08-02
+Date: 2026-09-17
 
 Status: complete compiled reference for the mathematics currently declared or
 implemented in this repository; not a joint UCNS–EDCM canon selection
@@ -13,7 +13,7 @@ This document is the human-readable copy of the current Energy–Dissonance
 Circuit Model mathematics. Its scope is exact:
 
 - `edcm/measurement/` is the maintained implementation authority for the
-  frozen baseline candidate `edcm-measurement-v1`;
+  current baseline candidate `edcm-measurement-v2`;
 - `edcm/ucns_objects.py` is the implemented EDCM signed-axis construction
   layer, not formal UCNS geometry;
 - `edcm/edcmucns/` is the implemented v0.3.1 EDCM architecture layer; its
@@ -67,7 +67,15 @@ u_i=(a_i,x_i),
 $$
 
 where $a_i$ is the speaker identifier and $x_i$ is the exact turn text.
-Turn order and multiplicity are load-bearing.
+Turn order and multiplicity are load-bearing. The 0.2.0 parser recognizes each
+line independently, retaining continuation lines and preamble. Exact raw labels,
+spacing and line endings are retained separately in `source_text`; turn text
+excludes recognized label syntax. See the [migration](migrations/0.2.0-audit-repair.md).
+
+Turn-content boundary: one terminal line ending before the next label or at
+document end is separator syntax. Interior continuation and blank lines remain
+content. Exact separator bytes remain available in `source_text`; they cannot
+create an utterance identity difference merely because turns were reordered.
 
 The maintained parser supports two round partitions:
 
@@ -1300,13 +1308,14 @@ $d(x)$ and then attached to the report. The immutable evidence file also has a
 SHA-256 over its exact serialized bytes. These identities detect drift; they
 do not prove truth, authorship, or empirical validity.
 
-For `edcm.shared-stack-result/1.2.0`, `epoch_identity` is $d(x)$ over the
-METAPAT canon/provenance digests, UCNS profile identity/scope/source/options,
-EDCM manifest hash, and selected semantic-authority, UCNS-profile, and
-measurement implementations. `result_identity` is $d(x)$ over that epoch
-identity plus source evidence, the complete UCNS profile observation, EDCM
-readouts, factorization evidence, and status evidence. Geometry absence remains
-a typed compartment and does not become a fabricated geometry identity.
+For `edcm.shared-stack-result/2.0.0`, `epoch_identity` is $d(x)$ over the
+result-schema version, METAPAT canon/provenance digests, UCNS profile
+identity/scope/source/options, EDCM manifest hash, and selected semantic-authority,
+UCNS-profile, and measurement implementations. `result_identity` is $d(x)$ over
+the complete emitted contract with only `result_identity` removed. This includes
+all typed absence compartments, all implementation provenance and unresolved
+constraints. JSON serialization rejects non-finite numbers. Geometry and
+factorization remain typed `NA`; unsupported evidence is rejected.
 
 ## 16. What is not yet mathematics
 

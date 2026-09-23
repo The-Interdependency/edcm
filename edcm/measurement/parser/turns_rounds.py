@@ -29,7 +29,7 @@ BoneToken, FleshToken, Turn, Round, ParsedTranscript
 #   network_boundary: none
 #   user_data_boundary: none
 #   admin_only: false
-#   tests: tests.test_apostrophe_normalization_and_tokenization
+#   tests: tests.test_measurement, tests.test_audit_regressions
 #   rollout: default_enabled
 #   rollback: remove module; transcripts cannot be parsed into the EDCM structure
 #   requires: edcmbone_canon_loader
@@ -132,9 +132,12 @@ class Round:
 class ParsedTranscript:
     """Full parse result."""
 
-    def __init__(self, rounds, turns):
+    def __init__(self, rounds, turns, source_text=None):
         self.rounds = rounds
         self.turns = turns
+        # Exact input, including labels, spacing and line endings. None means
+        # a caller constructed the parsed object without supplying source text.
+        self.source_text = source_text
         self.speakers = _ordered_unique(t.speaker for t in turns)
 
     # convenience -------------------------------------------------------
@@ -161,28 +164,57 @@ class ParsedTranscript:
 # Patterns tried in order; each must have a named group "speaker" and "text".
 _TURN_PATTERNS = [
     # **Speaker**: text   (markdown bold)
-    re.compile(r"^\*\*(?P<speaker>[^*]+)\*\*\s*:\s*(?P<text>.+)$", re.MULTILINE),
+    re.compile(r"^\*\*(?P<speaker>[^*\r\n]+)\*\*[ \t]*:[ \t]*(?P<text>.*)$"),
     # [Speaker]: text
-    re.compile(r"^\[(?P<speaker>[^\]]+)\]\s*:\s*(?P<text>.+)$", re.MULTILINE),
+    re.compile(r"^\[(?P<speaker>[^\]\r\n]+)\][ \t]*:[ \t]*(?P<text>.*)$"),
     # Speaker (role): text
-    re.compile(r"^(?P<speaker>[A-Za-z][A-Za-z0-9 _\-]{0,30})\s*\([^)]*\)\s*:\s*(?P<text>.+)$", re.MULTILINE),
+    re.compile(r"^(?P<speaker>[A-Za-z][A-Za-z0-9 _\-]{0,30})[ \t]*\([^)]*\)[ \t]*:[ \t]*(?P<text>.*)$"),
     # Speaker: text  (plain label — shortest reliable last)
-    re.compile(r"^(?P<speaker>[A-Za-z][A-Za-z0-9 _\-]{0,30})\s*:\s*(?P<text>.+)$", re.MULTILINE),
+    re.compile(r"^(?P<speaker>[A-Za-z][A-Za-z0-9 _\-]{0,30})[ \t]*:[ \t]*(?P<text>.*)$"),
 ]
 
 
-def _split_turns(text):
-    """Return list of (speaker, text) pairs from a raw transcript string."""
-    for pattern in _TURN_PATTERNS:
-        matches = list(pattern.finditer(text))
-        if len(matches) >= 2:
-            return [(m.group("speaker").strip(), m.group("text").strip()) for m in matches]
+def _remove_line_ending(text):
+    """Remove exactly one delimiter recognized by str.splitlines."""
+    if text.endswith("\r\n"):
+        return text[:-2]
+    if text and text[-1] in "\n\r\v\f\x1c\x1d\x1e\x85\u2028\u2029":
+        return text[:-1]
+    return text
 
-    # Fallback: treat the whole transcript as one anonymous turn
-    stripped = text.strip()
-    if stripped:
-        return [("SPEAKER", stripped)]
-    return []
+
+def _split_turns(text):
+    """Retain every line; a recognized label starts a turn in any format.
+
+    Unlabelled lines continue the current turn. Preamble has speaker SPEAKER.
+    Label-like lines are syntax, not inferred speaker identities; callers must
+    disambiguate prose that has that form. Exact label bytes live in source_text.
+    A single terminal line ending separates turns (or terminates the document);
+    it is syntax, not utterance content. Interior blank lines remain content.
+    """
+    if not text.strip():
+        return []
+    turns = []
+    speaker = "SPEAKER"
+    chunks = []
+    labelled = False
+    for line in text.splitlines(keepends=True):
+        body = _remove_line_ending(line)
+        ending = line[len(body):]
+        match = next((m for pattern in _TURN_PATTERNS if (m := pattern.fullmatch(body))), None)
+        if match:
+            if chunks or labelled:
+                turns.append((speaker, _remove_line_ending("".join(chunks))))
+            speaker = match.group("speaker").strip()
+            if not speaker:
+                raise ValueError("speaker label must be non-empty")
+            chunks = [match.group("text") + ending]
+            labelled = True
+        else:
+            chunks.append(line)
+    if chunks or labelled:
+        turns.append((speaker, _remove_line_ending("".join(chunks))))
+    return turns
 
 
 # ---------------------------------------------------------------------------
@@ -384,7 +416,8 @@ def parse_transcript(transcript, round_strategy="cycle", canon=None):
     transcript : str
         Raw text. Speaker turns must be prefixed with a label followed by
         a colon, e.g. ``A: hello`` or ``**User**: hello``. Multiple
-        recognised formats are tried automatically.
+        recognised formats may be mixed. Unlabelled lines continue the previous
+        turn; preamble is retained as SPEAKER. source_text retains the exact input.
     round_strategy : "cycle" | "pairs"
         How to group turns into rounds.
         "cycle" (default) — a round ends when the anchor speaker (first
@@ -399,6 +432,10 @@ def parse_transcript(transcript, round_strategy="cycle", canon=None):
     -------
     ParsedTranscript
     """
+    if not isinstance(transcript, str):
+        raise TypeError("transcript must be a string")
+    if round_strategy not in ("cycle", "pairs"):
+        raise ValueError("round_strategy must be cycle or pairs")
     if canon is None:
         canon = CanonLoader()
 
@@ -412,7 +449,7 @@ def parse_transcript(transcript, round_strategy="cycle", canon=None):
         turns.append(Turn(speaker, text, classified))
 
     rounds = _group_into_rounds(turns, strategy=round_strategy)
-    return ParsedTranscript(rounds=rounds, turns=turns)
+    return ParsedTranscript(rounds=rounds, turns=turns, source_text=transcript)
 
 
 # ---------------------------------------------------------------------------

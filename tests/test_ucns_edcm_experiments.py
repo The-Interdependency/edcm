@@ -32,6 +32,7 @@ import pytest
 
 from edcm.ucns_edcm_experiments import (
     EXPECTED_UCNS_COMMIT,
+    PROGRAM_VERSION, PROGRAM_SCHEMA, BASELINE_CANDIDATE_ID,
     ExperimentPartition,
     baseline_readout,
     build_default_program,
@@ -54,6 +55,7 @@ def _ucns_source_root() -> Path:
 
 
 def test_default_program_structure() -> None:
+    assert (PROGRAM_VERSION, PROGRAM_SCHEMA, BASELINE_CANDIDATE_ID) == ("0.1.1", "edcm.ucns-edcm-experiment-report/0.1.1", "edcm-measurement-v2")
     cases, relations = build_default_program()
     assert len(cases) == 8
     assert len({case.case_id for case in cases}) == len(cases)
