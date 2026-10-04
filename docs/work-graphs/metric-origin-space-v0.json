@@ -1,11 +1,11 @@
 {
   "schema": "the-interdependency.stack-manifest",
   "version": "1.0.0",
-  "work_graph_sha256": "c0397219cf465ff2a9fb29e667d2c80ce0e259d9fcd0eda731693ad390871b1d",
+  "work_graph_sha256": "bd70a65203e7240bed71a69786367549652de6a67407ae11f1eb9c9bf00a5ff7",
   "repositories": [
     {
       "repository": "The-Interdependency/edcm",
-      "commit": "8f40ad6cd7a436d6223a623544285aff1b73eccb",
+      "commit": "d4bba935016f997eb748105a627196b2ab567611",
       "authority": "metric definitions, scalar measurement, and evidence/readout contracts",
       "relation": "defines source-owned construction terms and binds scalar readouts to Stack origin receipts"
     },
