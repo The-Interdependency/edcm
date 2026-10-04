@@ -25,10 +25,15 @@ def test_registry_is_read_only():
     with pytest.raises(TypeError):
         operator.setitem(METRIC_ORIGIN_SPECS,"C",metric_origin_spec("R"))
 
-def test_blank_hmmm_reason_is_rejected():
+@pytest.mark.parametrize("reason", ["", " ", None])
+def test_blank_hmmm_reason_is_rejected(reason):
     with pytest.raises(ValueError, match="non-empty"):
-        MetricOriginSpec("X",("x",),"definition","declared","implemented",("source",),
-                         "hmmm","hmmm",("",))
+        MetricOriginSpec(
+            metric_id="X", surface_terms=("x",), construction_terms=(),
+            semantic_definition="definition", declared_rule="declared",
+            implemented_rule="implemented", source_refs=("source",),
+            standing="hmmm", measurement_alignment="hmmm", unresolved=(reason,),
+        )
 
 def test_refusal_proxy_does_not_claim_constraint_statement_denominator():
     spec=metric_origin_spec("R")
