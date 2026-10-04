@@ -31,7 +31,7 @@ from dataclasses import dataclass
 from types import MappingProxyType
 
 SCHEMA = "edcm.metric-origin-spec"
-VERSION = "0.4.0"
+VERSION = "0.4.1"
 
 @dataclass(frozen=True, slots=True)
 class MetricOriginSpec:
@@ -119,7 +119,7 @@ _SPECS = {
         "correction-offered marker hits divided by max one or token count over ten",
         ("edcm/measurement/canon/data/markers_v1.json#I","edcm/measurement/metrics/compute.py#_compute_I"),
         "resolved","proxy",("maintained implementation does not observe subsequent integration behavior",)),
-    "O": MetricOriginSpec("O","edcm.behavioral.O_scope", ("Scope Motion","Overextension"), ("scope","motion","expansion","contraction","overextension"),
+    "O": MetricOriginSpec("O","edcm.behavioral.O_scope", ("Scope Motion","Overextension"), ("scope","motion","expansion","contraction"),
         "scope motion is signed boundary change from contraction through stability to expansion or overextension",
         "signed scope motion: -1 contraction, 0 stable boundary, +1 expansion or overextension",
         "scope-expansion marker hits versus scope-containment marker hits mapped onto minus one to plus one",
