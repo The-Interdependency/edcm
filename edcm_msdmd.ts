@@ -1395,7 +1395,7 @@ export default defineMsdmdCollection({
         "module_name": "metric_origin_spec",
         "network_boundary": "none",
         "owner": "Erin Spencer",
-        "public_surface": "MetricOriginSpec, METRIC_ORIGIN_SPECS, metric_origin_spec",
+        "public_surface": "MetricOriginSpec, METRIC_ORIGIN_SPECS, CANONICAL_SPLIT_IDS, LEGACY_CARRIER_TARGETS, metric_origin_spec",
         "requires": "edcmbone_metrics_compute, edcmbone_canon_loader",
         "rollback": "remove module and dependent Stack origin constructions",
         "rollout": "candidate semantic instrument specification",
