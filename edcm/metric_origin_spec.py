@@ -119,12 +119,12 @@ _SPECS = {
         "correction-offered marker hits divided by max one or token count over ten",
         ("edcm/measurement/canon/data/markers_v1.json#I","edcm/measurement/metrics/compute.py#_compute_I"),
         "resolved","proxy",("maintained implementation does not observe subsequent integration behavior",)),
-    "O": MetricOriginSpec("O","edcm.behavioral.O_confidence", ("Overconfidence",), ("confidence","polarity","evidence","calibration"),
-        "confidence polarity is the signed relation between expressed confidence and evidentiary support: underconfidence through calibrated confidence to overconfidence",
-        "signed confidence polarity: -1 underconfidence, 0 calibrated confidence, +1 overconfidence",
-        "first confidence-marker category versus second category mapped onto minus one to plus one",
-        ("edcm/ucns_objects.py#canonical_axes","edcm/measurement/metrics/compute.py#_compute_O"),
-        "resolved","proxy",("legacy scalar carrier O explicitly targets edcm.behavioral.O_confidence; O_scope is a distinct canonical axis",)),
+    "O": MetricOriginSpec("O","edcm.behavioral.O_scope", ("Scope Motion","Overextension"), ("scope","motion","expansion","contraction","overextension"),
+        "scope motion is signed boundary change from contraction through stability to expansion or overextension",
+        "signed scope motion: -1 contraction, 0 stable boundary, +1 expansion or overextension",
+        "scope-expansion marker hits versus scope-containment marker hits mapped onto minus one to plus one",
+        ("edcm/ucns_objects.py#canonical_axes","edcm/measurement/canon/data/markers_v1.json#O","edcm/measurement/metrics/compute.py#_compute_O"),
+        "resolved","proxy",("legacy scalar carrier O explicitly targets edcm.behavioral.O_scope; O_confidence is a distinct canonical axis and is not produced by RoundMetrics",)),
     "L": MetricOriginSpec("L","edcm.behavioral.L_loss", ("Coherence Loss",), ("coherence","loss","continuity","degradation"),
         "coherence loss is signed continuity motion from recovery through stability to degradation",
         "signed coherence motion: -1 recovering, 0 stable, +1 degrading",
@@ -154,7 +154,7 @@ CANONICAL_SPLIT_IDS = (
     "edcm.behavioral.L_resistance",
 )
 LEGACY_CARRIER_TARGETS = MappingProxyType({
-    "O": "edcm.behavioral.O_confidence",
+    "O": "edcm.behavioral.O_scope",
     "L": "edcm.behavioral.L_loss",
 })
 
