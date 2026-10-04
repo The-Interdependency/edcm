@@ -11,7 +11,7 @@ the semantic origin silently. None of these words are observation evidence.
 #   module_kind: schema
 #   summary: exposes provenance-bearing semantic source text and rule-alignment state for EDCM metric-origin construction
 #   owner: Erin Spencer
-#   public_surface: MetricOriginSpec, METRIC_ORIGIN_SPECS, metric_origin_spec
+#   public_surface: MetricOriginSpec, METRIC_ORIGIN_SPECS, CANONICAL_SPLIT_IDS, LEGACY_CARRIER_TARGETS, metric_origin_spec
 #   internal_surface: immutable source registry
 #   auth_boundary: none
 #   storage_boundary: none
@@ -53,7 +53,7 @@ class MetricOriginSpec:
         object.__setattr__(self, "source_refs", tuple(self.source_refs))
         object.__setattr__(self, "unresolved", tuple(self.unresolved))
         for label, value in (
-            ("metric_id", self.metric_id), ("semantic_definition", self.semantic_definition),
+            ("metric_id", self.metric_id), ("canonical_metric_id", self.canonical_metric_id), ("semantic_definition", self.semantic_definition),
             ("declared_rule", self.declared_rule), ("implemented_rule", self.implemented_rule),
             ("standing", self.standing), ("measurement_alignment", self.measurement_alignment),
         ):
