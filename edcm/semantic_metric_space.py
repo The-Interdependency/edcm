@@ -36,7 +36,7 @@ import math
 import re
 from typing import Mapping
 
-from .metric_origin_spec import metric_origin_spec
+from .metric_origin_spec import LEGACY_CARRIER_TARGETS, metric_origin_spec
 
 VECTOR_ORDER = ("C","R","F","E","D","N","I","O","L","P","kappa")
 STACK_ORIGIN_SCHEMA = "english-gonol.edcm-metric-origin-set"
@@ -45,6 +45,7 @@ STACK_ORIGIN_VERSION = "0.2.0"
 @dataclass(frozen=True, slots=True)
 class MetricOriginBinding:
     metric_id: str
+    canonical_metric_id: str
     origin_id: str
     origin_receipt_sha256: str
     closed: bool
@@ -59,6 +60,7 @@ class SemanticMetricSpace:
 @dataclass(frozen=True, slots=True)
 class SemanticMetricReadout:
     metric_id: str
+    canonical_metric_id: str
     origin_id: str
     value: float
     origin_receipt_sha256: str
@@ -70,10 +72,12 @@ class SemanticMetricReadout:
 def _origin_binding(metric_id: str, record: Mapping[str, object]) -> MetricOriginBinding:
     if record.get("schema") != STACK_ORIGIN_SCHEMA or record.get("version") != STACK_ORIGIN_VERSION:
         raise ValueError(f"{metric_id}: unsupported Stack metric-origin schema")
-    if record.get("metric_id") != metric_id:
-        raise ValueError(f"{metric_id}: origin metric identity mismatch")
+    spec = metric_origin_spec(metric_id)
+    canonical_metric_id = spec.canonical_metric_id
+    if record.get("metric_id") != canonical_metric_id:
+        raise ValueError(f"{metric_id}: origin metric identity mismatch; expected {canonical_metric_id}")
     origin_id = record.get("origin_id")
-    if origin_id != f"O_M({metric_id})":
+    if origin_id != f"O_M({canonical_metric_id})":
         raise ValueError(f"{metric_id}: origin identity mismatch")
     receipt = record.get("receipt_sha256")
     if not isinstance(receipt, str) or re.fullmatch(r"[0-9a-fA-F]{64}", receipt) is None:
@@ -86,13 +90,12 @@ def _origin_binding(metric_id: str, record: Mapping[str, object]) -> MetricOrigi
         raise ValueError(f"{metric_id}: unresolved must be a string list")
     if not closed and not unresolved_raw:
         raise ValueError(f"{metric_id}: unclosed origin requires an unresolved reason")
-    spec = metric_origin_spec(metric_id)
     if closed and spec.standing != "resolved":
         raise ValueError(f"{metric_id}: EDCM semantic origin remains hmmm")
     # Preserve producer-owned conflicts and proxy limitations even if Stack
     # omits them. Construction closure cannot confer measurement validity.
     unresolved = tuple(dict.fromkeys((*unresolved_raw, *spec.unresolved)))
-    return MetricOriginBinding(metric_id, origin_id, receipt, closed, unresolved)
+    return MetricOriginBinding(metric_id, canonical_metric_id, origin_id, receipt, closed, unresolved)
 
 def build_semantic_metric_space(
     origins: Mapping[str, Mapping[str, object]],
@@ -116,7 +119,7 @@ def bind_round_metrics(metrics: object, space: SemanticMetricSpace, *, evidence_
     validated = build_semantic_metric_space({
         binding.metric_id: {
             "schema": STACK_ORIGIN_SCHEMA, "version": STACK_ORIGIN_VERSION,
-            "metric_id": binding.metric_id, "origin_id": binding.origin_id,
+            "metric_id": binding.canonical_metric_id, "origin_id": binding.origin_id,
             "receipt_sha256": binding.origin_receipt_sha256,
             "closed": binding.closed, "unresolved": list(binding.unresolved),
         }
@@ -137,11 +140,12 @@ def bind_round_metrics(metrics: object, space: SemanticMetricSpace, *, evidence_
             raise ValueError(f"{binding.metric_id}: finite scalar metric value required") from exc
         if not math.isfinite(value):
             raise ValueError(f"{binding.metric_id}: finite scalar metric value required")
-        lower = -1.0 if binding.metric_id == "O" else 0.0
+        lower = -1.0 if binding.canonical_metric_id == LEGACY_CARRIER_TARGETS["O"] else 0.0
         if not lower <= value <= 1.0:
             raise ValueError(f"{binding.metric_id}: scalar metric value outside [{lower}, 1.0]")
         out.append(SemanticMetricReadout(
             metric_id=binding.metric_id,
+            canonical_metric_id=binding.canonical_metric_id,
             origin_id=binding.origin_id,
             value=value,
             origin_receipt_sha256=binding.origin_receipt_sha256,
