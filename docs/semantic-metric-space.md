@@ -3,7 +3,10 @@
 Install from this EDCM checkout with `python -m pip install -e '.[dev]'`.
 The adapter binds maintained scalar measurements to externally constructed
 metric origins. EDCM owns metric meanings; Stack owns the English construction.
-O and L remain `hmmm`, including when a caller supplies a closed Stack record.
+The legacy scalar carriers `O` and `L` are not canonical identities.
+`O` explicitly targets `edcm.behavioral.O_scope`; `L` explicitly targets
+`edcm.behavioral.L_loss`. The distinct canonical axes
+`O_confidence`, `L_load`, and `L_resistance` are not collapsed into those carriers.
 
 ## Runnable adapter example
 
@@ -28,8 +31,8 @@ for metric_id in VECTOR_ORDER:
     origins[metric_id] = {
         "schema": "english-gonol.edcm-metric-origin-set",
         "version": "0.2.0",
-        "metric_id": metric_id,
-        "origin_id": f"O_M({metric_id})",
+        "metric_id": spec.canonical_metric_id,
+        "origin_id": f"O_M({spec.canonical_metric_id})",
         "receipt_sha256": sha256(f"synthetic-example:{metric_id}".encode()).hexdigest(),
         "closed": spec.standing == "resolved",
         "unresolved": list(spec.unresolved),
@@ -42,7 +45,7 @@ space = build_semantic_metric_space(origins)
 rows = bind_round_metrics(
     metrics, space, evidence_receipt="sha256:" + sha256(text.encode()).hexdigest(),
 )
-assert space.unresolved_metrics == ("O", "L")
+assert space.unresolved_metrics == ()
 assert [row.value for row in rows] == metrics.vector()
 assert all(row.semantic_projection == "hmmm" for row in rows)
 print(json.dumps([asdict(row) for row in rows], allow_nan=False, indent=2))
@@ -57,12 +60,13 @@ metric in `VECTOR_ORDER` into one ordered JSON object keyed by metric ID.
 Supply that object to `build_semantic_metric_space` instead of the synthetic
 `origins` above. Do not sort its keys: the declared EDCM vector order is required.
 
-Each record must have the schema/version shown above, matching `metric_id`
-and `origin_id`, a 64-character hexadecimal SHA-256 receipt, a boolean `closed`,
+Each record must have the schema/version shown above. The ordered mapping key
+remains the compatibility carrier from `VECTOR_ORDER`; the record's `metric_id`
+and `origin_id` must name that carrier's canonical target. In particular,
+`O -> edcm.behavioral.O_scope` and `L -> edcm.behavioral.L_loss`. a 64-character hexadecimal SHA-256 receipt, a boolean `closed`,
 and an `unresolved` list of nonblank strings. An unclosed record requires at
-least one reason. EDCM also carries its own conflicts and proxy limitations
-forward even when the external record omits them. A record claiming closure
-for an EDCM `hmmm` origin is rejected.
+least one reason. EDCM carries proxy limitations forward even when the external record omits them.
+A Stack record cannot substitute a sibling canonical axis for the declared target.
 
 The adapter checks identity shape and EDCM authority boundaries. It does not
 replay the Stack database, authenticate the producer, or verify the complete
