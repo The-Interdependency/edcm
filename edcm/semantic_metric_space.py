@@ -32,7 +32,7 @@ from typing import Mapping
 
 VECTOR_ORDER = ("C","R","F","E","D","N","I","O","L","P","kappa")
 STACK_ORIGIN_SCHEMA = "english-gonol.edcm-metric-origin-set"
-STACK_ORIGIN_VERSION = "0.1.0"
+STACK_ORIGIN_VERSION = "0.2.0"
 
 @dataclass(frozen=True, slots=True)
 class MetricOriginBinding:
