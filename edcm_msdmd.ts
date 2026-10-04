@@ -18,7 +18,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-06-02",
         "storage_boundary": "none",
-        "summary": "EDCM package root \u2014 declares package identity and re-exports provenance-bearing shared-stack layers, canonical METAPAT consumer surfaces, the exact EDCM UCNS word-gonol observation profile consumer, historical fork-topology research surfaces, result contracts, integrity gates, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.",
+        "summary": "EDCM package root — declares package identity and re-exports provenance-bearing shared-stack layers, canonical METAPAT consumer surfaces, the exact EDCM UCNS word-gonol observation profile consumer, historical fork-topology research surfaces, result contracts, integrity gates, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.",
         "tests": "tests.test_measurement, tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_metapat_adapter, tests.test_shared_stack_contract, tests.test_integrity, tests.test_ucns_objects, tests.test_ucns_fork_lint, tests.test_energy_claims, tests.test_packaging",
         "unresolved": "UCNS observation digests and historical fork topology bindings provide content identity but not cryptographic producer authentication; formal Mobius coordinates and higher-gonol composition remain open",
         "user_data_boundary": "none"
@@ -49,96 +49,6 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/corpora/__init__.py",
       "id": "edcm_corpora_package"
-    },
-    {
-      "block": "CONTRACTS",
-      "fields": {
-        "class": "provenance",
-        "given": "a caller supplies a local MultiWOZ 2.1 archive",
-        "since": "2026-07-28",
-        "then": "archive bytes and every logical member match the committed Cambridge admission manifest before any dialogue is observed"
-      },
-      "file": "edcm/corpora/multiwoz21.py",
-      "id": "multiwoz21_admission_precedes_execution"
-    },
-    {
-      "block": "CONTRACTS",
-      "fields": {
-        "class": "safety",
-        "given": "source streaming reaches valid EOF",
-        "since": "2026-07-28",
-        "then": "completion is emitted only when dialogue, partition, source-turn, adapter-turn, and unit-support counts reconcile exactly"
-      },
-      "file": "edcm/corpora/multiwoz21.py",
-      "id": "multiwoz21_completion_requires_reconciliation"
-    },
-    {
-      "block": "CONTRACTS",
-      "fields": {
-        "class": "evidence",
-        "given": "an admitted archive contains the complete top-level dialogue object",
-        "since": "2026-07-28",
-        "then": "every log text is processed once in source dialogue and turn order with no normalization, sampling, sorting, or deduplication"
-      },
-      "file": "edcm/corpora/multiwoz21.py",
-      "id": "multiwoz21_every_turn_is_observed_exactly_once"
-    },
-    {
-      "block": "CONTRACTS",
-      "fields": {
-        "class": "safety",
-        "given": "archive, schema, adapter, checkpoint, or reconciliation processing fails",
-        "since": "2026-07-28",
-        "then": "the command emits an incomplete receipt with the last completed and active source position and the exact failure class and reason"
-      },
-      "file": "edcm/corpora/multiwoz21.py",
-      "id": "multiwoz21_failure_is_receipted"
-    },
-    {
-      "block": "CONTRACTS",
-      "fields": {
-        "class": "evidence",
-        "given": "the source-native EDCM pass reconciles the admitted archive",
-        "since": "2026-07-31",
-        "then": "completion also requires a UCNS v0.14.1 execution-generated receipt whose exhausted turn count and independently repeated exact-turn chain match the source-native pass"
-      },
-      "file": "edcm/corpora/multiwoz21.py",
-      "id": "multiwoz21_ucns_v0141_receipt_requires_matching_source_native_run"
-    },
-    {
-      "block": "CONTRACTS",
-      "fields": {
-        "class": "privacy",
-        "given": "a run succeeds or fails",
-        "since": "2026-07-28",
-        "then": "written reports, receipts, and checkpoints contain aggregates and identities but no source turn text"
-      },
-      "file": "edcm/corpora/multiwoz21.py",
-      "id": "multiwoz21_written_outputs_exclude_raw_text"
-    },
-    {
-      "block": "MODULE_BUILD",
-      "fields": {
-        "admin_only": "false",
-        "auth_boundary": "none",
-        "internal_surface": "UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _git_tree_identity, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_worker_arguments, _sealed_main",
-        "module_kind": "adapter",
-        "module_name": "multiwoz21",
-        "network_boundary": "none; source acquisition is separate and the runner requires local pinned bytes",
-        "owner": "Erin Spencer",
-        "public_surface": "AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive",
-        "requires": "edcm_ucns_adapter, ucns.edcm and ucns.full_corpus at a98c9e6c69804a8a08d0786b1d8b450bb2c49a97",
-        "rollback": "remove the adapter and supersede its aggregate receipts by identity; raw source remains outside Git",
-        "rollout": "explicit admitted full-corpus command; no sampling and no default measurement or canon selection",
-        "since": "2026-07-28",
-        "storage_boundary": "reads a caller-held archive and writes only caller-selected aggregate report, receipt, and resumable checkpoint paths",
-        "summary": "verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate from the merged v0.19 producer with final integrity repairs without committing raw text",
-        "tests": "tests.test_multiwoz21_corpus",
-        "unresolved": "source-native semantic labels for correction, retraction, and unresolved reference; formal UCNS geometry and lawful EDCM projection",
-        "user_data_boundary": "exact dialogue text is processed in memory and represented only by counts and cryptographic identities in written outputs"
-      },
-      "file": "edcm/corpora/multiwoz21.py",
-      "id": "edcm_multiwoz21_corpus"
     },
     {
       "block": "CONTRACTS",
@@ -264,6 +174,96 @@ export default defineMsdmdCollection({
       "id": "edcm_multiwoz21_booking_outcome_holdout"
     },
     {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "provenance",
+        "given": "a caller supplies a local MultiWOZ 2.1 archive",
+        "since": "2026-07-28",
+        "then": "archive bytes and every logical member match the committed Cambridge admission manifest before any dialogue is observed"
+      },
+      "file": "edcm/corpora/multiwoz21.py",
+      "id": "multiwoz21_admission_precedes_execution"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "source streaming reaches valid EOF",
+        "since": "2026-07-28",
+        "then": "completion is emitted only when dialogue, partition, source-turn, adapter-turn, and unit-support counts reconcile exactly"
+      },
+      "file": "edcm/corpora/multiwoz21.py",
+      "id": "multiwoz21_completion_requires_reconciliation"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "an admitted archive contains the complete top-level dialogue object",
+        "since": "2026-07-28",
+        "then": "every log text is processed once in source dialogue and turn order with no normalization, sampling, sorting, or deduplication"
+      },
+      "file": "edcm/corpora/multiwoz21.py",
+      "id": "multiwoz21_every_turn_is_observed_exactly_once"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "safety",
+        "given": "archive, schema, adapter, checkpoint, or reconciliation processing fails",
+        "since": "2026-07-28",
+        "then": "the command emits an incomplete receipt with the last completed and active source position and the exact failure class and reason"
+      },
+      "file": "edcm/corpora/multiwoz21.py",
+      "id": "multiwoz21_failure_is_receipted"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "evidence",
+        "given": "the source-native EDCM pass reconciles the admitted archive",
+        "since": "2026-07-31",
+        "then": "completion also requires a UCNS v0.14.1 execution-generated receipt whose exhausted turn count and independently repeated exact-turn chain match the source-native pass"
+      },
+      "file": "edcm/corpora/multiwoz21.py",
+      "id": "multiwoz21_ucns_v0141_receipt_requires_matching_source_native_run"
+    },
+    {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "privacy",
+        "given": "a run succeeds or fails",
+        "since": "2026-07-28",
+        "then": "written reports, receipts, and checkpoints contain aggregates and identities but no source turn text"
+      },
+      "file": "edcm/corpora/multiwoz21.py",
+      "id": "multiwoz21_written_outputs_exclude_raw_text"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "UCNSFullCorpusGate, _archive_identity, _load_partition_ids, _load_pinned_runtime, _verify_git_tree, _git_commit, _git_tree_identity, _iter_ucns_full_corpus_turns, _new_state, _ordered_token_records, _space_shape, _observe_dialogue, _build_report, _build_receipt, _write_json_atomic, _sealed_worker_arguments, _sealed_main",
+        "module_kind": "adapter",
+        "module_name": "multiwoz21",
+        "network_boundary": "none; source acquisition is separate and the runner requires local pinned bytes",
+        "owner": "Erin Spencer",
+        "public_surface": "AdmissionManifest, CorpusRunError, load_admission_manifest, iter_top_level_object, run_archive",
+        "requires": "edcm_ucns_adapter, ucns.edcm and ucns.full_corpus at a98c9e6c69804a8a08d0786b1d8b450bb2c49a97",
+        "rollback": "remove the adapter and supersede its aggregate receipts by identity; raw source remains outside Git",
+        "rollout": "explicit admitted full-corpus command; no sampling and no default measurement or canon selection",
+        "since": "2026-07-28",
+        "storage_boundary": "reads a caller-held archive and writes only caller-selected aggregate report, receipt, and resumable checkpoint paths",
+        "summary": "verifies, streams, and reconciles every exact MultiWOZ 2.1 speaker turn through the pinned EDCM UCNS word-gonol profile and v0.14.1 completion gate from the merged v0.19 producer with final integrity repairs without committing raw text",
+        "tests": "tests.test_multiwoz21_corpus",
+        "unresolved": "source-native semantic labels for correction, retraction, and unresolved reference; formal UCNS geometry and lawful EDCM projection",
+        "user_data_boundary": "exact dialogue text is processed in memory and represented only by counts and cryptographic identities in written outputs"
+      },
+      "file": "edcm/corpora/multiwoz21.py",
+      "id": "edcm_multiwoz21_corpus"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
@@ -303,7 +303,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "edcmucns v0.3.1 \u2014 EDCM on UCNS mathematics, provenance as the recurring theme; architecture-only implementation surface (identity layer), empirical claims remain frontier gates",
+        "summary": "edcmucns v0.3.1 — EDCM on UCNS mathematics, provenance as the recurring theme; architecture-only implementation surface (identity layer), empirical claims remain frontier gates",
         "tests": "tests.test_edcmucns_identity_v031, tests.test_edcmucns_encoder_v031, tests.test_edcmucns_scopes_v031, tests.test_edcmucns_epochs_v031",
         "unresolved": "frontier gates (contact convergence, DA_geom, cadence admission from text, corpus parallel run, operating-state validity) are NotImplemented surfaces with named falsifiers; no empirical claim is made",
         "user_data_boundary": "transcript-shaped inputs (turn ids, speakers, surface forms, payload content)"
@@ -329,7 +329,7 @@ export default defineMsdmdCollection({
         "storage_boundary": "none",
         "summary": "SeqAppend window composition (chronological append; lengths add; F concatenates; carrier = lcm), reserved interaction product, payload flat reduction, kappa ledger placeholders",
         "tests": "tests.test_edcmucns_scopes_v031, tests.test_edcmucns_epochs_v031",
-        "unresolved": "kappa ledger is an architecture placeholder \u2014 open-payload tension only; the full stored-tension circuit remains upstream/frontier",
+        "unresolved": "kappa ledger is an architecture placeholder — open-payload tension only; the full stored-tension circuit remains upstream/frontier",
         "user_data_boundary": "none"
       },
       "file": "edcm/edcmucns/composer.py",
@@ -351,9 +351,9 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "v0.3.1 turn encoder \u2014 bone events to origin-anchored windows with provenance witnesses; no-bone turns emit AbsentOperatorGeometry; cadence admission from text is a reserved frontier gate",
+        "summary": "v0.3.1 turn encoder — bone events to origin-anchored windows with provenance witnesses; no-bone turns emit AbsentOperatorGeometry; cadence admission from text is a reserved frontier gate",
         "tests": "tests.test_edcmucns_encoder_v031",
-        "unresolved": "bone emission from raw text is out of scope here \u2014 callers supply BoneEvents; the bone_emission_policy_version pins which upstream emitter produced them",
+        "unresolved": "bone emission from raw text is out of scope here — callers supply BoneEvents; the bone_emission_policy_version pins which upstream emitter produced them",
         "user_data_boundary": "transcript-shaped inputs (turn ids, speakers, surface forms)"
       },
       "file": "edcm/edcmucns/encoder.py",
@@ -375,7 +375,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "Epoch chain for edcmucns v0.3.1 \u2014 manifest rotation seals the segment and opens a new epoch; cross-epoch comparisons are Bridge lensing events, not raw deltas",
+        "summary": "Epoch chain for edcmucns v0.3.1 — manifest rotation seals the segment and opens a new epoch; cross-epoch comparisons are Bridge lensing events, not raw deltas",
         "tests": "tests.test_edcmucns_epochs_v031",
         "unresolved": "none",
         "user_data_boundary": "none"
@@ -399,9 +399,9 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "v0.3.1 equivalence tiers \u2014 ucns_carrier_equivalent (geometry only) and edcm_measurement_equivalent (geometry + in-scope witness + manifest); contact convergence is a frontier gate",
+        "summary": "v0.3.1 equivalence tiers — ucns_carrier_equivalent (geometry only) and edcm_measurement_equivalent (geometry + in-scope witness + manifest); contact convergence is a frontier gate",
         "tests": "tests.test_edcmucns_identity_v031",
-        "unresolved": "Theta+/F+ are compared as sorted multisets over host anchors (hmmm \u2014 ordering sensitivity lives in the witness bundle, which hashes chronologically); bridge_scope equivalence compares manifest identity only until the diagnostic vocabulary is frozen",
+        "unresolved": "Theta+/F+ are compared as sorted multisets over host anchors (hmmm — ordering sensitivity lives in the witness bundle, which hashes chronologically); bridge_scope equivalence compares manifest identity only until the diagnostic vocabulary is frozen",
         "user_data_boundary": "none"
       },
       "file": "edcm/edcmucns/equivalence.py",
@@ -423,7 +423,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-07",
         "storage_boundary": "none",
-        "summary": "field reader \u2014 build the ConstraintField/FieldMotion hash chain for a window's field_scope; NA-safe motion/state readouts; no empirical claim",
+        "summary": "field reader — build the ConstraintField/FieldMotion hash chain for a window's field_scope; NA-safe motion/state readouts; no empirical claim",
         "tests": "tests.test_edcmucns_field_reader_v031",
         "unresolved": "contact convergence over the chain stays the frontier gate in equivalence; this reader reports geometry/state only, no empirical operating-state claim",
         "user_data_boundary": "constraint fields may summarize user-turn field state"
@@ -449,7 +449,7 @@ export default defineMsdmdCollection({
         "storage_boundary": "none",
         "summary": "v0.3.1 non-origin residue rule, anchor angles, mass helpers (L_geo/L_op), carriers (n_host_total/n_family/n_cadence/n_payload), operator shares, lambda_field",
         "tests": "tests.test_edcmucns_encoder_v031, tests.test_edcmucns_scopes_v031",
-        "unresolved": "DA_geom correlation is frontier \u2014 placeholder raises NotImplementedError; cadence theta wrap at ordinal % n == 0 collides with the datum reservation and is left to the validator (hmmm)",
+        "unresolved": "DA_geom correlation is frontier — placeholder raises NotImplementedError; cadence theta wrap at ordinal % n == 0 collides with the datum reservation and is left to the validator (hmmm)",
         "user_data_boundary": "none"
       },
       "file": "edcm/edcmucns/geometry.py",
@@ -471,7 +471,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "PolicyManifest \u2014 the measurement-identity manifest for edcmucns v0.3.1; stable-serializable, hashable; hash changes create epoch breaks",
+        "summary": "PolicyManifest — the measurement-identity manifest for edcmucns v0.3.1; stable-serializable, hashable; hash changes create epoch breaks",
         "tests": "tests.test_edcmucns_identity_v031, tests.test_edcmucns_epochs_v031",
         "unresolved": "policy version strings are architecture placeholders; the policies they name (polarity dictionary, contact predicate, training updates) remain frontier",
         "user_data_boundary": "none"
@@ -495,7 +495,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "ProvenanceWitness \u2014 anchor-level testimony for edcmucns v0.3.1; provenance is measurement material, not decorative metadata",
+        "summary": "ProvenanceWitness — anchor-level testimony for edcmucns v0.3.1; provenance is measurement material, not decorative metadata",
         "tests": "tests.test_edcmucns_identity_v031",
         "unresolved": "constraint_governance vocabulary is not yet enumerated; carried as an opaque readout-bearing string",
         "user_data_boundary": "transcripts may carry user speech in surface_form; hashes only summarize, they do not redact"
@@ -519,7 +519,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "Closed readout_scope registry for edcmucns v0.3.1 \u2014 edcm_measurement_equivalent must not accept arbitrary strings",
+        "summary": "Closed readout_scope registry for edcmucns v0.3.1 — edcm_measurement_equivalent must not accept arbitrary strings",
         "tests": "tests.test_edcmucns_scopes_v031",
         "unresolved": "bridge_scope read set (witness/geometry diagnostics + manifest + epoch boundaries) is named but its diagnostic vocabulary is still growing with the validator",
         "user_data_boundary": "none"
@@ -543,7 +543,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "Core edcmucns v0.3.1 value objects \u2014 Anchor (origin/bone/cadence), Payload, Window, OperatorTurn (Present | AbsentOperatorGeometry), BridgeDiagnostic",
+        "summary": "Core edcmucns v0.3.1 value objects — Anchor (origin/bone/cadence), Payload, Window, OperatorTurn (Present | AbsentOperatorGeometry), BridgeDiagnostic",
         "tests": "tests.test_edcmucns_encoder_v031, tests.test_edcmucns_identity_v031",
         "unresolved": "cadence anchors are reserved in v0.3.1 (no admission from transcript text); composite cadence exists only for explicit caller-built fixtures",
         "user_data_boundary": "transcripts may carry user speech in payload content / lens events"
@@ -567,7 +567,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "witness_geometry_consistent validator + polarity gauge audit \u2014 mismatches emit Bridge diagnostics, never silent alternate readings",
+        "summary": "witness_geometry_consistent validator + polarity gauge audit — mismatches emit Bridge diagnostics, never silent alternate readings",
         "tests": "tests.test_edcmucns_identity_v031, tests.test_edcmucns_encoder_v031",
         "unresolved": "none",
         "user_data_boundary": "none"
@@ -1609,30 +1609,6 @@ export default defineMsdmdCollection({
       "fields": {
         "admin_only": "false",
         "auth_boundary": "none",
-        "internal_surface": "_load_ucns, _verify_ucns_identity, _package_manifest, _split_turns, _turn_signals, _build_ucns_envelope, _structural_signatures, _flatten_structural_signatures, _evaluate_relation, _digest",
-        "module_kind": "instrument",
-        "module_name": "ucns_edcm_experiments",
-        "network_boundary": "none; UCNS must already be installed from the pinned commit",
-        "owner": "Erin Spencer",
-        "public_surface": "ExperimentPartition, RelationOperator, ExperimentCase, ExpectedRelation, CandidateReadout, RelationVerdict, PolicyPreservationFinding, StructuralSignatureRecord, ExperimentReport, build_default_program, contrastive_readout, baseline_readout, run_default_experiments, main",
-        "requires": "edcm_package, edcmbone_parser_turns_rounds, edcmbone_metrics_compute",
-        "rollback": "remove module and workflow; frozen edcm.measurement baseline remains unchanged",
-        "rollout": "explicit research runner; no default canon selection",
-        "since": "2026-07-21",
-        "storage_boundary": "writes only caller-selected report path",
-        "summary": "runs fixed contrastive EDCM cases through the maintained EDCM baseline, a transparent candidate, explicit event-to-UCNS encodings, and noncanonical UCNS equivalence/M/B candidates",
-        "tests": "tests/test_ucns_edcm_experiments.py",
-        "unresolved": "external holdout custody, independent replication, and first joint canon decision authority",
-        "user_data_boundary": "fixed synthetic transcripts only in the default program"
-      },
-      "file": "edcm/ucns_edcm_experiments.py",
-      "id": "edcm_ucns_edcm_experiments"
-    },
-    {
-      "block": "MODULE_BUILD",
-      "fields": {
-        "admin_only": "false",
-        "auth_boundary": "none",
         "internal_surface": "_phrase_counts, _v2_turn_signals, _build_v2_envelope, _candidate_values_for_case, _dose_curve_findings, _phrase_coverage_findings, _latency_findings, _support_findings",
         "module_kind": "instrument",
         "module_name": "ucns_edcm_experiments_v2",
@@ -1699,6 +1675,30 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/ucns_edcm_experiments_v4.py",
       "id": "edcm_ucns_edcm_experiments_v4"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "_load_ucns, _verify_ucns_identity, _package_manifest, _split_turns, _turn_signals, _build_ucns_envelope, _structural_signatures, _flatten_structural_signatures, _evaluate_relation, _digest",
+        "module_kind": "instrument",
+        "module_name": "ucns_edcm_experiments",
+        "network_boundary": "none; UCNS must already be installed from the pinned commit",
+        "owner": "Erin Spencer",
+        "public_surface": "ExperimentPartition, RelationOperator, ExperimentCase, ExpectedRelation, CandidateReadout, RelationVerdict, PolicyPreservationFinding, StructuralSignatureRecord, ExperimentReport, build_default_program, contrastive_readout, baseline_readout, run_default_experiments, main",
+        "requires": "edcm_package, edcmbone_parser_turns_rounds, edcmbone_metrics_compute",
+        "rollback": "remove module and workflow; frozen edcm.measurement baseline remains unchanged",
+        "rollout": "explicit research runner; no default canon selection",
+        "since": "2026-07-21",
+        "storage_boundary": "writes only caller-selected report path",
+        "summary": "runs fixed contrastive EDCM cases through the maintained EDCM baseline, a transparent candidate, explicit event-to-UCNS encodings, and noncanonical UCNS equivalence/M/B candidates",
+        "tests": "tests/test_ucns_edcm_experiments.py",
+        "unresolved": "external holdout custody, independent replication, and first joint canon decision authority",
+        "user_data_boundary": "fixed synthetic transcripts only in the default program"
+      },
+      "file": "edcm/ucns_edcm_experiments.py",
+      "id": "edcm_ucns_edcm_experiments"
     },
     {
       "block": "BOUNDARIES",
@@ -1864,6 +1864,54 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/ucns_objects.py",
       "id": "edcm_ucns_objects"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "immutable source registry",
+        "module_kind": "schema",
+        "module_name": "metric_origin_spec",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "MetricOriginSpec, METRIC_ORIGIN_SPECS, metric_origin_spec",
+        "requires": "edcmbone_metrics_compute, edcmbone_canon_loader",
+        "rollback": "remove module and dependent Stack origin constructions",
+        "rollout": "candidate semantic instrument specification",
+        "since": "2026-10-03",
+        "storage_boundary": "none",
+        "summary": "exposes provenance-bearing semantic source text and rule-alignment state for EDCM metric-origin construction",
+        "tests": "tests/test_metric_origin_spec.py",
+        "unresolved": "O and L semantic labels conflict between maintained compute code and marker canon",
+        "user_data_boundary": "none"
+      },
+      "file": "metric_origin_spec.py",
+      "id": "edcm_metric_origin_specs_v0"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "strict Stack-origin receipt validation",
+        "module_kind": "adapter",
+        "module_name": "semantic_metric_space",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "MetricOriginBinding, SemanticMetricReadout, SemanticMetricSpace, build_semantic_metric_space, bind_round_metrics",
+        "requires": "edcm_metric_origin_specs_v0, external Stack metric-origin-set receipts",
+        "rollback": "remove adapter; existing RoundMetrics remain authoritative measurement output",
+        "rollout": "candidate adapter; existing scalar computation unchanged",
+        "since": "2026-10-03",
+        "storage_boundary": "none",
+        "summary": "binds the 11-component EDCM vector to provenance-bearing Stack semantic metric origins without inventing a semantic distance law",
+        "tests": "tests/test_semantic_metric_space.py",
+        "unresolved": "lawful semantic projection/distance from observed construct to origin set",
+        "user_data_boundary": "none"
+      },
+      "file": "semantic_metric_space.py",
+      "id": "edcm_semantic_metric_space_v0"
     },
     {
       "block": "CHECKS",
@@ -2610,45 +2658,6 @@ export default defineMsdmdCollection({
     {
       "block": "CHECKS",
       "fields": {
-        "call": "self::test_contrastive_order_multiplicity_resolution",
-        "cleanup": "none",
-        "mutates": "none",
-        "proves": "edcm_ucns_edcm_experiments",
-        "requires": "python3",
-        "timeout": "10"
-      },
-      "file": "tests/test_ucns_edcm_experiments.py",
-      "id": "check_contrastive_order_multiplicity_resolution"
-    },
-    {
-      "block": "CHECKS",
-      "fields": {
-        "call": "self::test_joint_runner_preserves_no_canon",
-        "cleanup": "none",
-        "mutates": "none",
-        "proves": "edcm_ucns_edcm_experiments",
-        "requires": "python3",
-        "timeout": "20"
-      },
-      "file": "tests/test_ucns_edcm_experiments.py",
-      "id": "check_joint_runner_preserves_no_canon"
-    },
-    {
-      "block": "CHECKS",
-      "fields": {
-        "call": "self::test_default_program_structure",
-        "cleanup": "none",
-        "mutates": "none",
-        "proves": "edcm_ucns_edcm_experiments",
-        "requires": "python3",
-        "timeout": "10"
-      },
-      "file": "tests/test_ucns_edcm_experiments.py",
-      "id": "check_ucns_edcm_program_structure"
-    },
-    {
-      "block": "CHECKS",
-      "fields": {
         "call": "self::test_occurrence_coverage_candidate_invariants",
         "cleanup": "none",
         "mutates": "none",
@@ -2762,6 +2771,45 @@ export default defineMsdmdCollection({
       },
       "file": "tests/test_ucns_edcm_experiments_v4.py",
       "id": "check_ucns_edcm_v4_resolvers"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_contrastive_order_multiplicity_resolution",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_ucns_edcm_experiments",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_ucns_edcm_experiments.py",
+      "id": "check_contrastive_order_multiplicity_resolution"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_joint_runner_preserves_no_canon",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_ucns_edcm_experiments",
+        "requires": "python3",
+        "timeout": "20"
+      },
+      "file": "tests/test_ucns_edcm_experiments.py",
+      "id": "check_joint_runner_preserves_no_canon"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_default_program_structure",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "edcm_ucns_edcm_experiments",
+        "requires": "python3",
+        "timeout": "10"
+      },
+      "file": "tests/test_ucns_edcm_experiments.py",
+      "id": "check_ucns_edcm_program_structure"
     },
     {
       "block": "CHECKS",
@@ -3334,41 +3382,6 @@ export default defineMsdmdCollection({
   ],
   "edges": [
     {
-      "from": "edcm_fail_closed_ucns_fork_lint",
-      "kind": "exposes",
-      "source_block": "CAPABILITIES",
-      "source_id": "edcm_fail_closed_ucns_fork_lint",
-      "to": "edcm.lint_all_payload_forks"
-    },
-    {
-      "from": "edcm_fail_closed_ucns_fork_lint",
-      "kind": "risk",
-      "source_block": "CAPABILITIES",
-      "source_id": "edcm_fail_closed_ucns_fork_lint",
-      "to": "auth:none"
-    },
-    {
-      "from": "edcm_fail_closed_ucns_fork_lint",
-      "kind": "risk",
-      "source_block": "CAPABILITIES",
-      "source_id": "edcm_fail_closed_ucns_fork_lint",
-      "to": "network:none"
-    },
-    {
-      "from": "edcm_fail_closed_ucns_fork_lint",
-      "kind": "risk",
-      "source_block": "CAPABILITIES",
-      "source_id": "edcm_fail_closed_ucns_fork_lint",
-      "to": "storage:serialization-only"
-    },
-    {
-      "from": "edcm_fail_closed_ucns_fork_lint",
-      "kind": "risk",
-      "source_block": "CAPABILITIES",
-      "source_id": "edcm_fail_closed_ucns_fork_lint",
-      "to": "user_data:semantic provenance only"
-    },
-    {
       "from": "check_compress_rejects_incomplete_metric_records",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -3719,153 +3732,6 @@ export default defineMsdmdCollection({
       "to": "python3"
     },
     {
-      "from": "check_multiwoz21_admission_precedes_execution",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_admission_precedes_execution",
-      "to": "self::test_archive_mutation_fails_before_dialogue_observation"
-    },
-    {
-      "from": "check_multiwoz21_admission_precedes_execution",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_admission_precedes_execution",
-      "to": "multiwoz21_admission_precedes_execution"
-    },
-    {
-      "from": "check_multiwoz21_admission_precedes_execution",
-      "kind": "requires",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_admission_precedes_execution",
-      "to": "python3"
-    },
-    {
-      "from": "check_multiwoz21_completion_requires_reconciliation",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_completion_requires_reconciliation",
-      "to": "self::test_manifest_count_mismatch_refuses_completion"
-    },
-    {
-      "from": "check_multiwoz21_completion_requires_reconciliation",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_completion_requires_reconciliation",
-      "to": "multiwoz21_completion_requires_reconciliation"
-    },
-    {
-      "from": "check_multiwoz21_completion_requires_reconciliation",
-      "kind": "requires",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_completion_requires_reconciliation",
-      "to": "python3"
-    },
-    {
-      "from": "check_multiwoz21_every_turn_is_observed_exactly_once",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_every_turn_is_observed_exactly_once",
-      "to": "self::test_full_fixture_run_preserves_order_exact_text_and_profile_counts"
-    },
-    {
-      "from": "check_multiwoz21_every_turn_is_observed_exactly_once",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_every_turn_is_observed_exactly_once",
-      "to": "multiwoz21_every_turn_is_observed_exactly_once"
-    },
-    {
-      "from": "check_multiwoz21_every_turn_is_observed_exactly_once",
-      "kind": "requires",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_every_turn_is_observed_exactly_once",
-      "to": "python3"
-    },
-    {
-      "from": "check_multiwoz21_failure_is_receipted",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_failure_is_receipted",
-      "to": "self::test_invalid_turn_reports_exact_active_source_position"
-    },
-    {
-      "from": "check_multiwoz21_failure_is_receipted",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_failure_is_receipted",
-      "to": "multiwoz21_failure_is_receipted"
-    },
-    {
-      "from": "check_multiwoz21_failure_is_receipted",
-      "kind": "requires",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_failure_is_receipted",
-      "to": "python3"
-    },
-    {
-      "from": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
-      "to": "self::test_claimed_gate_without_source_exhaustion_cannot_complete"
-    },
-    {
-      "from": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
-      "to": "multiwoz21_ucns_v0141_receipt_requires_matching_source_native_run"
-    },
-    {
-      "from": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
-      "kind": "requires",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
-      "to": "python3"
-    },
-    {
-      "from": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
-      "to": "self::test_full_fixture_run_preserves_order_exact_text_and_profile_counts"
-    },
-    {
-      "from": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
-      "to": "multiwoz21_ucns_v0141_receipt_requires_matching_source_native_run"
-    },
-    {
-      "from": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
-      "kind": "requires",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
-      "to": "python3"
-    },
-    {
-      "from": "check_multiwoz21_written_outputs_exclude_raw_text",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_written_outputs_exclude_raw_text",
-      "to": "self::test_report_and_checkpoint_exclude_source_turn_text"
-    },
-    {
-      "from": "check_multiwoz21_written_outputs_exclude_raw_text",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_written_outputs_exclude_raw_text",
-      "to": "multiwoz21_written_outputs_exclude_raw_text"
-    },
-    {
-      "from": "check_multiwoz21_written_outputs_exclude_raw_text",
-      "kind": "requires",
-      "source_block": "CHECKS",
-      "source_id": "check_multiwoz21_written_outputs_exclude_raw_text",
-      "to": "python3"
-    },
-    {
       "from": "check_multiwoz_booking_outcome_calibration_precedes_test",
       "kind": "calls",
       "source_block": "CHECKS",
@@ -4094,6 +3960,153 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "CHECKS",
       "source_id": "check_multiwoz_booking_outcome_uncertainty_is_cluster_aware",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz21_admission_precedes_execution",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_admission_precedes_execution",
+      "to": "self::test_archive_mutation_fails_before_dialogue_observation"
+    },
+    {
+      "from": "check_multiwoz21_admission_precedes_execution",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_admission_precedes_execution",
+      "to": "multiwoz21_admission_precedes_execution"
+    },
+    {
+      "from": "check_multiwoz21_admission_precedes_execution",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_admission_precedes_execution",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz21_completion_requires_reconciliation",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_completion_requires_reconciliation",
+      "to": "self::test_manifest_count_mismatch_refuses_completion"
+    },
+    {
+      "from": "check_multiwoz21_completion_requires_reconciliation",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_completion_requires_reconciliation",
+      "to": "multiwoz21_completion_requires_reconciliation"
+    },
+    {
+      "from": "check_multiwoz21_completion_requires_reconciliation",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_completion_requires_reconciliation",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz21_every_turn_is_observed_exactly_once",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_every_turn_is_observed_exactly_once",
+      "to": "self::test_full_fixture_run_preserves_order_exact_text_and_profile_counts"
+    },
+    {
+      "from": "check_multiwoz21_every_turn_is_observed_exactly_once",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_every_turn_is_observed_exactly_once",
+      "to": "multiwoz21_every_turn_is_observed_exactly_once"
+    },
+    {
+      "from": "check_multiwoz21_every_turn_is_observed_exactly_once",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_every_turn_is_observed_exactly_once",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz21_failure_is_receipted",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_failure_is_receipted",
+      "to": "self::test_invalid_turn_reports_exact_active_source_position"
+    },
+    {
+      "from": "check_multiwoz21_failure_is_receipted",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_failure_is_receipted",
+      "to": "multiwoz21_failure_is_receipted"
+    },
+    {
+      "from": "check_multiwoz21_failure_is_receipted",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_failure_is_receipted",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
+      "to": "self::test_claimed_gate_without_source_exhaustion_cannot_complete"
+    },
+    {
+      "from": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
+      "to": "multiwoz21_ucns_v0141_receipt_requires_matching_source_native_run"
+    },
+    {
+      "from": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_ucns_v0141_false_receipt_rejected",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
+      "to": "self::test_full_fixture_run_preserves_order_exact_text_and_profile_counts"
+    },
+    {
+      "from": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
+      "to": "multiwoz21_ucns_v0141_receipt_requires_matching_source_native_run"
+    },
+    {
+      "from": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_ucns_v0141_receipt_matches_source_native_run",
+      "to": "python3"
+    },
+    {
+      "from": "check_multiwoz21_written_outputs_exclude_raw_text",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_written_outputs_exclude_raw_text",
+      "to": "self::test_report_and_checkpoint_exclude_source_turn_text"
+    },
+    {
+      "from": "check_multiwoz21_written_outputs_exclude_raw_text",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_written_outputs_exclude_raw_text",
+      "to": "multiwoz21_written_outputs_exclude_raw_text"
+    },
+    {
+      "from": "check_multiwoz21_written_outputs_exclude_raw_text",
+      "kind": "requires",
+      "source_block": "CHECKS",
+      "source_id": "check_multiwoz21_written_outputs_exclude_raw_text",
       "to": "python3"
     },
     {
@@ -4867,174 +4880,6 @@ export default defineMsdmdCollection({
       "to": "construction_survives_absent_ucns_geometry"
     },
     {
-      "from": "geometry_mismatch_fails_closed_check",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "geometry_mismatch_fails_closed_check",
-      "to": "self::test_digest_mismatch_fails_closed"
-    },
-    {
-      "from": "geometry_mismatch_fails_closed_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "geometry_mismatch_fails_closed_check",
-      "to": "geometry_mismatch_fails_closed"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "self::language_relational_branch_check"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "comparison_requires_two_prior_freezes"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "english_metadata_is_external_to_ucns_carrier"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "lexical_branches_are_independently_constructed"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "lexical_manifest_preserves_authority_firewall"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "lexical_pre_replay_status_is_unresolved"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "lexical_relation_multiplicity_is_preserved"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "lexical_ucns_producer_is_exactly_verified"
-    },
-    {
-      "from": "oewn_builder_order_check",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "oewn_builder_order_check",
-      "to": "self::test_builder_contract_is_pinned_and_freeze_order_is_explicit"
-    },
-    {
-      "from": "oewn_builder_order_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "oewn_builder_order_check",
-      "to": "incomplete_or_altered_lexical_resume_fails_closed"
-    },
-    {
-      "from": "oewn_builder_order_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "oewn_builder_order_check",
-      "to": "lexical_comparison_occurs_after_freeze"
-    },
-    {
-      "from": "oewn_builder_order_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "oewn_builder_order_check",
-      "to": "oewn_source_is_exact_pinned_and_resumable"
-    },
-    {
-      "from": "single_constructor_uses_scale_option_sets_check",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "single_constructor_uses_scale_option_sets_check",
-      "to": "self::test_constructor_uses_declared_scale_option_set"
-    },
-    {
-      "from": "single_constructor_uses_scale_option_sets_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "single_constructor_uses_scale_option_sets_check",
-      "to": "single_constructor_uses_scale_option_sets"
-    },
-    {
-      "from": "suffix_exception_carried_by_suffix_gonol_check",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "suffix_exception_carried_by_suffix_gonol_check",
-      "to": "self::test_suffix_coupling_exception_is_carried_by_closed_suffix"
-    },
-    {
-      "from": "suffix_exception_carried_by_suffix_gonol_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "suffix_exception_carried_by_suffix_gonol_check",
-      "to": "suffix_exception_carried_by_suffix_gonol"
-    },
-    {
-      "from": "unified_candidate_does_not_select_canon_check",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "unified_candidate_does_not_select_canon_check",
-      "to": "self::test_receipt_remains_candidate"
-    },
-    {
-      "from": "unified_candidate_does_not_select_canon_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "unified_candidate_does_not_select_canon_check",
-      "to": "unified_candidate_does_not_select_canon"
-    },
-    {
-      "from": "edcm_ucns_fork_lint_docs",
-      "kind": "covers",
-      "source_block": "DOCS",
-      "source_id": "edcm_ucns_fork_lint_docs",
-      "to": "UCNSForkTopologyBinding"
-    },
-    {
-      "from": "edcm_ucns_fork_lint_docs",
-      "kind": "covers",
-      "source_block": "DOCS",
-      "source_id": "edcm_ucns_fork_lint_docs",
-      "to": "build_fork_topology_binding"
-    },
-    {
-      "from": "edcm_ucns_fork_lint_docs",
-      "kind": "covers",
-      "source_block": "DOCS",
-      "source_id": "edcm_ucns_fork_lint_docs",
-      "to": "lint_all_payload_forks"
-    },
-    {
-      "from": "edcm_ucns_fork_lint_docs",
-      "kind": "covers",
-      "source_block": "DOCS",
-      "source_id": "edcm_ucns_fork_lint_docs",
-      "to": "lint_fork_topology"
-    },
-    {
       "from": "edcm_corpora_package",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
@@ -5061,6 +4906,41 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_energy_claims",
       "to": "edcm_ucns_dependency"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "exposes",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "edcm.lint_all_payload_forks"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "auth:none"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "network:none"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "storage:serialization-only"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "user_data:semantic provenance only"
     },
     {
       "from": "edcm_falsifiability_bridge",
@@ -5385,6 +5265,27 @@ export default defineMsdmdCollection({
       "to": "optional metapat package"
     },
     {
+      "from": "edcm_metric_origin_specs_v0",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_metric_origin_specs_v0",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_metric_origin_specs_v0",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_metric_origin_specs_v0",
+      "to": "edcmbone_canon_loader"
+    },
+    {
+      "from": "edcm_metric_origin_specs_v0",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_metric_origin_specs_v0",
+      "to": "edcmbone_metrics_compute"
+    },
+    {
       "from": "edcm_multiwoz21_booking_outcome_holdout",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
@@ -5565,6 +5466,27 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_package",
       "to": "edcmucns_package"
+    },
+    {
+      "from": "edcm_semantic_metric_space_v0",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_semantic_metric_space_v0",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_semantic_metric_space_v0",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_semantic_metric_space_v0",
+      "to": "edcm_metric_origin_specs_v0"
+    },
+    {
+      "from": "edcm_semantic_metric_space_v0",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_semantic_metric_space_v0",
+      "to": "external Stack metric-origin-set receipts"
     },
     {
       "from": "edcm_shared_stack",
@@ -5880,6 +5802,34 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_ucns_fork_lint",
       "to": "edcm_ucns_adapter"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "build_fork_topology_binding"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "lint_all_payload_forks"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "lint_fork_topology"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "UCNSForkTopologyBinding"
     },
     {
       "from": "edcm_ucns_objects",
@@ -6316,6 +6266,104 @@ export default defineMsdmdCollection({
       "to": "edcmucns_types"
     },
     {
+      "from": "geometry_mismatch_fails_closed_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "geometry_mismatch_fails_closed_check",
+      "to": "self::test_digest_mismatch_fails_closed"
+    },
+    {
+      "from": "geometry_mismatch_fails_closed_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "geometry_mismatch_fails_closed_check",
+      "to": "geometry_mismatch_fails_closed"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "self::language_relational_branch_check"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "comparison_requires_two_prior_freezes"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "english_metadata_is_external_to_ucns_carrier"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_branches_are_independently_constructed"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_manifest_preserves_authority_firewall"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_pre_replay_status_is_unresolved"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_relation_multiplicity_is_preserved"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_ucns_producer_is_exactly_verified"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "self::test_builder_contract_is_pinned_and_freeze_order_is_explicit"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "incomplete_or_altered_lexical_resume_fails_closed"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "lexical_comparison_occurs_after_freeze"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "oewn_source_is_exact_pinned_and_resumable"
+    },
+    {
       "from": "recovered_dissonance_controlled_gate",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
@@ -6341,13 +6389,6 @@ export default defineMsdmdCollection({
       "kind": "requires",
       "source_block": "MODULE_BUILD",
       "source_id": "recovered_dissonance_external_evaluator",
-      "to": "UCNS PR 196 external evaluation protocol"
-    },
-    {
-      "from": "recovered_dissonance_external_evaluator",
-      "kind": "requires",
-      "source_block": "MODULE_BUILD",
-      "source_id": "recovered_dissonance_external_evaluator",
       "to": "edcm_multiwoz21_booking_outcome_holdout"
     },
     {
@@ -6356,6 +6397,55 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "recovered_dissonance_external_evaluator",
       "to": "recovered_dissonance_controlled_gate"
+    },
+    {
+      "from": "recovered_dissonance_external_evaluator",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "recovered_dissonance_external_evaluator",
+      "to": "UCNS PR 196 external evaluation protocol"
+    },
+    {
+      "from": "single_constructor_uses_scale_option_sets_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "single_constructor_uses_scale_option_sets_check",
+      "to": "self::test_constructor_uses_declared_scale_option_set"
+    },
+    {
+      "from": "single_constructor_uses_scale_option_sets_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "single_constructor_uses_scale_option_sets_check",
+      "to": "single_constructor_uses_scale_option_sets"
+    },
+    {
+      "from": "suffix_exception_carried_by_suffix_gonol_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "suffix_exception_carried_by_suffix_gonol_check",
+      "to": "self::test_suffix_coupling_exception_is_carried_by_closed_suffix"
+    },
+    {
+      "from": "suffix_exception_carried_by_suffix_gonol_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "suffix_exception_carried_by_suffix_gonol_check",
+      "to": "suffix_exception_carried_by_suffix_gonol"
+    },
+    {
+      "from": "unified_candidate_does_not_select_canon_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "unified_candidate_does_not_select_canon_check",
+      "to": "self::test_receipt_remains_candidate"
+    },
+    {
+      "from": "unified_candidate_does_not_select_canon_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "unified_candidate_does_not_select_canon_check",
+      "to": "unified_candidate_does_not_select_canon"
     }
   ],
   "gaps": [],
