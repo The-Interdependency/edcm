@@ -9,7 +9,7 @@ def _origins():
         closed=metric not in {"O","L"}
         out[metric]={
             "schema":"english-gonol.edcm-metric-origin-set",
-            "version":"0.1.0","metric_id":metric,
+            "version":"0.2.0","metric_id":metric,
             "receipt_sha256":(metric[0].lower() if metric!="kappa" else "k")*64,
             "closed":closed,
             "unresolved":[] if closed else ["source semantic collision"],
