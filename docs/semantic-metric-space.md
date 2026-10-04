@@ -70,6 +70,10 @@ Stack payload digest; those checks belong to the Stack construction/export
 path. The evidence receipt identifies the independently measured transcript
 or measurement artifact; origin words must never substitute for that evidence.
 Non-finite values, booleans, and nonnumeric scalar values are rejected.
+Values must also remain in the maintained metric domain: O in `[-1, 1]`,
+all other components in `[0, 1]`. Binding revalidates the entire space,
+including order, origin identities, receipts, EDCM constraints and completion
+state; manually constructing the public dataclasses cannot bypass admission.
 
 ## hmmm
 
