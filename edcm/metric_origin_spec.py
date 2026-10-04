@@ -37,6 +37,7 @@ VERSION = "0.3.0"
 class MetricOriginSpec:
     metric_id: str
     surface_terms: tuple[str, ...]
+    construction_terms: tuple[str, ...]
     semantic_definition: str
     declared_rule: str
     implemented_rule: str
@@ -47,6 +48,7 @@ class MetricOriginSpec:
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "surface_terms", tuple(self.surface_terms))
+        object.__setattr__(self, "construction_terms", tuple(self.construction_terms))
         object.__setattr__(self, "source_refs", tuple(self.source_refs))
         object.__setattr__(self, "unresolved", tuple(self.unresolved))
         for label, value in (
@@ -57,13 +59,15 @@ class MetricOriginSpec:
             if not isinstance(value, str) or not value.strip():
                 raise ValueError(f"{label} must be non-empty")
         for label, values in (
-            ("surface_terms", self.surface_terms), ("source_refs", self.source_refs),
+            ("surface_terms", self.surface_terms), ("construction_terms", self.construction_terms), ("source_refs", self.source_refs),
             ("unresolved", self.unresolved),
         ):
             if any(not isinstance(x, str) or not x.strip() for x in values):
                 raise ValueError(f"{label} must contain only non-empty strings")
         if not self.surface_terms or not self.source_refs:
             raise ValueError("surface_terms and source_refs must be non-empty")
+        if self.standing == "resolved" and not self.construction_terms:
+            raise ValueError("resolved metric origins require construction_terms")
         if self.standing not in {"resolved", "hmmm"}:
             raise ValueError("standing must be resolved or hmmm")
         if self.measurement_alignment not in {"aligned", "proxy", "conflict", "hmmm"}:
