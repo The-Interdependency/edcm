@@ -18,7 +18,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-06-02",
         "storage_boundary": "none",
-        "summary": "EDCM package root — declares package identity and re-exports provenance-bearing shared-stack layers, canonical METAPAT consumer surfaces, the exact EDCM UCNS word-gonol observation profile consumer, historical fork-topology research surfaces, result contracts, integrity gates, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.",
+        "summary": "EDCM package root \u2014 declares package identity and re-exports provenance-bearing shared-stack layers, canonical METAPAT consumer surfaces, the exact EDCM UCNS word-gonol observation profile consumer, historical fork-topology research surfaces, result contracts, integrity gates, energy audit, EDCM objects, edcmucns architecture, and canonical maintained measurement.",
         "tests": "tests.test_measurement, tests.test_ucns_adapter, tests.test_ucns_dependency, tests.test_metapat_adapter, tests.test_shared_stack_contract, tests.test_integrity, tests.test_ucns_objects, tests.test_ucns_fork_lint, tests.test_energy_claims, tests.test_packaging",
         "unresolved": "UCNS observation digests and historical fork topology bindings provide content identity but not cryptographic producer authentication; formal Mobius coordinates and higher-gonol composition remain open",
         "user_data_boundary": "none"
@@ -303,7 +303,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "edcmucns v0.3.1 — EDCM on UCNS mathematics, provenance as the recurring theme; architecture-only implementation surface (identity layer), empirical claims remain frontier gates",
+        "summary": "edcmucns v0.3.1 \u2014 EDCM on UCNS mathematics, provenance as the recurring theme; architecture-only implementation surface (identity layer), empirical claims remain frontier gates",
         "tests": "tests.test_edcmucns_identity_v031, tests.test_edcmucns_encoder_v031, tests.test_edcmucns_scopes_v031, tests.test_edcmucns_epochs_v031",
         "unresolved": "frontier gates (contact convergence, DA_geom, cadence admission from text, corpus parallel run, operating-state validity) are NotImplemented surfaces with named falsifiers; no empirical claim is made",
         "user_data_boundary": "transcript-shaped inputs (turn ids, speakers, surface forms, payload content)"
@@ -329,7 +329,7 @@ export default defineMsdmdCollection({
         "storage_boundary": "none",
         "summary": "SeqAppend window composition (chronological append; lengths add; F concatenates; carrier = lcm), reserved interaction product, payload flat reduction, kappa ledger placeholders",
         "tests": "tests.test_edcmucns_scopes_v031, tests.test_edcmucns_epochs_v031",
-        "unresolved": "kappa ledger is an architecture placeholder — open-payload tension only; the full stored-tension circuit remains upstream/frontier",
+        "unresolved": "kappa ledger is an architecture placeholder \u2014 open-payload tension only; the full stored-tension circuit remains upstream/frontier",
         "user_data_boundary": "none"
       },
       "file": "edcm/edcmucns/composer.py",
@@ -351,9 +351,9 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "v0.3.1 turn encoder — bone events to origin-anchored windows with provenance witnesses; no-bone turns emit AbsentOperatorGeometry; cadence admission from text is a reserved frontier gate",
+        "summary": "v0.3.1 turn encoder \u2014 bone events to origin-anchored windows with provenance witnesses; no-bone turns emit AbsentOperatorGeometry; cadence admission from text is a reserved frontier gate",
         "tests": "tests.test_edcmucns_encoder_v031",
-        "unresolved": "bone emission from raw text is out of scope here — callers supply BoneEvents; the bone_emission_policy_version pins which upstream emitter produced them",
+        "unresolved": "bone emission from raw text is out of scope here \u2014 callers supply BoneEvents; the bone_emission_policy_version pins which upstream emitter produced them",
         "user_data_boundary": "transcript-shaped inputs (turn ids, speakers, surface forms)"
       },
       "file": "edcm/edcmucns/encoder.py",
@@ -375,7 +375,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "Epoch chain for edcmucns v0.3.1 — manifest rotation seals the segment and opens a new epoch; cross-epoch comparisons are Bridge lensing events, not raw deltas",
+        "summary": "Epoch chain for edcmucns v0.3.1 \u2014 manifest rotation seals the segment and opens a new epoch; cross-epoch comparisons are Bridge lensing events, not raw deltas",
         "tests": "tests.test_edcmucns_epochs_v031",
         "unresolved": "none",
         "user_data_boundary": "none"
@@ -399,9 +399,9 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "v0.3.1 equivalence tiers — ucns_carrier_equivalent (geometry only) and edcm_measurement_equivalent (geometry + in-scope witness + manifest); contact convergence is a frontier gate",
+        "summary": "v0.3.1 equivalence tiers \u2014 ucns_carrier_equivalent (geometry only) and edcm_measurement_equivalent (geometry + in-scope witness + manifest); contact convergence is a frontier gate",
         "tests": "tests.test_edcmucns_identity_v031",
-        "unresolved": "Theta+/F+ are compared as sorted multisets over host anchors (hmmm — ordering sensitivity lives in the witness bundle, which hashes chronologically); bridge_scope equivalence compares manifest identity only until the diagnostic vocabulary is frozen",
+        "unresolved": "Theta+/F+ are compared as sorted multisets over host anchors (hmmm \u2014 ordering sensitivity lives in the witness bundle, which hashes chronologically); bridge_scope equivalence compares manifest identity only until the diagnostic vocabulary is frozen",
         "user_data_boundary": "none"
       },
       "file": "edcm/edcmucns/equivalence.py",
@@ -423,7 +423,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-07",
         "storage_boundary": "none",
-        "summary": "field reader — build the ConstraintField/FieldMotion hash chain for a window's field_scope; NA-safe motion/state readouts; no empirical claim",
+        "summary": "field reader \u2014 build the ConstraintField/FieldMotion hash chain for a window's field_scope; NA-safe motion/state readouts; no empirical claim",
         "tests": "tests.test_edcmucns_field_reader_v031",
         "unresolved": "contact convergence over the chain stays the frontier gate in equivalence; this reader reports geometry/state only, no empirical operating-state claim",
         "user_data_boundary": "constraint fields may summarize user-turn field state"
@@ -449,7 +449,7 @@ export default defineMsdmdCollection({
         "storage_boundary": "none",
         "summary": "v0.3.1 non-origin residue rule, anchor angles, mass helpers (L_geo/L_op), carriers (n_host_total/n_family/n_cadence/n_payload), operator shares, lambda_field",
         "tests": "tests.test_edcmucns_encoder_v031, tests.test_edcmucns_scopes_v031",
-        "unresolved": "DA_geom correlation is frontier — placeholder raises NotImplementedError; cadence theta wrap at ordinal % n == 0 collides with the datum reservation and is left to the validator (hmmm)",
+        "unresolved": "DA_geom correlation is frontier \u2014 placeholder raises NotImplementedError; cadence theta wrap at ordinal % n == 0 collides with the datum reservation and is left to the validator (hmmm)",
         "user_data_boundary": "none"
       },
       "file": "edcm/edcmucns/geometry.py",
@@ -471,7 +471,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "PolicyManifest — the measurement-identity manifest for edcmucns v0.3.1; stable-serializable, hashable; hash changes create epoch breaks",
+        "summary": "PolicyManifest \u2014 the measurement-identity manifest for edcmucns v0.3.1; stable-serializable, hashable; hash changes create epoch breaks",
         "tests": "tests.test_edcmucns_identity_v031, tests.test_edcmucns_epochs_v031",
         "unresolved": "policy version strings are architecture placeholders; the policies they name (polarity dictionary, contact predicate, training updates) remain frontier",
         "user_data_boundary": "none"
@@ -495,7 +495,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "ProvenanceWitness — anchor-level testimony for edcmucns v0.3.1; provenance is measurement material, not decorative metadata",
+        "summary": "ProvenanceWitness \u2014 anchor-level testimony for edcmucns v0.3.1; provenance is measurement material, not decorative metadata",
         "tests": "tests.test_edcmucns_identity_v031",
         "unresolved": "constraint_governance vocabulary is not yet enumerated; carried as an opaque readout-bearing string",
         "user_data_boundary": "transcripts may carry user speech in surface_form; hashes only summarize, they do not redact"
@@ -519,7 +519,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "Closed readout_scope registry for edcmucns v0.3.1 — edcm_measurement_equivalent must not accept arbitrary strings",
+        "summary": "Closed readout_scope registry for edcmucns v0.3.1 \u2014 edcm_measurement_equivalent must not accept arbitrary strings",
         "tests": "tests.test_edcmucns_scopes_v031",
         "unresolved": "bridge_scope read set (witness/geometry diagnostics + manifest + epoch boundaries) is named but its diagnostic vocabulary is still growing with the validator",
         "user_data_boundary": "none"
@@ -543,7 +543,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "Core edcmucns v0.3.1 value objects — Anchor (origin/bone/cadence), Payload, Window, OperatorTurn (Present | AbsentOperatorGeometry), BridgeDiagnostic",
+        "summary": "Core edcmucns v0.3.1 value objects \u2014 Anchor (origin/bone/cadence), Payload, Window, OperatorTurn (Present | AbsentOperatorGeometry), BridgeDiagnostic",
         "tests": "tests.test_edcmucns_encoder_v031, tests.test_edcmucns_identity_v031",
         "unresolved": "cadence anchors are reserved in v0.3.1 (no admission from transcript text); composite cadence exists only for explicit caller-built fixtures",
         "user_data_boundary": "transcripts may carry user speech in payload content / lens events"
@@ -567,7 +567,7 @@ export default defineMsdmdCollection({
         "rollout": "default_enabled",
         "since": "2026-07-06",
         "storage_boundary": "none",
-        "summary": "witness_geometry_consistent validator + polarity gauge audit — mismatches emit Bridge diagnostics, never silent alternate readings",
+        "summary": "witness_geometry_consistent validator + polarity gauge audit \u2014 mismatches emit Bridge diagnostics, never silent alternate readings",
         "tests": "tests.test_edcmucns_identity_v031, tests.test_edcmucns_encoder_v031",
         "unresolved": "none",
         "user_data_boundary": "none"
@@ -1386,6 +1386,30 @@ export default defineMsdmdCollection({
       "id": "edcm_metapat_adapter"
     },
     {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "immutable source registry",
+        "module_kind": "schema",
+        "module_name": "metric_origin_spec",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "MetricOriginSpec, METRIC_ORIGIN_SPECS, metric_origin_spec",
+        "requires": "edcmbone_metrics_compute, edcmbone_canon_loader",
+        "rollback": "remove module and dependent Stack origin constructions",
+        "rollout": "candidate semantic instrument specification",
+        "since": "2026-10-03",
+        "storage_boundary": "none",
+        "summary": "exposes provenance-bearing semantic source text and rule-alignment state for EDCM metric-origin construction",
+        "tests": "tests/test_metric_origin_spec.py",
+        "unresolved": "O and L semantic labels conflict between maintained compute code and marker canon",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/metric_origin_spec.py",
+      "id": "edcm_metric_origin_specs_v0"
+    },
+    {
       "block": "CONTRACTS",
       "fields": {
         "class": "evidence",
@@ -1498,6 +1522,30 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/recovered_dissonance_external_evaluator.py",
       "id": "recovered_dissonance_external_evaluator"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "strict Stack-origin receipt validation",
+        "module_kind": "adapter",
+        "module_name": "semantic_metric_space",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "MetricOriginBinding, SemanticMetricReadout, SemanticMetricSpace, build_semantic_metric_space, bind_round_metrics",
+        "requires": "edcm_metric_origin_specs_v0, external Stack metric-origin-set receipts",
+        "rollback": "remove adapter; existing RoundMetrics remain authoritative measurement output",
+        "rollout": "candidate adapter; existing scalar computation unchanged",
+        "since": "2026-10-03",
+        "storage_boundary": "none",
+        "summary": "binds the 11-component EDCM vector to provenance-bearing Stack semantic metric origins without inventing a semantic distance law",
+        "tests": "tests/test_semantic_metric_space.py",
+        "unresolved": "lawful semantic projection/distance from observed construct to origin set",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/semantic_metric_space.py",
+      "id": "edcm_semantic_metric_space_v0"
     },
     {
       "block": "MODULE_BUILD",
@@ -1864,54 +1912,6 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/ucns_objects.py",
       "id": "edcm_ucns_objects"
-    },
-    {
-      "block": "MODULE_BUILD",
-      "fields": {
-        "admin_only": "false",
-        "auth_boundary": "none",
-        "internal_surface": "immutable source registry",
-        "module_kind": "schema",
-        "module_name": "metric_origin_spec",
-        "network_boundary": "none",
-        "owner": "Erin Spencer",
-        "public_surface": "MetricOriginSpec, METRIC_ORIGIN_SPECS, metric_origin_spec",
-        "requires": "edcmbone_metrics_compute, edcmbone_canon_loader",
-        "rollback": "remove module and dependent Stack origin constructions",
-        "rollout": "candidate semantic instrument specification",
-        "since": "2026-10-03",
-        "storage_boundary": "none",
-        "summary": "exposes provenance-bearing semantic source text and rule-alignment state for EDCM metric-origin construction",
-        "tests": "tests/test_metric_origin_spec.py",
-        "unresolved": "O and L semantic labels conflict between maintained compute code and marker canon",
-        "user_data_boundary": "none"
-      },
-      "file": "metric_origin_spec.py",
-      "id": "edcm_metric_origin_specs_v0"
-    },
-    {
-      "block": "MODULE_BUILD",
-      "fields": {
-        "admin_only": "false",
-        "auth_boundary": "none",
-        "internal_surface": "strict Stack-origin receipt validation",
-        "module_kind": "adapter",
-        "module_name": "semantic_metric_space",
-        "network_boundary": "none",
-        "owner": "Erin Spencer",
-        "public_surface": "MetricOriginBinding, SemanticMetricReadout, SemanticMetricSpace, build_semantic_metric_space, bind_round_metrics",
-        "requires": "edcm_metric_origin_specs_v0, external Stack metric-origin-set receipts",
-        "rollback": "remove adapter; existing RoundMetrics remain authoritative measurement output",
-        "rollout": "candidate adapter; existing scalar computation unchanged",
-        "since": "2026-10-03",
-        "storage_boundary": "none",
-        "summary": "binds the 11-component EDCM vector to provenance-bearing Stack semantic metric origins without inventing a semantic distance law",
-        "tests": "tests/test_semantic_metric_space.py",
-        "unresolved": "lawful semantic projection/distance from observed construct to origin set",
-        "user_data_boundary": "none"
-      },
-      "file": "semantic_metric_space.py",
-      "id": "edcm_semantic_metric_space_v0"
     },
     {
       "block": "CHECKS",
@@ -3381,6 +3381,41 @@ export default defineMsdmdCollection({
     }
   ],
   "edges": [
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "exposes",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "edcm.lint_all_payload_forks"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "auth:none"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "network:none"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "storage:serialization-only"
+    },
+    {
+      "from": "edcm_fail_closed_ucns_fork_lint",
+      "kind": "risk",
+      "source_block": "CAPABILITIES",
+      "source_id": "edcm_fail_closed_ucns_fork_lint",
+      "to": "user_data:semantic provenance only"
+    },
     {
       "from": "check_compress_rejects_incomplete_metric_records",
       "kind": "calls",
@@ -4880,6 +4915,174 @@ export default defineMsdmdCollection({
       "to": "construction_survives_absent_ucns_geometry"
     },
     {
+      "from": "geometry_mismatch_fails_closed_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "geometry_mismatch_fails_closed_check",
+      "to": "self::test_digest_mismatch_fails_closed"
+    },
+    {
+      "from": "geometry_mismatch_fails_closed_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "geometry_mismatch_fails_closed_check",
+      "to": "geometry_mismatch_fails_closed"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "self::language_relational_branch_check"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "comparison_requires_two_prior_freezes"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "english_metadata_is_external_to_ucns_carrier"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_branches_are_independently_constructed"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_manifest_preserves_authority_firewall"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_pre_replay_status_is_unresolved"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_relation_multiplicity_is_preserved"
+    },
+    {
+      "from": "language_relational_branch_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "language_relational_branch_check",
+      "to": "lexical_ucns_producer_is_exactly_verified"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "self::test_builder_contract_is_pinned_and_freeze_order_is_explicit"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "incomplete_or_altered_lexical_resume_fails_closed"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "lexical_comparison_occurs_after_freeze"
+    },
+    {
+      "from": "oewn_builder_order_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "oewn_builder_order_check",
+      "to": "oewn_source_is_exact_pinned_and_resumable"
+    },
+    {
+      "from": "single_constructor_uses_scale_option_sets_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "single_constructor_uses_scale_option_sets_check",
+      "to": "self::test_constructor_uses_declared_scale_option_set"
+    },
+    {
+      "from": "single_constructor_uses_scale_option_sets_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "single_constructor_uses_scale_option_sets_check",
+      "to": "single_constructor_uses_scale_option_sets"
+    },
+    {
+      "from": "suffix_exception_carried_by_suffix_gonol_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "suffix_exception_carried_by_suffix_gonol_check",
+      "to": "self::test_suffix_coupling_exception_is_carried_by_closed_suffix"
+    },
+    {
+      "from": "suffix_exception_carried_by_suffix_gonol_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "suffix_exception_carried_by_suffix_gonol_check",
+      "to": "suffix_exception_carried_by_suffix_gonol"
+    },
+    {
+      "from": "unified_candidate_does_not_select_canon_check",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "unified_candidate_does_not_select_canon_check",
+      "to": "self::test_receipt_remains_candidate"
+    },
+    {
+      "from": "unified_candidate_does_not_select_canon_check",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "unified_candidate_does_not_select_canon_check",
+      "to": "unified_candidate_does_not_select_canon"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "UCNSForkTopologyBinding"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "build_fork_topology_binding"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "lint_all_payload_forks"
+    },
+    {
+      "from": "edcm_ucns_fork_lint_docs",
+      "kind": "covers",
+      "source_block": "DOCS",
+      "source_id": "edcm_ucns_fork_lint_docs",
+      "to": "lint_fork_topology"
+    },
+    {
       "from": "edcm_corpora_package",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
@@ -4906,41 +5109,6 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_energy_claims",
       "to": "edcm_ucns_dependency"
-    },
-    {
-      "from": "edcm_fail_closed_ucns_fork_lint",
-      "kind": "exposes",
-      "source_block": "CAPABILITIES",
-      "source_id": "edcm_fail_closed_ucns_fork_lint",
-      "to": "edcm.lint_all_payload_forks"
-    },
-    {
-      "from": "edcm_fail_closed_ucns_fork_lint",
-      "kind": "risk",
-      "source_block": "CAPABILITIES",
-      "source_id": "edcm_fail_closed_ucns_fork_lint",
-      "to": "auth:none"
-    },
-    {
-      "from": "edcm_fail_closed_ucns_fork_lint",
-      "kind": "risk",
-      "source_block": "CAPABILITIES",
-      "source_id": "edcm_fail_closed_ucns_fork_lint",
-      "to": "network:none"
-    },
-    {
-      "from": "edcm_fail_closed_ucns_fork_lint",
-      "kind": "risk",
-      "source_block": "CAPABILITIES",
-      "source_id": "edcm_fail_closed_ucns_fork_lint",
-      "to": "storage:serialization-only"
-    },
-    {
-      "from": "edcm_fail_closed_ucns_fork_lint",
-      "kind": "risk",
-      "source_block": "CAPABILITIES",
-      "source_id": "edcm_fail_closed_ucns_fork_lint",
-      "to": "user_data:semantic provenance only"
     },
     {
       "from": "edcm_falsifiability_bridge",
@@ -5804,34 +5972,6 @@ export default defineMsdmdCollection({
       "to": "edcm_ucns_adapter"
     },
     {
-      "from": "edcm_ucns_fork_lint_docs",
-      "kind": "covers",
-      "source_block": "DOCS",
-      "source_id": "edcm_ucns_fork_lint_docs",
-      "to": "UCNSForkTopologyBinding"
-    },
-    {
-      "from": "edcm_ucns_fork_lint_docs",
-      "kind": "covers",
-      "source_block": "DOCS",
-      "source_id": "edcm_ucns_fork_lint_docs",
-      "to": "build_fork_topology_binding"
-    },
-    {
-      "from": "edcm_ucns_fork_lint_docs",
-      "kind": "covers",
-      "source_block": "DOCS",
-      "source_id": "edcm_ucns_fork_lint_docs",
-      "to": "lint_all_payload_forks"
-    },
-    {
-      "from": "edcm_ucns_fork_lint_docs",
-      "kind": "covers",
-      "source_block": "DOCS",
-      "source_id": "edcm_ucns_fork_lint_docs",
-      "to": "lint_fork_topology"
-    },
-    {
       "from": "edcm_ucns_objects",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
@@ -6266,104 +6406,6 @@ export default defineMsdmdCollection({
       "to": "edcmucns_types"
     },
     {
-      "from": "geometry_mismatch_fails_closed_check",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "geometry_mismatch_fails_closed_check",
-      "to": "self::test_digest_mismatch_fails_closed"
-    },
-    {
-      "from": "geometry_mismatch_fails_closed_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "geometry_mismatch_fails_closed_check",
-      "to": "geometry_mismatch_fails_closed"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "self::language_relational_branch_check"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "comparison_requires_two_prior_freezes"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "english_metadata_is_external_to_ucns_carrier"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "lexical_branches_are_independently_constructed"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "lexical_manifest_preserves_authority_firewall"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "lexical_pre_replay_status_is_unresolved"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "lexical_relation_multiplicity_is_preserved"
-    },
-    {
-      "from": "language_relational_branch_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "language_relational_branch_check",
-      "to": "lexical_ucns_producer_is_exactly_verified"
-    },
-    {
-      "from": "oewn_builder_order_check",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "oewn_builder_order_check",
-      "to": "self::test_builder_contract_is_pinned_and_freeze_order_is_explicit"
-    },
-    {
-      "from": "oewn_builder_order_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "oewn_builder_order_check",
-      "to": "incomplete_or_altered_lexical_resume_fails_closed"
-    },
-    {
-      "from": "oewn_builder_order_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "oewn_builder_order_check",
-      "to": "lexical_comparison_occurs_after_freeze"
-    },
-    {
-      "from": "oewn_builder_order_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "oewn_builder_order_check",
-      "to": "oewn_source_is_exact_pinned_and_resumable"
-    },
-    {
       "from": "recovered_dissonance_controlled_gate",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
@@ -6404,48 +6446,6 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "recovered_dissonance_external_evaluator",
       "to": "recovered_dissonance_controlled_gate"
-    },
-    {
-      "from": "single_constructor_uses_scale_option_sets_check",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "single_constructor_uses_scale_option_sets_check",
-      "to": "self::test_constructor_uses_declared_scale_option_set"
-    },
-    {
-      "from": "single_constructor_uses_scale_option_sets_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "single_constructor_uses_scale_option_sets_check",
-      "to": "single_constructor_uses_scale_option_sets"
-    },
-    {
-      "from": "suffix_exception_carried_by_suffix_gonol_check",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "suffix_exception_carried_by_suffix_gonol_check",
-      "to": "self::test_suffix_coupling_exception_is_carried_by_closed_suffix"
-    },
-    {
-      "from": "suffix_exception_carried_by_suffix_gonol_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "suffix_exception_carried_by_suffix_gonol_check",
-      "to": "suffix_exception_carried_by_suffix_gonol"
-    },
-    {
-      "from": "unified_candidate_does_not_select_canon_check",
-      "kind": "calls",
-      "source_block": "CHECKS",
-      "source_id": "unified_candidate_does_not_select_canon_check",
-      "to": "self::test_receipt_remains_candidate"
-    },
-    {
-      "from": "unified_candidate_does_not_select_canon_check",
-      "kind": "claims_proves",
-      "source_block": "CHECKS",
-      "source_id": "unified_candidate_does_not_select_canon_check",
-      "to": "unified_candidate_does_not_select_canon"
     }
   ],
   "gaps": [],
