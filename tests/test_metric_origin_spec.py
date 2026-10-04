@@ -18,10 +18,10 @@ def test_words_define_instrument_not_observation():
 def test_legacy_o_l_carriers_have_explicit_canonical_targets():
     assert metric_origin_spec("O").standing == "resolved"
     assert metric_origin_spec("L").standing == "resolved"
-    assert metric_origin_spec("O").canonical_metric_id == "edcm.behavioral.O_confidence"
+    assert metric_origin_spec("O").canonical_metric_id == "edcm.behavioral.O_scope"
     assert metric_origin_spec("L").canonical_metric_id == "edcm.behavioral.L_loss"
     assert LEGACY_CARRIER_TARGETS == {
-        "O": "edcm.behavioral.O_confidence",
+        "O": "edcm.behavioral.O_scope",
         "L": "edcm.behavioral.L_loss",
     }
 
