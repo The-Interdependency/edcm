@@ -25,7 +25,7 @@ def test_space_preserves_vector_order_and_canonical_targets():
     assert tuple(x.metric_id for x in space.bindings)==VECTOR_ORDER
     assert space.complete is True
     assert space.unresolved_metrics==()
-    assert next(x for x in space.bindings if x.metric_id=="O").canonical_metric_id=="edcm.behavioral.O_confidence"
+    assert next(x for x in space.bindings if x.metric_id=="O").canonical_metric_id=="edcm.behavioral.O_scope"
     assert next(x for x in space.bindings if x.metric_id=="L").canonical_metric_id=="edcm.behavioral.L_loss"
 
 def test_scalar_readout_is_bound_but_semantic_projection_stays_hmmm():
@@ -124,11 +124,11 @@ def test_direct_space_cannot_bypass_vector_and_closure_rules(mutation):
     elif mutation == "reversed":
         space = replace(space, bindings=tuple(reversed(space.bindings)))
     elif mutation == "complete":
-        space = replace(space, complete=True)
+        space = replace(space, complete=False)
     elif mutation == "unresolved":
-        space = replace(space, unresolved_metrics=())
+        space = replace(space, unresolved_metrics=("O",))
     else:
-        space = replace(space, bindings=tuple(replace(b, canonical_metric_id="edcm.behavioral.O_scope") if b.metric_id == "O" else b for b in space.bindings))
+        space = replace(space, bindings=tuple(replace(b, canonical_metric_id="edcm.behavioral.O_confidence") if b.metric_id == "O" else b for b in space.bindings))
     with pytest.raises(ValueError):
         bind_round_metrics(SimpleNamespace(**{name: 0.1 for name in VECTOR_ORDER}), space, evidence_receipt="evidence:1")
 
