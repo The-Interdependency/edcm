@@ -9,7 +9,7 @@ def _origins():
         closed=metric not in {"O","L"}
         out[metric]={
             "schema":"english-gonol.edcm-metric-origin-set",
-            "version":"0.2.0","metric_id":metric,
+            "version":"0.2.0","metric_id":metric,"origin_id":f"O_M({metric})",
             "receipt_sha256":(metric[0].lower() if metric!="kappa" else "k")*64,
             "closed":closed,
             "unresolved":[] if closed else ["source semantic collision"],
@@ -30,7 +30,7 @@ def test_scalar_readout_is_bound_but_semantic_projection_stays_hmmm():
     assert len(rows)==11
     assert all(row.semantic_projection=="hmmm" for row in rows)
     assert all(row.evidence_receipt=="evidence:1" for row in rows)
-    assert rows[0].value==0.1
+    assert rows[0].value==0.1\n    assert rows[0].origin_id=="O_M(C)"
 
 def test_origin_identity_mismatch_fails_closed():
     origins=_origins()
