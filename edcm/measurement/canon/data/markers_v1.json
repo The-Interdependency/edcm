@@ -9,7 +9,8 @@
       "Some metrics are fully computable from markers + structure. Some require embeddings. This is stated explicitly per metric.",
       "Markers are case-insensitive. Multi-word markers use the same smash-join convention as bones_words_v1.",
       "Marker lists are v1 starting points. They will grow from transcript testing.",
-      "The behavioral layer is acknowledged to have semantic dependencies that the operator layer avoids. This is intentional tensioning, not a defect."
+      "The behavioral layer is acknowledged to have semantic dependencies that the operator layer avoids. This is intentional tensioning, not a defect.",
+      "Bare O and L are legacy storage keys, not canonical metric identities; each section declares its canonical_metric_id."
     ],
     "hmmm": [
       "F (Fixation) and I (Integration Failure) require embeddings — no marker-only path exists for v1",
@@ -18,7 +19,6 @@
       "actor attribution matters: 'I refuse' from speaker A vs speaker B has different diagnostic meaning. Markers fire per-turn; behavioral metrics aggregate per-round."
     ]
   },
-
   "C": {
     "metric": "Constraint Strain",
     "formula": "weighted contradiction density",
@@ -62,7 +62,6 @@
       ]
     }
   },
-
   "R": {
     "metric": "Refusal Density",
     "formula": "count(refusal markers) / constraint statements",
@@ -143,7 +142,6 @@
       ]
     }
   },
-
   "D": {
     "metric": "Deflection",
     "formula": "1 - (tokens_about_constraints / total_tokens)",
@@ -192,7 +190,6 @@
       ]
     }
   },
-
   "N": {
     "metric": "Noise",
     "formula": "1 - (resolution_tokens / constraint_tokens)",
@@ -231,7 +228,6 @@
       ]
     }
   },
-
   "L": {
     "metric": "Load",
     "formula": "total constraint tokens per window",
@@ -256,9 +252,9 @@
         "I also need"
       ],
       "notes": "L is primarily a volume metric. High L means many constraint tokens in the window, regardless of whether they're resolved. It interacts with N: high L + low N = system generating volume without resolution."
-    }
+    },
+    "canonical_metric_id": "edcm.behavioral.L_load"
   },
-
   "O": {
     "metric": "Overextension",
     "formula": "expansion beyond original scope per window",
@@ -293,9 +289,9 @@
         "we can't solve everything",
         "that's a different conversation"
       ]
-    }
+    },
+    "canonical_metric_id": "edcm.behavioral.O_scope"
   },
-
   "F": {
     "metric": "Fixation",
     "formula": "cosine_sim(embed(constraint_t), embed(constraint_{t-1}))",
@@ -323,7 +319,6 @@
       ]
     }
   },
-
   "E": {
     "metric": "Escalation",
     "formula": "max(0, d/dt(commitment_intensity))",
@@ -383,7 +378,6 @@
       ]
     }
   },
-
   "I": {
     "metric": "Integration Failure",
     "formula": "1 - sim(correction_response, expected_response)",
