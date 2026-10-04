@@ -1,7 +1,7 @@
 import operator
 import pytest
 
-from edcm.metric_origin_spec import METRIC_ORIGIN_SPECS, MetricOriginSpec, metric_origin_spec
+from edcm.metric_origin_spec import CANONICAL_SPLIT_IDS, LEGACY_CARRIER_TARGETS, METRIC_ORIGIN_SPECS, MetricOriginSpec, metric_origin_spec
 
 def test_complete_round_metric_origin_inventory():
     assert tuple(METRIC_ORIGIN_SPECS) == ("C","R","F","E","D","N","I","O","L","P","kappa")
@@ -15,11 +15,24 @@ def test_words_define_instrument_not_observation():
         assert spec.implemented_rule
         assert spec.measurement_alignment in {"aligned","proxy"}
 
-def test_existing_semantic_collisions_fail_closed():
-    assert metric_origin_spec("O").standing == "hmmm"
-    assert metric_origin_spec("L").standing == "hmmm"
-    assert metric_origin_spec("O").measurement_alignment == "conflict"
-    assert metric_origin_spec("L").measurement_alignment == "conflict"
+def test_legacy_o_l_carriers_have_explicit_canonical_targets():
+    assert metric_origin_spec("O").standing == "resolved"
+    assert metric_origin_spec("L").standing == "resolved"
+    assert metric_origin_spec("O").canonical_metric_id == "edcm.behavioral.O_scope"
+    assert metric_origin_spec("L").canonical_metric_id == "edcm.behavioral.L_loss"
+    assert LEGACY_CARRIER_TARGETS == {
+        "O": "edcm.behavioral.O_scope",
+        "L": "edcm.behavioral.L_loss",
+    }
+
+def test_o_l_split_identities_remain_distinct():
+    assert CANONICAL_SPLIT_IDS == (
+        "edcm.behavioral.O_scope",
+        "edcm.behavioral.O_confidence",
+        "edcm.behavioral.L_load",
+        "edcm.behavioral.L_loss",
+        "edcm.behavioral.L_resistance",
+    )
 
 def test_registry_is_read_only():
     with pytest.raises(TypeError):
@@ -29,7 +42,7 @@ def test_registry_is_read_only():
 def test_blank_hmmm_reason_is_rejected(reason):
     with pytest.raises(ValueError, match="non-empty"):
         MetricOriginSpec(
-            metric_id="X", surface_terms=("x",), construction_terms=(),
+            metric_id="X", canonical_metric_id="edcm.behavioral.X", surface_terms=("x",), construction_terms=(),
             semantic_definition="definition", declared_rule="declared",
             implemented_rule="implemented", source_refs=("source",),
             standing="hmmm", measurement_alignment="hmmm", unresolved=(reason,),
