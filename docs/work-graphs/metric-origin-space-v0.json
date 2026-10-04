@@ -1,20 +1,40 @@
 {
-  "schema":"the-interdependency.stack-manifest",
-  "version":"1.0.0",
-  "work_graph_sha256":"32b3736512da9fe023f0ee42b75d34d12a18f182bb16785598116adb76ee1242",
-  "repositories":[
-    {"repository":"The-Interdependency/edcm","commit":"0d6ea9ad1531b607d6df35175ed86686dcbdb58f","authority":"metric definitions, scalar measurement, and evidence/readout contracts","relation":"defines metric-origin source words and binds scalar readouts to Stack origin receipts"},
-    {"repository":"The-Interdependency/stack","commit":"e653d7f02f8b52eae96bf290e57d615f322ff069","authority":"current English Gonol semantic construction","relation":"constructs EDCM semantic-definition words as ordered O_W/O_G metric origin sets"},
-    {"repository":"The-Interdependency/metapat","commit":"1cdfb09dd00a451cee30eec2e78624df8c682662","authority":"cross-domain semantic constraints","relation":"constrains semantic transfer; no metric validity transfer"},
-    {"repository":"The-Interdependency/ucns","commit":"1975fe70cf4e0826a8020c2da3047569e277af64","authority":"gonol geometry consumed by Stack English construction","relation":"underlying geometry only; no metric semantics or measurement validity"}
+  "schema": "the-interdependency.stack-manifest",
+  "version": "1.0.0",
+  "work_graph_sha256": "c0397219cf465ff2a9fb29e667d2c80ce0e259d9fcd0eda731693ad390871b1d",
+  "repositories": [
+    {
+      "repository": "The-Interdependency/edcm",
+      "commit": "8f40ad6cd7a436d6223a623544285aff1b73eccb",
+      "authority": "metric definitions, scalar measurement, and evidence/readout contracts",
+      "relation": "defines source-owned construction terms and binds scalar readouts to Stack origin receipts"
+    },
+    {
+      "repository": "The-Interdependency/stack",
+      "commit": "20daed7f29d90fa14a01a8f4ba7bc32a78895152",
+      "authority": "current English Gonol semantic construction",
+      "relation": "constructs exact EDCM construction terms as verified O_W/O_G metric origin sets"
+    },
+    {
+      "repository": "The-Interdependency/metapat",
+      "commit": "1cdfb09dd00a451cee30eec2e78624df8c682662",
+      "authority": "cross-domain semantic constraints",
+      "relation": "constrains semantic transfer; no metric validity transfer"
+    },
+    {
+      "repository": "The-Interdependency/ucns",
+      "commit": "1975fe70cf4e0826a8020c2da3047569e277af64",
+      "authority": "gonol geometry consumed by Stack English construction",
+      "relation": "underlying geometry only; no metric semantics or measurement validity"
+    }
   ],
-  "boundaries":{
-    "authority_transfer":false,
-    "proof_status_transfer":false,
-    "measurement_status_transfer":false,
-    "semantic_mapping":"declared mapping",
-    "agent_scope":"cross-repository-work-graph",
-    "hmmm":[
+  "boundaries": {
+    "authority_transfer": false,
+    "proof_status_transfer": false,
+    "measurement_status_transfer": false,
+    "semantic_mapping": "declared mapping",
+    "agent_scope": "cross-repository-work-graph",
+    "hmmm": [
       "O semantic origin conflicts: Overextension versus Overconfidence",
       "L semantic origin conflicts: Load versus Coherence Loss",
       "lawful observed-construct to metric-origin projection/distance is unresolved",
