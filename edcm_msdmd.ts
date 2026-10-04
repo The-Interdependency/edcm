@@ -1386,6 +1386,30 @@ export default defineMsdmdCollection({
       "id": "edcm_metapat_adapter"
     },
     {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "immutable source registry",
+        "module_kind": "schema",
+        "module_name": "metric_origin_spec",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "MetricOriginSpec, METRIC_ORIGIN_SPECS, metric_origin_spec",
+        "requires": "edcmbone_metrics_compute, edcmbone_canon_loader",
+        "rollback": "remove module and dependent Stack origin constructions",
+        "rollout": "candidate semantic instrument specification",
+        "since": "2026-10-03",
+        "storage_boundary": "none",
+        "summary": "exposes provenance-bearing semantic source text and rule-alignment state for EDCM metric-origin construction",
+        "tests": "tests/test_metric_origin_spec.py",
+        "unresolved": "O and L semantic labels conflict between maintained compute code and marker canon",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/metric_origin_spec.py",
+      "id": "edcm_metric_origin_specs_v0"
+    },
+    {
       "block": "CONTRACTS",
       "fields": {
         "class": "evidence",
@@ -1498,6 +1522,30 @@ export default defineMsdmdCollection({
       },
       "file": "edcm/recovered_dissonance_external_evaluator.py",
       "id": "recovered_dissonance_external_evaluator"
+    },
+    {
+      "block": "MODULE_BUILD",
+      "fields": {
+        "admin_only": "false",
+        "auth_boundary": "none",
+        "internal_surface": "strict Stack-origin receipt validation",
+        "module_kind": "adapter",
+        "module_name": "semantic_metric_space",
+        "network_boundary": "none",
+        "owner": "Erin Spencer",
+        "public_surface": "MetricOriginBinding, SemanticMetricReadout, SemanticMetricSpace, build_semantic_metric_space, bind_round_metrics",
+        "requires": "edcm_metric_origin_specs_v0, external Stack metric-origin-set receipts",
+        "rollback": "remove adapter; existing RoundMetrics remain authoritative measurement output",
+        "rollout": "candidate adapter; existing scalar computation unchanged",
+        "since": "2026-10-03",
+        "storage_boundary": "none",
+        "summary": "binds the 11-component EDCM vector to provenance-bearing Stack semantic metric origins without inventing a semantic distance law",
+        "tests": "tests/test_semantic_metric_space.py",
+        "unresolved": "lawful semantic projection/distance from observed construct to origin set",
+        "user_data_boundary": "none"
+      },
+      "file": "edcm/semantic_metric_space.py",
+      "id": "edcm_semantic_metric_space_v0"
     },
     {
       "block": "MODULE_BUILD",
@@ -5385,6 +5433,27 @@ export default defineMsdmdCollection({
       "to": "optional metapat package"
     },
     {
+      "from": "edcm_metric_origin_specs_v0",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_metric_origin_specs_v0",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_metric_origin_specs_v0",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_metric_origin_specs_v0",
+      "to": "edcmbone_canon_loader"
+    },
+    {
+      "from": "edcm_metric_origin_specs_v0",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_metric_origin_specs_v0",
+      "to": "edcmbone_metrics_compute"
+    },
+    {
       "from": "edcm_multiwoz21_booking_outcome_holdout",
       "kind": "owns",
       "source_block": "MODULE_BUILD",
@@ -5565,6 +5634,27 @@ export default defineMsdmdCollection({
       "source_block": "MODULE_BUILD",
       "source_id": "edcm_package",
       "to": "edcmucns_package"
+    },
+    {
+      "from": "edcm_semantic_metric_space_v0",
+      "kind": "owns",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_semantic_metric_space_v0",
+      "to": "Erin Spencer"
+    },
+    {
+      "from": "edcm_semantic_metric_space_v0",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_semantic_metric_space_v0",
+      "to": "edcm_metric_origin_specs_v0"
+    },
+    {
+      "from": "edcm_semantic_metric_space_v0",
+      "kind": "requires",
+      "source_block": "MODULE_BUILD",
+      "source_id": "edcm_semantic_metric_space_v0",
+      "to": "external Stack metric-origin-set receipts"
     },
     {
       "from": "edcm_shared_stack",
