@@ -9,21 +9,24 @@ from edcm.semantic_metric_space import VECTOR_ORDER, build_semantic_metric_space
 def _origins():
     out={}
     for metric in VECTOR_ORDER:
-        closed=metric not in {"O","L"}
+        spec=metric_origin_spec(metric)
         out[metric]={
             "schema":"english-gonol.edcm-metric-origin-set",
-            "version":"0.2.0","metric_id":metric,"origin_id":f"O_M({metric})",
-            "receipt_sha256":sha256(metric.encode()).hexdigest(),
-            "closed":closed,
-            "unresolved":[] if closed else ["source semantic collision"],
+            "version":"0.2.0","metric_id":spec.canonical_metric_id,
+            "origin_id":f"O_M({spec.canonical_metric_id})",
+            "receipt_sha256":sha256(spec.canonical_metric_id.encode()).hexdigest(),
+            "closed":True,
+            "unresolved":list(spec.unresolved),
         }
     return out
 
-def test_space_preserves_vector_order_and_hmmm():
+def test_space_preserves_vector_order_and_canonical_targets():
     space=build_semantic_metric_space(_origins())
     assert tuple(x.metric_id for x in space.bindings)==VECTOR_ORDER
-    assert space.complete is False
-    assert space.unresolved_metrics==("O","L")
+    assert space.complete is True
+    assert space.unresolved_metrics==()
+    assert next(x for x in space.bindings if x.metric_id=="O").canonical_metric_id=="edcm.behavioral.O_confidence"
+    assert next(x for x in space.bindings if x.metric_id=="L").canonical_metric_id=="edcm.behavioral.L_loss"
 
 def test_scalar_readout_is_bound_but_semantic_projection_stays_hmmm():
     values={name:0.1 for name in VECTOR_ORDER}
@@ -34,11 +37,11 @@ def test_scalar_readout_is_bound_but_semantic_projection_stays_hmmm():
     assert all(row.semantic_projection=="hmmm" for row in rows)
     assert all(row.evidence_receipt=="evidence:1" for row in rows)
     assert rows[0].value==0.1
-    assert rows[0].origin_id=="O_M(C)"
+    assert rows[0].origin_id=="O_M(edcm.behavioral.C.constraint_strain)"
 
 def test_origin_identity_mismatch_fails_closed():
     origins=_origins()
-    origins["C"]["metric_id"]="R"
+    origins["C"]["metric_id"]="edcm.behavioral.R.refusal_density"
     with pytest.raises(ValueError,match="identity mismatch"):
         build_semantic_metric_space(origins)
 
@@ -47,14 +50,6 @@ def test_vector_order_is_not_silently_reordered():
     reversed_origins=dict(reversed(list(origins.items())))
     with pytest.raises(ValueError,match="exact EDCM vector order"):
         build_semantic_metric_space(reversed_origins)
-
-
-@pytest.mark.parametrize("metric", ["O", "L"])
-def test_stack_closure_cannot_resolve_edcm_semantics(metric):
-    origins = _origins()
-    origins[metric].update(closed=True, unresolved=[])
-    with pytest.raises(ValueError, match="EDCM semantic origin remains hmmm"):
-        build_semantic_metric_space(origins)
 
 
 def test_edcm_conflicts_and_proxy_limits_survive_stack_omission():
@@ -116,7 +111,7 @@ def test_direct_bindings_cannot_bypass_admission(field, value):
         bind_round_metrics(metrics, space, evidence_receipt="evidence:1")
 
 
-@pytest.mark.parametrize("mutation", ["empty", "partial", "duplicate", "reversed", "complete", "unresolved", "closed_O"])
+@pytest.mark.parametrize("mutation", ["empty", "partial", "duplicate", "reversed", "complete", "unresolved", "canonical_O"])
 def test_direct_space_cannot_bypass_vector_and_closure_rules(mutation):
     from dataclasses import replace
     space = build_semantic_metric_space(_origins())
@@ -133,7 +128,7 @@ def test_direct_space_cannot_bypass_vector_and_closure_rules(mutation):
     elif mutation == "unresolved":
         space = replace(space, unresolved_metrics=())
     else:
-        space = replace(space, bindings=tuple(replace(b, closed=True) if b.metric_id == "O" else b for b in space.bindings))
+        space = replace(space, bindings=tuple(replace(b, canonical_metric_id="edcm.behavioral.O_scope") if b.metric_id == "O" else b for b in space.bindings))
     with pytest.raises(ValueError):
         bind_round_metrics(SimpleNamespace(**{name: 0.1 for name in VECTOR_ORDER}), space, evidence_receipt="evidence:1")
 
