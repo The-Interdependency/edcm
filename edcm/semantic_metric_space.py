@@ -3,6 +3,10 @@
 This adapter does not compute semantic distance. It preserves the measurement
 value, evidence identity, and Stack origin-set receipt together so a later
 lawful projection can compare observed structure to the metric origin.
+
+Usage guidance: see ``docs/semantic-metric-space.md`` for a runnable maintained
+RoundMetrics example and the Stack JSON integration path. Input receipts are
+externally verified construction records, not authentication or observations.
 """
 
 # === MODULE_BUILD ===
@@ -28,7 +32,11 @@ lawful projection can compare observed structure to the metric origin.
 
 from __future__ import annotations
 from dataclasses import dataclass
+import math
+import re
 from typing import Mapping
+
+from .metric_origin_spec import metric_origin_spec
 
 VECTOR_ORDER = ("C","R","F","E","D","N","I","O","L","P","kappa")
 STACK_ORIGIN_SCHEMA = "english-gonol.edcm-metric-origin-set"
@@ -37,6 +45,7 @@ STACK_ORIGIN_VERSION = "0.2.0"
 @dataclass(frozen=True, slots=True)
 class MetricOriginBinding:
     metric_id: str
+    origin_id: str
     origin_receipt_sha256: str
     closed: bool
     unresolved: tuple[str, ...]
@@ -50,6 +59,7 @@ class SemanticMetricSpace:
 @dataclass(frozen=True, slots=True)
 class SemanticMetricReadout:
     metric_id: str
+    origin_id: str
     value: float
     origin_receipt_sha256: str
     evidence_receipt: str
@@ -62,16 +72,27 @@ def _origin_binding(metric_id: str, record: Mapping[str, object]) -> MetricOrigi
         raise ValueError(f"{metric_id}: unsupported Stack metric-origin schema")
     if record.get("metric_id") != metric_id:
         raise ValueError(f"{metric_id}: origin metric identity mismatch")
+    origin_id = record.get("origin_id")
+    if origin_id != f"O_M({metric_id})":
+        raise ValueError(f"{metric_id}: origin identity mismatch")
     receipt = record.get("receipt_sha256")
-    if not isinstance(receipt, str) or len(receipt) != 64:
+    if not isinstance(receipt, str) or re.fullmatch(r"[0-9a-fA-F]{64}", receipt) is None:
         raise ValueError(f"{metric_id}: invalid origin receipt")
     closed = record.get("closed")
     if type(closed) is not bool:
         raise ValueError(f"{metric_id}: closed must be bool")
     unresolved_raw = record.get("unresolved", [])
-    if not isinstance(unresolved_raw, list) or any(not isinstance(x,str) or not x for x in unresolved_raw):
+    if not isinstance(unresolved_raw, list) or any(not isinstance(x,str) or not x.strip() for x in unresolved_raw):
         raise ValueError(f"{metric_id}: unresolved must be a string list")
-    return MetricOriginBinding(metric_id, origin_id, receipt, closed, tuple(unresolved_raw))
+    if not closed and not unresolved_raw:
+        raise ValueError(f"{metric_id}: unclosed origin requires an unresolved reason")
+    spec = metric_origin_spec(metric_id)
+    if closed and spec.standing != "resolved":
+        raise ValueError(f"{metric_id}: EDCM semantic origin remains hmmm")
+    # Preserve producer-owned conflicts and proxy limitations even if Stack
+    # omits them. Construction closure cannot confer measurement validity.
+    unresolved = tuple(dict.fromkeys((*unresolved_raw, *spec.unresolved)))
+    return MetricOriginBinding(metric_id, origin_id, receipt, closed, unresolved)
 
 def build_semantic_metric_space(
     origins: Mapping[str, Mapping[str, object]],
@@ -83,16 +104,23 @@ def build_semantic_metric_space(
     return SemanticMetricSpace(bindings, not unresolved, unresolved)
 
 def bind_round_metrics(metrics: object, space: SemanticMetricSpace, *, evidence_receipt: str) -> tuple[SemanticMetricReadout, ...]:
-    if not isinstance(evidence_receipt, str) or not evidence_receipt:
+    if not isinstance(evidence_receipt, str) or not evidence_receipt.strip():
         raise ValueError("evidence_receipt must be non-empty")
     out = []
     for binding in space.bindings:
         raw = getattr(metrics, binding.metric_id)
         if isinstance(raw, bool) or not isinstance(raw, (int, float)):
             raise ValueError(f"{binding.metric_id}: scalar metric value required")
+        try:
+            value = float(raw)
+        except OverflowError as exc:
+            raise ValueError(f"{binding.metric_id}: finite scalar metric value required") from exc
+        if not math.isfinite(value):
+            raise ValueError(f"{binding.metric_id}: finite scalar metric value required")
         out.append(SemanticMetricReadout(
             metric_id=binding.metric_id,
-            value=float(raw),
+            origin_id=binding.origin_id,
+            value=value,
             origin_receipt_sha256=binding.origin_receipt_sha256,
             evidence_receipt=evidence_receipt,
             semantic_projection="hmmm",
