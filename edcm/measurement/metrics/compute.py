@@ -24,7 +24,7 @@ The metric vector M_t ∈ ℝ^11 covers:
   D  Deflection            [0,1]
   N  Noise                 [0,1]
   I  Integration failure   [0,1]
-  O  Overconfidence        [-1,1]
+  O  Scope motion (legacy carrier for O_scope) [-1,1]
   L  Coherence loss        [0,1]
   P  Progress              [0,1]
   k  Stored tension        κ ∈ [0, 1]
@@ -113,7 +113,7 @@ class RoundMetrics:
     D : Deflection              — partial (requires embeddings for full)
     N : Noise                   — yes (stats)
     I : Integration failure     — partial (markers)
-    O : Overconfidence          — partial (markers)
+    O : Scope motion / overextension — partial (legacy carrier for O_scope)
     L : Coherence loss          — yes (stats)
     P : Progress                — proxy (novelty + entropy gain)
     kappa : Stored tension      — circuit state (from energy_step)
@@ -266,9 +266,12 @@ def _compute_P(tokens_b, tokens_a, h_prev):
 
 
 def _compute_O(round_text, canon):
-    """Overconfidence — marker-based, range [-1, 1].
+    """Scope motion / overextension — marker-based, range [-1, 1].
 
-    Positive = overconfident; negative = under-confident.
+    Compatibility carrier O explicitly targets edcm.behavioral.O_scope.
+    Positive = scope expansion/overextension; negative = scope contraction/
+    containment. O_confidence is a distinct canonical axis and is not
+    computed by this function.
     """
     info = canon.metric_info("O")
     cats = list(info["markers"].keys())
