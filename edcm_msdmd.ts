@@ -1403,7 +1403,7 @@ export default defineMsdmdCollection({
         "storage_boundary": "none",
         "summary": "exposes provenance-bearing semantic source text and rule-alignment state for EDCM metric-origin construction",
         "tests": "tests/test_metric_origin_spec.py",
-        "unresolved": "O and L semantic labels conflict between maintained compute code and marker canon",
+        "unresolved": "lawful semantic projection/distance from observed construct to canonical metric origin",
         "user_data_boundary": "none"
       },
       "file": "edcm/metric_origin_spec.py",
