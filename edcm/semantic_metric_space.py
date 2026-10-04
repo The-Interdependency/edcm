@@ -71,7 +71,7 @@ def _origin_binding(metric_id: str, record: Mapping[str, object]) -> MetricOrigi
     unresolved_raw = record.get("unresolved", [])
     if not isinstance(unresolved_raw, list) or any(not isinstance(x,str) or not x for x in unresolved_raw):
         raise ValueError(f"{metric_id}: unresolved must be a string list")
-    return MetricOriginBinding(metric_id, receipt, closed, tuple(unresolved_raw))
+    return MetricOriginBinding(metric_id, origin_id, receipt, closed, tuple(unresolved_raw))
 
 def build_semantic_metric_space(
     origins: Mapping[str, Mapping[str, object]],
