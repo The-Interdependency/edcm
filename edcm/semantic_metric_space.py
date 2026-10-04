@@ -104,11 +104,31 @@ def build_semantic_metric_space(
     return SemanticMetricSpace(bindings, not unresolved, unresolved)
 
 def bind_round_metrics(metrics: object, space: SemanticMetricSpace, *, evidence_receipt: str) -> tuple[SemanticMetricReadout, ...]:
+    # These public dataclasses can be constructed without the builder. Rebuild
+    # their input contract at the readout boundary before attaching provenance.
+    if not isinstance(space, SemanticMetricSpace) or not isinstance(space.bindings, tuple):
+        raise ValueError("validated SemanticMetricSpace required")
+    if any(not isinstance(binding, MetricOriginBinding) or not isinstance(binding.unresolved, tuple)
+           for binding in space.bindings):
+        raise ValueError("immutable MetricOriginBinding records required")
+    if tuple(binding.metric_id for binding in space.bindings) != VECTOR_ORDER:
+        raise ValueError("semantic space must follow the exact EDCM vector order")
+    validated = build_semantic_metric_space({
+        binding.metric_id: {
+            "schema": STACK_ORIGIN_SCHEMA, "version": STACK_ORIGIN_VERSION,
+            "metric_id": binding.metric_id, "origin_id": binding.origin_id,
+            "receipt_sha256": binding.origin_receipt_sha256,
+            "closed": binding.closed, "unresolved": list(binding.unresolved),
+        }
+        for binding in space.bindings
+    })
+    if type(space.complete) is not bool or validated != space:
+        raise ValueError("semantic space disagrees with validated bindings or completion state")
     if not isinstance(evidence_receipt, str) or not evidence_receipt.strip():
         raise ValueError("evidence_receipt must be non-empty")
     out = []
     for binding in space.bindings:
-        raw = getattr(metrics, binding.metric_id)
+        raw = getattr(metrics, binding.metric_id, None)
         if isinstance(raw, bool) or not isinstance(raw, (int, float)):
             raise ValueError(f"{binding.metric_id}: scalar metric value required")
         try:
@@ -117,6 +137,9 @@ def bind_round_metrics(metrics: object, space: SemanticMetricSpace, *, evidence_
             raise ValueError(f"{binding.metric_id}: finite scalar metric value required") from exc
         if not math.isfinite(value):
             raise ValueError(f"{binding.metric_id}: finite scalar metric value required")
+        lower = -1.0 if binding.metric_id == "O" else 0.0
+        if not lower <= value <= 1.0:
+            raise ValueError(f"{binding.metric_id}: scalar metric value outside [{lower}, 1.0]")
         out.append(SemanticMetricReadout(
             metric_id=binding.metric_id,
             origin_id=binding.origin_id,

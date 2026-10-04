@@ -100,3 +100,55 @@ def test_documented_example_executes_with_maintained_metrics():
     document = (Path(__file__).parents[1] / "docs/semantic-metric-space.md").read_text()
     code = document.split("```python\n", 1)[1].split("```", 1)[0]
     exec(compile(code, "docs/semantic-metric-space.md", "exec"), {})
+
+
+@pytest.mark.parametrize("field,value", [
+    ("origin_id", "evil"), ("origin_receipt_sha256", "z"),
+    ("closed", "yes"), ("unresolved", ()), ("unresolved", []),
+])
+def test_direct_bindings_cannot_bypass_admission(field, value):
+    from dataclasses import replace
+    space = build_semantic_metric_space(_origins())
+    malformed = replace(space.bindings[0], **{field: value})
+    space = replace(space, bindings=(malformed, *space.bindings[1:]))
+    metrics = SimpleNamespace(**{name: 0.1 for name in VECTOR_ORDER})
+    with pytest.raises(ValueError):
+        bind_round_metrics(metrics, space, evidence_receipt="evidence:1")
+
+
+@pytest.mark.parametrize("mutation", ["empty", "partial", "duplicate", "reversed", "complete", "unresolved", "closed_O"])
+def test_direct_space_cannot_bypass_vector_and_closure_rules(mutation):
+    from dataclasses import replace
+    space = build_semantic_metric_space(_origins())
+    if mutation == "empty":
+        space = replace(space, bindings=())
+    elif mutation == "partial":
+        space = replace(space, bindings=space.bindings[:1])
+    elif mutation == "duplicate":
+        space = replace(space, bindings=(space.bindings[1], *space.bindings[1:]))
+    elif mutation == "reversed":
+        space = replace(space, bindings=tuple(reversed(space.bindings)))
+    elif mutation == "complete":
+        space = replace(space, complete=True)
+    elif mutation == "unresolved":
+        space = replace(space, unresolved_metrics=())
+    else:
+        space = replace(space, bindings=tuple(replace(b, closed=True) if b.metric_id == "O" else b for b in space.bindings))
+    with pytest.raises(ValueError):
+        bind_round_metrics(SimpleNamespace(**{name: 0.1 for name in VECTOR_ORDER}), space, evidence_receipt="evidence:1")
+
+
+@pytest.mark.parametrize("metric", VECTOR_ORDER)
+@pytest.mark.parametrize("side", ["below", "above"])
+def test_metric_domains_are_enforced(metric, side):
+    metrics = SimpleNamespace(**{name: 0.1 for name in VECTOR_ORDER})
+    setattr(metrics, metric, (-1.01 if metric == "O" else -0.01) if side == "below" else 1.01)
+    with pytest.raises(ValueError, match="outside"):
+        bind_round_metrics(metrics, build_semantic_metric_space(_origins()), evidence_receipt="evidence:1")
+
+
+@pytest.mark.parametrize("edge", ["lower", "upper"])
+def test_metric_domain_endpoints_are_preserved(edge):
+    values = {name: (1.0 if edge == "upper" else (-1.0 if name == "O" else 0.0)) for name in VECTOR_ORDER}
+    rows = bind_round_metrics(SimpleNamespace(**values), build_semantic_metric_space(_origins()), evidence_receipt="evidence:1")
+    assert [row.value for row in rows] == list(values.values())
