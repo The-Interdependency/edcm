@@ -132,7 +132,7 @@ _SPECS = {
         "zero point six token novelty plus zero point four positive entropy-gain proxy",
         ("edcm/measurement/metrics/compute.py#_compute_P",),
         "resolved","proxy",("progress is explicitly implemented as a proxy",)),
-    "kappa": MetricOriginSpec("kappa", ("Stored Tension",), ("stored","tension","unresolved","dissonance"),
+    "kappa": MetricOriginSpec("kappa", ("Stored Tension",), ("stored","tension","unresolved","conflict"),
         "stored tension is unresolved dissonance carried forward as circuit state",
         "persistent circuit state",
         "clamped alpha times prior kappa plus dissonance minus bounded resolution",
