@@ -17,7 +17,7 @@ so they can be frozen, diff-ed, and stamped into encoded artefacts.
 Notes on invariants
 -------------------
 - All Layer 1 metrics except O are [0, 1].
-- O is [-1, 1]: positive = overconfident, negative = under-confident.
+- O is [-1, 1]: positive = scope expansion/overextension, negative = scope contraction/containment.
   It is the only signed metric.  Callers that need [0, 1] should use
   abs(O) or (O + 1) / 2 as appropriate; the signed range is preserved
   here for full fidelity.
@@ -94,8 +94,8 @@ MATRIX_VERSION = "1.0"
 #   marker_C      MarkerHits(C, contradiction)       (÷token_count before use)
 #   marker_R      MarkerHits(R, refusal)             (÷token_count before use)
 #   marker_I      MarkerHits(I, integration-fail)    (÷token_count before use)
-#   marker_O_over MarkerHits(O, overconfidence)      (signed, see O row)
-#   marker_O_under MarkerHits(O, under-confidence)   (signed, see O row)
+#   marker_O_expand MarkerHits(O, scope_expansion)  (signed, see O row)
+#   marker_O_contain MarkerHits(O, scope_containment) (signed, see O row)
 #   loop_risk     composite (rep_b, rep_ngram, cosine_ab) — see risk.py
 #   entropy_gain  ΔH between rounds                  (for P)
 # ---------------------------------------------------------------------------
@@ -136,11 +136,11 @@ A_MATRIX: dict = {
         "I": {
             "marker_I": 1.0,
         },
-        # O: overconfidence — signed [-1, 1]
-        #    O = (over - under) / (over + under); weights are directional
+        # O: legacy carrier for canonical O_scope — signed [-1, 1]
+        #    O = (expansion - containment) / (expansion + containment)
         "O": {
-            "marker_O_over":  +1.0,
-            "marker_O_under": -1.0,
+            "marker_O_expand":  +1.0,
+            "marker_O_contain": -1.0,
         },
         # L: coherence loss — repetition + low novelty
         "L": {
