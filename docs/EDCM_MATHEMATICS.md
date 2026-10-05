@@ -294,20 +294,27 @@ N_t=\operatorname{clamp}\left(
 \right).
 $$
 
-### Confidence polarity
+### Scope motion compatibility carrier
 
-Let $o_t$ and $u_t$ be overconfidence and under-confidence marker hits:
+Bare $O$ is a legacy scalar carrier, not a canonical metric identity. The
+maintained baseline binds it explicitly to
+`edcm.behavioral.O_scope`; `edcm.behavioral.O_confidence` remains a distinct
+canonical axis and is not produced by `RoundMetrics`.
 
-$$
+Let $e_t$ and $c_t$ be hits from the frozen `scope_expansion` and
+`scope_containment` marker categories:
+
+$
 O_t=
 \begin{cases}
-0,&o_t+u_t=0,\\
-2\dfrac{o_t}{o_t+u_t}-1,&o_t+u_t>0.
+0,&e_t+c_t=0,\\
+2\dfrac{e_t}{e_t+c_t}-1,&e_t+c_t>0.
 \end{cases}
-$$
+$
 
-Positive is overconfident, negative is under-confident. This baseline zero is
-a within-domain no-hit value; it must not be reused as typed absence.
+Positive is scope expansion/overextension and negative is scope
+contraction/containment. This baseline zero is a within-domain no-hit value; it
+must not be reused as typed absence.
 
 ### Coherence loss
 
@@ -628,9 +635,13 @@ The field reader retains `previous_field_hash->current_field_hash` and appends
 the motion-presence flag and the three exact read tuples. This is a
 runtime-language identity contract, not a portable canonical-JSON signature.
 
-The axis registry also names $C,R,D,I,F,E,O_{scope},O_{confidence},L_{load},
-L_{loss},L_{resistance},N,P,\kappa$ and the six projections. Registration does
-not make an axis canonical.
+The axis registry names distinct canonical identities
+$O_{scope}\ne O_{confidence}$ and
+$L_{load}\ne L_{loss}\ne L_{resistance}$ alongside the remaining axes and
+projections. A bare symbol is not canonical identity. The maintained legacy
+round-vector carriers bind $O\rightarrow O_{scope}$ and
+$L\rightarrow L_{loss}$; those compatibility bindings do not alias the sibling
+axes.
 
 ## 10. Implemented v0.3.1 architecture layer
 
