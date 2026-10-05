@@ -25,12 +25,18 @@ neighboring_terms:
   - semantic trajectory
 known_collisions:
   - UCNS geometric origin remains separate
-effective_version: metric-origin-v0
-supersedes: none
+  - legacy single-letter O and L carriers are noncanonical identities
+effective_version: metric-origin-v0.1
+supersedes: metric-origin-v0
+resolved_identity_split:
+  - O_scope != O_confidence
+  - L_load != L_loss != L_resistance
+legacy_carrier_targets:
+  O: edcm.behavioral.O_scope
+  L: edcm.behavioral.L_loss
 unresolved:
   - authority provenance for the originating operator declaration
-  - O naming conflict: Overextension versus Overconfidence
-  - L naming conflict: Load versus Coherence Loss
+  - lawful observed-construct to semantic-origin projection/distance
 ```
 
 The circularity firewall is binding:
