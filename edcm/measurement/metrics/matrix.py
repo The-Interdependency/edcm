@@ -55,13 +55,20 @@ that refactor is complete, keep both in sync manually.
 #   network_boundary: none
 #   user_data_boundary: none
 #   admin_only: false
-#   tests: hmmm
+#   tests: tests.test_measurement.test_scope_matrix_matches_canon_and_compute
 #   rollout: default_enabled
 #   rollback: remove module; metric projection loses its frozen coefficient source
 #   requires: none
 #   since: 2026-06-02
 #   unresolved: none
 # === END MODULE_BUILD ===
+
+# === CONTRACTS ===
+# id: scope_matrix_matches_frozen_canon_and_compute
+#   given: the public A_MATRIX O row represents the legacy carrier for canonical O_scope
+#   then: its primitive names and signs match the frozen scope marker categories and the maintained _compute_O polarity
+#   class: schema_alignment
+# === END CONTRACTS ===
 
 
 from __future__ import annotations
@@ -74,7 +81,7 @@ import json
 # Version
 # ---------------------------------------------------------------------------
 
-MATRIX_VERSION = "1.0"
+MATRIX_VERSION = "1.1"
 
 # ---------------------------------------------------------------------------
 # A matrix — Layer 0 → Layer 1 weights
