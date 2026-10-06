@@ -76,21 +76,26 @@ This prevents a false green where source tests pass while packaged resources or 
 ## Skill-lib and msdmd
 
 EDCM vendors a bounded build/evidence subset from
-`The-Interdependency/skill-lib@dd5027d99516831c0dcb83a176a67140d3819b66`.
+`The-Interdependency/skill-lib@38c64332b840b2bbe1c07e53aeee8996644548e9`.
 The skill-compliance workflow checks those files byte-for-byte, generates the
 canonical `edcm_msdmd.ts` collection, compares it with the tracked collection,
-and runs the EDCM-native metadata validator.
+and runs the EDCM-native metadata validator. The schema-2 collector needs its
+native reader runtimes installed (it exits 3 without them, 4 when the vendored
+helper is stale and 5 when git cannot list the tree), and the collection records
+the Python minor version, so regenerate it with Python 3.12 as CI does.
 
 Local validation:
 
 ```bash
 python /path/to/skill-lib/tools/check_consumer_drift.py . \
   --canon-root /path/to/skill-lib \
-  --sha dd5027d99516831c0dcb83a176a67140d3819b66 \
+  --sha 38c64332b840b2bbe1c07e53aeee8996644548e9 \
   --strict-sha --require-vendored
 
-PYTHONPATH=/path/to/skill-lib python /path/to/skill-lib/msdmd/collect.py \
-  --root . --repo The-Interdependency/edcm --out /tmp/edcm_msdmd.ts
+python -m pip install -r /path/to/skill-lib/msdmd/requirements.txt
+npm ci --ignore-scripts --prefix /path/to/skill-lib/msdmd
+PYTHONPATH=/path/to/skill-lib python3.12 /path/to/skill-lib/msdmd/collect.py \
+  --root . --repo The-Interdependency/edcm --snapshot-identity --out /tmp/edcm_msdmd.ts
 diff -u edcm_msdmd.ts /tmp/edcm_msdmd.ts
 python tools/check_metadata_contracts.py
 ```
