@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v7.0.1
         with:
           repository: The-Interdependency/skill-lib
-          ref: dd5027d99516831c0dcb83a176a67140d3819b66
+          ref: 38c64332b840b2bbe1c07e53aeee8996644548e9
           path: skill-lib
 
       - name: Check vendored subset byte-for-byte
@@ -31,7 +31,7 @@ jobs:
         run: |
           python tools/check_consumer_drift.py ../edcm \
             --canon-root . \
-            --sha dd5027d99516831c0dcb83a176a67140d3819b66 \
+            --sha 38c64332b840b2bbe1c07e53aeee8996644548e9 \
             --strict-sha \
             --require-vendored
 
@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@v7.0.1
         with:
           repository: The-Interdependency/skill-lib
-          ref: dd5027d99516831c0dcb83a176a67140d3819b66
+          ref: 38c64332b840b2bbe1c07e53aeee8996644548e9
           path: skill-lib
 
       - name: Set up Python
@@ -56,11 +56,25 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24.15.0"
+
+      - name: Install msdmd native reader runtimes
+        run: |
+          python -m pip install -r skill-lib/msdmd/requirements.txt
+          npm ci --ignore-scripts --prefix skill-lib/msdmd
+
       - name: Generate canonical msdmd collection
+        # Exit 3 (missing runtime), 4 (stale helper) and 5 (git visibility) fail
+        # this step; --snapshot-identity binds the output to source bytes rather
+        # than the CI merge commit.
         run: |
           PYTHONPATH=skill-lib python skill-lib/msdmd/collect.py \
             --root edcm \
             --repo The-Interdependency/edcm \
+            --snapshot-identity \
             --out /tmp/edcm_msdmd.ts
 
       - name: Validate EDCM-native metadata contracts
