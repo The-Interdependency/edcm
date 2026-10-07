@@ -514,7 +514,7 @@ selected universal constants.
 
 ## 8. Matrix identity and present duplication
 
-`edcm/measurement/metrics/matrix.py` declares `MATRIX_VERSION = "1.0"`, the
+`edcm/measurement/metrics/matrix.py` declares `MATRIX_VERSION = "1.1"`, the
 Layer-0-to-Layer-1 weight dictionary, projections, thresholds, and crosswalk.
 The runtime formulas for the Layer-1 metrics remain hardcoded in
 `compute.py`; the matrix itself states that it is documentation-shaped rather

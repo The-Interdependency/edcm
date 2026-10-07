@@ -11,6 +11,12 @@ mirror's orthogonality surface is edcm.ucns_objects itself.
 #   call: self::test_decode_rejects_incomplete_metric_records
 #   mutates: none
 #   cleanup: none
+#
+# id: check_scope_matrix_alignment
+#   proves: scope_matrix_matches_frozen_canon_and_compute
+#   call: self::test_scope_matrix_matches_canon_and_compute
+#   mutates: none
+#   cleanup: none
 # === END CHECKS ===
 
 from __future__ import annotations
@@ -30,6 +36,8 @@ from edcm.measurement import (
     project_transcript,
 )
 from edcm.measurement import compress as codec
+from edcm.measurement.metrics.compute import _compute_O
+from edcm.measurement.metrics.matrix import A_MATRIX, MATRIX_VERSION
 
 TRANSCRIPT = """A: We need to decide this now. Do you agree?
 B: I can't. Not like that. Why are we rushing?
@@ -129,3 +137,21 @@ def test_public_api_reexports():
     ):
         assert name in edcm.__all__, f"{name} missing from edcm.__all__"
         assert hasattr(edcm, name)
+
+
+def test_scope_matrix_matches_canon_and_compute():
+    canon = CanonLoader()
+    markers = canon.metric_info("O")["markers"]
+    assert list(markers) == ["scope_expansion", "scope_containment"]
+    assert MATRIX_VERSION == "1.1"
+    assert A_MATRIX["version"] == MATRIX_VERSION
+    assert A_MATRIX["metrics"]["O"] == {
+        "marker_O_expand": 1.0,
+        "marker_O_contain": -1.0,
+    }
+
+    expansion = markers["scope_expansion"][0]
+    containment = markers["scope_containment"][0]
+    assert _compute_O(expansion, canon) == 1.0
+    assert _compute_O(containment, canon) == -1.0
+    assert _compute_O(f"{expansion}. {containment}.", canon) == 0.0
