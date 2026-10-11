@@ -1194,6 +1194,16 @@ export default defineMsdmdCollection({
       "id": "edcmbone_metrics_compute"
     },
     {
+      "block": "CONTRACTS",
+      "fields": {
+        "class": "schema_alignment",
+        "given": "the public A_MATRIX O row represents the legacy carrier for canonical O_scope",
+        "then": "its primitive names and signs match the frozen scope marker categories and the maintained _compute_O polarity"
+      },
+      "file": "edcm/measurement/metrics/matrix.py",
+      "id": "scope_matrix_matches_frozen_canon_and_compute"
+    },
+    {
       "block": "MODULE_BUILD",
       "fields": {
         "admin_only": "false",
@@ -1210,7 +1220,7 @@ export default defineMsdmdCollection({
         "since": "2026-06-02",
         "storage_boundary": "none",
         "summary": "explicit freezable A matrix (Layer0->Layer1) and PROJECTION_MAP (Layer1->Layer3) as versioned, diffable dicts",
-        "tests": "hmmm",
+        "tests": "tests/test_measurement.py::test_scope_matrix_matches_canon_and_compute",
         "unresolved": "none",
         "user_data_boundary": "none"
       },
@@ -2084,6 +2094,17 @@ export default defineMsdmdCollection({
       },
       "file": "tests/test_measurement.py",
       "id": "check_compress_rejects_incomplete_metric_records"
+    },
+    {
+      "block": "CHECKS",
+      "fields": {
+        "call": "self::test_scope_matrix_matches_canon_and_compute",
+        "cleanup": "none",
+        "mutates": "none",
+        "proves": "scope_matrix_matches_frozen_canon_and_compute"
+      },
+      "file": "tests/test_measurement.py",
+      "id": "check_scope_matrix_alignment"
     },
     {
       "block": "CHECKS",
@@ -4297,6 +4318,20 @@ export default defineMsdmdCollection({
       "source_block": "CHECKS",
       "source_id": "check_scope_assertion_candidate",
       "to": "python3"
+    },
+    {
+      "from": "check_scope_matrix_alignment",
+      "kind": "calls",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_matrix_alignment",
+      "to": "self::test_scope_matrix_matches_canon_and_compute"
+    },
+    {
+      "from": "check_scope_matrix_alignment",
+      "kind": "claims_proves",
+      "source_block": "CHECKS",
+      "source_id": "check_scope_matrix_alignment",
+      "to": "scope_matrix_matches_frozen_canon_and_compute"
     },
     {
       "from": "check_tarot_auto_fetch_rights_gate",

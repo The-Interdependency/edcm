@@ -55,7 +55,7 @@ that refactor is complete, keep both in sync manually.
 #   network_boundary: none
 #   user_data_boundary: none
 #   admin_only: false
-#   tests: tests.test_measurement.test_scope_matrix_matches_canon_and_compute
+#   tests: tests/test_measurement.py::test_scope_matrix_matches_canon_and_compute
 #   rollout: default_enabled
 #   rollback: remove module; metric projection loses its frozen coefficient source
 #   requires: none
