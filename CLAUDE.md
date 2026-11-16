@@ -284,7 +284,7 @@ Optional skips are explicit. Fake sibling implementations may test adversarial c
 - Historical measurement modules retain provenance until the explicit metadata-reconciliation pass.
 - Code and documentation include runnable usage guidance, integration notes, limitations, and `hmmm` boundaries.
 - EDCM vendors the bounded build/evidence subset from
-  `The-Interdependency/skill-lib@dd5027d99516831c0dcb83a176a67140d3819b66`.
+  `The-Interdependency/skill-lib@38c64332b840b2bbe1c07e53aeee8996644548e9`.
   The canonical drift checker and msdmd collector run in
   `.github/workflows/skill-compliance.yml`; repo-local copies are consumers,
   never authority.

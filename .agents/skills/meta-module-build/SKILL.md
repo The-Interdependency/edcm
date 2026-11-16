@@ -13,8 +13,9 @@ notes attributable to the sources that own them.
 
 Read `msdmd/SKILL.md` first. This skill inherits its source/provenance, native
 reader support, supplemental block and information-coverage contracts.
-Implementation status: this is a consuming-repo planning/runner contract;
-this repo does not ship a MODULE_BUILD runner or native planning readers.
+Implementation status: this is a consuming-repo planning/runner contract. The
+MSDMD schema-2 collector preserves JSON and TOML manifest trees, but this repo
+does not ship a complete MODULE_BUILD obligation/policy runner.
 
 ## Doctrine
 
@@ -35,8 +36,8 @@ not automatically a module plan: map only information it actually expresses.
 
 The build's semantic obligations remain required, but their native owners need
 no MODULE_BUILD copies. Supplement genuinely unexpressed intent. Unsupported
-mapping is unresolved coverage, not absence. Native readers remain implementation
-work, not capabilities supplied by this text.
+mapping is unresolved coverage, not absence. Semantic planning mappings beyond
+the shipped structured-source preservation remain implementation work.
 
 ## The block
 
@@ -204,7 +205,7 @@ no boundary/test plan remains incomplete.
 
 ## hmmm
 
-Native planning readers remain consuming-repo implementation work.
+Native planning-obligation mappings remain consuming-repo implementation work.
 Default unresolved items for new modules:
 
 ```text

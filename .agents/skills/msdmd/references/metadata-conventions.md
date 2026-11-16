@@ -23,6 +23,18 @@ data without being recommended for new authoring.
 
 ## Convention catalogue
 
+### Shipped implementation and catalogue boundary
+
+The integrated schema-2 implementation and fixture-backed extraction subsets are
+listed in [implemented-readers.md](implemented-readers.md). `readers.py` emits its
+machine manifests in every collection. The Python attachment reader is shared
+with the per-module projection; it is no longer disconnected from collection.
+
+The families below remain a discovery catalogue, not a blanket implementation
+claim. An unlisted or unsupported format remains visible as `hmmm`, and required
+coverage cannot pass without a capable reader and source-linked witnesses.
+
+
 ### Language, symbol, and documentation metadata
 
 | Family | Explicit conventions and sources to inspect | Preservation / interpretation boundary |
@@ -97,9 +109,9 @@ source references and diagnostics. Do not impose a fictitious callable signature
 on helpers that have not been implemented. Keep discovery, extraction, semantic
 mapping, policy evaluation and execution evidence separate and composable.
 
-### Minimum native-capable fact shape
+### Minimum unified native-capable fact shape
 
-The future versioned collection must be able to express:
+The future unified collection must be able to express:
 
 | Information | Requirement |
 |---|---|
