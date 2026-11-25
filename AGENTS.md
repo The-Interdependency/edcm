@@ -26,7 +26,7 @@ description: |
 2. `docs/migrations/0.2.0-audit-repair.md` and `docs/integrity-gates.md`.
 3. `docs/GONOL_LANGUAGE_BOUNDARY.md` for construction/evaluation routing.
 4. Current canonical skill-lib entrypoint and applicable skills; vendored copies
-   are consumers, pinned at `33d2abe8748dd96aec3068e2997d9f73240c7c48`.
+   are consumers, pinned at `c778d5c2c9bd2370a4e0e2a0120508377f5ad3eb`.
 5. The owning module's declarations and named tests before changes.
 6. `docs/UCNS_EDCM_EXPERIMENT_PROGRAM.md` and exact historical producer sources
    when replaying historical experiments.

@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v7.0.1
         with:
           repository: The-Interdependency/skill-lib
-          ref: 33d2abe8748dd96aec3068e2997d9f73240c7c48
+          ref: c778d5c2c9bd2370a4e0e2a0120508377f5ad3eb
           path: skill-lib
 
       - name: Check vendored subset byte-for-byte
@@ -31,7 +31,7 @@ jobs:
         run: |
           python tools/check_consumer_drift.py ../edcm \
             --canon-root . \
-            --sha 33d2abe8748dd96aec3068e2997d9f73240c7c48 \
+            --sha c778d5c2c9bd2370a4e0e2a0120508377f5ad3eb \
             --strict-sha \
             --require-vendored
 
@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@v7.0.1
         with:
           repository: The-Interdependency/skill-lib
-          ref: 33d2abe8748dd96aec3068e2997d9f73240c7c48
+          ref: c778d5c2c9bd2370a4e0e2a0120508377f5ad3eb
           path: skill-lib
 
       - name: Set up Python

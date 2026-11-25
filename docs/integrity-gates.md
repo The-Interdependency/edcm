@@ -76,7 +76,7 @@ This prevents a false green where source tests pass while packaged resources or 
 ## Skill-lib and msdmd
 
 EDCM vendors a bounded build/evidence subset from
-`The-Interdependency/skill-lib@33d2abe8748dd96aec3068e2997d9f73240c7c48`.
+`The-Interdependency/skill-lib@c778d5c2c9bd2370a4e0e2a0120508377f5ad3eb`.
 The skill-compliance workflow checks those files byte-for-byte, generates the
 canonical `edcm_msdmd.ts` collection, compares it with the tracked collection,
 and runs the EDCM-native metadata validator. The schema-2 collector needs its
@@ -89,7 +89,7 @@ Local validation:
 ```bash
 python /path/to/skill-lib/tools/check_consumer_drift.py . \
   --canon-root /path/to/skill-lib \
-  --sha 33d2abe8748dd96aec3068e2997d9f73240c7c48 \
+  --sha c778d5c2c9bd2370a4e0e2a0120508377f5ad3eb \
   --strict-sha --require-vendored
 
 python -m pip install -r /path/to/skill-lib/msdmd/requirements.txt
